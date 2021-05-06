@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.19)
+project(ctr)
+
+set(CMAKE_CXX_STANDARD 20)
+
+add_executable(ctr main.cpp ctr/grammar.h ctr/static_string.h ctr/symbol.h ctr/parser.h ctr/stack.h ctr.h)
