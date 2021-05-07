@@ -275,64 +275,10 @@ namespace ctr::grammar
         using type = symbol::epsilon;
     };
 
-    template<>
-    struct rule<symbol::esc, symbol::character<'('>>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct rule<symbol::esc, symbol::character<')'>>
-    {
-        using type = symbol::epsilon;
-    };
-
-    template<>
-    struct rule<symbol::esc, symbol::character<'*'>>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct rule<symbol::esc, symbol::character<'+'>>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct rule<symbol::esc, symbol::character<'?'>>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct rule<symbol::esc, symbol::character<'\\'>>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct rule<symbol::esc, symbol::character<'a'>>
-    {
-        using type = symbol::character<'a'>;
-    };
-
-    template<>
-    struct rule<symbol::esc, symbol::character<'d'>>
-    {
-        using type = symbol::character<'d'>;
-    };
-
-    template<>
-    struct rule<symbol::esc, symbol::character<'|'>>
-    {
-        using type = reject;
-    };
-
     template<auto C>
     struct rule<symbol::esc, symbol::character<C>>
     {
-        using type = reject;
+        using type = symbol::character<C>;
     };
 
     template<>

@@ -18,6 +18,11 @@ namespace ctr::tests
     static_assert(parser<"(one|two)?">::accepted);
     static_assert(parser<"(one|two)*">::accepted);
     static_assert(parser<"(one|two)+">::accepted);
+    static_assert(parser<"(\\(+)*">::accepted);
+    static_assert(parser<"(\\++)*">::accepted);
+    static_assert(parser<"(\\?+)?">::accepted);
+    static_assert(parser<"(\\|+\\))?">::accepted);
+    static_assert(parser<"\\\\">::accepted);
     static_assert(parser<"((a|\\a)|(d|\\d))?">::accepted);
     static_assert(parser<"((a|\\a+)|(d?|\\d))*">::accepted);
     static_assert(parser<"((a|\\a)|(0|1|2|3))?">::accepted);
@@ -38,11 +43,14 @@ namespace ctr::tests
     static_assert(parser<"(|)">::accepted == false);
     static_assert(parser<"a|">::accepted == false);
     static_assert(parser<"|a">::accepted == false);
+    static_assert(parser<"\\">::accepted == false);
     static_assert(parser<"(a|)">::accepted == false);
     static_assert(parser<"(|a)">::accepted == false);
     static_assert(parser<"(+|-)">::accepted == false);
     static_assert(parser<"(A|a)+)">::accepted == false);
+    static_assert(parser<"\\((A|a)+)">::accepted == false);
     static_assert(parser<"((((((a)))))">::accepted == false);
+    static_assert(parser<"((((((a)))))\\)">::accepted == false);
 }
 #endif // CTR_RUN_PARSER_TESTS
 
