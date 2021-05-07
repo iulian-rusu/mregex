@@ -40,47 +40,47 @@ namespace ctr
         {
             using symbol_on_stack = typename Stack::top;
             using next_stack = typename Stack::pop;
-            using next_state = grammar::transition_t<symbol_on_stack, character_at_t<I>>;
+            using current_rule = grammar::rule_t<symbol_on_stack, character_at_t<I>>;
 
-            return next_step<I, next_state, next_stack>::value;
+            return next_step<I, current_rule, next_stack>::value;
         }
 
-        // helper class to decide the next step in the parsing algorithm
-        template<size_t I, typename Next, typename Stack>
+        // helper struct to decide the next step in the parsing algorithm
+        template<size_t I, typename Rule, typename Stack>
         struct next_step
         {
-            static constexpr auto value = parse<I, typename Stack::template push<Next>>();
+            static constexpr auto value = parse<I, typename Stack::template push<Rule>>();
         };
 
-        // if Next == symbol::epsion, do not advance in the input
+        // if Rule == symbol::epsion, do not advance in the input
         template<size_t I, typename Stack>
         struct next_step<I, symbol::epsilon, Stack>
         {
             static constexpr auto value = parse<I, Stack>();
         };
 
-        // if Next == grammar::pop_input, advance in the input
+        // if Rule == grammar::pop_input, advance in the input
         template<size_t I, typename Stack>
         struct next_step<I, grammar::pop_input, Stack>
         {
             static constexpr auto value = parse<I + 1, Stack>();
         };
 
-        // if Next == grammar::reject, the patterns has a syntactic error
+        // if Rule == grammar::reject, the patterns has a syntactic error
         template<size_t I, typename Stack>
         struct next_step<I, grammar::reject, Stack>
         {
             static constexpr auto value = false;
         };
 
-        // if Next == grammar::accept, the patterns is is_valid
+        // if Rule == grammar::accept, the patterns is accepted
         template<size_t I, typename Stack>
         struct next_step<I, grammar::accept, Stack>
         {
             static constexpr auto value = true;
         };
 
-        static constexpr bool is_valid = parse<0, stack<symbol::start>>();
+        static constexpr bool accepted = parse<0, stack<symbol::start>>();
     };
 }
 #endif //CTR_PARSER_H
