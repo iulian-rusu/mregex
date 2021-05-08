@@ -11,7 +11,6 @@ namespace ctr
     /**
      * Generic constexpr LL(1) parser
      *
-     * @tparam Grammar  The grammar used to parse the input
      * @tparam pattern  The input to be parsed
      */
     template<static_string pattern>
@@ -66,14 +65,14 @@ namespace ctr
             static constexpr auto value = parse<I + 1, Stack>();
         };
 
-        // if Rule == grammar::reject, the patterns has a syntactic error
+        // if Rule == grammar::reject, the pattern has a syntactic error
         template<size_t I, typename Stack>
         struct next_step<I, grammar::reject, Stack>
         {
             static constexpr auto value = false;
         };
 
-        // if Rule == grammar::accept, the patterns is accepted
+        // if Rule == grammar::accept, the pattern is accepted
         template<size_t I, typename Stack>
         struct next_step<I, grammar::accept, Stack>
         {

@@ -6,7 +6,7 @@
 #include "symbol.h"
 
 /**
- * Namespace containing the rule rules for the grammar
+ * Namespace containing the rules for the grammar
  */
 namespace ctr::grammar
 {

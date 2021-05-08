@@ -6,20 +6,23 @@
  */
 namespace ctr::symbol
 {
-    // symbols for AST
+    // tag to mark semantic symbols
+    struct semantic {};
+
+    // semantic symbols for AST generation
     template<auto C>
-    struct character{};
+    struct character: semantic {};
 
-    struct epsilon {};
-
-    template<typename ...>
-    struct concatenation {};
+    struct epsilon: semantic {};
 
     template<typename ...>
-    struct alternation {};
+    struct concatenation: semantic {};
 
     template<typename ...>
-    struct star {};
+    struct alternation: semantic {};
+
+    template<typename ...>
+    struct star: semantic {};
 
     template<typename T>
     using optional = alternation<T, epsilon>;
@@ -27,7 +30,11 @@ namespace ctr::symbol
     template<typename T>
     using plus = concatenation<T, star<T>>;
 
-    // symbols for parser transitions
+    // type trait to distinguish semantic symbols from other symbols
+    template<typename Symbol>
+    constexpr bool is_semantic_v = std::is_base_of_v<semantic, Symbol>;
+
+    // non-semantic symbols for parser transitions
     struct start {};
 
     struct alt0 {};
