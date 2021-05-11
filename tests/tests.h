@@ -9,6 +9,7 @@
 #ifdef CTR_RUN_TESTS
 #define CTR_RUN_PARSER_TESTS
 #define CTR_RUN_STACK_TESTS
+#define CTR_RUN_UTILITY_TESTS
 #endif
 
 #endif //CTR_TESTS_H

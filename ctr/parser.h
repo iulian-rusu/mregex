@@ -34,7 +34,7 @@ namespace ctr
         using character_at_t = typename character_at<I>::type;
 
         // main method used to parse the pattern
-        template<size_t I, typename Stack>
+        template<std::size_t I, typename Stack>
         static constexpr bool parse() noexcept
         {
             using symbol_on_stack = typename Stack::top;
@@ -45,35 +45,35 @@ namespace ctr
         }
 
         // helper struct to decide the next step in the parsing algorithm
-        template<size_t I, typename Rule, typename Stack>
+        template<std::size_t I, typename Rule, typename Stack>
         struct next_step
         {
             static constexpr auto value = parse<I, typename Stack::template push<Rule>>();
         };
 
         // if Rule == symbol::epsion, do not advance in the input
-        template<size_t I, typename Stack>
+        template<std::size_t I, typename Stack>
         struct next_step<I, symbol::epsilon, Stack>
         {
             static constexpr auto value = parse<I, Stack>();
         };
 
         // if Rule == grammar::pop_input, advance in the input
-        template<size_t I, typename Stack>
+        template<std::size_t I, typename Stack>
         struct next_step<I, grammar::pop_input, Stack>
         {
             static constexpr auto value = parse<I + 1, Stack>();
         };
 
         // if Rule == grammar::reject, the pattern has a syntactic error
-        template<size_t I, typename Stack>
+        template<std::size_t I, typename Stack>
         struct next_step<I, grammar::reject, Stack>
         {
             static constexpr auto value = false;
         };
 
         // if Rule == grammar::accept, the pattern is accepted
-        template<size_t I, typename Stack>
+        template<std::size_t I, typename Stack>
         struct next_step<I, grammar::accept, Stack>
         {
             static constexpr auto value = true;
