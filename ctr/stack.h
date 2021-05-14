@@ -8,7 +8,7 @@ namespace ctr
     /**
      * Compile-time stack implementation
      *
-     * @tparam Elems    A variadic pack of types - the elemets on the stack
+     * @tparam Elems    First variadic pack of types - the elemets on the stack
      */
     template<typename ... Elems>
     struct stack

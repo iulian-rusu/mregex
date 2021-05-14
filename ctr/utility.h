@@ -29,6 +29,13 @@ namespace ctr
 
     template<typename ... Elems>
     using last_t = typename last<Elems ...>::type;
+
+    template<typename First, typename Second>
+    struct pair
+    {
+        using first = First;
+        using second = Second;
+    };
 }
 
 #endif //CTR_UTILITY_H

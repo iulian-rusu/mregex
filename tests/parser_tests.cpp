@@ -47,8 +47,8 @@ namespace ctr::tests
     static_assert(parser<"(a|)">::accepted == false);
     static_assert(parser<"(|a)">::accepted == false);
     static_assert(parser<"(+|-)">::accepted == false);
-    static_assert(parser<"(A|a)+)">::accepted == false);
-    static_assert(parser<"\\((A|a)+)">::accepted == false);
+    static_assert(parser<"(First|a)+)">::accepted == false);
+    static_assert(parser<"\\((First|a)+)">::accepted == false);
     static_assert(parser<"((((((a)))))">::accepted == false);
     static_assert(parser<"((((((a)))))\\)">::accepted == false);
 }

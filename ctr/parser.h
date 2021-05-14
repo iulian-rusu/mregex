@@ -5,6 +5,8 @@
 #include "grammar.h"
 #include "symbol.h"
 #include "stack.h"
+#include "utility.h"
+#include "ast.h"
 
 namespace ctr
 {
@@ -16,11 +18,11 @@ namespace ctr
     template<static_string pattern>
     struct parser
     {
-        // helper struct that contains either a symbol::character or symbol::epsilon based on the side of the index
+        // helper struct that contains either a symbol::chr or symbol::epsilon based on the side of the index
         template<std::size_t I, bool in_range = I < pattern.length>
         struct character_at
         {
-            using type = symbol::character<pattern[I]>;
+            using type = character<pattern[I]>;
         };
 
         // specialization for indexes that are out of bound
@@ -33,53 +35,127 @@ namespace ctr
         template<std::size_t I>
         using character_at_t = typename character_at<I>::type;
 
-        // main method used to parse the pattern
-        template<std::size_t I, typename Stack>
-        static constexpr bool parse() noexcept
+        // forward declare helper structs to resolve reference conflicts
+        template<std::size_t I, typename ...>
+        struct next_step;
+
+        template<typename Symbol, typename Char, typename AST>
+        struct update_ast;
+
+        // main metafunction used to parse the pattern
+        template<std::size_t I, typename AST, typename Stack, bool = symbol::is_action_v<typename Stack::top>>
+        struct parse
         {
-            using symbol_on_stack = typename Stack::top;
             using next_stack = typename Stack::pop;
-            using current_rule = grammar::rule_t<symbol_on_stack, character_at_t<I>>;
+            using current_char = character_at_t<I>;
+            using current_rule = grammar::rule_t<typename Stack::top, current_char>;
 
-            return next_step<I, current_rule, next_stack>::value;
-        }
-
-        // helper struct to decide the next step in the parsing algorithm
-        template<std::size_t I, typename Rule, typename Stack>
-        struct next_step
-        {
-            static constexpr auto value = parse<I, typename Stack::template push<Rule>>();
+            using type = typename next_step<I, current_rule, AST, next_stack>::type;
         };
 
-        // if Rule == symbol::epsion, do not advance in the input
-        template<std::size_t I, typename Stack>
-        struct next_step<I, symbol::epsilon, Stack>
+        template<std::size_t I, typename AST, typename Stack>
+        struct parse<I, AST, Stack, true>
         {
-            static constexpr auto value = parse<I, Stack>();
+            using next_ast = typename update_ast<typename Stack::top, character_at_t<I - 1>, AST>::type;
+            using type = typename parse<I, next_ast, typename Stack::pop>::type;
         };
 
-        // if Rule == grammar::pop_input, advance in the input
-        template<std::size_t I, typename Stack>
-        struct next_step<I, grammar::pop_input, Stack>
+        // metafunctions to decide the next step in the parsing algorithm
+        template<std::size_t I, typename Rule, typename AST, typename Stack>
+        struct next_step<I, Rule, AST, Stack>
         {
-            static constexpr auto value = parse<I + 1, Stack>();
+            using type = typename parse<I, AST, typename Stack::template push<Rule>>::type;
         };
 
-        // if Rule == grammar::reject, the pattern has a syntactic error
-        template<std::size_t I, typename Stack>
-        struct next_step<I, grammar::reject, Stack>
+        template<std::size_t I, typename AST, typename Stack>
+        struct next_step<I, symbol::epsilon, AST, Stack>
         {
-            static constexpr auto value = false;
+            using type = typename parse<I, AST, Stack>::type;
         };
 
-        // if Rule == grammar::accept, the pattern is accepted
-        template<std::size_t I, typename Stack>
-        struct next_step<I, grammar::accept, Stack>
+        template<std::size_t I, typename AST, typename Stack>
+        struct next_step<I, grammar::pop_input, AST, Stack>
         {
-            static constexpr auto value = true;
+            using type = typename parse<I + 1, AST, Stack>::type;
         };
 
-        static constexpr bool accepted = parse<0, stack<symbol::start>>();
+        template<std::size_t I, typename AST, typename Stack>
+        struct next_step<I, grammar::reject, AST, Stack>
+        {
+            using type = pair<std::false_type, AST>;
+        };
+
+        template<std::size_t I, typename AST, typename Stack>
+        struct next_step<I, grammar::accept, AST, Stack>
+        {
+           using type = pair<std::true_type, AST>;
+        };
+
+        // metafunctions for updating the AST
+        template<typename C, typename Stack>
+        struct update_ast<symbol::character, C, Stack>
+        {
+            using type = typename Stack::template push<C>;
+        };
+
+        template<typename C, typename Stack>
+        struct update_ast<symbol::alnum, C, Stack>
+        {
+            using type = typename Stack::template push<alnum>;
+        };
+
+        template<typename C, typename Stack>
+        struct update_ast<symbol::digit, C, Stack>
+        {
+            using type = typename Stack::template push<digit>;
+        };
+
+        template<typename C, typename First, typename ... Rest>
+        struct update_ast<symbol::star, C, stack<First, Rest ...>>
+        {
+            using type = stack<star<First>, Rest ...>;
+        };
+
+        template<typename C, typename First, typename ... Rest>
+        struct update_ast<symbol::optional, C, stack<First, Rest ...>>
+        {
+            using type = stack<optional<First>, Rest ...>;
+        };
+
+        template<typename C, typename First, typename ... Rest>
+        struct update_ast<symbol::plus, C, stack<First, Rest ...>>
+        {
+            using type = stack<plus<First>, Rest ...>;
+        };
+
+        template<typename C, typename First, typename Second, typename ... Rest>
+        struct update_ast<symbol::sequence, C, stack<First, Second, Rest ...>>
+        {
+            using type = stack<sequence<Second, First>, Rest ...>;
+        };
+
+        template<typename C, typename First, typename ... Second, typename ... Rest>
+        struct update_ast<symbol::sequence, C, stack<First, sequence<Second ...>, Rest ...>>
+        {
+            using type = stack<sequence<Second ..., First>, Rest ...>;
+        };
+
+        template<typename C, typename First, typename Second, typename ... Rest>
+        struct update_ast<symbol::alternation, C, stack<First, Second, Rest ...>>
+        {
+            using type = stack<alternation<Second, First>, Rest ...>;
+        };
+
+        template<typename C, typename First, typename ... Second, typename ... Rest>
+        struct update_ast<symbol::alternation, C, stack<First, sequence<Second ...>, Rest ...>>
+        {
+            using type = stack<alternation<Second ..., First>, Rest ...>;
+        };
+
+        using parse_result = typename parse<0, stack<>, stack<symbol::start>>::type;
+        using ast_stack = typename parse_result::second;
+        using ast = typename ast_stack::top;
+        static constexpr bool accepted = typename parse_result::first{};
     };
 }
 #endif //CTR_PARSER_H

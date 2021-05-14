@@ -4,6 +4,7 @@
 #include <type_traits>
 #include "stack.h"
 #include "symbol.h"
+#include "ast.h"
 
 /**
  * Namespace containing the rules for the grammar
@@ -27,46 +28,46 @@ namespace ctr::grammar
 
     // specialized rules for specific inputs
     template<>
-    struct rule<symbol::start, symbol::character<'('>>
+    struct rule<symbol::start, character<'('>>
     {
         using type = stack<
-                symbol::character<'('>,
+                character<'('>,
                 symbol::alt0,
-                symbol::character<')'>,
+                character<')'>,
                 symbol::mod,
                 symbol::seq,
                 symbol::alt>; // this rule pushes a set of symbols on the stack
     };
 
     template<>
-    struct rule<symbol::start, symbol::character<')'>>
+    struct rule<symbol::start, character<')'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::start, symbol::character<'*'>>
+    struct rule<symbol::start, character<'*'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::start, symbol::character<'+'>>
+    struct rule<symbol::start, character<'+'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::start, symbol::character<'?'>>
+    struct rule<symbol::start, character<'?'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::start, symbol::character<'\\'>>
+    struct rule<symbol::start, character<'\\'>>
     {
         using type = stack<
-                symbol::character<'\\'>,
+                character<'\\'>,
                 symbol::esc,
                 symbol::mod,
                 symbol::seq,
@@ -74,36 +75,39 @@ namespace ctr::grammar
     };
 
     template<>
-    struct rule<symbol::start, symbol::character<'a'>>
+    struct rule<symbol::start, character<'a'>>
     {
         using type = stack<
-                symbol::character<'a'>,
+                character<'a'>,
+                symbol::character,
                 symbol::mod,
                 symbol::seq,
                 symbol::alt>;
     };
 
     template<>
-    struct rule<symbol::start, symbol::character<'d'>>
+    struct rule<symbol::start, character<'d'>>
     {
         using type = stack<
-                symbol::character<'d'>,
+                character<'d'>,
+                symbol::character,
                 symbol::mod,
                 symbol::seq,
                 symbol::alt>;
     };
 
     template<>
-    struct rule<symbol::start, symbol::character<'|'>>
+    struct rule<symbol::start, character<'|'>>
     {
         using type = reject;
     };
 
     template<auto C>
-    struct rule<symbol::start, symbol::character<C>>
+    struct rule<symbol::start, character<C>>
     {
         using type = stack<
-                symbol::character<C>,
+                character<C>,
+                symbol::character,
                 symbol::mod,
                 symbol::seq,
                 symbol::alt
@@ -117,46 +121,46 @@ namespace ctr::grammar
     };
 
     template<>
-    struct rule<symbol::alt0, symbol::character<'('>>
+    struct rule<symbol::alt0, character<'('>>
     {
         using type = stack<
-                symbol::character<'('>,
+                character<'('>,
                 symbol::alt0,
-                symbol::character<')'>,
+                character<')'>,
                 symbol::mod,
                 symbol::seq,
                 symbol::alt>;
     };
 
     template<>
-    struct rule<symbol::alt0, symbol::character<')'>>
+    struct rule<symbol::alt0, character<')'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::alt0, symbol::character<'*'>>
+    struct rule<symbol::alt0, character<'*'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::alt0, symbol::character<'+'>>
+    struct rule<symbol::alt0, character<'+'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::alt0, symbol::character<'?'>>
+    struct rule<symbol::alt0, character<'?'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::alt0, symbol::character<'\\'>>
+    struct rule<symbol::alt0, character<'\\'>>
     {
         using type = stack<
-                symbol::character<'\\'>,
+                character<'\\'>,
                 symbol::esc,
                 symbol::mod,
                 symbol::seq,
@@ -164,36 +168,39 @@ namespace ctr::grammar
     };
 
     template<>
-    struct rule<symbol::alt0, symbol::character<'a'>>
+    struct rule<symbol::alt0, character<'a'>>
     {
         using type = stack<
-                symbol::character<'a'>,
+                character<'a'>,
+                symbol::character,
                 symbol::mod,
                 symbol::seq,
                 symbol::alt>;
     };
 
     template<>
-    struct rule<symbol::alt0, symbol::character<'d'>>
+    struct rule<symbol::alt0, character<'d'>>
     {
         using type = stack<
-                symbol::character<'d'>,
+                character<'d'>,
+                symbol::character,
                 symbol::mod,
                 symbol::seq,
                 symbol::alt>;
     };
 
     template<>
-    struct rule<symbol::alt0, symbol::character<'|'>>
+    struct rule<symbol::alt0, character<'|'>>
     {
         using type = reject;
     };
 
     template<auto C>
-    struct rule<symbol::alt0, symbol::character<C>>
+    struct rule<symbol::alt0, character<C>>
     {
         using type = stack<
-                symbol::character<C>,
+                character<C>,
+                symbol::character,
                 symbol::mod,
                 symbol::seq,
                 symbol::alt
@@ -207,64 +214,65 @@ namespace ctr::grammar
     };
 
     template<>
-    struct rule<symbol::alt, symbol::character<'('>>
+    struct rule<symbol::alt, character<'('>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::alt, symbol::character<')'>>
+    struct rule<symbol::alt, character<')'>>
     {
         using type = symbol::epsilon;
     };
 
     template<>
-    struct rule<symbol::alt, symbol::character<'*'>>
+    struct rule<symbol::alt, character<'*'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::alt, symbol::character<'+'>>
+    struct rule<symbol::alt, character<'+'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::alt, symbol::character<'?'>>
+    struct rule<symbol::alt, character<'?'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::alt, symbol::character<'\\'>>
+    struct rule<symbol::alt, character<'\\'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::alt, symbol::character<'a'>>
+    struct rule<symbol::alt, character<'a'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::alt, symbol::character<'d'>>
+    struct rule<symbol::alt, character<'d'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::alt, symbol::character<'|'>>
+    struct rule<symbol::alt, character<'|'>>
     {
         using type = stack<
-                symbol::character<'|'>,
+                character<'|'>,
                 symbol::seq0,
+                symbol::alternation,
                 symbol::alt>;
     };
 
     template<auto C>
-    struct rule<symbol::alt, symbol::character<C>>
+    struct rule<symbol::alt, character<C>>
     {
         using type = reject;
     };
@@ -275,10 +283,28 @@ namespace ctr::grammar
         using type = symbol::epsilon;
     };
 
-    template<auto C>
-    struct rule<symbol::esc, symbol::character<C>>
+    template<>
+    struct rule<symbol::esc, character<'a'>>
     {
-        using type = symbol::character<C>;
+        using type = stack<
+                character<'a'>,
+                symbol::alnum>;
+    };
+
+    template<>
+    struct rule<symbol::esc, character<'d'>>
+    {
+        using type = stack<
+                character<'d'>,
+                symbol::digit>;
+    };
+
+    template<auto C>
+    struct rule<symbol::esc, character<C>>
+    {
+        using type = stack<
+                character<C>,
+                symbol::character>;
     };
 
     template<>
@@ -288,61 +314,67 @@ namespace ctr::grammar
     };
 
     template<>
-    struct rule<symbol::mod, symbol::character<'('>>
+    struct rule<symbol::mod, character<'('>>
     {
         using type = symbol::epsilon;
     };
 
     template<>
-    struct rule<symbol::mod, symbol::character<')'>>
+    struct rule<symbol::mod, character<')'>>
     {
         using type = symbol::epsilon;
     };
 
     template<>
-    struct rule<symbol::mod, symbol::character<'*'>>
+    struct rule<symbol::mod, character<'*'>>
     {
-        using type = symbol::character<'*'>;
+        using type = stack<
+                character<'*'>,
+                symbol::star>;
     };
 
     template<>
-    struct rule<symbol::mod, symbol::character<'+'>>
+    struct rule<symbol::mod, character<'+'>>
     {
-        using type = symbol::character<'+'>;
+        using type = stack<
+                character<'+'>,
+                symbol::plus>;
     };
 
     template<>
-    struct rule<symbol::mod, symbol::character<'?'>>
+    struct rule<symbol::mod, character<'?'>>
     {
-        using type = symbol::character<'?'>;
+        using type = stack<
+                character<'?'>,
+                symbol::optional>;
     };
 
     template<>
-    struct rule<symbol::mod, symbol::character<'\\'>>
-    {
-        using type = symbol::epsilon;
-    };
-
-    template<>
-    struct rule<symbol::mod, symbol::character<'a'>>
-    {
-        using type = symbol::epsilon;
-    };
-
-    template<>
-    struct rule<symbol::mod, symbol::character<'d'>>
+    struct rule<symbol::mod, character<'\\'>>
     {
         using type = symbol::epsilon;
     };
 
     template<>
-    struct rule<symbol::mod, symbol::character<'|'>>
+    struct rule<symbol::mod, character<'a'>>
+    {
+        using type = symbol::epsilon;
+    };
+
+    template<>
+    struct rule<symbol::mod, character<'d'>>
+    {
+        using type = symbol::epsilon;
+    };
+
+    template<>
+    struct rule<symbol::mod, character<'|'>>
     {
         using type = symbol::epsilon;
     };
 
     template<auto C>
-    struct rule<symbol::mod, symbol::character<C>>
+    struct rule<symbol::mod, character<C>>
     {
         using type = symbol::epsilon;
     };
@@ -354,79 +386,82 @@ namespace ctr::grammar
     };
 
     template<>
-    struct rule<symbol::seq0, symbol::character<'('>>
+    struct rule<symbol::seq0, character<'('>>
     {
         using type = stack<
-                symbol::character<'('>,
+                character<'('>,
                 symbol::alt0,
-                symbol::character<')'>,
+                character<')'>,
                 symbol::mod,
                 symbol::seq>;
     };
 
     template<>
-    struct rule<symbol::seq0, symbol::character<')'>>
+    struct rule<symbol::seq0, character<')'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::seq0, symbol::character<'*'>>
+    struct rule<symbol::seq0, character<'*'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::seq0, symbol::character<'+'>>
+    struct rule<symbol::seq0, character<'+'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::seq0, symbol::character<'?'>>
+    struct rule<symbol::seq0, character<'?'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::seq0, symbol::character<'\\'>>
+    struct rule<symbol::seq0, character<'\\'>>
     {
         using type = stack<
-                symbol::character<'\\'>,
+                character<'\\'>,
                 symbol::esc,
                 symbol::mod,
                 symbol::seq>;
     };
 
     template<>
-    struct rule<symbol::seq0, symbol::character<'a'>>
+    struct rule<symbol::seq0, character<'a'>>
     {
         using type = stack<
-                symbol::character<'a'>,
+                character<'a'>,
+                symbol::character,
                 symbol::mod,
                 symbol::seq>;
     };
 
     template<>
-    struct rule<symbol::seq0, symbol::character<'d'>>
+    struct rule<symbol::seq0, character<'d'>>
     {
         using type = stack<
-                symbol::character<'d'>,
+                character<'d'>,
+                symbol::character,
                 symbol::mod,
                 symbol::seq>;
     };
 
     template<>
-    struct rule<symbol::seq0, symbol::character<'|'>>
+    struct rule<symbol::seq0, character<'|'>>
     {
         using type = reject;
     };
 
     template<auto C>
-    struct rule<symbol::seq0, symbol::character<C>>
+    struct rule<symbol::seq0, character<C>>
     {
         using type = stack<
-                symbol::character<C>,
+                character<C>,
+                symbol::character,
                 symbol::mod,
                 symbol::seq>;
     };
@@ -438,80 +473,88 @@ namespace ctr::grammar
     };
 
     template<>
-    struct rule<symbol::seq, symbol::character<'('>>
+    struct rule<symbol::seq, character<'('>>
     {
         using type = stack<
-                symbol::character<'('>,
+                character<'('>,
                 symbol::alt0,
-                symbol::character<')'>,
+                character<')'>,
                 symbol::mod,
+                symbol::sequence,
                 symbol::seq>;
     };
 
     template<>
-    struct rule<symbol::seq, symbol::character<')'>>
+    struct rule<symbol::seq, character<')'>>
     {
         using type = symbol::epsilon;
     };
 
     template<>
-    struct rule<symbol::seq, symbol::character<'*'>>
+    struct rule<symbol::seq, character<'*'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::seq, symbol::character<'+'>>
+    struct rule<symbol::seq, character<'+'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::seq, symbol::character<'?'>>
+    struct rule<symbol::seq, character<'?'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::seq, symbol::character<'\\'>>
+    struct rule<symbol::seq, character<'\\'>>
     {
         using type = stack<
-                symbol::character<'\\'>,
+                character<'\\'>,
                 symbol::esc,
                 symbol::mod,
+                symbol::sequence,
                 symbol::seq>;
     };
 
     template<>
-    struct rule<symbol::seq, symbol::character<'a'>>
+    struct rule<symbol::seq, character<'a'>>
     {
         using type = stack<
-                symbol::character<'a'>,
+                character<'a'>,
+                symbol::character,
                 symbol::mod,
+                symbol::sequence,
                 symbol::seq>;
     };
 
     template<>
-    struct rule<symbol::seq, symbol::character<'d'>>
+    struct rule<symbol::seq, character<'d'>>
     {
         using type = stack<
-                symbol::character<'d'>,
+                character<'d'>,
+                symbol::character,
                 symbol::mod,
+                symbol::sequence,
                 symbol::seq>;
     };
 
     template<>
-    struct rule<symbol::seq, symbol::character<'|'>>
+    struct rule<symbol::seq, character<'|'>>
     {
         using type = symbol::epsilon;
     };
 
     template<auto C>
-    struct rule<symbol::seq, symbol::character<C>>
+    struct rule<symbol::seq, character<C>>
     {
         using type = stack<
-                symbol::character<C>,
+                character<C>,
+                symbol::character,
                 symbol::mod,
+                symbol::sequence,
                 symbol::seq>;
     };
 
@@ -522,13 +565,13 @@ namespace ctr::grammar
     };
 
     template<char C>
-    struct rule<symbol::character<C>, symbol::character<C>>
+    struct rule<character<C>, character<C>>
     {
         using type = pop_input;
     };
 
     template<char C, typename Symbol>
-    struct rule<symbol::character<C>, Symbol>
+    struct rule<character<C>, Symbol>
     {
         using type = reject;
     };

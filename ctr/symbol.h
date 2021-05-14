@@ -6,38 +6,9 @@
  */
 namespace ctr::symbol
 {
-    // tag to mark terminal symbols
-    struct terminal {};
+    // non-action symbols
+    struct epsilon {};
 
-    // terminal symbols
-    template<auto C>
-    struct character: terminal
-    {
-        static constexpr auto value = C;
-    };
-
-    struct epsilon: terminal {};
-
-    template<typename ...>
-    struct concatenation: terminal {};
-
-    template<typename ...>
-    struct alternation: terminal {};
-
-    template<typename ...>
-    struct star: terminal {};
-
-    template<typename T>
-    using optional = alternation<T, epsilon>;
-
-    template<typename T>
-    using plus = concatenation<T, star<T>>;
-
-    // type trait to distinguish terminal symbols from other symbols
-    template<typename Symbol>
-    constexpr bool is_terminal_v = std::is_base_of_v<terminal, Symbol>;
-
-    // non-terminal symbols
     struct start {};
 
     struct alt0 {};
@@ -51,5 +22,29 @@ namespace ctr::symbol
     struct seq0 {};
 
     struct seq {};
+
+    // tag to mark action symbols
+    struct action {};
+
+    // action symbols
+    struct character: action {};
+
+    struct sequence: action {};
+
+    struct alternation: action {};
+
+    struct star: action {};
+
+    struct optional: action {};
+
+    struct plus: action {};
+
+    struct alnum: action {};
+
+    struct digit: action {};
+
+    // type trait to distinguish action symbols from other symbols
+    template<typename Symbol>
+    constexpr bool is_action_v = std::is_base_of_v<action, Symbol>;
 }
 #endif //CTR_SYMBOL_H

@@ -27,7 +27,7 @@ namespace ctr::tests
     static_assert(std::is_same_v<stack<double, char, int>, stack<>::push<int>::push<char>::push<double>>);
     // push three types and pop two
     static_assert(std::is_same_v<stack<int>, stack<>::push<int>::push<char>::push<double>::pop::pop>);
-    // pushing a stack on the stack must yield the concatenation of two stacks
+    // pushing a stack on the stack must yield the sequence of two stacks
     static_assert(std::is_same_v<stack<double, int, long, char>, stack<long, char>::push<stack<double, int>>>);
     // pushing and popping more elements
     static_assert(std::is_same_v<stack<double>,
