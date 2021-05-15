@@ -29,5 +29,21 @@ namespace ctr
     struct alnum {};
 
     struct digit {};
+
+    struct word {};
+
+    struct whitespace {};
+
+    struct lower {};
+
+    struct upper {};
+
+    struct hexa {};
+
+    template<typename S>
+    struct negated {};
+
+    template<typename S>
+    struct capturing {};
 }
 #endif //CTR_AST_H

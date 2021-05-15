@@ -26,10 +26,8 @@ namespace ctr
             }
         }
 
-        template<std::size_t M>
-        constexpr static_string(static_string<M> const &other) noexcept
+        constexpr static_string(static_string<N> const &other) noexcept
         {
-            static_assert(N == M, "incompatible static string lengths");
             for (std::size_t i = 0; i < N; ++i)
             {
                 buffer[i] = other.buffer[i];

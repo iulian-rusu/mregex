@@ -6,7 +6,7 @@
  */
 namespace ctr::symbol
 {
-    // non-action symbols
+    // non-ast_update symbols
     struct epsilon {};
 
     struct start {};
@@ -23,28 +23,41 @@ namespace ctr::symbol
 
     struct seq {};
 
-    // tag to mark action symbols
-    struct action {};
+    // tag to mark symbols that require AST updates
+    struct ast_update {};
 
-    // action symbols
-    struct character: action {};
+    struct make_char: ast_update {};
 
-    struct sequence: action {};
+    struct make_sequence: ast_update {};
 
-    struct alternation: action {};
+    struct make_alternation: ast_update {};
 
-    struct star: action {};
+    struct make_star: ast_update {};
 
-    struct optional: action {};
+    struct make_optional: ast_update {};
 
-    struct plus: action {};
+    struct make_plus: ast_update {};
 
-    struct alnum: action {};
+    struct make_alnum: ast_update {};
 
-    struct digit: action {};
+    struct make_digit: ast_update {};
 
-    // type trait to distinguish action symbols from other symbols
+    struct make_word: ast_update {};
+
+    struct make_whitespace: ast_update  {};
+
+    struct make_lower: ast_update  {};
+
+    struct make_upper: ast_update  {};
+
+    struct make_hexa: ast_update {};
+
+    struct make_negated: ast_update {};
+
+    struct make_capturing: ast_update {};
+
+    // type trait to distinguish ast_update symbols from other symbols
     template<typename Symbol>
-    constexpr bool is_action_v = std::is_base_of_v<action, Symbol>;
+    constexpr bool is_ast_update_v = std::is_base_of_v<ast_update, Symbol>;
 }
 #endif //CTR_SYMBOL_H

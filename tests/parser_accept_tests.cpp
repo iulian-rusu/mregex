@@ -7,8 +7,7 @@ namespace ctr::tests
     static_assert(parser<"">::accepted);
     static_assert(parser<"a">::accepted);
     static_assert(parser<"\\a">::accepted);
-    static_assert(parser<"d">::accepted);
-    static_assert(parser<"\\d">::accepted);
+    static_assert(parser<"\\D">::accepted);
     static_assert(parser<"abcdefg">::accepted);
     static_assert(parser<"(c)">::accepted);
     static_assert(parser<"c?">::accepted);
