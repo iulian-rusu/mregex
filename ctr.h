@@ -2,6 +2,6 @@
 #define CTR_CTR_H
 
 #include "ctr/parser.h"
-#include "ctr/utility.h"
+#include "ctr/matching.h"
 
 #endif //CTR_CTR_H
