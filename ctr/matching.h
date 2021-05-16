@@ -8,6 +8,15 @@
  */
 namespace ctr
 {
+    template <class T>
+    concept string_like = requires(T a, std::size_t index)
+    {
+        static_cast<char>(a[index]);
+        static_cast<std::size_t>(a.length());
+        a.begin();
+        a.end();
+    };
+
     template<auto const pattern>
     struct regex
     {
@@ -15,8 +24,8 @@ namespace ctr
         using ast = typename parser<pattern>::ast;
     };
 
-    template<static_string const pattern, typename StringLike>
-    [[nodiscard]] constexpr match_result match(StringLike const &input) noexcept
+    template<static_string const pattern, string_like Str>
+    [[nodiscard]] constexpr match_result match(Str const &input) noexcept
     {
         using ast = typename regex<pattern>::ast;
 
@@ -25,8 +34,8 @@ namespace ctr
         return res;
     }
 
-    template<static_string const pattern, typename StringLike>
-    [[nodiscard]] constexpr search_result search(StringLike const &input, std::size_t start_pos = 0) noexcept
+    template<static_string const pattern, string_like Str>
+    [[nodiscard]] constexpr search_result search(Str const &input, std::size_t start_pos = 0) noexcept
     {
         if (start_pos >= input.length())
             return search_result{start_pos, {0, false}};

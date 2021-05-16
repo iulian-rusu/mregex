@@ -3,7 +3,7 @@
 
 int main()
 {
-    std::string input = "The number 0xFF777 is in base 16";
+    std::string_view input = "The number 0xFF777 is in base 16";
     auto[start, count, matched] = ctr::search<R"(0(x|X)(\h+)(h|H)?)">(input);
     if (matched)
     {
