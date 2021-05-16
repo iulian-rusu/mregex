@@ -1,15 +1,17 @@
-#include "tests.h"
+#include "tests.hpp"
 
-#ifdef CX_RUN_PARSER_TESTS
-namespace cx::tests
+#ifdef META_RUN_PARSER_TESTS
+namespace meta::tests
 {
+    using namespace ast;
+
     namespace detail
     {
         template<static_string const pattern, typename AST>
-        constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast, AST>;
+        constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast_type, AST>;
     }
 
-   //static_assert(std::is_same_v<typename parser<static_string(R"(x(a(b(c(d)*){15})))")>::ast, void>);
+    //static_assert(std::is_same_v<typename parser<static_string(R"(x(a(b(c(d)*){15})))")>::ast_type, void>);
 
     static_assert(detail::expected_ast<R"())", epsilon>);
     static_assert(detail::expected_ast<R"(a))", character<'a'>>);
@@ -732,4 +734,4 @@ namespace cx::tests
             >
     >);
 }
-#endif // CX_RUN_PARSER_TESTS
+#endif // META_RUN_PARSER_TESTS

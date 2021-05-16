@@ -1,4 +1,4 @@
-#include "cxregex.h"
+#include "metaregex.hpp"
 
 struct phone
 {
@@ -13,11 +13,11 @@ std::ostream &operator<<(std::ostream &out, phone const &p)
     return out << p.number;
 }
 
-template<cx::static_string const input>
+template<meta::static_string const input>
 constexpr auto parse()
 {
-    using test_number = cx::regex<R"([1-9]\d*(\.\d*)?(e(\+|-)?\d+(\.\d*)?)?)">;
-    using test_phone = cx::regex<R"((\(\+\d+\))? ?\d+-\d+(-\d+))">;
+    using test_number = meta::regex<R"([1-9]\d*(\.\d*)?(e(\+|-)?\d+(\.\d*)?)?)">;
+    using test_phone = meta::regex<R"((\(\+\d+\))? ?\d+-\d+(-\d+))">;
 
     constexpr std::string_view sv = static_cast<std::string_view>(input);
     if constexpr (test_number::match(sv))
@@ -37,7 +37,7 @@ constexpr auto parse()
 int main()
 {
     // Basic URL parsing
-    using url_regex = cx::regex<R"((\w+):\/\/(?:(?:(\w+)?(?::(\w+))?@)?([\w.]+)(?::(\d+))?)?(?:(\/[-/\w]+)?\?([\w=&]+))?)">;
+    using url_regex = meta::regex<R"((\w+):\/\/(?:(?:(\w+)?(?::(\w+))?@)?([\w.]+)(?::(\d+))?)?(?:(\/[-/\w]+)?\?([\w=&]+))?)">;
     constexpr std::string_view url = "https://username:password@hostname.com:8080/path/to/resource?id=12345";
     constexpr auto match_res = url_regex::match(url);
     std::cout << "Scheme:\t" << match_res.group<1>() << '\n';
@@ -57,7 +57,7 @@ int main()
     std::cout << str_value << '\n';
 
     // Lazy iteration over a collection of results
-    using word_regex = cx::regex<R"([-a-z']+)", cx::flag::i>;
+    using word_regex = meta::regex<R"([-a-z']+)", meta::flag::i>;
     constexpr std::string_view words = "Let's iterate over these words!";
     for (auto &&res : word_regex::find_all(words))
     {
@@ -66,7 +66,7 @@ int main()
     std::cout << '\n';
 
     // Using structured bindings
-    using date_regex = cx::regex<R"((\d+)\/(\d+)\/(\d+))">;
+    using date_regex = meta::regex<R"((\d+)\/(\d+)\/(\d+))">;
     constexpr std::string_view date = "07/08/2021";
     auto [day, month, year] = date_regex::match(date);
     std::cout << "Day: " << day << "\nMonth: " << month << "\nYear: " << year;

@@ -1,7 +1,7 @@
-#include "tests.h"
+#include "tests.hpp"
 
-#ifdef CX_RUN_FLAG_TESTS
-namespace cx::tests
+#ifdef META_RUN_FLAG_TESTS
+namespace meta::tests
 {
     static_assert(std::is_same_v<alias<flag::ignore_case>, flag::i>);
     static_assert(std::is_same_v<alias<flag::i>, flag::ignore_case>);
@@ -14,4 +14,4 @@ namespace cx::tests
     static_assert(std::is_same_v<alias<flag::greedy_alt>, flag::a>);
     static_assert(std::is_same_v<alias<flag::a>, flag::greedy_alt>);
 }
-#endif //CX_RUN_FLAG_TESTS
+#endif //META_RUN_FLAG_TESTS

@@ -1,8 +1,10 @@
-#include "tests.h"
+#include "tests.hpp"
 
-#ifdef CX_RUN_UTILITY_TESTS
-namespace cx::tests
+#ifdef META_RUN_UTILITY_TESTS
+namespace meta::tests
 {
+    using namespace ast;
+
     static_assert(std::is_same_v<int, first_t<int>>);
     static_assert(std::is_same_v<int, first_t<int, double, char, long, float>>);
     static_assert(std::is_same_v<float, last_t<int, double, char, long, float>>);
@@ -31,4 +33,4 @@ namespace cx::tests
     static_assert(is_terminal_v<alternation<character<'a'>>> == false);
     static_assert(is_terminal_v<sequence<character<'a'>>> == false);
 }
-#endif //CX_RUN_UTILITY_TESTS
+#endif //META_RUN_UTILITY_TESTS

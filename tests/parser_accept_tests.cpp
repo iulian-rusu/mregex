@@ -1,7 +1,7 @@
-#include "tests.h"
+#include "tests.hpp"
 
-#ifdef CX_RUN_PARSER_TESTS
-namespace cx::tests
+#ifdef META_RUN_PARSER_TESTS
+namespace meta::tests
 {
     namespace detail
     {
@@ -165,4 +165,4 @@ namespace cx::tests
     static_assert(detail::accepted<R"(((a|\\a)|(0|1|?2|3))?)"> == false);
     static_assert(detail::accepted<R"((((|\\a)|(0|1|2|3))?)*x?y+abcd|efgh((x|z)?t)+)"> == false);
 }
-#endif // CX_RUN_PARSER_TESTS
+#endif // META_RUN_PARSER_TESTS

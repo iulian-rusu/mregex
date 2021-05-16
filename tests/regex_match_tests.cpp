@@ -1,8 +1,8 @@
-#include "tests.h"
 #include <string_view>
+#include "tests.hpp"
 
-#ifdef CX_RUN_REGEX_TESTS
-namespace cx::tests
+#ifdef META_RUN_REGEX_TESTS
+namespace meta::tests
 {
     using namespace std::string_view_literals;
 
@@ -202,4 +202,4 @@ namespace cx::tests
     static_assert(regex<R"((a|ab)+x)">::with_flags<flag::greedy_alt>::match("aaaabcabx"sv) == false);
     static_assert(regex<R"((a|ab|abc)+x)">::with_flags<flag::greedy_alt>::match("x"sv) == false);
 }
-#endif // CX_RUN_REGEX_TESTS
+#endif // META_RUN_REGEX_TESTS

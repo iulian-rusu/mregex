@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
-project(cx)
+project(meta)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(cx main.cpp cx/grammar.h cx/utility/static_string.h cx/symbol.h cx/parser.h cx/utility/stack.h cxregex.h tests/parser_accept_tests.cpp tests/stack_tests.cpp tests/tests.h tests/meta_tests.cpp cx/ast.h tests/parser_ast_tests.cpp cx/regex.h cx/regex_result.h tests/regex_match_tests.cpp cx/esc_sequence.h cx/capture_indexer.h cx/ast_builder.h cx/utility/meta_helpers.h cx/capture_counter.h cx/utility/concepts.h cx/backref_builder.h cx/match_result.h cx/generator.h cx/atomic.h cx/match_context.h cx/capture.h cx/utility/tuple_helpers.h cx/regex_flags.h cx/astfwd.h cx/utility/char_helpers.h cx/match_params.h cx/quantifier_builder.h tests/flag_tests.cpp cx/regex_union.h cx/regex_base.h tests/regex_union_tests.cpp cx/atomic_counter.h cx/match_context_base.h cx/atomic_match_context.h)
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -fconcepts -O3")
+add_executable(meta main.cpp meta/grammar/grammar.hpp meta/utility/static_string.hpp meta/symbol.hpp meta/parser.hpp meta/utility/stack.hpp metaregex.hpp tests/parser_accept_tests.cpp tests/stack_tests.cpp tests/tests.hpp tests/meta_tests.cpp meta/ast/ast.hpp tests/parser_ast_tests.cpp meta/regex.hpp meta/regex_result.hpp tests/regex_match_tests.cpp meta/grammar/esc_rules.hpp meta/ast/capture_indexer.hpp meta/ast/ast_builder.hpp meta/utility/type_traits.hpp meta/ast/capture_counter.hpp meta/utility/concepts.hpp meta/grammar/backref_rules.hpp meta/ast/match_result.hpp meta/generator.hpp meta/ast/ast_traits.hpp meta/match_context.hpp meta/capture.hpp meta/utility/tuple_map.hpp meta/regex_flags.hpp meta/ast/astfwd.hpp meta/utility/char_traits.hpp meta/ast/match_params.hpp meta/grammar/quantifier_rules.hpp tests/flag_tests.cpp meta/regex_union.hpp meta/regex_base.hpp tests/regex_union_tests.cpp meta/ast/atomic_counter.hpp meta/match_context_base.hpp meta/atomic_match_context.hpp)
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -Wall -fconcepts -O3")

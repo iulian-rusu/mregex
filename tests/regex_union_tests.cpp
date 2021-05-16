@@ -1,8 +1,8 @@
-#include "tests.h"
 #include <string_view>
+#include "tests.hpp"
 
-#ifdef CX_RUN_REGEX_UNION_TESTS
-namespace cx::tests
+#ifdef META_RUN_REGEX_UNION_TESTS
+namespace meta::tests
 {
     using namespace std::string_view_literals;
 
@@ -15,7 +15,7 @@ namespace cx::tests
     static_assert(regex_union<R"((((((a))))))", R"(a(bc)d)", R"(a(bd(de))(fg))">::capture_count == 5);
     static_assert(regex_union<R"()", R"(a(bc)d)", R"(a(bd(de))(fg))", R"(((((?:((a)))))))">::capture_count == 5);
 
-    // Test cx::make_union helper metafunction
+    // Test meta::make_union helper metafunction
     static_assert(std::is_base_of_v<make_union<regex<R"()">>, regex_union<R"()">>);
     static_assert(std::is_base_of_v<make_union<regex<R"(ab?c+d{3})">>, regex_union<R"(ab?c+d{3})">>);
     static_assert(std::is_base_of_v<make_union<regex<R"(ab+)">, regex<R"(x|z*)">>, regex_union<R"(ab+)", R"(x|z*)">>);
@@ -53,4 +53,4 @@ namespace cx::tests
     static_assert(regex_union<R"(in)", R"(intern)", R"(internal)">::match("inter"sv) == false);
     static_assert(regex_union<R"(aB+b)", R"(A+)", R"(a?Ab?)">::match("aaaaaaa"sv) == false);
 }
-#endif // CX_RUN_REGEX_UNION_TESTS
+#endif // META_RUN_REGEX_UNION_TESTS

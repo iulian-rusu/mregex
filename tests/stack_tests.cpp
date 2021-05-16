@@ -1,7 +1,7 @@
-#include "tests.h"
+#include "tests.hpp"
 
-#ifdef CX_RUN_STACK_TESTS
-namespace cx::tests
+#ifdef META_RUN_STACK_TESTS
+namespace meta::tests
 {
     namespace detail
     {
@@ -21,7 +21,7 @@ namespace cx::tests
         using push_all_t = typename push_all<First, Rest ...>::type;
     }
 
-    // Top of an empty stack must be the type cx::empty_stack
+    // Top of an empty stack must be the type meta::empty_stack
     static_assert(std::is_same_v<empty_stack_marker, stack<>::top>);
     // Popping empty stack should do nothing
     static_assert(std::is_same_v<stack<>, stack<>::pop>);
@@ -39,4 +39,4 @@ namespace cx::tests
     static_assert(std::is_same_v<stack<char, int, float, double, long, long double, long long, short int>,
             detail::push_all_t<char, int, float, double, long, long double, long long, short int>>);
 }
-#endif //CX_RUN_STACK_TESTS
+#endif //META_RUN_STACK_TESTS
