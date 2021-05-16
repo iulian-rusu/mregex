@@ -1,7 +1,9 @@
 #ifndef CTR_AST_H
 #define CTR_AST_H
 
+#include <iostream>
 #include "utility.h"
+#include "result.h"
 
 /**
  * File with the building blocks of the Abstract Syntax Tree
@@ -26,7 +28,7 @@ namespace ctr
     struct character : terminal
     {
         static constexpr match_result
-        match(std::string_view input, int from, int, bool negated = false) noexcept
+        match(std::string_view input, std::size_t from, int, bool negated = false) noexcept
         {
             bool res = (C == input[from]) ^negated;
             return {res, res};
@@ -39,26 +41,24 @@ namespace ctr
         static constexpr std::size_t capture_count = count_captures<First, Rest ...>::capture_count;
 
         static constexpr match_result
-        match(std::string_view input, int from, int max_chars, bool negated = false) noexcept
+        match(std::string_view input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
         {
-            if (max_chars <= 0)
-                return {0, false};
-
             if constexpr (sizeof... (Rest) > 0)
             {
-                auto match_limit = max_chars;
+                std::size_t match_limit = max_chars;
                 match_result matched{0, false};
 
                 do
                 {
                     matched = First::match(input, from, match_limit, negated);
-                    if ( auto rest_matched = sequence<Rest ...>::match(input, from + matched.count, max_chars - matched.count, negated))
+                    if (!matched)
+                        return {0, false};
+                    if (auto rest_matched = sequence<Rest ...>::match(input, from + matched.count, max_chars - matched.count, negated))
                         return matched + rest_matched;
-                    if (matched.count == 1)
+                    if (matched.count == 0 || match_limit == 0)
                         return {0, false};
                     match_limit = matched.count - 1;
                 } while (matched);
-
                 return matched;
             }
             return First::match(input, from, max_chars, negated);
@@ -71,9 +71,9 @@ namespace ctr
         static constexpr std::size_t capture_count = count_captures<First, Rest ...>::capture_count;
 
         static constexpr match_result
-        match(std::string_view input, int from, int max_chars, bool negated = false) noexcept
+        match(std::string_view input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
         {
-            if (max_chars <= 0)
+            if (max_chars == 0)
                 return {0, false};
             if (auto matched = First::match(input, from, max_chars, negated))
             {
@@ -93,23 +93,22 @@ namespace ctr
         static constexpr std::size_t capture_count = count_captures<First, Rest ...>::capture_count;
 
         static constexpr match_result
-        match(std::string_view input, int from, int max_chars, bool negated = false) noexcept
+        match(std::string_view input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
         {
-            if (max_chars <= 0)
-                return {0, false};
+            if (max_chars == 0)
+                return {0, true};
 
             if (auto matched = First::match(input, from, max_chars, negated))
             {
-
+                if (matched.count > max_chars)
+                    return {0, true};
                 if constexpr (sizeof... (Rest) > 0)
                 {
                     matched += star<Rest ...>::match(input, from + matched.count, max_chars - matched.count, negated);
                 }
-                if (matched.count > max_chars)
-                    return {0, false};
                 return matched + match(input, from + matched.count, max_chars - matched.count, negated);
             }
-            return {0, false};
+            return {0, true};
         }
     };
 
@@ -122,7 +121,7 @@ namespace ctr
     struct digit : terminal
     {
         static constexpr match_result
-        match(std::string_view input, int from, int, bool negated = false) noexcept
+        match(std::string_view input, std::size_t from, std::size_t, bool negated = false) noexcept
         {
             bool res = ('0' <= input[from] && input[from] <= '9') ^negated;
             return {res, res};
@@ -132,7 +131,7 @@ namespace ctr
     struct lower : terminal
     {
         static constexpr match_result
-        match(std::string_view input, int from, int, bool negated = false) noexcept
+        match(std::string_view input, std::size_t from, std::size_t, bool negated = false) noexcept
         {
             bool res = ('a' <= input[from] && input[from] <= 'z') ^negated;
             return {res, res};
@@ -142,7 +141,7 @@ namespace ctr
     struct upper : terminal
     {
         static constexpr match_result
-        match(std::string_view input, int from, int, bool negated = false) noexcept
+        match(std::string_view input, std::size_t from, std::size_t, bool negated = false) noexcept
         {
             bool res = ('A' <= input[from] && input[from] <= 'Z') ^negated;
             return {res, res};
@@ -152,7 +151,7 @@ namespace ctr
     struct alnum : terminal
     {
         static constexpr match_result
-        match(std::string_view input, int from, int max_chars, bool negated = false) noexcept
+        match(std::string_view input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
         {
             if (auto res = digit::match(input, from, max_chars, negated)) return res;
             if (auto res = lower::match(input, from, max_chars, negated)) return res;
@@ -163,11 +162,12 @@ namespace ctr
     struct word : terminal
     {
         static constexpr match_result
-        match(std::string_view input, int from, int max_chars, bool negated = false) noexcept
+        match(std::string_view input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
         {
             if (auto res = alnum::match(input, from, max_chars, negated))
                 return res;
             bool res = (input[from] == '_') ^negated;
+            std::cout << res << '\n';
             return {res, res};
         }
     };
@@ -175,7 +175,7 @@ namespace ctr
     struct whitespace : terminal
     {
         static constexpr match_result
-        match(std::string_view input, int from, int, bool negated = false) noexcept
+        match(std::string_view input, std::size_t from, std::size_t, bool negated = false) noexcept
         {
             bool res = (input[from] == ' ' || input[from] == '\t' ||
                         input[from] == '\n' || input[from] == '\r' ||
@@ -188,7 +188,7 @@ namespace ctr
     struct hexa : terminal
     {
         static constexpr match_result
-        match(std::string_view input, int from, int max_chars, bool negated = false) noexcept
+        match(std::string_view input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
         {
             bool res = (digit::match(input, from, max_chars, negated).count ||
                         'A' <= input[from] && input[from] <= 'F' ||
@@ -202,8 +202,8 @@ namespace ctr
     {
         static constexpr std::size_t capture_count = S::capture_count;
 
-        static constexpr std::size_t
-        match(std::string_view input, int from, int max_chars, bool negated = false) noexcept
+        static constexpr match_result
+        match(std::string_view input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
         {
             return S::match(input, from, max_chars, !negated);
         }
@@ -215,7 +215,7 @@ namespace ctr
         static constexpr std::size_t capture_count = 1 + S::capture_count;
 
         static constexpr match_result
-        match(std::string_view input, int from, int max_chars, bool negated = false) noexcept
+        match(std::string_view input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
         {
             return S::match(input, from, max_chars, negated);
         }

@@ -3,10 +3,6 @@
 
 #include "static_string.h"
 #include "grammar.h"
-#include "symbol.h"
-#include "stack.h"
-#include "utility.h"
-#include "ast.h"
 
 namespace ctr
 {
@@ -15,7 +11,7 @@ namespace ctr
      *
      * @tparam pattern  The input to be parsed
      */
-    template<static_string pattern>
+    template<auto const pattern>
     struct parser
     {
         // helper struct that contains either a symbol::chr or symbol::epsilon based on the side of the index

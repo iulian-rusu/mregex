@@ -3,11 +3,12 @@
 
 int main()
 {
-    auto[count, matched] = ctr::match<"(abc)*x|hello world">("hello world");
+    std::string input = "The number 0xFF777 is in base 16";
+    auto[start, count, matched] = ctr::search<R"(0(x|X)(\h+)(h|H)?)">(input);
     if (matched)
     {
-        std::cout << "Success!\n";
-        std::cout << "Matched " << count << " characters\n";
+        std::cout << "Matched " << count << " characters: ";
+        std::cout << input.substr(start, count) << '\n';
     }
     else
     {

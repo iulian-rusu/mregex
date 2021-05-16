@@ -48,26 +48,6 @@ namespace ctr
     {
         static constexpr std::size_t capture_count = First::capture_count;
     };
-
-    struct match_result
-    {
-        int count;
-        bool matched;
-
-        constexpr explicit operator bool() const noexcept { return matched; }
-
-        constexpr match_result operator+(match_result const &other) const noexcept
-        {
-            return {count + other.count, matched || other.matched};
-        }
-
-        constexpr match_result &operator+=(match_result const &other) noexcept
-        {
-            count += other.count;
-            matched = matched || other.matched;
-            return *this;
-        }
-    };
 }
 
 #endif //CTR_UTILITY_H

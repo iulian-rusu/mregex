@@ -3,53 +3,56 @@
 #ifdef CTR_RUN_PARSER_TESTS
 namespace ctr::tests
 {
+    template<static_string const pattern>
+    static constexpr auto accepted = parser<pattern>::accepted;
+
     // test valid inputs
-    static_assert(parser<"">::accepted);
-    static_assert(parser<"a">::accepted);
-    static_assert(parser<"\\a">::accepted);
-    static_assert(parser<"\\D">::accepted);
-    static_assert(parser<"abcdefg">::accepted);
-    static_assert(parser<"(c)">::accepted);
-    static_assert(parser<"c?">::accepted);
-    static_assert(parser<"c*">::accepted);
-    static_assert(parser<"c+">::accepted);
-    static_assert(parser<"one|two">::accepted);
-    static_assert(parser<"(one|two)?">::accepted);
-    static_assert(parser<"(one|two)*">::accepted);
-    static_assert(parser<"(one|two)+">::accepted);
-    static_assert(parser<"(\\(+)*">::accepted);
-    static_assert(parser<"(\\++)*">::accepted);
-    static_assert(parser<"(\\?+)?">::accepted);
-    static_assert(parser<"(\\|+\\))?">::accepted);
-    static_assert(parser<"\\\\">::accepted);
-    static_assert(parser<"((a|\\a)|(d|\\d))?">::accepted);
-    static_assert(parser<"((a|\\a+)|(d?|\\d))*">::accepted);
-    static_assert(parser<"((a|\\a)|(0|1|2|3))?">::accepted);
-    static_assert(parser<"(((a|\\a)|(0|1|2|3))?)*x?y+abcd|efgh((x|z)?t)+">::accepted);
+    static_assert(accepted<"">);
+    static_assert(accepted<"a">);
+    static_assert(accepted<"\\a">);
+    static_assert(accepted<"\\D">);
+    static_assert(accepted<"abcdefg">);
+    static_assert(accepted<"(c)">);
+    static_assert(accepted<"c?">);
+    static_assert(accepted<"c*">);
+    static_assert(accepted<"c+">);
+    static_assert(accepted<"one|two">);
+    static_assert(accepted<"(one|two)?">);
+    static_assert(accepted<"(one|two)*">);
+    static_assert(accepted<"(one|two)+">);
+    static_assert(accepted<"(\\(+)*">);
+    static_assert(accepted<"(\\++)*">);
+    static_assert(accepted<"(\\?+)?">);
+    static_assert(accepted<"(\\|+\\))?">);
+    static_assert(accepted<"\\\\">);
+    static_assert(accepted<"((a|\\a)|(d|\\d))?">);
+    static_assert(accepted<"((a|\\a+)|(d?|\\d))*">);
+    static_assert(accepted<"((a|\\a)|(0|1|2|3))?">);
+    static_assert(accepted<"(((a|\\a)|(0|1|2|3))?)*x?y+abcd|efgh((x|z)?t)+">);
     // test invalid inputs
-    static_assert(parser<"(">::accepted == false);
-    static_assert(parser<")">::accepted == false);
-    static_assert(parser<"+">::accepted == false);
-    static_assert(parser<"?">::accepted == false);
-    static_assert(parser<"*">::accepted == false);
-    static_assert(parser<"|">::accepted == false);
-    static_assert(parser<"(+)">::accepted == false);
-    static_assert(parser<"(+)">::accepted == false);
-    static_assert(parser<"(?)">::accepted == false);
-    static_assert(parser<"(*)">::accepted == false);
-    static_assert(parser<"(()">::accepted == false);
-    static_assert(parser<"())">::accepted == false);
-    static_assert(parser<"(|)">::accepted == false);
-    static_assert(parser<"a|">::accepted == false);
-    static_assert(parser<"|a">::accepted == false);
-    static_assert(parser<"\\">::accepted == false);
-    static_assert(parser<"(a|)">::accepted == false);
-    static_assert(parser<"(|a)">::accepted == false);
-    static_assert(parser<"(+|-)">::accepted == false);
-    static_assert(parser<"(First|a)+)">::accepted == false);
-    static_assert(parser<"\\((First|a)+)">::accepted == false);
-    static_assert(parser<"((((((a)))))">::accepted == false);
-    static_assert(parser<"((((((a)))))\\)">::accepted == false);
+    static_assert(accepted<"("> == false);
+    static_assert(accepted<")"> == false);
+    static_assert(accepted<"+"> == false);
+    static_assert(accepted<"?"> == false);
+    static_assert(accepted<"*"> == false);
+    static_assert(accepted<"|"> == false);
+    static_assert(accepted<"(+)"> == false);
+    static_assert(accepted<"(+)"> == false);
+    static_assert(accepted<"(?)"> == false);
+    static_assert(accepted<"(*)"> == false);
+    static_assert(accepted<"(()"> == false);
+    static_assert(accepted<"())"> == false);
+    static_assert(accepted<"(|)"> == false);
+    static_assert(accepted<"a|"> == false);
+    static_assert(accepted<"|a"> == false);
+    static_assert(accepted<"\\"> == false);
+    static_assert(accepted<"(a|)"> == false);
+    static_assert(accepted<"(|a)"> == false);
+    static_assert(accepted<"(+|-)"> == false);
+    static_assert(accepted<"(First|a)+)"> == false);
+    static_assert(accepted<"\\((First|a)+)"> == false);
+    static_assert(accepted<"((((((a)))))"> == false);
+    static_assert(accepted<"((((((a)))))\\)"> == false);
 }
 #endif // CTR_RUN_PARSER_TESTS
 
