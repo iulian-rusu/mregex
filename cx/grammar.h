@@ -1,5 +1,5 @@
-#ifndef CTR_GRAMMAR_H
-#define CTR_GRAMMAR_H
+#ifndef CX_GRAMMAR_H
+#define CX_GRAMMAR_H
 
 #include <type_traits>
 #include "stack.h"
@@ -9,7 +9,7 @@
 /**
  * Namespace containing the rules for the grammar
  */
-namespace ctr::grammar
+namespace cx::grammar
 {
     // helper types defining decisions imposed by the grammar rules
     struct pop_input {};
@@ -692,4 +692,4 @@ namespace ctr::grammar
     template<typename A, typename B>
     using rule_t = typename rule<A, B>::type;
 }
-#endif //CTR_GRAMMAR_H
+#endif //CX_GRAMMAR_H

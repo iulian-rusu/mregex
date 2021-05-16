@@ -1,15 +1,15 @@
-#ifndef CTR_RESULT_H
-#define CTR_RESULT_H
+#ifndef CX_REGEX_RESULT_H
+#define CX_REGEX_RESULT_H
 
 /**
  * Defines data structures that encapsulate matching/searching results
  */
-namespace ctr
+namespace cx
 {
     struct match_result
     {
-        std::size_t count;
-        bool matched;
+        std::size_t count{};
+        bool matched{};
 
         constexpr explicit operator bool() const noexcept
         { return matched; }
@@ -29,8 +29,8 @@ namespace ctr
 
     struct search_result
     {
-        std::size_t start_pos;
-        std::size_t count;
+        std::size_t start_pos{};
+        std::size_t count{};
         bool matched;
 
         constexpr search_result(std::size_t start, match_result mr)
@@ -38,4 +38,4 @@ namespace ctr
     };
 }
 
-#endif //CTR_RESULT_H
+#endif //CX_REGEX_RESULT_H

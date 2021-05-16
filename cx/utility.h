@@ -1,10 +1,25 @@
-#ifndef CTR_UTILITY_H
-#define CTR_UTILITY_H
+#ifndef CX_UTILITY_H
+#define CX_UTILITY_H
 #include <type_traits>
 
-namespace ctr
+namespace cx
 {
-    // some utility metafunctions
+    // some utility structs and metafunctions
+    template <class T>
+    concept string_like = requires(T a, std::size_t index)
+    {
+        static_cast<char>(a[index]);
+        static_cast<std::size_t>(a.length());
+        a.begin();
+        a.end();
+    };
+
+    template<typename First, typename Second>
+    struct pair
+    {
+        using first = First;
+        using second = Second;
+    };
 
     template<typename First, typename ...>
     struct first
@@ -30,13 +45,6 @@ namespace ctr
     template<typename ... Elems>
     using last_t = typename last<Elems ...>::type;
 
-    template<typename First, typename Second>
-    struct pair
-    {
-        using first = First;
-        using second = Second;
-    };
-
     template<typename First, typename ... Rest>
     struct count_captures
     {
@@ -50,4 +58,4 @@ namespace ctr
     };
 }
 
-#endif //CTR_UTILITY_H
+#endif //CX_UTILITY_H

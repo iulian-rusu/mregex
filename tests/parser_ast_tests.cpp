@@ -1,7 +1,7 @@
 #include "tests.h"
 
-#ifdef CTR_RUN_PARSER_TESTS
-namespace ctr::tests
+#ifdef CX_RUN_PARSER_TESTS
+namespace cx::tests
 {
     template<static_string const pattern, typename AST>
     constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast, AST>;
@@ -63,4 +63,4 @@ namespace ctr::tests
             >
     >);
 }
-#endif // CTR_RUN_PARSER_TESTS
+#endif // CX_RUN_PARSER_TESTS

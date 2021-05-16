@@ -1,10 +1,10 @@
-#ifndef CTR_PARSER_H
-#define CTR_PARSER_H
+#ifndef CX_PARSER_H
+#define CX_PARSER_H
 
 #include "static_string.h"
 #include "grammar.h"
 
-namespace ctr
+namespace cx
 {
     /**
      * Generic constexpr LL(1) parser
@@ -197,4 +197,4 @@ namespace ctr
         static constexpr bool accepted = typename parse_result::first{};
     };
 }
-#endif //CTR_PARSER_H
+#endif //CX_PARSER_H

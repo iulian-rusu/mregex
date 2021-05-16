@@ -1,7 +1,7 @@
 #include "tests.h"
 
-#ifdef CTR_RUN_PARSER_TESTS
-namespace ctr::tests
+#ifdef CX_RUN_PARSER_TESTS
+namespace cx::tests
 {
     template<static_string const pattern>
     static constexpr auto accepted = parser<pattern>::accepted;
@@ -54,5 +54,5 @@ namespace ctr::tests
     static_assert(accepted<"((((((a)))))"> == false);
     static_assert(accepted<"((((((a)))))\\)"> == false);
 }
-#endif // CTR_RUN_PARSER_TESTS
+#endif // CX_RUN_PARSER_TESTS
 

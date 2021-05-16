@@ -1,9 +1,9 @@
-#ifndef CTR_STACK_H
-#define CTR_STACK_H
+#ifndef CX_STACK_H
+#define CX_STACK_H
 
 #include <type_traits>
 
-namespace ctr
+namespace cx
 {
     /**
      * Compile-time stack implementation
@@ -83,4 +83,4 @@ namespace ctr
         using pop = stack<>;
     };
 }
-#endif //CTR_STACK_H
+#endif //CX_STACK_H

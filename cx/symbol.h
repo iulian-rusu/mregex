@@ -1,10 +1,10 @@
-#ifndef CTR_SYMBOL_H
-#define CTR_SYMBOL_H
+#ifndef CX_SYMBOL_H
+#define CX_SYMBOL_H
 
 /**
  * Namespace with symbols used by the LL(1) parser to generate the Abstract Syntax Tree
  */
-namespace ctr::symbol
+namespace cx::symbol
 {
     // non-ast_update symbols
     struct epsilon {};
@@ -60,4 +60,4 @@ namespace ctr::symbol
     template<typename Symbol>
     constexpr bool is_ast_update_v = std::is_base_of_v<ast_update, Symbol>;
 }
-#endif //CTR_SYMBOL_H
+#endif //CX_SYMBOL_H

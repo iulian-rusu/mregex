@@ -1,7 +1,7 @@
 #include "tests.h"
 
-#ifdef CTR_RUN_STACK_TESTS
-namespace ctr::tests
+#ifdef CX_RUN_STACK_TESTS
+namespace cx::tests
 {
     template<typename First, typename ... Rest>
     struct push_all
@@ -15,7 +15,7 @@ namespace ctr::tests
         using type = stack<First>;
     };
 
-    // top of empty stack must be the type ctr::empty_stack
+    // top of empty stack must be the type cx::empty_stack
     static_assert(std::is_same_v<empty_stack, stack<>::top>);
     // popping empty stack should do nothing
     static_assert(std::is_same_v<stack<>, stack<>::pop>);
@@ -43,4 +43,4 @@ namespace ctr::tests
                     ::pop::pop::pop::pop
                     ::pop::pop::pop>);
 }
-#endif //CTR_RUN_STACK_TESTS
+#endif //CX_RUN_STACK_TESTS

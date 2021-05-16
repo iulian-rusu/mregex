@@ -1,16 +1,16 @@
-#ifndef CTR_STATIC_STRING_H
-#define CTR_STATIC_STRING_H
+#ifndef CX_STATIC_STRING_H
+#define CX_STATIC_STRING_H
 
 #include <cstddef>
 #include <array>
 #include <type_traits>
 
-namespace ctr
+namespace cx
 {
     /**
-     * Helper class that implements a constexpr string as a literal type
+     * Helper class that implements a constexpr static_string as a literal type
      *
-     * @tparam N    The length of the string (excluding '\0')
+     * @tparam N    The length of the static_string (excluding '\0')
      */
     template<std::size_t N>
     struct static_string
@@ -46,4 +46,4 @@ namespace ctr
     template<std::size_t N>
     static_string(static_string<N>) -> static_string<N>;
 }
-#endif //CTR_STATIC_STRING_H
+#endif //CX_STATIC_STRING_H

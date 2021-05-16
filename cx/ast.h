@@ -1,14 +1,13 @@
-#ifndef CTR_AST_H
-#define CTR_AST_H
+#ifndef CX_AST_H
+#define CX_AST_H
 
-#include <iostream>
 #include "utility.h"
-#include "result.h"
+#include "regex_result.h"
 
 /**
  * File with the building blocks of the Abstract Syntax Tree
  */
-namespace ctr
+namespace cx
 {
     struct terminal
     {
@@ -167,7 +166,6 @@ namespace ctr
             if (auto res = alnum::match(input, from, max_chars, negated))
                 return res;
             bool res = (input[from] == '_') ^negated;
-            std::cout << res << '\n';
             return {res, res};
         }
     };
@@ -221,4 +219,4 @@ namespace ctr
         }
     };
 }
-#endif //CTR_AST_H
+#endif //CX_AST_H
