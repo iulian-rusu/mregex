@@ -14,20 +14,22 @@ namespace cx
         static_assert(parser<pattern>::accepted, "syntax error in regular expression");
         using ast = typename parser<pattern>::ast;
 
-        template<string_like Str>
-        [[nodiscard]] static constexpr match_result match(Str const &input) noexcept
+        template<string_like SL>
+        [[nodiscard]] static constexpr auto match(SL &&input) noexcept
+        -> match_result
         {
             auto res = ast::match(input, 0, input.length());
             res.matched = res.count == input.length();
             return res;
         }
 
-        template<string_like Str>
-        [[nodiscard]] static constexpr search_result search(Str const &input, std::size_t start_pos = 0) noexcept
+        template<string_like SL>
+        [[nodiscard]] static constexpr auto search(SL &&input, std::size_t start_pos = 0) noexcept
+        -> search_result
         {
             if (start_pos >= input.length())
                 return search_result{start_pos, {0, false}};
-            if(auto res = ast::match(input, start_pos, input.length()))
+            if (auto res = ast::match(input, start_pos, input.length()))
                 return search_result{start_pos, res};
             return search(input, start_pos + 1);
         }
