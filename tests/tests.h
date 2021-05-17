@@ -8,6 +8,7 @@
 
 #ifdef CX_RUN_TESTS
 #define CX_RUN_PARSER_TESTS
+#define CX_RUN_REGEX_TESTS
 #define CX_RUN_STACK_TESTS
 #define CX_RUN_UTILITY_TESTS
 #endif

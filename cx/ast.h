@@ -73,9 +73,8 @@ namespace cx
         match(auto &&input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
         requires string_like<decltype(input)>
         {
-            if (max_chars == 0)
-                return {0, false};
-            if (auto matched = First::match(input, from, max_chars, negated))
+            auto matched = First::match(input, from, max_chars, negated);
+            if(matched && matched.count <= max_chars)
             {
                 return matched;
             }

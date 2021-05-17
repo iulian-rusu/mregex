@@ -19,7 +19,7 @@ namespace cx
         -> match_result
         {
             auto res = ast::match(input, 0, input.length());
-            res.matched = res.count == input.length();
+            res.matched = res.matched && (res.count == input.length());
             return res;
         }
 

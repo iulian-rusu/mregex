@@ -14,6 +14,9 @@ namespace cx
         constexpr explicit operator bool() const noexcept
         { return matched; }
 
+        constexpr bool operator==(bool b) const noexcept
+        { return matched == b; }
+
         constexpr match_result operator+(match_result const &other) const noexcept
         {
             return {count + other.count, matched || other.matched};
