@@ -136,6 +136,12 @@ namespace cx
             using type = typename Stack::template push<hexa>;
         };
 
+        template<typename C, typename Stack>
+        struct update_ast<symbol::make_wildcard, C, Stack>
+        {
+            using type = typename Stack::template push<wildcard>;
+        };
+
         template<typename C, typename First, typename ... Rest>
         struct update_ast<symbol::make_negated, C, stack<First, Rest ...>>
         {

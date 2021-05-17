@@ -52,6 +52,8 @@ namespace cx::symbol
 
     struct make_hexa: ast_update {};
 
+    struct make_wildcard: ast_update {};
+
     struct make_negated: ast_update {};
 
     struct make_capturing: ast_update {};

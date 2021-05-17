@@ -32,13 +32,16 @@ namespace cx::tests
     static_assert(regex<"(abc)+|tu ?(xyz ?)+">::match("tuxyzxyz"sv));
     static_assert(regex<"(abc)+|tu ?(xyz ?)+">::match("tuxyz xyz"sv));
     static_assert(regex<"(abc)+|tu ?(xyz ?)+">::match("tu xyz xyz "sv));
-    static_assert(regex<R"(\w+(.\w+)?@\w+(.\w+)?)">::match("example@gmail.com"sv));
-    static_assert(regex<R"(\w+(.\w+)?@\w+(.\w+)?)">::match("example.test@gmail.com"sv));
-    static_assert(regex<R"(\w+(.\w+)?@\w+(.\w+)?)">::match("cpp@regex"sv));
-    static_assert(regex<R"(\w+(.\w+)?@\w+(.\w+)?)">::match("abc123_321bca@gmail.com"sv));
+    static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("example@gmail.com"sv));
+    static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("example.test@gmail.com"sv));
+    static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("cpp@regex"sv));
+    static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("abc123_321bca@gmail.com"sv));
+    static_assert(regex<R"(\(.+\))">::match("(aaabb)"sv));
+    static_assert(regex<R"(\(\.+\))">::match("(...)"sv));
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("0x1234F"sv));
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("0X0h"sv));
-    static_assert(regex<R"(hello|salut|bonjour|привет)">::match("salut"sv));
+    static_assert(regex<".+">::match("this regex will match any input"sv));
+    static_assert(regex<"hello|salut|bonjour|привет">::match("salut"sv));
 
     // test non-matching inputs
     static_assert(regex<"">::match("t"sv) == false);
@@ -57,12 +60,13 @@ namespace cx::tests
     static_assert(regex<"(abc)+|tu ?(xyz)+">::match("xyz"sv) == false);
     static_assert(regex<"(abc)+|tu ?(xyz ?)+">::match("tuxyxyz"sv) == false);
     static_assert(regex<"(abc)+|tu ?(xyz ?)+">::match("tu xyz  xyz "sv) == false);
-    static_assert(regex<R"(\w+(.\w+)?@\w+(.\w+)?)">::match("exa.mp.le@gmail.com"sv) == false);
-    static_assert(regex<R"(\w+(.\w+)?@\w+(.\w+)?)">::match("example.test@gm.ail.com"sv) == false);
-    static_assert(regex<R"(\w+(.\w+)?@\w+(.\w+)?)">::match("cpp..@regex"sv) == false);
-    static_assert(regex<R"(\w+(.\w+)?@\w+(.\w+)?)">::match("abc123_321bca.gmail.com"sv) == false);
+    static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("exa.mp.le@gmail.com"sv) == false);
+    static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("example.test@gm.ail.com"sv) == false);
+    static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("cpp..@regex"sv) == false);
+    static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("abc123_321bca.gmail.com"sv) == false);
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("01234F"sv) == false);
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("X0h"sv) == false);
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("0x12345GFD"sv) == false);
+    static_assert(regex<"a.+">::match("this regex will match any input"sv) == false);
 }
 #endif // CX_RUN_REGEX_TESTS

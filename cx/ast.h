@@ -195,6 +195,16 @@ namespace cx
         }
     };
 
+    struct wildcard : terminal
+    {
+        static constexpr match_result
+        match(auto &&input, std::size_t from, std::size_t, bool negated = false) noexcept
+        {
+            bool res = (input[from] != '\n' && input[from] != '\r') ^ negated;
+            return {res, res};
+        }
+    };
+
     template<typename S>
     struct negated
     {

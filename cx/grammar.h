@@ -76,28 +76,6 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::start, character<'a'>>
-    {
-        using type = stack<
-                character<'a'>,
-                symbol::make_char,
-                symbol::mod,
-                symbol::seq,
-                symbol::alt>;
-    };
-
-    template<>
-    struct rule<symbol::start, character<'d'>>
-    {
-        using type = stack<
-                character<'d'>,
-                symbol::make_char,
-                symbol::mod,
-                symbol::seq,
-                symbol::alt>;
-    };
-
-    template<>
     struct rule<symbol::start, character<'|'>>
     {
         using type = reject;
@@ -108,7 +86,7 @@ namespace cx::grammar
     {
         using type = stack<
                 character<C>,
-                symbol::make_char,
+                decide_rule_t<C>,
                 symbol::mod,
                 symbol::seq,
                 symbol::alt
@@ -170,28 +148,6 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::alt0, character<'a'>>
-    {
-        using type = stack<
-                character<'a'>,
-                symbol::make_char,
-                symbol::mod,
-                symbol::seq,
-                symbol::alt>;
-    };
-
-    template<>
-    struct rule<symbol::alt0, character<'d'>>
-    {
-        using type = stack<
-                character<'d'>,
-                symbol::make_char,
-                symbol::mod,
-                symbol::seq,
-                symbol::alt>;
-    };
-
-    template<>
     struct rule<symbol::alt0, character<'|'>>
     {
         using type = reject;
@@ -202,7 +158,7 @@ namespace cx::grammar
     {
         using type = stack<
                 character<C>,
-                symbol::make_char,
+                decide_rule_t<C>,
                 symbol::mod,
                 symbol::seq,
                 symbol::alt
@@ -247,18 +203,6 @@ namespace cx::grammar
 
     template<>
     struct rule<symbol::alt, character<'\\'>>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct rule<symbol::alt, character<'a'>>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct rule<symbol::alt, character<'d'>>
     {
         using type = reject;
     };
@@ -460,18 +404,6 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::mod, character<'a'>>
-    {
-        using type = symbol::epsilon;
-    };
-
-    template<>
-    struct rule<symbol::mod, character<'d'>>
-    {
-        using type = symbol::epsilon;
-    };
-
-    template<>
     struct rule<symbol::mod, character<'|'>>
     {
         using type = symbol::epsilon;
@@ -536,26 +468,6 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::seq0, character<'a'>>
-    {
-        using type = stack<
-                character<'a'>,
-                symbol::make_char,
-                symbol::mod,
-                symbol::seq>;
-    };
-
-    template<>
-    struct rule<symbol::seq0, character<'d'>>
-    {
-        using type = stack<
-                character<'d'>,
-                symbol::make_char,
-                symbol::mod,
-                symbol::seq>;
-    };
-
-    template<>
     struct rule<symbol::seq0, character<'|'>>
     {
         using type = reject;
@@ -566,7 +478,7 @@ namespace cx::grammar
     {
         using type = stack<
                 character<C>,
-                symbol::make_char,
+                decide_rule_t<C>,
                 symbol::mod,
                 symbol::seq>;
     };
@@ -626,28 +538,6 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::seq, character<'a'>>
-    {
-        using type = stack<
-                character<'a'>,
-                symbol::make_char,
-                symbol::mod,
-                symbol::make_sequence,
-                symbol::seq>;
-    };
-
-    template<>
-    struct rule<symbol::seq, character<'d'>>
-    {
-        using type = stack<
-                character<'d'>,
-                symbol::make_char,
-                symbol::mod,
-                symbol::make_sequence,
-                symbol::seq>;
-    };
-
-    template<>
     struct rule<symbol::seq, character<'|'>>
     {
         using type = symbol::epsilon;
@@ -658,7 +548,7 @@ namespace cx::grammar
     {
         using type = stack<
                 character<C>,
-                symbol::make_char,
+                decide_rule_t<C>,
                 symbol::mod,
                 symbol::make_sequence,
                 symbol::seq>;

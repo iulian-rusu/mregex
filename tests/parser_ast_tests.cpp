@@ -10,6 +10,7 @@ namespace cx::tests
     static_assert(expected_ast<"a", character<'a'>>);
     static_assert(expected_ast<"\\a", alnum>);
     static_assert(expected_ast<"\\D", negated<digit>>);
+    static_assert(expected_ast<"a.?b", sequence<character<'a'>, optional<wildcard>, character<'b'>>>);
     static_assert(expected_ast<"(c)", capturing<character<'c'>>>);
     static_assert(expected_ast<"c?", optional<character<'c'>>>);
     static_assert(expected_ast<"c*", star<character<'c'>>>);

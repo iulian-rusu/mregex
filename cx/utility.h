@@ -55,6 +55,21 @@ namespace cx
     {
         static constexpr std::size_t capture_count = First::capture_count;
     };
+
+    template<auto C>
+    struct decide_rule
+    {
+        using type = symbol::make_char;
+    };
+
+    template<>
+    struct decide_rule<'.'>
+    {
+        using type = symbol::make_wildcard;
+    };
+
+    template<auto C>
+    using decide_rule_t = typename decide_rule<C>::type;
 }
 
 #endif //CX_UTILITY_H
