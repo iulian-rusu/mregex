@@ -38,6 +38,12 @@ namespace cx
 
         constexpr search_result(std::size_t start, match_result mr)
                 : start_pos(start), count(mr.count), matched(mr.matched) {}
+
+        constexpr explicit operator bool() const noexcept
+        { return matched; }
+
+        constexpr bool operator==(bool b) const noexcept
+        { return matched == b; }
     };
 }
 
