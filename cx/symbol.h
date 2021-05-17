@@ -6,7 +6,7 @@
  */
 namespace cx::symbol
 {
-    // non-ast_update symbols
+    // non-terminal symbols
     struct epsilon {};
 
     struct start {};
@@ -23,7 +23,7 @@ namespace cx::symbol
 
     struct seq {};
 
-    // tag to mark symbols that require AST updates
+    // symbols that require AST updates
     struct ast_update {};
 
     struct make_char: ast_update {};

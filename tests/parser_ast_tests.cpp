@@ -24,7 +24,7 @@ namespace cx::tests
             alternation<sequence<character<'a'>, character<'a'>>,
                     sequence<character<'b'>, character<'b'>>,
                     sequence<character<'c'>, character<'c'>>>>);
-    // make_alternation<make_optional<a>, b> simplifies to make_alternation<a, epsilon, b>
+    // alternation<optional<a>, b> simplifies to alternation<a, epsilon, b>
     static_assert(expected_ast<"a?|b|c", alternation<character<'a'>, epsilon, character<'b'>, character<'c'>>>);
     // slightly more complex AST example
     static_assert(expected_ast<"((tuv)?b+)*|xy",

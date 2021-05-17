@@ -15,7 +15,7 @@ namespace cx::tests
         using type = stack<First>;
     };
 
-    // top of empty stack must be the type cx::empty_stack
+    // top of an empty stack must be the type cx::empty_stack
     static_assert(std::is_same_v<empty_stack, stack<>::top>);
     // popping empty stack should do nothing
     static_assert(std::is_same_v<stack<>, stack<>::pop>);
@@ -27,20 +27,7 @@ namespace cx::tests
     static_assert(std::is_same_v<stack<double, char, int>, stack<>::push<int>::push<char>::push<double>>);
     // push three types and pop two
     static_assert(std::is_same_v<stack<int>, stack<>::push<int>::push<char>::push<double>::pop::pop>);
-    // pushing a stack on the stack must yield the make_sequence of two stacks
+    // pushing a stack on the stack must yield the concatenation of two stacks
     static_assert(std::is_same_v<stack<double, int, long, char>, stack<long, char>::push<stack<double, int>>>);
-    // pushing and popping more elements
-    static_assert(std::is_same_v<stack<double>,
-            typename push_all<
-                    int, int, int, int,
-                    int, int, int, int,
-                    int, int, int, int,
-                    int, int, int, int,
-                    short, long, char, double>::type
-                    ::pop::pop::pop::pop
-                    ::pop::pop::pop::pop
-                    ::pop::pop::pop::pop
-                    ::pop::pop::pop::pop
-                    ::pop::pop::pop>);
 }
 #endif //CX_RUN_STACK_TESTS

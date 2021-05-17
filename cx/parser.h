@@ -191,9 +191,8 @@ namespace cx
         };
 
         using parse_result = typename parse<0, stack<>, stack<symbol::start>>::type;
-        using ast_stack = typename parse_result::second;
-        using ast = std::conditional_t<std::is_same_v<empty_stack, typename ast_stack::top>,
-                epsilon, typename ast_stack::top>;
+        using stack_top = typename parse_result::second::top;
+        using ast = std::conditional_t<std::is_same_v<empty_stack, stack_top>, epsilon, stack_top>;
         static constexpr bool accepted = typename parse_result::first{};
     };
 }

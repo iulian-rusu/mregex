@@ -4,8 +4,7 @@
 
 namespace cx
 {
-    // some utility structs and metafunctions
-    template <class T>
+    template <typename T>
     concept string_like = requires(T a, std::size_t index)
     {
         static_cast<char>(a[index]);

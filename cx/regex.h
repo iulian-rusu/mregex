@@ -4,7 +4,7 @@
 #include "parser.h"
 
 /**
- * Defines a regex type used to search/match input static_string-like objects
+ * Defines a regex type used to search/match input string-like objects
  */
 namespace cx
 {
