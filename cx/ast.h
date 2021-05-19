@@ -27,7 +27,7 @@ namespace cx
     struct character : terminal
     {
         static constexpr match_result
-        match(auto &&input, std::size_t from, int, bool negated = false) noexcept
+        match(auto const &input, std::size_t from, int, bool negated = false) noexcept
         {
             bool res = (C == input[from]) ^negated;
             return {res, res};
@@ -40,7 +40,7 @@ namespace cx
         static constexpr std::size_t capture_count = count_captures<First, Rest ...>::capture_count;
 
         static constexpr match_result
-        match(auto &&input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
+        match(auto const &input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
         {
             if constexpr (sizeof... (Rest) > 0)
             {
@@ -70,8 +70,7 @@ namespace cx
         static constexpr std::size_t capture_count = count_captures<First, Rest ...>::capture_count;
 
         static constexpr match_result
-        match(auto &&input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
-        requires string_like<decltype(input)>
+        match(auto const &input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
         {
             auto matched = First::match(input, from, max_chars, negated);
             if(matched && matched.count <= max_chars)
@@ -92,7 +91,7 @@ namespace cx
         static constexpr std::size_t capture_count = count_captures<First, Rest ...>::capture_count;
 
         static constexpr match_result
-        match(auto &&input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
+        match(auto const &input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
         {
             if (max_chars == 0)
                 return {0, true};
@@ -120,7 +119,7 @@ namespace cx
     struct digit : terminal
     {
         static constexpr match_result
-        match(auto &&input, std::size_t from, std::size_t, bool negated = false) noexcept
+        match(auto const &input, std::size_t from, std::size_t, bool negated = false) noexcept
         {
             bool res = ('0' <= input[from] && input[from] <= '9') ^negated;
             return {res, res};
@@ -130,7 +129,7 @@ namespace cx
     struct lower : terminal
     {
         static constexpr match_result
-        match(auto &&input, std::size_t from, std::size_t, bool negated = false) noexcept
+        match(auto const &input, std::size_t from, std::size_t, bool negated = false) noexcept
         {
             bool res = ('a' <= input[from] && input[from] <= 'z') ^negated;
             return {res, res};
@@ -140,7 +139,7 @@ namespace cx
     struct upper : terminal
     {
         static constexpr match_result
-        match(auto &&input, std::size_t from, std::size_t, bool negated = false) noexcept
+        match(auto const &input, std::size_t from, std::size_t, bool negated = false) noexcept
         {
             bool res = ('A' <= input[from] && input[from] <= 'Z') ^negated;
             return {res, res};
@@ -150,7 +149,7 @@ namespace cx
     struct alnum : terminal
     {
         static constexpr match_result
-        match(auto &&input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
+        match(auto const &input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
         {
             if (auto res = digit::match(input, from, max_chars, negated)) return res;
             if (auto res = lower::match(input, from, max_chars, negated)) return res;
@@ -161,7 +160,7 @@ namespace cx
     struct word : terminal
     {
         static constexpr match_result
-        match(auto &&input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
+        match(auto const &input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
         {
             if (auto res = alnum::match(input, from, max_chars, negated))
                 return res;
@@ -173,7 +172,7 @@ namespace cx
     struct whitespace : terminal
     {
         static constexpr match_result
-        match(auto &&input, std::size_t from, std::size_t, bool negated = false) noexcept
+        match(auto const &input, std::size_t from, std::size_t, bool negated = false) noexcept
         {
             bool res = (input[from] == ' ' || input[from] == '\t' ||
                         input[from] == '\n' || input[from] == '\r' ||
@@ -186,7 +185,7 @@ namespace cx
     struct hexa : terminal
     {
         static constexpr match_result
-        match(auto &&input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
+        match(auto const &input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
         {
             bool res = (digit::match(input, from, max_chars, negated).count ||
                         'A' <= input[from] && input[from] <= 'F' ||
@@ -198,7 +197,7 @@ namespace cx
     struct wildcard : terminal
     {
         static constexpr match_result
-        match(auto &&input, std::size_t from, std::size_t, bool negated = false) noexcept
+        match(auto const &input, std::size_t from, std::size_t, bool negated = false) noexcept
         {
             bool res = (input[from] != '\n' && input[from] != '\r') ^ negated;
             return {res, res};
@@ -211,7 +210,7 @@ namespace cx
         static constexpr std::size_t capture_count = S::capture_count;
 
         static constexpr match_result
-        match(auto &&input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
+        match(auto const &input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
         {
             return S::match(input, from, max_chars, !negated);
         }
@@ -223,7 +222,7 @@ namespace cx
         static constexpr std::size_t capture_count = 1 + S::capture_count;
 
         static constexpr match_result
-        match(auto &&input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
+        match(auto const &input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
         {
             return S::match(input, from, max_chars, negated);
         }

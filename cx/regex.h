@@ -15,7 +15,7 @@ namespace cx
         using ast = typename parser<pattern>::ast;
 
         template<string_like SL>
-        [[nodiscard]] static constexpr auto match(SL &&input) noexcept
+        [[nodiscard]] static constexpr auto match(SL const &input) noexcept
         -> match_result
         {
             auto res = ast::match(input, 0, input.length());
@@ -24,7 +24,7 @@ namespace cx
         }
 
         template<string_like SL>
-        [[nodiscard]] static constexpr auto search(SL &&input, std::size_t start_pos = 0) noexcept
+        [[nodiscard]] static constexpr auto search(SL const &input, std::size_t start_pos = 0) noexcept
         -> search_result
         {
             if (start_pos >= input.length())
