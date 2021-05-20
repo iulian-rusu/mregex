@@ -29,7 +29,7 @@ namespace cx
         static constexpr match_result
         match(auto const &input, std::size_t from, int, bool negated = false) noexcept
         {
-            bool res = (C == input[from]) ^negated;
+            bool res = from < input.length() && (C == input[from]) ^negated;
             return {res, res};
         }
     };
@@ -121,7 +121,7 @@ namespace cx
         static constexpr match_result
         match(auto const &input, std::size_t from, std::size_t, bool negated = false) noexcept
         {
-            bool res = ('0' <= input[from] && input[from] <= '9') ^negated;
+            bool res = (from < input.length() && '0' <= input[from] && input[from] <= '9') ^negated;
             return {res, res};
         }
     };
@@ -131,7 +131,7 @@ namespace cx
         static constexpr match_result
         match(auto const &input, std::size_t from, std::size_t, bool negated = false) noexcept
         {
-            bool res = ('a' <= input[from] && input[from] <= 'z') ^negated;
+            bool res = (from < input.length() && 'a' <= input[from] && input[from] <= 'z') ^negated;
             return {res, res};
         }
     };
@@ -141,7 +141,7 @@ namespace cx
         static constexpr match_result
         match(auto const &input, std::size_t from, std::size_t, bool negated = false) noexcept
         {
-            bool res = ('A' <= input[from] && input[from] <= 'Z') ^negated;
+            bool res = (from < input.length() && 'A' <= input[from] && input[from] <= 'Z') ^negated;
             return {res, res};
         }
     };
@@ -164,7 +164,7 @@ namespace cx
         {
             if (auto res = alnum::match(input, from, max_chars, negated))
                 return res;
-            bool res = (input[from] == '_') ^negated;
+            bool res = (from < input.length() && input[from] == '_') ^negated;
             return {res, res};
         }
     };
@@ -174,9 +174,10 @@ namespace cx
         static constexpr match_result
         match(auto const &input, std::size_t from, std::size_t, bool negated = false) noexcept
         {
-            bool res = (input[from] == ' ' || input[from] == '\t' ||
+            bool res = (from < input.length() &&
+                        (input[from] == ' ' || input[from] == '\t' ||
                         input[from] == '\n' || input[from] == '\r' ||
-                        input[from] == '\f' || input[from] == '\x0B') ^negated;
+                        input[from] == '\f' || input[from] == '\x0B')) ^negated;
             return {res, res};
         }
     };
@@ -199,7 +200,7 @@ namespace cx
         static constexpr match_result
         match(auto const &input, std::size_t from, std::size_t, bool negated = false) noexcept
         {
-            bool res = (input[from] != '\n' && input[from] != '\r') ^ negated;
+            bool res = (from < input.length() && input[from] != '\n' && input[from] != '\r') ^ negated;
             return {res, res};
         }
     };

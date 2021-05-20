@@ -16,7 +16,6 @@ namespace cx
     struct static_string
     {
         char buffer[N]{};
-        static constexpr auto length = N;
 
         constexpr static_string(char const (&str)[N+1]) noexcept
         {
@@ -32,6 +31,26 @@ namespace cx
             {
                 buffer[i] = other.buffer[i];
             }
+        }
+
+        constexpr auto length() const noexcept
+        {
+            return N;
+        }
+
+        constexpr auto begin() noexcept
+        {
+            return buffer;
+        }
+
+        constexpr auto end() noexcept
+        {
+            return buffer + N;
+        }
+
+        constexpr auto substr(std::size_t from, std::size_t count) const noexcept
+        {
+            return std::string_view(buffer + from, count);
         }
 
         constexpr char operator[](std::size_t i) const noexcept

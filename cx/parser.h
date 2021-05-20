@@ -15,7 +15,7 @@ namespace cx
     struct parser
     {
         // helper struct that contains either a symbol::chr or symbol::epsilon based on the side of the index
-        template<std::size_t I, bool in_range = I < pattern.length>
+        template<std::size_t I, bool in_range = I < pattern.length()>
         struct character_at
         {
             using type = character<pattern[I]>;

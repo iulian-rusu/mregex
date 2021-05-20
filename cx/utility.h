@@ -11,6 +11,7 @@ namespace cx
         static_cast<std::size_t>(a.length());
         a.begin();
         a.end();
+        a.substr(index, index);
     };
 
     template<typename First, typename Second>
