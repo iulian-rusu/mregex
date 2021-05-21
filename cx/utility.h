@@ -1,11 +1,13 @@
 #ifndef CX_UTILITY_H
 #define CX_UTILITY_H
+
 #include <type_traits>
 
 namespace cx
 {
-    template <typename T>
-    concept string_like = requires(T a, std::size_t index)
+    template<typename T>
+    concept string_like =
+    requires(T a, std::size_t index)
     {
         static_cast<char>(a[index]);
         static_cast<std::size_t>(a.length());
@@ -71,6 +73,8 @@ namespace cx
 
     template<auto C>
     using decide_rule_t = typename decide_rule<C>::type;
+
+
 }
 
 #endif //CX_UTILITY_H

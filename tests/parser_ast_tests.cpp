@@ -11,12 +11,13 @@ namespace cx::tests
     static_assert(expected_ast<"\\a", alnum>);
     static_assert(expected_ast<"\\D", negated<digit>>);
     static_assert(expected_ast<"a.?b", sequence<character<'a'>, optional<wildcard>, character<'b'>>>);
-    static_assert(expected_ast<"(c)", capturing<character<'c'>>>);
+    static_assert(expected_ast<"(c)", capturing<1, character<'c'>>>);
+    static_assert(expected_ast<"((c))(e)", sequence<capturing<2, capturing<1, character<'c'>>>, capturing<3, character<'e'>>>>);
     static_assert(expected_ast<"c?", optional<character<'c'>>>);
     static_assert(expected_ast<"c*", star<character<'c'>>>);
     static_assert(expected_ast<"c+", plus<character<'c'>>>);
-    static_assert(expected_ast<"(\\(+)*", star<capturing<plus<character<'('>>>>>);
-    static_assert(expected_ast<"(\\++)*", star<capturing<plus<character<'+'>>>>>);
+    static_assert(expected_ast<"(\\(+)*", star<capturing<1, plus<character<'('>>>>>);
+    static_assert(expected_ast<"(\\++)*", star<capturing<1, plus<character<'+'>>>>>);
     static_assert(expected_ast<"\\\\", character<'\\'>>);
     static_assert(expected_ast<"\\(?x+", sequence<optional<character<'('>>, plus<character<'x'>>>>);
     static_assert(expected_ast<"abc", sequence<character<'a'>, character<'b'>, character<'c'>>>);
@@ -34,13 +35,13 @@ namespace cx::tests
                 star
                 <
                     capturing
-                    <
+                    <   2,
                         sequence
                         <
                             optional
                             <
                                 capturing
-                                <
+                                <   1,
                                     sequence
                                     <
                                         character<'t'>,

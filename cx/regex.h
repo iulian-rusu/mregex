@@ -13,25 +13,35 @@ namespace cx
     {
         static_assert(parser<pattern>::accepted, "syntax error in regular expression");
         using ast = typename parser<pattern>::ast;
+        static constexpr auto capture_count = ast::capture_count;
 
         template<string_like SL>
         [[nodiscard]] static constexpr auto match(SL const &input) noexcept
-        -> match_result
+        -> capturing_result<capture_count>
         {
-            auto res = ast::match(input, 0, input.length());
+            capture_storage<capture_count> captures;
+            auto res = ast::template match<capture_count>(input, 0, input.length(), captures);
             res.matched = res.matched && (res.count == input.length());
-            return res;
+            std::get<0>(captures) = capture<0>{0, res.count};
+            return {res.matched, captures, input};
         }
 
         template<string_like SL>
         [[nodiscard]] static constexpr auto search(SL const &input, std::size_t start_pos = 0) noexcept
-        -> search_result
+        -> capturing_result<capture_count>
         {
-            if (start_pos >= input.length())
-                return search_result{start_pos, {0, false}};
-            if (auto res = ast::match(input, start_pos, input.length()))
-                return search_result{start_pos, res};
-            return search(input, start_pos + 1);
+            capture_storage<capture_count> captures;
+            while (start_pos < input.length())
+            {
+                auto res = ast::template match<capture_count>(input, start_pos, input.length(), captures);
+                if (res)
+                {
+                    std::get<0>(captures) = capture<0>{start_pos, res.count};
+                    return {res.matched, captures, input};
+                }
+                ++start_pos;
+            }
+            return {false, captures, input};
         }
     };
 
