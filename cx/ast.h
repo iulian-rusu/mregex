@@ -9,31 +9,6 @@
  */
 namespace cx
 {
-    struct terminal
-    {
-        static constexpr std::size_t capture_count = 0;
-    };
-
-    struct epsilon : terminal
-    {
-        static constexpr match_result
-        match(...) noexcept
-        {
-            return {0, true};
-        }
-    };
-
-    template<auto C>
-    struct character : terminal
-    {
-        static constexpr match_result
-        match(auto const &input, std::size_t from, int, bool negated = false) noexcept
-        {
-            bool res = from < input.length() && (C == input[from]) ^negated;
-            return {res, res};
-        }
-    };
-
     template<typename First, typename ... Rest>
     struct sequence
     {
@@ -110,61 +85,28 @@ namespace cx
         }
     };
 
-    template<typename T>
-    using optional = alternation<T, epsilon>;
-
-    template<typename T>
-    using plus = sequence<T, star<T>>;
-
-    struct digit : terminal
+    struct terminal
     {
+        static constexpr std::size_t capture_count = 0;
+    };
+
+    struct epsilon : terminal
+    {
+        // epsilon always matches anything and consumes no characters
         static constexpr match_result
-        match(auto const &input, std::size_t from, std::size_t, bool negated = false) noexcept
+        match(...) noexcept
         {
-            bool res = (from < input.length() && '0' <= input[from] && input[from] <= '9') ^negated;
-            return {res, res};
+            return {0, true};
         }
     };
 
-    struct lower : terminal
+    template<auto C>
+    struct character : terminal
     {
         static constexpr match_result
-        match(auto const &input, std::size_t from, std::size_t, bool negated = false) noexcept
+        match(auto const &input, std::size_t from, int, bool negated = false) noexcept
         {
-            bool res = (from < input.length() && 'a' <= input[from] && input[from] <= 'z') ^negated;
-            return {res, res};
-        }
-    };
-
-    struct upper : terminal
-    {
-        static constexpr match_result
-        match(auto const &input, std::size_t from, std::size_t, bool negated = false) noexcept
-        {
-            bool res = (from < input.length() && 'A' <= input[from] && input[from] <= 'Z') ^negated;
-            return {res, res};
-        }
-    };
-
-    struct alnum : terminal
-    {
-        static constexpr match_result
-        match(auto const &input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
-        {
-            if (auto res = digit::match(input, from, max_chars, negated)) return res;
-            if (auto res = lower::match(input, from, max_chars, negated)) return res;
-            return upper::match(input, from, max_chars, negated);
-        }
-    };
-
-    struct word : terminal
-    {
-        static constexpr match_result
-        match(auto const &input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
-        {
-            if (auto res = alnum::match(input, from, max_chars, negated))
-                return res;
-            bool res = (from < input.length() && input[from] == '_') ^negated;
+            bool res = (from < input.length() && C == input[from]) ^negated;
             return {res, res};
         }
     };
@@ -176,21 +118,8 @@ namespace cx
         {
             bool res = (from < input.length() &&
                         (input[from] == ' ' || input[from] == '\t' ||
-                        input[from] == '\n' || input[from] == '\r' ||
-                        input[from] == '\f' || input[from] == '\x0B')) ^negated;
-            return {res, res};
-        }
-    };
-
-
-    struct hexa : terminal
-    {
-        static constexpr match_result
-        match(auto const &input, std::size_t from, std::size_t max_chars, bool negated = false) noexcept
-        {
-            bool res = (digit::match(input, from, max_chars, negated).count ||
-                        'A' <= input[from] && input[from] <= 'F' ||
-                        'a' <= input[from] && input[from] <= 'f') ^negated;
+                         input[from] == '\n' || input[from] == '\r' ||
+                         input[from] == '\f' || input[from] == '\x0B')) ^negated;
             return {res, res};
         }
     };
@@ -205,6 +134,37 @@ namespace cx
         }
     };
 
+    template<auto A, auto B>
+    struct range : terminal
+    {
+        static_assert(A < B, "invalid range parameters");
+        static constexpr match_result
+        match(auto const &input, std::size_t from, int, bool negated = false) noexcept
+        {
+            bool res = (from < input.length() && A <= input[from] && input[from] <= B) ^negated;
+            return {res, res};
+        }
+    };
+
+    template<typename T>
+    using optional = alternation<T, epsilon>;
+
+    template<typename T>
+    using plus = sequence<T, star<T>>;
+
+    using digit = range<'0', '9'>;
+
+    using lower = range<'a', 'z'>;
+
+    using upper = range<'A', 'Z'>;
+
+    using alnum = alternation<range<'A', 'z'>, digit>;
+
+    using word = alternation<range<'A', 'z'>, digit, character<'_'>>;
+
+    using hexa = alternation<digit, range<'a', 'f'>, range<'A', 'F'>>;
+
+    // decorators for AST nodes
     template<typename S>
     struct negated
     {
