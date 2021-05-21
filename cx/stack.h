@@ -8,7 +8,7 @@ namespace cx
     /**
      * Compile-time stack implementation
      *
-     * @tparam Elems    First variadic pack of types - the elemets on the stack
+     * @tparam Elems    Inner variadic pack of types - the elemets on the stack
      */
     template<typename ... Elems>
     struct stack

@@ -49,8 +49,8 @@ namespace cx::tests
     static_assert(accepted<"(a|)"> == false);
     static_assert(accepted<"(|a)"> == false);
     static_assert(accepted<"(+|-)"> == false);
-    static_assert(accepted<"(First|a)+)"> == false);
-    static_assert(accepted<"\\((First|a)+)"> == false);
+    static_assert(accepted<"(Inner|a)+)"> == false);
+    static_assert(accepted<"\\((Inner|a)+)"> == false);
     static_assert(accepted<"((((((a)))))"> == false);
     static_assert(accepted<"((((((a)))))\\)"> == false);
 }
