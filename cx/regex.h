@@ -23,7 +23,7 @@ namespace cx
             auto res = ast::template match<capture_count>(input, 0, input.length(), captures);
             res.matched = res.matched && (res.count == input.length());
             std::get<0>(captures) = capture<0>{0, res.count};
-            return {res.matched, captures, input};
+            return capturing_result{res.matched, std::move(captures), input};
         }
 
         template<string_like SL>
@@ -37,11 +37,11 @@ namespace cx
                 if (res)
                 {
                     std::get<0>(captures) = capture<0>{start_pos, res.count};
-                    return {res.matched, captures, input};
+                    return capturing_result{res.matched, std::move(captures), input};
                 }
                 ++start_pos;
             }
-            return {false, captures, input};
+            return capturing_result{false, std::move(captures), input};
         }
     };
 

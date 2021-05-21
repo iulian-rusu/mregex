@@ -24,7 +24,7 @@ namespace cx
     };
 
     /**
-     * Defines recursively a std::tuple with N+1 elements of type capture
+     * Defines recursively a std::tuple with N + 1 elements of type capture
      */
     template<std::size_t N>
     struct alloc_capture_storage
@@ -79,13 +79,15 @@ namespace cx
      * @tparam N    The number of capture groups (without the implicit <0> group)
      */
     template<std::size_t N>
-    struct capturing_result : capture_storage<N>
+    struct capturing_result
     {
         bool matched{};
+        capture_storage<N> captures;
         std::string_view input;
 
-        constexpr capturing_result(const bool m, capture_storage<N> const& cs, std::string_view sv)
-        : capture_storage<N>(cs), matched(m), input(sv) {}
+        template<typename Storage, typename = std::enable_if_t<std::is_convertible_v<capture_storage<N>, Storage>>>
+        constexpr capturing_result(bool m, Storage &&cs, std::string_view sv)
+        : captures(std::forward<Storage>(cs)), matched(m), input(sv) {}
 
         constexpr explicit operator bool() const noexcept
         {
@@ -98,12 +100,15 @@ namespace cx
         }
 
         template<std::size_t ID>
-        constexpr decltype(auto) get() noexcept
+        constexpr decltype(auto) get() const noexcept
         {
             static_assert(ID <= N, "capture group does not exist");
-            return std::get<ID>(*this).evaluate(input);
+            return std::get<ID>(captures).evaluate(input);
         }
     };
+
+    template<typename Storage>
+    capturing_result(bool, Storage &&cs, std::string_view sv) -> capturing_result<std::tuple_size_v<Storage> - 1>;
 }
 
 #endif //CX_REGEX_RESULT_H

@@ -7,13 +7,13 @@ namespace cx
 {
     template<typename T>
     concept string_like =
-    requires(T a, std::size_t index)
+    requires(T s, std::size_t index)
     {
-        static_cast<char>(a[index]);
-        static_cast<std::size_t>(a.length());
-        a.begin();
-        a.end();
-        a.substr(index, index);
+        static_cast<char>(s[index]);
+        static_cast<std::size_t>(s.length());
+        s.begin();
+        s.end();
+        s.substr(index, index);
     };
 
     template<typename First, typename Second>

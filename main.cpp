@@ -31,7 +31,7 @@ constexpr auto parse()
     }
     else
     {
-        return std::string(std::string(sv));
+        return std::string(sv);
     }
 }
 
@@ -49,9 +49,9 @@ int main()
     // extracting data with capture groups
     using date_regex = cx::regex<R"((\d+) ?- ?(\a+) ?- ?(\d+))">;
     std::string_view date_sv = "Today is 05-april-2002!";
-    auto m = date_regex::search(date_sv);
-    std::cout << "Date:\t" << m.get<0>() << '\n';
-    std::cout << "Day:\t" << m.get<1>() << '\n';
-    std::cout << "Month:\t" << m.get<2>() << '\n';
-    std::cout << "Year:\t" << m.get<3>() << '\n';
+    auto res = date_regex::search(date_sv);
+    std::cout << "Date:\t" << res.get<0>() << '\n';
+    std::cout << "Day:\t" << res.get<1>() << '\n';
+    std::cout << "Month:\t" << res.get<2>() << '\n';
+    std::cout << "Year:\t" << res.get<3>() << '\n';
 }
