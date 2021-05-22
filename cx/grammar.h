@@ -27,6 +27,19 @@ namespace cx::grammar
     };
 
     // specialized rules for specific inputs
+
+    template<>
+    struct rule<symbol::start, character<'['>>
+    {
+        using type = stack<
+                character<'['>,
+                symbol::set_begin,
+                character<']'>,
+                symbol::mod,
+                symbol::seq,
+                symbol::alt>;
+    };
+
     template<>
     struct rule<symbol::start, character<'('>>
     {
@@ -37,7 +50,7 @@ namespace cx::grammar
                 symbol::make_capturing,
                 symbol::mod,
                 symbol::seq,
-                symbol::alt>; // this rule pushes a set of symbols on the stack
+                symbol::alt>;
     };
 
     template<>
@@ -97,6 +110,18 @@ namespace cx::grammar
     struct rule<symbol::start, symbol::epsilon>
     {
         using type = symbol::epsilon;
+    };
+
+    template<>
+    struct rule<symbol::alt0, character<'['>>
+    {
+        using type = stack<
+                character<'['>,
+                symbol::set_begin,
+                character<']'>,
+                symbol::mod,
+                symbol::seq,
+                symbol::alt>;
     };
 
     template<>
@@ -362,6 +387,12 @@ namespace cx::grammar
     };
 
     template<>
+    struct rule<symbol::mod, character<'['>>
+    {
+        using type = symbol::epsilon;
+    };
+
+    template<>
     struct rule<symbol::mod, character<'('>>
     {
         using type = symbol::epsilon;
@@ -419,6 +450,17 @@ namespace cx::grammar
     struct rule<symbol::mod, symbol::epsilon>
     {
         using type = symbol::epsilon;
+    };
+
+    template<>
+    struct rule<symbol::seq0, character<'['>>
+    {
+        using type = stack<
+                character<'['>,
+                symbol::set_begin,
+                character<']'>,
+                symbol::mod,
+                symbol::seq>;
     };
 
     template<>
@@ -490,6 +532,18 @@ namespace cx::grammar
     };
 
     template<>
+    struct rule<symbol::seq, character<'['>>
+    {
+        using type = stack<
+                character<'['>,
+                symbol::set_begin,
+                character<']'>,
+                symbol::mod,
+                symbol::make_sequence,
+                symbol::seq>;
+    };
+
+    template<>
     struct rule<symbol::seq, character<'('>>
     {
         using type = stack<
@@ -558,6 +612,67 @@ namespace cx::grammar
     struct rule<symbol::seq, symbol::epsilon>
     {
         using type = symbol::epsilon;
+    };
+
+    // set-specific rules
+    template<>
+    struct rule<symbol::set_begin, character<'^'>>
+    {
+        using type = stack<
+                character<'^'>,
+                symbol::set_seq,
+                symbol::make_negated>;
+    };
+
+    template<>
+    struct rule<symbol::set_begin, character<'\\'>>
+    {
+        using type = stack<
+                character<'\\'>,
+                symbol::set_esc,
+                symbol::set_seq>;
+    };
+
+    template<auto C>
+    struct rule<symbol::set_begin, character<C>>
+    {
+        using type = stack<
+                character<C>,
+                symbol::make_set_member,
+                symbol::set_seq>;
+    };
+
+    template<>
+    struct rule<symbol::set_seq, character<']'>>
+    {
+        using type = symbol::epsilon;
+    };
+
+    template<>
+    struct rule<symbol::set_seq, character<'\\'>>
+    {
+        using type = stack<
+                character<'\\'>,
+                symbol::set_esc,
+                symbol::set_seq>;
+    };
+
+    template<auto C>
+    struct rule<symbol::set_seq, character<C>>
+    {
+        using type = stack<
+                character<C>,
+                symbol::make_set_member,
+                symbol::set_seq>;
+    };
+
+    template<auto C>
+    struct rule<symbol::set_esc, character<C>>
+    {
+        using type = stack<
+                character<C>,
+                symbol::make_set_member,
+                symbol::set_seq>;
     };
 
     template<char C>

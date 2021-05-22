@@ -28,6 +28,25 @@ namespace cx::tests
                     sequence<character<'c'>, character<'c'>>>>);
     // alternation<optional<a>, b> simplifies to alternation<a, epsilon, b>
     static_assert(expected_ast<"a?|b|c", alternation<character<'a'>, epsilon, character<'b'>, character<'c'>>>);
+    // AST with sets
+    static_assert(expected_ast<R"(xx[^a^[\]b\c]yy)",
+            sequence
+            <
+                character<'x'>, character<'x'>,
+                negated
+                <
+                    alternation
+                    <
+                        character<'a'>,
+                        character<'^'>,
+                        character<'['>,
+                        character<']'>,
+                        character<'b'>,
+                        character<'c'>
+                    >
+                >,
+                character<'y'>, character<'y'>
+            >>);
     // slightly more complex AST example
     static_assert(expected_ast<"((tuv)?b+)*|xy",
             alternation

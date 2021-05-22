@@ -23,6 +23,12 @@ namespace cx::symbol
 
     struct seq {};
 
+    struct set_begin {};
+
+    struct set_seq {};
+
+    struct set_esc {};
+
     // symbols that require AST updates
     struct ast_update {};
 
@@ -57,6 +63,8 @@ namespace cx::symbol
     struct make_negated: ast_update {};
 
     struct make_capturing: ast_update {};
+
+    struct make_set_member: ast_update {};
 
     // type trait to distinguish ast_update symbols from other symbols
     template<typename Symbol>

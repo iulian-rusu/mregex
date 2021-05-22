@@ -197,6 +197,19 @@ namespace cx
             using type = stack<capturing<ID, First>, Rest ...>;
         };
 
+        template<typename C, typename ... First>
+        struct update_ast<symbol::make_set_member, C, stack<First ...>>
+        {
+            using type = stack<alternation<C>, First ...>;
+        };
+
+        template<typename C, typename ... First, typename ... Rest>
+        struct update_ast<symbol::make_set_member, C, stack<alternation<First ...>, Rest ...>>
+        {
+            using type = stack<alternation<First ..., C>, Rest ...>;
+        };
+
+
         using parse_result = typename parse<0, stack<>, stack<symbol::start>>::type;
         using stack_top = typename parse_result::second::top;
         using ast = std::conditional_t<std::is_same_v<empty_stack, stack_top>, epsilon, stack_top>;
