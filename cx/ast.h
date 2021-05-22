@@ -45,16 +45,18 @@ namespace cx
         template<std::size_t N> static constexpr match_result
         match(auto const &input, std::size_t from, std::size_t max_chars, capture_storage<N> &captures, bool negated = false) noexcept
         {
-            auto first_match = First::template match<N>(input, from, max_chars, captures, negated);
+            auto first_match = First::template match<N>(input, from, max_chars, captures, false);
             if(first_match && first_match.count <= max_chars)
             {
+                first_match.matched ^= negated;
                 return first_match;
             }
             if constexpr (sizeof... (Rest) > 0)
             {
                 return alternation<Rest ...>::template match<N>(input, from, max_chars, captures, negated);
             }
-            return {0, false};
+            // if negated == true and nothing was matched before, match one character (in case of negated sets)
+            return {negated, negated};
         }
     };
 
@@ -166,9 +168,9 @@ namespace cx
         static constexpr std::size_t capture_count = Inner::capture_count;
 
         template<std::size_t N> static constexpr match_result
-        match(auto const &input, std::size_t from, std::size_t max_chars, capture_storage<N> &, bool negated = false) noexcept
+        match(auto const &input, std::size_t from, std::size_t max_chars, capture_storage<N> &captures, bool negated = false) noexcept
         {
-            return Inner::match(input, from, max_chars, !negated);
+            return Inner::template match<N>(input, from, max_chars, captures, !negated);
         }
     };
 

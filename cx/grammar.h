@@ -657,8 +657,47 @@ namespace cx::grammar
                 symbol::set_seq>;
     };
 
+
+    template<>
+    struct rule<symbol::set_seq, character<'-'>>
+    {
+        using type = stack<
+                character<'-'>,
+                symbol::set_range_start,
+                symbol::set_seq>;
+    };
+
     template<auto C>
     struct rule<symbol::set_seq, character<C>>
+    {
+        using type = stack<
+                character<C>,
+                symbol::make_set_member,
+                symbol::set_seq>;
+    };
+
+    template<auto C>
+    struct rule<symbol::set_range_start, character<C>>
+    {
+        using type = stack<
+                character<C>,
+                symbol::make_range,
+                symbol::set_seq0>;
+    };
+
+    template<>
+    struct rule<symbol::set_seq0, character<']'>>
+    {
+        using type = symbol::epsilon;
+    };
+    template<>
+    struct rule<symbol::set_seq0, character<'-'>>
+    {
+        using type = reject;
+    };
+
+    template<auto C>
+    struct rule<symbol::set_seq0, character<C>>
     {
         using type = stack<
                 character<C>,

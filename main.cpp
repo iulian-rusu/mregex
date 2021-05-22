@@ -17,7 +17,7 @@ std::ostream &operator<<(std::ostream &out, phone const &p)
 template<cx::static_string const input>
 constexpr auto parse()
 {
-    using test_float = cx::regex<R"(\d+(\.\d*)?(e(\+|-)?\d+(\.\d*)?)?)">;
+    using test_float = cx::regex<R"([1-9]+(\.\d*)?(e(\+|-)?\d+(\.\d*)?)?)">;
     using test_phone = cx::regex<R"((\(\+\d+\))? ?\d+-\d+(-\d+))">;
     constexpr std::string_view sv(input.buffer, input.length());
 
@@ -47,7 +47,7 @@ int main()
     std::cout << str_value << '\n';
 
     // extracting data with capture groups
-    using date_regex = cx::regex<R"((\d+) ?- ?(\a+) ?- ?(\d+))">;
+    using date_regex = cx::regex<R"(([0-9]+) ?- ?([A-z0-9]+) ?- ?([0-9]+))">;
     std::string_view date_sv = "Today is 05-april-2002!";
     auto res = date_regex::search(date_sv);
     std::cout << "Date:\t" << res.get<0>() << '\n';

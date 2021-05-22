@@ -206,9 +206,14 @@ namespace cx
         template<typename C, typename ... First, typename ... Rest>
         struct update_ast<symbol::make_set_member, C, stack<alternation<First ...>, Rest ...>>
         {
-            using type = stack<alternation<First ..., C>, Rest ...>;
+            using type = stack<alternation<C, First ...>, Rest ...>;
         };
 
+        template<auto B, auto A, typename ... Second, typename ... Rest>
+        struct update_ast<symbol::make_range, character<B>, stack<alternation<character<A>, Second ...>, Rest ...>>
+        {
+            using type = stack<alternation<range<A, B>, Second ...>, Rest ...>;
+        };
 
         using parse_result = typename parse<0, stack<>, stack<symbol::start>>::type;
         using stack_top = typename parse_result::second::top;
