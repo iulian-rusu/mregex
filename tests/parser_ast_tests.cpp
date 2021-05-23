@@ -29,6 +29,21 @@ namespace cx::tests
     // alternation<optional<a>, b> simplifies to alternation<a, epsilon, b>
     static_assert(expected_ast<"a?|b|c", alternation<character<'a'>, epsilon, character<'b'>, character<'c'>>>);
     // AST with sets
+    static_assert(expected_ast<R"([a])", alternation<character<'a'>>>);
+    static_assert(expected_ast<R"([a][b])", sequence<alternation<character<'a'>>, alternation<character<'b'>>>>);
+    static_assert(expected_ast<R"([a]?[b])", sequence<optional<alternation<character<'a'>>>, alternation<character<'b'>>>>);
+    static_assert(expected_ast<R"([a]?[b]?)", sequence<optional<alternation<character<'a'>>>, optional<alternation<character<'b'>>>>>);
+    static_assert(expected_ast<R"([abc])", alternation<character<'c'>, character<'b'>, character<'a'>>>);
+    static_assert(expected_ast<R"([a-z])", alternation<range<'a', 'z'>>>);
+    static_assert(expected_ast<R"([a\-z])", alternation<character<'z'>, character<'-'>, character<'a'>>>);
+    static_assert(expected_ast<R"([a-z0-9A-Z])", alternation<range<'A', 'Z'>, range<'0', '9'>, range<'a', 'z'>>>);
+    static_assert(expected_ast<R"([a-[0-\]])", alternation<range<'0', ']'>, range<'a', '['>>>);
+    static_assert(expected_ast<R"([^a-[0-\]])", negated<alternation<range<'0', ']'>, range<'a', '['>>>>);
+    static_assert(expected_ast<R"([a-[0-\])", alternation<range<'0', ']'>, range<'a', '['>>>);
+    static_assert(expected_ast<R"([-a-[0-\])", alternation<range<'0', ']'>, range<'a', '['>, character<'-'>>>);
+    static_assert(expected_ast<R"([^-aA-Z])", negated<alternation<range<'A', 'Z'>, character<'a'>, character<'-'>>>>);
+    static_assert(expected_ast<R"(a[^-a-z\WA-Z])",
+            sequence<character<'a'>, negated<alternation<range<'A', 'Z'>, negated<word>, range<'a', 'z'>, character<'-'>>>>>);
     static_assert(expected_ast<R"(\x\x[^a^[\]b\c]yy)",
             sequence
             <
@@ -48,10 +63,6 @@ namespace cx::tests
                 character<'y'>, character<'y'>
             >
     >);
-    // to make constructing ranges easier, elements inside sets are an alternation in reverse order
-    // [abc] -> alternation<b, c, a>
-    static_assert(expected_ast<"a[^-a-z\\WA-Z]",
-            sequence<character<'a'>, negated<alternation<range<'A', 'Z'>, negated<word>, range<'a', 'z'>, character<'-'>>>>>);
     // slightly more complex AST example
     static_assert(expected_ast<"((tuv)?b+)*|xy",
             alternation
@@ -90,6 +101,6 @@ namespace cx::tests
     >);
 
     // for debugging
-    // static_assert(std::is_same_v<typename parser<static_string(R"([\w])")>::ast, void>);
+    // static_assert(std::is_same_v<typename parser<static_string(R"([^-aA-Z])")>::ast, void>);
 }
 #endif // CX_RUN_PARSER_TESTS

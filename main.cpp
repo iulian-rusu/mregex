@@ -52,7 +52,7 @@ int main()
     std::cout << "Scheme:\t" << match_res.get<1>() << '\n';
     std::cout << "User:\t" << match_res.get<4>() << '\n';
     std::cout << "Pass:\t" << match_res.get<5>() << '\n';
-    std::cout << "Domain:\t" << match_res.get<6>() << '\n';
+    std::cout << "Host:\t" << match_res.get<6>() << '\n';
     std::cout << "Port:\t" << match_res.get<8>() << '\n';
     std::cout << "Path:\t" << match_res.get<10>() << '\n';
     std::cout << "Query:\t" << match_res.get<11>() << '\n';

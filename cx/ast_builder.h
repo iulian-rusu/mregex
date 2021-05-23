@@ -176,5 +176,11 @@ namespace cx
     {
         using type = stack<alternation<range<A, B>, Second ...>, Rest ...>;
     };
+
+    template<typename C, auto B, auto A, typename ... Second, typename ... Rest>
+    struct update_ast<symbol::make_range_from_stack, C, stack<alternation<character<B>, character<A>, Second ...>, Rest ...>>
+    {
+        using type = stack<alternation<range<A, B>, Second ...>, Rest ...>;
+    };
 }
 #endif //CX_AST_BUILDER_H

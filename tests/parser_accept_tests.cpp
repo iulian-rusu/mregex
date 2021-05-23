@@ -36,6 +36,12 @@ namespace cx::tests
     static_assert(accepted<"[^a-z]">);
     static_assert(accepted<"[^-a-z]">);
     static_assert(accepted<"[- -[]">);
+    static_assert(accepted<"[a-\\w]">);
+    static_assert(accepted<"f?[a-zA-Z]?a?">);
+    static_assert(accepted<"f*[a-zA-Z]*a?">);
+    static_assert(accepted<"f+[a-zA-Z]+a+">);
+    static_assert(accepted<"ab|cd|[a-zA-Z]|ab|ac">);
+    static_assert(accepted<"ab|(cd|[a-zA-Z]|ab)|ac">);
     static_assert(accepted<"((a|\\a)|(d|\\d))?">);
     static_assert(accepted<"((a|\\a+)|(d?|\\d))*">);
     static_assert(accepted<"((a|\\a)|(0|1|2|3))?">);
@@ -60,6 +66,9 @@ namespace cx::tests
     static_assert(accepted<"[]"> == false);
     static_assert(accepted<"["> == false);
     static_assert(accepted<"[^a-]"> == false);
+    static_assert(accepted<"?[a-zA-Z]?a?"> == false);
+    static_assert(accepted<"ab||[a-zA-Z]"> == false);
+    static_assert(accepted<"ab|(cd|[a-zA-Z]|"> == false);
     static_assert(accepted<"(a|)"> == false);
     static_assert(accepted<"(|a)"> == false);
     static_assert(accepted<"(+|-)"> == false);

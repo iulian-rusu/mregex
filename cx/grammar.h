@@ -593,6 +593,17 @@ namespace cx::grammar
     };
 
     template<>
+    struct rule<symbol::set_range_start, character<'\\'>>
+    {
+        using type = stack<
+                character<'\\'>,
+                symbol::set_range_esc,
+                symbol::make_set_from_stack,
+                symbol::make_range_from_stack,
+                symbol::set_seq0>;
+    };
+
+    template<>
     struct rule<symbol::set_seq0, character<'\\'>>
     {
         using type = stack<
@@ -627,6 +638,20 @@ namespace cx::grammar
     struct rule<symbol::set_esc, character<C>>
     {
         using type = decide_rule_t<symbol::set_esc, character<C>>;
+    };
+
+    template<auto C>
+    struct rule<symbol::set_range_esc, character<C>>
+    {
+        using type = stack<
+                character<C>,
+                symbol::make_char>;
+    };
+
+    template<typename Char>
+    struct rule<symbol::set_range_esc, Char>
+    {
+        using type = reject;
     };
 
     template<char C>

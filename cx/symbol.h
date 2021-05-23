@@ -35,6 +35,8 @@ namespace cx::symbol
 
     struct set_range_start {};
 
+    struct set_range_esc {};
+
     // symbols that require AST updates
     struct ast_update {};
 
@@ -77,6 +79,8 @@ namespace cx::symbol
     struct make_set_from_stack: ast_update {};
 
     struct make_range: ast_update {};
+
+    struct make_range_from_stack: ast_update {};
 
     // type trait to distinguish ast_update symbols from other symbols
     template<typename Symbol>
