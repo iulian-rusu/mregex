@@ -1,11 +1,11 @@
 #ifndef CX_REGEX_RESULT_H
 #define CX_REGEX_RESULT_H
 
-/**
- * Defines data structures that encapsulate matching/searching results
- */
 #include <tuple>
 
+/**
+ * File with data structures that encapsulate matching/searching results
+ */
 namespace cx
 {
     /**

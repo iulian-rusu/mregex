@@ -3,6 +3,9 @@
 
 #include <type_traits>
 
+/**
+ * File with various utility metafunctions
+ */
 namespace cx
 {
     template<typename T>

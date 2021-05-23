@@ -3,6 +3,7 @@
 
 #include "static_string.h"
 #include "grammar.h"
+#include "ast_builder.h"
 #include "capture_builder.h"
 
 namespace cx
@@ -15,7 +16,7 @@ namespace cx
     template<auto const pattern>
     struct parser
     {
-        // helper struct that contains either a symbol::chr or symbol::epsilon based on the side of the index
+        // helper struct that contains either a symbol::character or symbol::epsilon based on the size of the index
         template<std::size_t I, bool = I < pattern.length()>
         struct character_at
         {
@@ -32,12 +33,9 @@ namespace cx
         template<std::size_t I>
         using character_at_t = typename character_at<I>::type;
 
-        // forward declare helper structs to resolve reference conflicts
+        // forward declare helper struct to resolve reference conflicts
         template<std::size_t I, typename ...>
         struct next_step;
-
-        template<typename Symbol, typename Char, typename AST>
-        struct update_ast;
 
         // main metafunction used to parse the pattern
         template<std::size_t I, typename AST, typename Stack, bool = symbol::is_ast_update_v<typename Stack::top>>
@@ -86,171 +84,6 @@ namespace cx
         struct next_step<I, grammar::accept, AST, Stack>
         {
             using type = pair<std::true_type, AST>;
-        };
-
-        // metafunctions for updating the AST
-        template<typename C, typename Stack>
-        struct update_ast<symbol::make_char, C, Stack>
-        {
-            using type = typename Stack::template push<C>;
-        };
-
-        template<typename C, typename Stack>
-        struct update_ast<symbol::make_alnum, C, Stack>
-        {
-            using type = typename Stack::template push<alnum>;
-        };
-
-        template<typename C, typename Stack>
-        struct update_ast<symbol::make_digit, C, Stack>
-        {
-            using type = typename Stack::template push<digit>;
-        };
-
-        template<typename C, typename Stack>
-        struct update_ast<symbol::make_word, C, Stack>
-        {
-            using type = typename Stack::template push<word>;
-        };
-
-        template<typename C, typename Stack>
-        struct update_ast<symbol::make_whitespace, C, Stack>
-        {
-            using type = typename Stack::template push<whitespace>;
-        };
-
-        template<typename C, typename Stack>
-        struct update_ast<symbol::make_lower, C, Stack>
-        {
-            using type = typename Stack::template push<lower>;
-        };
-
-        template<typename C, typename Stack>
-        struct update_ast<symbol::make_upper, C, Stack>
-        {
-            using type = typename Stack::template push<upper>;
-        };
-
-        template<typename C, typename Stack>
-        struct update_ast<symbol::make_hexa, C, Stack>
-        {
-            using type = typename Stack::template push<hexa>;
-        };
-
-        template<typename C, typename Stack>
-        struct update_ast<symbol::make_wildcard, C, Stack>
-        {
-            using type = typename Stack::template push<wildcard>;
-        };
-
-        template<typename C, typename First, typename ... Rest>
-        struct update_ast<symbol::make_negated, C, stack<First, Rest ...>>
-        {
-            using type = stack<negated<First>, Rest ...>;
-        };
-
-        template<typename C, typename First, typename ... Rest>
-        struct update_ast<symbol::make_star, C, stack<First, Rest ...>>
-        {
-            using type = stack<star<First>, Rest ...>;
-        };
-
-        template<typename C, typename First, typename ... Rest>
-        struct update_ast<symbol::make_optional, C, stack<First, Rest ...>>
-        {
-            using type = stack<optional<First>, Rest ...>;
-        };
-
-        template<typename C, typename First, typename ... Rest>
-        struct update_ast<symbol::make_plus, C, stack<First, Rest ...>>
-        {
-            using type = stack<plus<First>, Rest ...>;
-        };
-
-        template<typename C, typename First, typename Second, typename ... Rest>
-        struct update_ast<symbol::make_sequence, C, stack<First, Second, Rest ...>>
-        {
-            using type = stack<sequence<Second, First>, Rest ...>;
-        };
-
-        template<typename C, typename First, typename ... Second, typename ... Rest>
-        struct update_ast<symbol::make_sequence, C, stack<First, sequence<Second ...>, Rest ...>>
-        {
-            using type = stack<sequence<Second ..., First>, Rest ...>;
-        };
-
-        template<typename C, typename First, typename Second, typename ... Rest>
-        struct update_ast<symbol::make_alternation, C, stack<First, Second, Rest ...>>
-        {
-            using type = stack<alternation<Second, First>, Rest ...>;
-        };
-
-        template<typename C, typename First, typename ... Second, typename ... Rest>
-        struct update_ast<symbol::make_alternation, C, stack<First, alternation<Second ...>, Rest ...>>
-        {
-            using type = stack<alternation<Second ..., First>, Rest ...>;
-        };
-
-        template<typename C, typename ... Elems>
-        struct update_ast<symbol::make_set, C, stack<Elems ...>>
-        {
-            // push a control symbol::set_begin to prevent set alternation combining with previous alternations
-            using type = stack<symbol::set_begin, Elems ...>;
-        };
-
-        template<typename C, typename First,  typename ... Rest>
-        struct update_ast<symbol::make_capturing, C, stack<First, Rest ...>>
-        {
-            static constexpr auto ID = count_captures<First, Rest ...>::capture_count + 1;
-            using type = stack<capturing<ID, First>, Rest ...>;
-        };
-
-        template<typename C, typename ... First>
-        struct update_ast<symbol::make_set_from_current_char, C, stack<First ...>>
-        {
-            using type = stack<alternation<C>, First ...>;
-        };
-
-        template<typename C, typename ... First, typename ... Rest>
-        struct update_ast<symbol::make_set_from_current_char, C, stack<alternation<First ...>, Rest ...>>
-        {
-            using type = stack<alternation<C, First ...>, Rest ...>;
-        };
-
-        template<typename C, typename ... Rest>
-        struct update_ast<symbol::make_set_from_current_char, C, stack<symbol::set_begin, Rest ...>>
-        {
-            using type = stack<alternation<C>, Rest ...>;
-        };
-
-        template<typename C, typename First, typename ... Rest>
-        struct update_ast<symbol::make_set_from_stack, C, stack<First, Rest ...>>
-        {
-            using type = stack<alternation<First>, Rest ...>;
-        };
-
-        template<typename C, typename First, typename ... Second, typename ... Rest>
-        struct update_ast<symbol::make_set_from_stack, C, stack<First, alternation<Second ...>, Rest ...>>
-        {
-            using type = stack<alternation<First, Second ...>, Rest ...>;
-        };
-
-        template<typename C, typename First, typename ... Rest>
-        struct update_ast<symbol::make_set_from_stack, C, stack<First, symbol::set_begin, Rest ...>>
-        {
-            using type = stack<alternation<First>, Rest ...>;
-        };
-
-        template<typename C, typename ... First, typename ... Second, typename ... Rest>
-        struct update_ast<symbol::make_set_from_stack, C, stack<alternation<First ...>, alternation<Second ...>, Rest ...>>
-        {
-            using type = stack<alternation<First ..., Second ...>, Rest ...>;
-        };
-
-        template<auto B, auto A, typename ... Second, typename ... Rest>
-        struct update_ast<symbol::make_range, character<B>, stack<alternation<character<A>, Second ...>, Rest ...>>
-        {
-            using type = stack<alternation<range<A, B>, Second ...>, Rest ...>;
         };
 
         using parse_result = typename parse<0, stack<>, stack<symbol::start>>::type;

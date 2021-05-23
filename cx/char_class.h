@@ -7,7 +7,7 @@
 #include "ast.h"
 
 /**
- * File defining special character classes recognized by the grammar
+ * File defining rules for special character classes recognized by the grammar
  */
 namespace cx
 {
