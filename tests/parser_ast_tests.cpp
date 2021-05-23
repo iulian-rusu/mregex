@@ -29,7 +29,7 @@ namespace cx::tests
     // alternation<optional<a>, b> simplifies to alternation<a, epsilon, b>
     static_assert(expected_ast<"a?|b|c", alternation<character<'a'>, epsilon, character<'b'>, character<'c'>>>);
     // AST with sets
-    static_assert(expected_ast<R"(xx[^a^[\]b\c]yy)",
+    static_assert(expected_ast<R"(\x\x[^a^[\]b\c]yy)",
             sequence
             <
                 character<'x'>, character<'x'>,
@@ -50,7 +50,8 @@ namespace cx::tests
     >);
     // to make constructing ranges easier, elements inside sets are an alternation in reverse order
     // [abc] -> alternation<b, c, a>
-    static_assert(expected_ast<"a[^a-zA-Z]", sequence<character<'a'>, negated<alternation<range<'A', 'Z'>, range<'a', 'z'>>>>>);
+    static_assert(expected_ast<"a[^a-z\\WA-Z]",
+            sequence<character<'a'>, negated<alternation<range<'A', 'Z'>, negated<word>, range<'a', 'z'>>>>>);
     // slightly more complex AST example
     static_assert(expected_ast<"((tuv)?b+)*|xy",
             alternation

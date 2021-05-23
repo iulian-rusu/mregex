@@ -198,15 +198,33 @@ namespace cx
         };
 
         template<typename C, typename ... First>
-        struct update_ast<symbol::make_set_member, C, stack<First ...>>
+        struct update_ast<symbol::make_set_from_current_char, C, stack<First ...>>
         {
             using type = stack<alternation<C>, First ...>;
         };
 
         template<typename C, typename ... First, typename ... Rest>
-        struct update_ast<symbol::make_set_member, C, stack<alternation<First ...>, Rest ...>>
+        struct update_ast<symbol::make_set_from_current_char, C, stack<alternation<First ...>, Rest ...>>
         {
             using type = stack<alternation<C, First ...>, Rest ...>;
+        };
+
+        template<typename C, typename First, typename ... Rest>
+        struct update_ast<symbol::make_set_from_stack, C, stack<First, Rest ...>>
+        {
+            using type = stack<alternation<First>, Rest ...>;
+        };
+
+        template<typename C, typename First, typename ... Second, typename ... Rest>
+        struct update_ast<symbol::make_set_from_stack, C, stack<First, alternation<Second ...>, Rest ...>>
+        {
+            using type = stack<alternation<First, Second ...>, Rest ...>;
+        };
+
+        template<typename C, typename ... First, typename ... Second, typename ... Rest>
+        struct update_ast<symbol::make_set_from_stack, C, stack<alternation<First ...>, alternation<Second ...>, Rest ...>>
+        {
+            using type = stack<alternation<First ..., Second ...>, Rest ...>;
         };
 
         template<auto B, auto A, typename ... Second, typename ... Rest>
