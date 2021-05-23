@@ -70,6 +70,8 @@ namespace cx::symbol
 
     struct make_capturing: ast_update {};
 
+    struct make_set: ast_update {};
+
     struct make_set_from_current_char: ast_update {};
 
     struct make_set_from_stack: ast_update {};

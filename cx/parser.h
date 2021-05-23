@@ -3,6 +3,7 @@
 
 #include "static_string.h"
 #include "grammar.h"
+#include "capture_builder.h"
 
 namespace cx
 {
@@ -190,6 +191,13 @@ namespace cx
             using type = stack<alternation<Second ..., First>, Rest ...>;
         };
 
+        template<typename C, typename ... Elems>
+        struct update_ast<symbol::make_set, C, stack<Elems ...>>
+        {
+            // push a control symbol::set_begin to prevent set alternation combining with previous alternations
+            using type = stack<symbol::set_begin, Elems ...>;
+        };
+
         template<typename C, typename First,  typename ... Rest>
         struct update_ast<symbol::make_capturing, C, stack<First, Rest ...>>
         {
@@ -209,6 +217,12 @@ namespace cx
             using type = stack<alternation<C, First ...>, Rest ...>;
         };
 
+        template<typename C, typename ... Rest>
+        struct update_ast<symbol::make_set_from_current_char, C, stack<symbol::set_begin, Rest ...>>
+        {
+            using type = stack<alternation<C>, Rest ...>;
+        };
+
         template<typename C, typename First, typename ... Rest>
         struct update_ast<symbol::make_set_from_stack, C, stack<First, Rest ...>>
         {
@@ -219,6 +233,12 @@ namespace cx
         struct update_ast<symbol::make_set_from_stack, C, stack<First, alternation<Second ...>, Rest ...>>
         {
             using type = stack<alternation<First, Second ...>, Rest ...>;
+        };
+
+        template<typename C, typename First, typename ... Rest>
+        struct update_ast<symbol::make_set_from_stack, C, stack<First, symbol::set_begin, Rest ...>>
+        {
+            using type = stack<alternation<First>, Rest ...>;
         };
 
         template<typename C, typename ... First, typename ... Second, typename ... Rest>
@@ -235,7 +255,7 @@ namespace cx
 
         using parse_result = typename parse<0, stack<>, stack<symbol::start>>::type;
         using stack_top = typename parse_result::second::top;
-        using ast = std::conditional_t<std::is_same_v<empty_stack, stack_top>, epsilon, stack_top>;
+        using ast = std::conditional_t<std::is_same_v<empty_stack, stack_top>, epsilon, renumber_captures_t<0, stack_top>>;
         static constexpr bool accepted = typename parse_result::first{};
     };
 }

@@ -37,21 +37,23 @@ constexpr auto parse()
 
 int main()
 {
+    // change function return type depending on regex parsing outcome
     double number = parse<"123.3e-10">();
     std::cout << number << '\n';
-
     phone my_phone = parse<"(+373) 75-44-98">();
     std::cout << my_phone << '\n';
-
     std::string str_value = parse<"hello">();
     std::cout << str_value << '\n';
 
-    // extracting data with capture groups
-    using date_regex = cx::regex<R"(([0-9]+) ?- ?([A-z0-9]+) ?- ?([0-9]+))">;
-    std::string_view date_sv = "Today is 05-april-2002!";
-    auto res = date_regex::search(date_sv);
-    std::cout << "Date:\t" << res.get<0>() << '\n';
-    std::cout << "Day:\t" << res.get<1>() << '\n';
-    std::cout << "Month:\t" << res.get<2>() << '\n';
-    std::cout << "Year:\t" << res.get<3>() << '\n';
+    // simple URL parsing example
+    using url_regex = cx::regex<R"((\w+):\/\/(((\w+):(\w+)?@)?([\w.]+)(:(\d+))?)?(\/([-/\w]+)?\?([\w=&]+))?)">;
+    std::string_view sv = "https://root:pass@youtube.com:80/path/watch?video=123123";
+    auto match_res = url_regex::match(sv);
+    std::cout << "Scheme:\t" << match_res.get<1>() << '\n';
+    std::cout << "User:\t" << match_res.get<4>() << '\n';
+    std::cout << "Pass:\t" << match_res.get<5>() << '\n';
+    std::cout << "Domain:\t" << match_res.get<6>() << '\n';
+    std::cout << "Port:\t" << match_res.get<8>() << '\n';
+    std::cout << "Path:\t" << match_res.get<10>() << '\n';
+    std::cout << "Query:\t" << match_res.get<11>() << '\n';
 }

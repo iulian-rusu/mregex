@@ -30,6 +30,7 @@ namespace cx::grammar
     {
         using type = stack<
                 character<'['>,
+                symbol::make_set,
                 symbol::set_begin,
                 character<']'>,
                 symbol::mod,
@@ -114,6 +115,7 @@ namespace cx::grammar
     {
         using type = stack<
                 character<'['>,
+                symbol::make_set,
                 symbol::set_begin,
                 character<']'>,
                 symbol::mod,
@@ -334,6 +336,7 @@ namespace cx::grammar
     {
         using type = stack<
                 character<'['>,
+                symbol::make_set,
                 symbol::set_begin,
                 character<']'>,
                 symbol::mod,
@@ -413,6 +416,7 @@ namespace cx::grammar
     {
         using type = stack<
                 character<'['>,
+                symbol::make_set,
                 symbol::set_begin,
                 character<']'>,
                 symbol::mod,

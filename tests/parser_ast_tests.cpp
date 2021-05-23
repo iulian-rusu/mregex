@@ -12,7 +12,7 @@ namespace cx::tests
     static_assert(expected_ast<"\\D", negated<digit>>);
     static_assert(expected_ast<"a.?b", sequence<character<'a'>, optional<wildcard>, character<'b'>>>);
     static_assert(expected_ast<"(c)", capturing<1, character<'c'>>>);
-    static_assert(expected_ast<"((c))(e)", sequence<capturing<2, capturing<1, character<'c'>>>, capturing<3, character<'e'>>>>);
+    static_assert(expected_ast<"((c))(e)", sequence<capturing<1, capturing<2, character<'c'>>>, capturing<3, character<'e'>>>>);
     static_assert(expected_ast<"c?", optional<character<'c'>>>);
     static_assert(expected_ast<"c*", star<character<'c'>>>);
     static_assert(expected_ast<"c+", plus<character<'c'>>>);
@@ -59,13 +59,13 @@ namespace cx::tests
                 star
                 <
                     capturing
-                    <   2,
+                    <   1,
                         sequence
                         <
                             optional
                             <
                                 capturing
-                                <   1,
+                                <   2,
                                     sequence
                                     <
                                         character<'t'>,
@@ -88,5 +88,8 @@ namespace cx::tests
                 >
             >
     >);
+
+    // for debugging
+    // static_assert(std::is_same_v<typename parser<static_string(R"([\w])")>::ast, void>);
 }
 #endif // CX_RUN_PARSER_TESTS

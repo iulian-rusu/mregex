@@ -58,6 +58,21 @@ namespace cx
     {
         static constexpr std::size_t capture_count = First::capture_count;
     };
+
+    template<typename Test, typename First, typename ... Rest>
+    struct is_any_of
+    {
+        static constexpr auto value = std::is_same_v<Test, First> || is_any_of<Test, Rest ...>::value;
+    };
+
+    template<typename Test, typename First>
+    struct is_any_of<Test, First>
+    {
+        static constexpr auto value = std::is_same_v<Test, First>;
+    };
+
+    template<typename Test, typename First, typename ... Rest>
+    constexpr auto is_any_of_v = is_any_of<Test, First, Rest ...>::value;
 }
 
 #endif //CX_UTILITY_H
