@@ -24,7 +24,6 @@ namespace cx::grammar
     };
 
     // specialized rules for specific inputs
-
     template<>
     struct rule<symbol::start, character<'['>>
     {

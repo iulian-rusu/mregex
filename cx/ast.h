@@ -89,8 +89,8 @@ namespace cx
     struct epsilon : terminal
     {
         // epsilon always matches anything and consumes no characters
-        template<std::size_t N>
-        static constexpr match_result match(auto const &, std::size_t, std::size_t, capture_storage<N> &, ...) noexcept
+        template<std::size_t N> static constexpr match_result
+        match(auto const &, std::size_t, std::size_t, capture_storage<N> &, ...) noexcept
         {
             return {0, true};
         }
@@ -173,7 +173,6 @@ namespace cx
             return Inner::template match<N>(input, from, max_chars, captures, !negated);
         }
     };
-
 
     template<std::size_t ID, typename Inner>
     struct capturing

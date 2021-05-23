@@ -9,8 +9,7 @@
 namespace cx
 {
     template<typename T>
-    concept string_like =
-    requires(T s, std::size_t index)
+    concept string_like = requires(T s, std::size_t index)
     {
         static_cast<char>(s[index]);
         static_cast<std::size_t>(s.length());

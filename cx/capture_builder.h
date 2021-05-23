@@ -8,7 +8,6 @@
  */
 namespace cx
 {
-
     template<auto Offset, typename Wrapper>
     struct renumber_captures
     {
