@@ -25,6 +25,17 @@ namespace cx::tests
     static_assert(accepted<"(\\?+)?">);
     static_assert(accepted<"(\\|+\\))?">);
     static_assert(accepted<"\\\\">);
+    static_assert(accepted<"[a]">);
+    static_assert(accepted<"]">);
+    static_assert(accepted<"[]]">);
+    static_assert(accepted<"[^a]">);
+    static_assert(accepted<"[^-a]">);
+    static_assert(accepted<"[-a]">);
+    static_assert(accepted<"[a-z]">);
+    static_assert(accepted<"[]-z]">);
+    static_assert(accepted<"[^a-z]">);
+    static_assert(accepted<"[^-a-z]">);
+    static_assert(accepted<"[- -[]">);
     static_assert(accepted<"((a|\\a)|(d|\\d))?">);
     static_assert(accepted<"((a|\\a+)|(d?|\\d))*">);
     static_assert(accepted<"((a|\\a)|(0|1|2|3))?">);
@@ -46,6 +57,9 @@ namespace cx::tests
     static_assert(accepted<"a|"> == false);
     static_assert(accepted<"|a"> == false);
     static_assert(accepted<"\\"> == false);
+    static_assert(accepted<"[]"> == false);
+    static_assert(accepted<"["> == false);
+    static_assert(accepted<"[^a-]"> == false);
     static_assert(accepted<"(a|)"> == false);
     static_assert(accepted<"(|a)"> == false);
     static_assert(accepted<"(+|-)"> == false);

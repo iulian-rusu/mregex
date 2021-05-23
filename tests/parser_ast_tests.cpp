@@ -50,8 +50,8 @@ namespace cx::tests
     >);
     // to make constructing ranges easier, elements inside sets are an alternation in reverse order
     // [abc] -> alternation<b, c, a>
-    static_assert(expected_ast<"a[^a-z\\WA-Z]",
-            sequence<character<'a'>, negated<alternation<range<'A', 'Z'>, negated<word>, range<'a', 'z'>>>>>);
+    static_assert(expected_ast<"a[^-a-z\\WA-Z]",
+            sequence<character<'a'>, negated<alternation<range<'A', 'Z'>, negated<word>, range<'a', 'z'>, character<'-'>>>>>);
     // slightly more complex AST example
     static_assert(expected_ast<"((tuv)?b+)*|xy",
             alternation

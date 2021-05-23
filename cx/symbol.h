@@ -25,6 +25,8 @@ namespace cx::symbol
 
     struct set_begin {};
 
+    struct set_begin_no_neg {};
+
     struct set_seq {};
 
     struct set_seq0 {};

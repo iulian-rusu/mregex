@@ -497,7 +497,7 @@ namespace cx::grammar
     {
         using type = stack<
                 character<'^'>,
-                symbol::set_seq,
+                symbol::set_begin_no_neg,
                 symbol::make_negated>;
     };
 
@@ -513,6 +513,25 @@ namespace cx::grammar
 
     template<auto C>
     struct rule<symbol::set_begin, character<C>>
+    {
+        using type = stack<
+                character<C>,
+                symbol::make_set_from_current_char,
+                symbol::set_seq>;
+    };
+
+    template<>
+    struct rule<symbol::set_begin_no_neg, character<'\\'>>
+    {
+        using type = stack<
+                character<'\\'>,
+                symbol::set_esc,
+                symbol::make_set_from_stack,
+                symbol::set_seq>;
+    };
+
+    template<auto C>
+    struct rule<symbol::set_begin_no_neg, character<C>>
     {
         using type = stack<
                 character<C>,
