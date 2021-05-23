@@ -96,7 +96,7 @@ namespace cx::grammar
     {
         using type = stack<
                 character<C>,
-                decide_action_t<C>,
+                make_char_or_wildcard_t<C>,
                 symbol::mod,
                 symbol::seq,
                 symbol::alt
@@ -180,7 +180,7 @@ namespace cx::grammar
     {
         using type = stack<
                 character<C>,
-                decide_action_t<C>,
+                make_char_or_wildcard_t<C>,
                 symbol::mod,
                 symbol::seq,
                 symbol::alt
@@ -397,7 +397,7 @@ namespace cx::grammar
     {
         using type = stack<
                 character<C>,
-                decide_action_t<C>,
+                make_char_or_wildcard_t<C>,
                 symbol::mod,
                 symbol::seq>;
     };
@@ -479,7 +479,7 @@ namespace cx::grammar
     {
         using type = stack<
                 character<C>,
-                decide_action_t<C>,
+                make_char_or_wildcard_t<C>,
                 symbol::mod,
                 symbol::make_sequence,
                 symbol::seq>;

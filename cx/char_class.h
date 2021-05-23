@@ -12,19 +12,19 @@
 namespace cx
 {
     template<auto C>
-    struct decide_action
+    struct make_char_or_wildcard
     {
         using type = symbol::make_char;
     };
 
     template<>
-    struct decide_action<'.'>
+    struct make_char_or_wildcard<'.'>
     {
         using type = symbol::make_wildcard;
     };
 
     template<auto C>
-    using decide_action_t = typename decide_action<C>::type;
+    using make_char_or_wildcard_t = typename make_char_or_wildcard<C>::type;
 
     template<typename Symbol, typename Char>
     struct decide_rule
