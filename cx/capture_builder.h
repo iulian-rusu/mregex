@@ -4,7 +4,7 @@
 #include "ast.h"
 
 /**
- * File with metafunctions for correctly numbering the capturing groups of the regular expressions
+ * File with metafunctions for correctly numbering capturing groups
  */
 namespace cx
 {

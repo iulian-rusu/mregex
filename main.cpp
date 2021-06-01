@@ -17,11 +17,11 @@ std::ostream &operator<<(std::ostream &out, phone const &p)
 template<cx::static_string const input>
 constexpr auto parse()
 {
-    using test_float = cx::regex<R"([1-9]+(\.\d*)?(e(\+|-)?\d+(\.\d*)?)?)">;
+    using test_number = cx::regex<R"([1-9]+(\.\d*)?(e(\+|-)?\d+(\.\d*)?)?)">;
     using test_phone = cx::regex<R"((\(\+\d+\))? ?\d+-\d+(-\d+))">;
-    constexpr std::string_view sv(input.buffer, input.length());
 
-    if constexpr (test_float::match(sv))
+    constexpr std::string_view sv(input.buffer, input.length());
+    if constexpr (test_number::match(sv))
     {
         return std::stod(std::string(sv));
     }
@@ -47,6 +47,7 @@ int main()
 
     // simple URL parsing example
     using url_regex = cx::regex<R"((\w+):\/\/(((\w+):(\w+)?@)?([\w.]+)(:(\d+))?)?(\/([-/\w]+)?\?([\w=&]+))?)">;
+
     std::string_view sv = "https://admin:pass123@hostname.com:8080/path/to/resource?id=12345";
     auto match_res = url_regex::match(sv);
     std::cout << "Scheme:\t" << match_res.get<1>() << '\n';
