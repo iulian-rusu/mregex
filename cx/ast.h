@@ -15,26 +15,26 @@ namespace cx
         static constexpr std::size_t capture_count = count_captures<First, Rest ...>::capture_count;
 
         template<std::size_t N>
-        static constexpr match_result match(auto const &input, std::size_t from, std::size_t max_chars,
-                                            capture_storage<N> &captures, bool negated = false) noexcept
+        static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &captures) noexcept
         {
             if constexpr (sizeof... (Rest) > 0)
             {
-                std::size_t match_limit = max_chars;
+                std::size_t match_limit = mp.max_chars;
                 do
                 {
-                    auto first_match = First::template match<N>(input, from, match_limit, captures, negated);
+                    auto first_match = First::template match<N>(input, {mp.from, match_limit, mp.negated}, captures);
                     if (!first_match)
                         return {0, false};
                     if (auto rest_matched = sequence<Rest ...>::template match<N>(
-                            input, from + first_match.count, max_chars - first_match.count, captures, negated))
+                            input, {mp.from + first_match.count, mp.max_chars - first_match.count, mp.negated},
+                            captures))
                         return first_match + rest_matched;
                     if (first_match.count == 0 || match_limit == 0)
                         return {0, false};
                     match_limit = first_match.count - 1;
                 } while (true);
             }
-            return First::template match<N>(input, from, max_chars, captures, negated);
+            return First::template match<N>(input, mp, captures);
         }
     };
 
@@ -44,21 +44,20 @@ namespace cx
         static constexpr std::size_t capture_count = count_captures<First, Rest ...>::capture_count;
 
         template<std::size_t N>
-        static constexpr match_result match(auto const &input, std::size_t from, std::size_t max_chars,
-                                            capture_storage<N> &captures, bool negated = false) noexcept
+        static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &captures) noexcept
         {
-            auto first_match = First::template match<N>(input, from, max_chars, captures, false);
-            if (first_match && first_match.count <= max_chars)
+            auto first_match = First::template match<N>(input, {mp.from, mp.max_chars, false}, captures);
+            if (first_match && first_match.count <= mp.max_chars)
             {
-                first_match.matched ^= negated;
+                first_match.matched ^= mp.negated;
                 return first_match;
             }
             if constexpr (sizeof... (Rest) > 0)
             {
-                return alternation<Rest ...>::template match<N>(input, from, max_chars, captures, negated);
+                return alternation<Rest ...>::template match<N>(input, mp, captures);
             }
             // if negated == true and nothing was matched before, match one character (in case of negated sets)
-            return {negated, negated};
+            return {mp.negated, mp.negated};
         }
     };
 
@@ -68,18 +67,18 @@ namespace cx
         static constexpr std::size_t capture_count = Inner::capture_count;
 
         template<std::size_t N>
-        static constexpr match_result match(auto const &input, std::size_t from, std::size_t max_chars,
-                                            capture_storage<N> &captures, bool negated = false) noexcept
+        static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &captures) noexcept
         {
-            if (max_chars == 0)
+            if (mp.max_chars == 0)
                 return {0, true};
 
-            if (auto inner_match = Inner::template match<N>(input, from, max_chars, captures, negated))
+            if (auto inner_match = Inner::template match<N>(input, mp, captures))
             {
-                if (inner_match.count > max_chars)
+                if (inner_match.count > mp.max_chars)
                     return {0, true};
                 return inner_match +
-                       match<N>(input, from + inner_match.count, max_chars - inner_match.count, captures, negated);
+                       match<N>(input, {mp.from + inner_match.count, mp.max_chars - inner_match.count, mp.negated},
+                                captures);
             }
             return {0, true};
         }
@@ -94,7 +93,7 @@ namespace cx
     {
         // epsilon always matches anything and consumes no characters
         template<std::size_t N>
-        static constexpr match_result match(auto const &, std::size_t, std::size_t, capture_storage<N> &, ...) noexcept
+        static constexpr match_result match(auto const &, match_params, capture_storage<N> &) noexcept
         {
             return {0, true};
         }
@@ -103,18 +102,18 @@ namespace cx
     struct beginning : terminal
     {
         template<std::size_t N>
-        static constexpr match_result match(auto const &, std::size_t from, std::size_t, capture_storage<N> &, ...) noexcept
+        static constexpr match_result match(auto const &, match_params mp, capture_storage<N> &) noexcept
         {
-            return {0, from == 0u};
+            return {0, mp.from == 0u};
         }
     };
 
     struct ending : terminal
     {
         template<std::size_t N>
-        static constexpr match_result match(auto const &input, std::size_t from, std::size_t, capture_storage<N> &, ...) noexcept
+        static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &) noexcept
         {
-            return {0, from == input.length()};
+            return {0, mp.from == input.length()};
         }
     };
 
@@ -122,10 +121,9 @@ namespace cx
     struct character : terminal
     {
         template<std::size_t N>
-        static constexpr match_result match(auto const &input, std::size_t from, std::size_t,
-                                            capture_storage<N> &, bool negated = false) noexcept
+        static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &) noexcept
         {
-            bool res = (from < input.length() && C == input[from]) ^negated;
+            bool res = (mp.from < input.length() && C == input[mp.from]) ^mp.negated;
             return {res, res};
         }
     };
@@ -133,13 +131,13 @@ namespace cx
     struct whitespace : terminal
     {
         template<std::size_t N>
-        static constexpr match_result match(auto const &input, std::size_t from, std::size_t,
-                                            capture_storage<N> &, bool negated = false) noexcept
+        static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &) noexcept
         {
+            auto from = mp.from;
             bool res = (from < input.length() &&
                         (input[from] == ' ' || input[from] == '\t' ||
                          input[from] == '\n' || input[from] == '\r' ||
-                         input[from] == '\f' || input[from] == '\x0B')) ^negated;
+                         input[from] == '\f' || input[from] == '\x0B')) ^mp.negated;
             return {res, res};
         }
     };
@@ -147,10 +145,10 @@ namespace cx
     struct wildcard : terminal
     {
         template<std::size_t N>
-        static constexpr match_result match(auto const &input, std::size_t from, std::size_t,
-                                            capture_storage<N> &, bool negated = false) noexcept
+        static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &) noexcept
         {
-            bool res = (from < input.length() && input[from] != '\n' && input[from] != '\r') ^negated;
+            auto from = mp.from;
+            bool res = (from < input.length() && input[from] != '\n' && input[from] != '\r') ^mp.negated;
             return {res, res};
         }
     };
@@ -161,10 +159,10 @@ namespace cx
         static_assert(A < B, "invalid range parameters");
 
         template<std::size_t N>
-        static constexpr match_result match(auto const &input, std::size_t from, std::size_t,
-                                            capture_storage<N> &, bool negated = false) noexcept
+        static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &) noexcept
         {
-            bool res = (from < input.length() && A <= input[from] && input[from] <= B) ^negated;
+            auto from = mp.from;
+            bool res = (from < input.length() && A <= input[from] && input[from] <= B) ^mp.negated;
             return {res, res};
         }
     };
@@ -194,10 +192,9 @@ namespace cx
         static constexpr std::size_t capture_count = Inner::capture_count;
 
         template<std::size_t N>
-        static constexpr match_result match(auto const &input, std::size_t from, std::size_t max_chars,
-                                            capture_storage<N> &captures, bool negated = false) noexcept
+        static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &captures) noexcept
         {
-            return Inner::template match<N>(input, from, max_chars, captures, !negated);
+            return Inner::template match<N>(input, {mp.from, mp.max_chars, !mp.negated}, captures);
         }
     };
 
@@ -207,11 +204,10 @@ namespace cx
         static constexpr std::size_t capture_count = 1 + Inner::capture_count;
 
         template<std::size_t N>
-        static constexpr match_result match(auto const &input, std::size_t from, std::size_t max_chars,
-                                            capture_storage<N> &captures, bool negated = false) noexcept
+        static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &captures) noexcept
         {
-            auto inner_match = Inner::template match<N>(input, from, max_chars, captures, negated);
-            std::get<ID>(captures) = capture<ID>{from, inner_match.count};
+            auto inner_match = Inner::template match<N>(input, mp, captures);
+            std::get<ID>(captures) = capture<ID>{mp.from, inner_match.count};
             return inner_match;
         }
     };

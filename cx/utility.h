@@ -18,6 +18,13 @@ namespace cx
         s.substr(index, index);
     };
 
+    struct match_params
+    {
+        std::size_t from{};
+        std::size_t max_chars{};
+        bool negated = false;
+    };
+
     template<typename First, typename Second>
     struct pair
     {

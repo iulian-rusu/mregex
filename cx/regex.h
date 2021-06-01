@@ -20,7 +20,7 @@ namespace cx
         -> capturing_result<capture_count>
         {
             capture_storage<capture_count> captures;
-            auto res = ast::template match<capture_count>(input, 0, input.length(), captures);
+            auto res = ast::template match<capture_count>(input, {0, input.length()}, captures);
             res.matched = res.matched && (res.count == input.length());
             std::get<0>(captures) = capture<0>{0, res.count};
             return capturing_result{res.matched, std::move(captures), input};
@@ -33,7 +33,7 @@ namespace cx
             capture_storage<capture_count> captures;
             while (start_pos < input.length())
             {
-                auto res = ast::template match<capture_count>(input, start_pos, input.length(), captures);
+                auto res = ast::template match<capture_count>(input, {start_pos, input.length()}, captures);
                 if (res)
                 {
                     std::get<0>(captures) = capture<0>{start_pos, res.count};
