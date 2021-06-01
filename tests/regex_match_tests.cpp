@@ -9,6 +9,14 @@ namespace cx::tests
     // test matching inputs
     static_assert(regex<"">::match(""sv));
     static_assert(regex<"a">::match("a"sv));
+    static_assert(regex<"^a">::match("a"sv));
+    static_assert(regex<"a$">::match("a"sv));
+    static_assert(regex<"^abcd$">::match("abcd"sv));
+    static_assert(regex<R"([\^a]+)">::match("^a"sv));
+    static_assert(regex<R"([^\^a]+)">::match("b$"sv));
+    static_assert(regex<R"([a-z]+)">::match("abasbdbasdbasbdabs"sv));
+    static_assert(regex<R"([A-Z]+)">::match("AAAAVVVVVVVVCCCCCCCD"sv));
+    static_assert(regex<R"([0-9]+)">::match("123123123123"sv));
     static_assert(regex<"a?">::match(""sv));
     static_assert(regex<"a?">::match("a"sv));
     static_assert(regex<"a*">::match(""sv));
@@ -46,6 +54,15 @@ namespace cx::tests
     // test non-matching inputs
     static_assert(regex<"">::match("t"sv) == false);
     static_assert(regex<"a">::match("b"sv) == false);
+    static_assert(regex<"^a">::match(" a"sv) == false);
+    static_assert(regex<"a$">::match("a "sv) == false);
+    static_assert(regex<"^abcd$">::match(" abcd"sv) == false);
+    static_assert(regex<R"([\^a]+)">::match("^ca"sv) == false);
+    static_assert(regex<R"([^\^a]+)">::match("bb^$"sv) == false);
+    static_assert(regex<R"([a-z]+)">::match("abasbdbAasdbasbdabs"sv) == false);
+    static_assert(regex<R"([A-Z]+)">::match("AAAAVVVVVVVVCCCCCCxCD"sv) == false);
+    static_assert(regex<R"([0-9]+)">::match("123123f123123"sv) == false);
+    static_assert(regex<R"([0-3]+)">::match("1231243123123"sv) == false);
     static_assert(regex<"a?">::match("b"sv) == false);
     static_assert(regex<"a?">::match("ab"sv) == false);
     static_assert(regex<"a*">::match("aaaaaaaaabaaaa"sv) == false);

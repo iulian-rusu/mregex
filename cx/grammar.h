@@ -96,7 +96,7 @@ namespace cx::grammar
     {
         using type = stack<
                 character<C>,
-                make_char_or_wildcard_t<C>,
+                make_char_class_t<C>,
                 symbol::mod,
                 symbol::seq,
                 symbol::alt
@@ -181,7 +181,7 @@ namespace cx::grammar
     {
         using type = stack<
                 character<C>,
-                make_char_or_wildcard_t<C>,
+                make_char_class_t<C>,
                 symbol::mod,
                 symbol::seq,
                 symbol::alt
@@ -255,7 +255,7 @@ namespace cx::grammar
     template<auto C>
     struct rule<symbol::esc, character<C>>
     {
-        using type = decide_rule_t<symbol::esc, character<C>>;
+        using type = rule_for_escaped_char_t<symbol::esc, character<C>>;
     };
 
     template<>
@@ -399,7 +399,7 @@ namespace cx::grammar
     {
         using type = stack<
                 character<C>,
-                make_char_or_wildcard_t<C>,
+                make_char_class_t<C>,
                 symbol::mod,
                 symbol::seq>;
     };
@@ -482,7 +482,7 @@ namespace cx::grammar
     {
         using type = stack<
                 character<C>,
-                make_char_or_wildcard_t<C>,
+                make_char_class_t<C>,
                 symbol::mod,
                 symbol::make_sequence,
                 symbol::seq>;
@@ -636,7 +636,7 @@ namespace cx::grammar
     template<auto C>
     struct rule<symbol::set_esc, character<C>>
     {
-        using type = decide_rule_t<symbol::set_esc, character<C>>;
+        using type = rule_for_escaped_char_t<symbol::set_esc, character<C>>;
     };
 
     template<auto C>

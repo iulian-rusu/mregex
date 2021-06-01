@@ -3,11 +3,16 @@
 #ifdef CX_RUN_PARSER_TESTS
 namespace cx::tests
 {
+    // static_assert(std::is_same_v<typename parser<static_string(R"()")>::ast, void>);
+
     template<static_string const pattern, typename AST>
     constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast, AST>;
 
     static_assert(expected_ast<"", epsilon>);
     static_assert(expected_ast<"a", character<'a'>>);
+    static_assert(expected_ast<"^ab", sequence<beginning, character<'a'>, character<'b'>>>);
+    static_assert(expected_ast<"ab$", sequence<character<'a'>, character<'b'>, ending>>);
+    static_assert(expected_ast<"^ab$", sequence<beginning, character<'a'>, character<'b'>, ending>>);
     static_assert(expected_ast<"\\a", alnum>);
     static_assert(expected_ast<"\\D", negated<digit>>);
     static_assert(expected_ast<"a.?b", sequence<character<'a'>, optional<wildcard>, character<'b'>>>);
@@ -99,8 +104,5 @@ namespace cx::tests
                 >
             >
     >);
-
-    // for debugging
-    // static_assert(std::is_same_v<typename parser<static_string(R"([^-aA-Z])")>::ast, void>);
 }
 #endif // CX_RUN_PARSER_TESTS

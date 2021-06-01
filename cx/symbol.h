@@ -68,6 +68,10 @@ namespace cx::symbol
 
     struct make_wildcard: ast_update {};
 
+    struct make_beginning: ast_update {};
+
+    struct make_ending: ast_update {};
+
     struct make_negated: ast_update {};
 
     struct make_capturing: ast_update {};

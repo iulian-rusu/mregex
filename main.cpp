@@ -47,7 +47,7 @@ int main()
 
     // simple URL parsing example
     using url_regex = cx::regex<R"((\w+):\/\/(((\w+):(\w+)?@)?([\w.]+)(:(\d+))?)?(\/([-/\w]+)?\?([\w=&]+))?)">;
-    std::string_view sv = "https://root:pass@youtube.com:80/path/watch?video=123123";
+    std::string_view sv = "https://admin:pass123@hostname.com:8080/path/to/resource?id=12345";
     auto match_res = url_regex::match(sv);
     std::cout << "Scheme:\t" << match_res.get<1>() << '\n';
     std::cout << "User:\t" << match_res.get<4>() << '\n';
