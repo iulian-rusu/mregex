@@ -44,6 +44,5 @@ namespace cx
             return capturing_result{false, std::move(captures), input};
         }
     };
-
 }
 #endif //CX_REGEX_H

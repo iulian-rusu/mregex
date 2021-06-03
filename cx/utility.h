@@ -8,6 +8,11 @@
  */
 namespace cx
 {
+    /**
+     * Concept used to constrain the generic type accepted by matching/searching functions
+     *
+     * @tparam T    The type to be constrained
+     */
     template<typename T>
     concept string_like = requires(T s, std::size_t index)
     {
@@ -18,6 +23,9 @@ namespace cx
         s.substr(index, index);
     };
 
+    /**
+     * Struct used as parameter for more concise function signatures
+     */
     struct match_params
     {
         std::size_t from{};
@@ -25,6 +33,11 @@ namespace cx
         bool negated = false;
     };
 
+    /**
+     * Meta-pair containing two types
+     * @tparam First    The first type in the pair
+     * @tparam Second   The second type in the pair
+     */
     template<typename First, typename Second>
     struct pair
     {
@@ -32,6 +45,12 @@ namespace cx
         using second = Second;
     };
 
+    /**
+     * Metafunction returning the first type in a variadic type pack
+     *
+     * @tparam First    The type to be returned
+     * @tparam ...      The rest of the type pack
+     */
     template<typename First, typename ...>
     struct first
     {
@@ -41,6 +60,12 @@ namespace cx
     template<typename ... Elems>
     using first_t = typename first<Elems ...>::type;
 
+    /**
+     * Metafunction returning the last type in a variadic type pack
+     *
+     * @tparam First    The first type in the pack
+     * @tparam ...      The rest of the type pack
+     */
     template<typename First, typename ... Rest>
     struct last
     {
@@ -56,18 +81,13 @@ namespace cx
     template<typename ... Elems>
     using last_t = typename last<Elems ...>::type;
 
-    template<typename First, typename ... Rest>
-    struct count_captures
-    {
-        static constexpr std::size_t capture_count = First::capture_count + count_captures<Rest ...>::capture_count;
-    };
-
-    template<typename First>
-    struct count_captures<First>
-    {
-        static constexpr std::size_t capture_count = First::capture_count;
-    };
-
+    /***
+    * Metafunction used to detect wether a type is present inside a type pack
+    *
+    * @tparam Test     The searched type
+    * @tparam First    The first type in the type pack
+    * @tparam Rest     The rest of the type pack
+    */
     template<typename Test, typename First, typename ... Rest>
     struct is_any_of
     {
@@ -82,6 +102,24 @@ namespace cx
 
     template<typename Test, typename First, typename ... Rest>
     constexpr auto is_any_of_v = is_any_of<Test, First, Rest ...>::value;
+
+    /**
+     * Metafunction used to count the number of capturing groups in the regex AST
+     *
+     * @tparam First    The first AST node
+     * @tparam Rest     The rest of AST nodes
+     */
+    template<typename First, typename ... Rest>
+    struct count_captures
+    {
+        static constexpr std::size_t capture_count = First::capture_count + count_captures<Rest ...>::capture_count;
+    };
+
+    template<typename First>
+    struct count_captures<First>
+    {
+        static constexpr std::size_t capture_count = First::capture_count;
+    };
 }
 
 #endif //CX_UTILITY_H

@@ -15,8 +15,12 @@ namespace cx::grammar
 
     struct reject: std::false_type {};
 
-    // defines a rule based on two inputs
-    // rules are transcribed from a parsing table based on regular expression grammar
+    /**
+     * Metafunction defining a grammar rule based on two parameters.
+     *
+     * @tparam  The current symbol on the stack
+     * @tparam  The current character in the input string
+     */
     template<typename, typename>
     struct rule
     {

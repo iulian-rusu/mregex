@@ -8,6 +8,13 @@
  */
 namespace cx
 {
+    /**
+     * Metafunction that reverses the IDs of inner capturing groups
+     * (3(2(1))) -> (1(2(3)))
+     *
+     * @tparam Offset   The ID of the outer-most capturing group
+     * @tparam Wrapper  The AST node type contained inside the capture
+     */
     template<auto Offset, typename Wrapper>
     struct renumber_captures
     {

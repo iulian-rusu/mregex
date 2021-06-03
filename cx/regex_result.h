@@ -108,7 +108,7 @@ namespace cx
     };
 
     template<typename Storage>
-    capturing_result(bool, Storage &&cs, std::string_view sv) -> capturing_result<std::tuple_size_v<Storage> - 1>;
+    capturing_result(bool, Storage &&, std::string_view) -> capturing_result<std::tuple_size_v<Storage> - 1>;
 }
 
 #endif //CX_REGEX_RESULT_H

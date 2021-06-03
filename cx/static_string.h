@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <array>
 #include <type_traits>
+#include <iostream>
 
 namespace cx
 {
@@ -53,6 +54,11 @@ namespace cx
             return std::string_view(buffer + from, count);
         }
 
+        constexpr explicit operator std::string_view() const noexcept
+        {
+            return std::string_view(buffer, N);
+        }
+
         constexpr char operator[](std::size_t i) const noexcept
         {
             return buffer[i];
@@ -60,9 +66,16 @@ namespace cx
     };
 
     template<std::size_t N>
-    static_string(char const (&str)[N]) -> static_string<N-1>;
+    static_string(char const (&)[N]) -> static_string<N-1>;
 
     template<std::size_t N>
     static_string(static_string<N>) -> static_string<N>;
 }
+
+template<std::size_t N>
+std::ostream &operator<<(std::ostream &os, cx::static_string<N> const &str)
+{
+    return os << str.substr(0, N);
+}
+
 #endif //CX_STATIC_STRING_H

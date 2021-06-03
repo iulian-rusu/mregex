@@ -26,6 +26,7 @@ The library currently supports the following regex features:
 * `[a-z0-9]` - ranges inside sets
 
 Some features planned for the future:
+* `\12` - backreferences
 * `(?:expr)` - non-capturing groups
 * `++`, `?+`, `*+` - possesive quantifiers
 * `{5}` - exact quantifier

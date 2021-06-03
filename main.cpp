@@ -1,4 +1,3 @@
-#include <iostream>
 #include "cxregex.h"
 
 struct phone
@@ -20,7 +19,7 @@ constexpr auto parse()
     using test_number = cx::regex<R"([1-9]+(\.\d*)?(e(\+|-)?\d+(\.\d*)?)?)">;
     using test_phone = cx::regex<R"((\(\+\d+\))? ?\d+-\d+(-\d+))">;
 
-    constexpr std::string_view sv(input.buffer, input.length());
+    constexpr std::string_view sv = static_cast<std::string_view>(input);
     if constexpr (test_number::match(sv))
     {
         return std::stod(std::string(sv));
