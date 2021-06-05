@@ -17,23 +17,31 @@ namespace cx
         template<std::size_t N>
         static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &captures) noexcept
         {
-            if constexpr (sizeof... (Rest) > 0)
+            std::size_t match_limit = mp.max_chars;
+            do
             {
-                std::size_t match_limit = mp.max_chars;
-                do
-                {
-                    auto first_match = First::template match<N>(input, {mp.from, match_limit, mp.negated}, captures);
-                    if (!first_match)
-                        return {0, false};
-                    if (auto rest_matched = sequence<Rest ...>::template match<N>(
-                            input, {mp.from + first_match.count, mp.max_chars - first_match.count, mp.negated},
-                            captures))
-                        return first_match + rest_matched;
-                    if (first_match.count == 0 || match_limit == 0)
-                        return {0, false};
-                    match_limit = first_match.count - 1;
-                } while (true);
-            }
+                auto first_match = First::template match<N>(input, {mp.from, match_limit, mp.negated}, captures);
+                if (!first_match)
+                    return {0, false};
+                if (auto rest_matched = sequence<Rest ...>::template match<N>(
+                        input, {mp.from + first_match.count, mp.max_chars - first_match.count, mp.negated},
+                        captures))
+                    return first_match + rest_matched;
+                if (first_match.count == 0 || match_limit == 0)
+                    return {0, false};
+                match_limit = first_match.count - 1;
+            } while (true);
+        }
+    };
+
+    template<typename First>
+    struct sequence<First>
+    {
+        static constexpr std::size_t capture_count = First::capture_count;
+
+        template<std::size_t N>
+        static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &captures) noexcept
+        {
             return First::template match<N>(input, mp, captures);
         }
     };
