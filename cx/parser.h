@@ -5,6 +5,7 @@
 #include "grammar.h"
 #include "ast_builder.h"
 #include "capture_builder.h"
+#include "type_helpers.h"
 
 namespace cx
 {

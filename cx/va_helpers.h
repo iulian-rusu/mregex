@@ -1,50 +1,11 @@
-#ifndef CX_UTILITY_H
-#define CX_UTILITY_H
-
-#include <type_traits>
+#ifndef CX_VA_HELPERS_H
+#define CX_VA_HELPERS_H
 
 /**
- * File with various utility metafunctions
+ * File with metafunctions for variadic template processing
  */
 namespace cx
 {
-    /**
-     * Concept used to constrain the generic type accepted by matching/searching functions
-     *
-     * @tparam T    The type to be constrained
-     */
-    template<typename T>
-    concept string_like = requires(T s, std::size_t index)
-    {
-        static_cast<char>(s[index]);
-        static_cast<std::size_t>(s.length());
-        s.begin();
-        s.end();
-        s.substr(index, index);
-    };
-
-    /**
-     * Struct used as parameter for more concise function signatures
-     */
-    struct match_params
-    {
-        std::size_t from{};
-        std::size_t max_chars{};
-        bool negated = false;
-    };
-
-    /**
-     * Meta-pair containing two types
-     * @tparam First    The first type in the pair
-     * @tparam Second   The second type in the pair
-     */
-    template<typename First, typename Second>
-    struct pair
-    {
-        using first = First;
-        using second = Second;
-    };
-
     /**
      * Metafunction returning the first type in a variadic type pack
      *
@@ -102,24 +63,6 @@ namespace cx
 
     template<typename Test, typename First, typename ... Rest>
     constexpr auto is_any_of_v = is_any_of<Test, First, Rest ...>::value;
-
-    /**
-     * Metafunction used to count the number of capturing groups in the regex AST
-     *
-     * @tparam First    The first AST node
-     * @tparam Rest     The rest of AST nodes
-     */
-    template<typename First, typename ... Rest>
-    struct count_captures
-    {
-        static constexpr std::size_t capture_count = First::capture_count + count_captures<Rest ...>::capture_count;
-    };
-
-    template<typename First>
-    struct count_captures<First>
-    {
-        static constexpr std::size_t capture_count = First::capture_count;
-    };
 }
 
-#endif //CX_UTILITY_H
+#endif //CX_VA_HELPERS_H

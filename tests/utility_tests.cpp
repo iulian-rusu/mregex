@@ -1,4 +1,5 @@
 #include "tests.h"
+#include "../cx/va_helpers.h"
 
 #ifdef CX_RUN_UTILITY_TESTS
 namespace cx::tests

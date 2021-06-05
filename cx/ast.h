@@ -1,7 +1,7 @@
 #ifndef CX_AST_H
 #define CX_AST_H
 
-#include "utility.h"
+#include "capture_counter.h"
 #include "regex_result.h"
 
 /**
@@ -9,6 +9,13 @@
  */
 namespace cx
 {
+    struct match_params
+    {
+        std::size_t from{};
+        std::size_t max_chars{};
+        bool negated = false;
+    };
+
     template<typename First, typename ... Rest>
     struct sequence
     {
