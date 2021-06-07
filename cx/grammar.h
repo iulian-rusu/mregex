@@ -100,11 +100,41 @@ namespace cx::grammar
     {
         using type = stack<
                 character<C>,
-                make_char_class_t<C>,
+                symbol::make_char,
                 symbol::mod,
                 symbol::seq,
-                symbol::alt
-        >;
+                symbol::alt>;
+    };
+
+    template<>
+    struct rule<symbol::start, character<'.'>>
+    {
+        using type = stack<
+                character<'.'>,
+                symbol::make_wildcard,
+                symbol::mod,
+                symbol::seq,
+                symbol::alt>;
+    };
+
+    template<>
+    struct rule<symbol::start, character<'^'>>
+    {
+        using type = stack<
+                character<'^'>,
+                symbol::make_beginning,
+                symbol::seq,
+                symbol::alt>;
+    };
+
+    template<>
+    struct rule<symbol::start, character<'$'>>
+    {
+        using type = stack<
+                character<'$'>,
+                symbol::make_ending,
+                symbol::seq,
+                symbol::alt>;
     };
 
     template<>
@@ -185,11 +215,31 @@ namespace cx::grammar
     {
         using type = stack<
                 character<C>,
-                make_char_class_t<C>,
+                symbol::make_char,
                 symbol::mod,
                 symbol::seq,
-                symbol::alt
-        >;
+                symbol::alt>;
+    };
+
+    template<>
+    struct rule<symbol::alt0, character<'.'>>
+    {
+        using type = stack<
+                character<'.'>,
+                symbol::make_wildcard,
+                symbol::mod,
+                symbol::seq,
+                symbol::alt>;
+    };
+
+    template<>
+    struct rule<symbol::alt0, character<'^'>>
+    {
+        using type = stack<
+                character<'^'>,
+                symbol::make_beginning,
+                symbol::seq,
+                symbol::alt>;
     };
 
     template<>
@@ -259,7 +309,7 @@ namespace cx::grammar
     template<auto C>
     struct rule<symbol::esc, character<C>>
     {
-        using type = rule_for_escaped_char_t<symbol::esc, character<C>>;
+        using type = rule_for_char_class_t<symbol::esc, character<C>>;
     };
 
     template<>
@@ -403,8 +453,36 @@ namespace cx::grammar
     {
         using type = stack<
                 character<C>,
-                make_char_class_t<C>,
+                symbol::make_char,
                 symbol::mod,
+                symbol::seq>;
+    };
+
+    template<>
+    struct rule<symbol::seq0, character<'.'>>
+    {
+        using type = stack<
+                character<'.'>,
+                symbol::make_wildcard,
+                symbol::mod,
+                symbol::seq>;
+    };
+
+    template<>
+    struct rule<symbol::seq0, character<'^'>>
+    {
+        using type = stack<
+                character<'^'>,
+                symbol::make_beginning,
+                symbol::seq>;
+    };
+
+    template<>
+    struct rule<symbol::seq0, character<'$'>>
+    {
+        using type = stack<
+                character<'$'>,
+                symbol::make_ending,
                 symbol::seq>;
     };
 
@@ -486,8 +564,39 @@ namespace cx::grammar
     {
         using type = stack<
                 character<C>,
-                make_char_class_t<C>,
+                symbol::make_char,
                 symbol::mod,
+                symbol::make_sequence,
+                symbol::seq>;
+    };
+
+    template<>
+    struct rule<symbol::seq, character<'.'>>
+    {
+        using type = stack<
+                character<'.'>,
+                symbol::make_wildcard,
+                symbol::mod,
+                symbol::make_sequence,
+                symbol::seq>;
+    };
+
+    template<>
+    struct rule<symbol::seq, character<'^'>>
+    {
+        using type = stack<
+                character<'^'>,
+                symbol::make_beginning,
+                symbol::make_sequence,
+                symbol::seq>;
+    };
+
+    template<>
+    struct rule<symbol::seq, character<'$'>>
+    {
+        using type = stack<
+                character<'$'>,
+                symbol::make_ending,
                 symbol::make_sequence,
                 symbol::seq>;
     };
@@ -640,7 +749,7 @@ namespace cx::grammar
     template<auto C>
     struct rule<symbol::set_esc, character<C>>
     {
-        using type = rule_for_escaped_char_t<symbol::set_esc, character<C>>;
+        using type = rule_for_char_class_t<symbol::set_esc, character<C>>;
     };
 
     template<auto C>

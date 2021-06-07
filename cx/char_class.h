@@ -11,41 +11,14 @@
  */
 namespace cx
 {
-    template<auto C>
-    struct make_char_class
-    {
-        using type = symbol::make_char;
-    };
-
-    template<>
-    struct make_char_class<'.'>
-    {
-        using type = symbol::make_wildcard;
-    };
-
-    template<>
-    struct make_char_class<'^'>
-    {
-        using type = symbol::make_beginning;
-    };
-
-    template<>
-    struct make_char_class<'$'>
-    {
-        using type = symbol::make_ending;
-    };
-
-    template<auto C>
-    using make_char_class_t = typename make_char_class<C>::type;
-
     template<typename Symbol, typename Char>
-    struct rule_for_escaped_char
+    struct rule_for_char_class
     {
-        using type = typename rule_for_escaped_char<symbol::esc, Char>::type;
+        using type = typename rule_for_char_class<symbol::esc, Char>::type;
     };
 
     template<auto C>
-    struct rule_for_escaped_char<symbol::esc, character<C>>
+    struct rule_for_char_class<symbol::esc, character<C>>
     {
         using type = stack<
                 character<C>,
@@ -53,7 +26,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<symbol::esc, character<'a'>>
+    struct rule_for_char_class<symbol::esc, character<'a'>>
     {
         using type = stack<
                 character<'a'>,
@@ -61,7 +34,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<symbol::esc, character<'A'>>
+    struct rule_for_char_class<symbol::esc, character<'A'>>
     {
         using type = stack<
                 character<'A'>,
@@ -70,7 +43,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<symbol::esc, character<'d'>>
+    struct rule_for_char_class<symbol::esc, character<'d'>>
     {
         using type = stack<
                 character<'d'>,
@@ -78,7 +51,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<symbol::esc, character<'D'>>
+    struct rule_for_char_class<symbol::esc, character<'D'>>
     {
         using type = stack<
                 character<'D'>,
@@ -86,7 +59,7 @@ namespace cx
                 symbol::make_negated>;
     };
     template<>
-    struct rule_for_escaped_char<symbol::esc, character<'w'>>
+    struct rule_for_char_class<symbol::esc, character<'w'>>
     {
         using type = stack<
                 character<'w'>,
@@ -94,7 +67,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<symbol::esc, character<'W'>>
+    struct rule_for_char_class<symbol::esc, character<'W'>>
     {
         using type = stack<
                 character<'W'>,
@@ -103,7 +76,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<symbol::esc, character<'s'>>
+    struct rule_for_char_class<symbol::esc, character<'s'>>
     {
         using type = stack<
                 character<'s'>,
@@ -111,7 +84,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<symbol::esc, character<'S'>>
+    struct rule_for_char_class<symbol::esc, character<'S'>>
     {
         using type = stack<
                 character<'S'>,
@@ -120,7 +93,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<symbol::esc, character<'l'>>
+    struct rule_for_char_class<symbol::esc, character<'l'>>
     {
         using type = stack<
                 character<'l'>,
@@ -128,7 +101,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<symbol::esc, character<'L'>>
+    struct rule_for_char_class<symbol::esc, character<'L'>>
     {
         using type = stack<
                 character<'L'>,
@@ -137,7 +110,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<symbol::esc, character<'u'>>
+    struct rule_for_char_class<symbol::esc, character<'u'>>
     {
         using type = stack<
                 character<'u'>,
@@ -145,7 +118,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<symbol::esc, character<'U'>>
+    struct rule_for_char_class<symbol::esc, character<'U'>>
     {
         using type = stack<
                 character<'U'>,
@@ -154,7 +127,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<symbol::esc, character<'h'>>
+    struct rule_for_char_class<symbol::esc, character<'h'>>
     {
         using type = stack<
                 character<'h'>,
@@ -162,7 +135,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<symbol::esc, character<'H'>>
+    struct rule_for_char_class<symbol::esc, character<'H'>>
     {
         using type = stack<
                 character<'H'>,
@@ -171,6 +144,6 @@ namespace cx
     };
 
     template<typename Symbol, typename Char>
-    using rule_for_escaped_char_t = typename rule_for_escaped_char<Symbol, Char>::type;
+    using rule_for_char_class_t = typename rule_for_char_class<Symbol, Char>::type;
 }
 #endif //CX_CHAR_CLASS_H
