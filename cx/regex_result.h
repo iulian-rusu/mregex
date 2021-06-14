@@ -29,14 +29,14 @@ namespace cx
     template<std::size_t N>
     struct alloc_capture_storage
     {
-        template<typename ...Captures>
-        using type = typename alloc_capture_storage<N - 1>::template type<capture<N>, Captures...>;
+        template<typename ... Captures>
+        using type = typename alloc_capture_storage<N - 1>::template type<capture<N>, Captures ...>;
     };
 
-     template<>
+    template<>
     struct alloc_capture_storage<0>
     {
-        template<typename ...Captures>
+        template<typename ... Captures>
         using type = std::tuple<capture<0>, Captures ...>;
     };
 
@@ -87,7 +87,8 @@ namespace cx
 
         template<typename Storage, typename = std::enable_if_t<std::is_convertible_v<capture_storage<N>, Storage>>>
         constexpr capturing_result(bool m, Storage &&cs, std::string_view sv)
-        : captures(std::forward<Storage>(cs)), matched(m), input(sv) {}
+                : captures(std::forward<Storage>(cs)), matched(m), input(sv)
+        {}
 
         constexpr explicit operator bool() const noexcept
         {

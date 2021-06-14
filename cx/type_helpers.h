@@ -16,8 +16,6 @@ namespace cx
     {
         static_cast<char>(s[index]);
         static_cast<std::size_t>(s.length());
-        s.begin();
-        s.end();
         s.substr(index, index);
     };
 

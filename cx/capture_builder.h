@@ -24,7 +24,7 @@ namespace cx
     template<auto Offset, typename Wrapper>
     using renumber_captures_t = typename renumber_captures<Offset, Wrapper>::type;
 
-    template<auto Offset, template<typename ...> typename Wrapper,  typename ... Inner>
+    template<auto Offset, template<typename ...> typename Wrapper, typename ... Inner>
     struct renumber_captures<Offset, Wrapper<Inner ...>>
     {
         using type = Wrapper<renumber_captures_t<Offset, Inner> ...>;
