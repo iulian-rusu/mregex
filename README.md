@@ -15,7 +15,8 @@ The library currently supports the following regex features:
 * `*` - Kleene start quantifier
 * `+` - plus quantifier
 * `?` - optional quantifier
-* `(expr)` - subexpressions
+* `(expr)` - capturing subexpressions
+* `\12` - backreferences
 * `|` - alternation of two subexpressions
 * `\?`, `\*`, `\\` - escaping characters
 * `\w`, `\d`, `\S` - special character classes
@@ -26,7 +27,6 @@ The library currently supports the following regex features:
 * `[a-z0-9]` - ranges inside sets
 
 Some features planned for the future:
-* `\12` - backreferences
 * `(?:expr)` - non-capturing groups
 * `++`, `?+`, `*+` - possesive quantifiers
 * `{5}` - exact quantifier
@@ -40,17 +40,17 @@ in a compilation error.
 
 The input can be any object that satisfies the `cx::string_like` concept.
 ```cpp
-using url_regex = cx::regex<R"((\w+):\/\/(((\w+):(\w+)?@)?([\w.]+)(:(\d+))?)?(\/([-/\w]+)?\?([\w=&]+))?)">;
+using url_regex = cx::regex<R"((\w+):\/\/(((\w+)?(:(\w+))?@)?([\w.]+)(:(\d+))?)?(\/([-/\w]+)?\?([\w=&]+))?)">;
 
-std::string_view sv = "https://admin:pass123@hostname.com:8080/path/to/resource?id=12345";
-auto match_res = url_regex::match(sv);
+constexpr std::string_view sv = "https://admin:pass123@hostname.com:8080/path/to/resource?id=12345";
+constexpr auto match_res = url_regex::match(sv);
 std::cout << "Scheme:\t" << match_res.get<1>() << '\n';
 std::cout << "User:\t" << match_res.get<4>() << '\n';
-std::cout << "Pass:\t" << match_res.get<5>() << '\n';
-std::cout << "Host:\t" << match_res.get<6>() << '\n';
-std::cout << "Port:\t" << match_res.get<8>() << '\n';
-std::cout << "Path:\t" << match_res.get<10>() << '\n';
-std::cout << "Query:\t" << match_res.get<11>() << '\n';
+std::cout << "Pass:\t" << match_res.get<6>() << '\n';
+std::cout << "Host:\t" << match_res.get<7>() << '\n';
+std::cout << "Port:\t" << match_res.get<9>() << '\n';
+std::cout << "Path:\t" << match_res.get<11>() << '\n';
+std::cout << "Query:\t" << match_res.get<12>() << '\n';
 ```
 
 Searching and matching can also be done in `constexpr` if the input is known at 
@@ -63,7 +63,7 @@ constexpr auto parse()
 {
     using test_number = cx::regex<R"([1-9]+(\.\d*)?(e(\+|-)?\d+(\.\d*)?)?)">;
     
-    constexpr std::string_view sv(input.buffer, input.length());
+    constexpr std::string_view sv = static_cast<std::string_view>(input);
     if constexpr (test_number::match(sv))
     {
         return std::stod(std::string(sv));

@@ -45,15 +45,15 @@ int main()
     std::cout << str_value << '\n';
 
     // simple URL parsing example
-    using url_regex = cx::regex<R"((\w+):\/\/(((\w+):(\w+)?@)?([\w.]+)(:(\d+))?)?(\/([-/\w]+)?\?([\w=&]+))?)">;
+    using url_regex = cx::regex<R"((\w+):\/\/(((\w+)?(:(\w+))?@)?([\w.]+)(:(\d+))?)?(\/([-/\w]+)?\?([\w=&]+))?)">;
 
     constexpr std::string_view sv = "https://admin:pass123@hostname.com:8080/path/to/resource?id=12345";
     constexpr auto match_res = url_regex::match(sv);
     std::cout << "Scheme:\t" << match_res.get<1>() << '\n';
     std::cout << "User:\t" << match_res.get<4>() << '\n';
-    std::cout << "Pass:\t" << match_res.get<5>() << '\n';
-    std::cout << "Host:\t" << match_res.get<6>() << '\n';
-    std::cout << "Port:\t" << match_res.get<8>() << '\n';
-    std::cout << "Path:\t" << match_res.get<10>() << '\n';
-    std::cout << "Query:\t" << match_res.get<11>() << '\n';
+    std::cout << "Pass:\t" << match_res.get<6>() << '\n';
+    std::cout << "Host:\t" << match_res.get<7>() << '\n';
+    std::cout << "Port:\t" << match_res.get<9>() << '\n';
+    std::cout << "Path:\t" << match_res.get<11>() << '\n';
+    std::cout << "Query:\t" << match_res.get<12>() << '\n';
 }
