@@ -226,5 +226,25 @@ namespace cx
             return inner_match;
         }
     };
+
+
+    template<std::size_t ID>
+    struct backref : terminal
+    {
+        template<std::size_t N>
+        static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &captures) noexcept
+        {
+            decltype(auto) str_to_match = std::get<ID>(captures).evaluate(input);
+            std::size_t max_match = str_to_match.length();
+            std::size_t offset = 0;
+            while (offset < max_match)
+            {
+                if(input[mp.from + offset] != str_to_match[offset])
+                    return {0, false};
+                ++offset;
+            }
+            return {max_match, true};
+        }
+    };
 }
 #endif //CX_AST_H

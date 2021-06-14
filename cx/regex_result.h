@@ -76,6 +76,7 @@ namespace cx
 
     /**
      * Result returned by cx::regex match/search methods
+     *
      * @tparam N    The number of capture groups (without the implicit <0> group)
      */
     template<std::size_t N>

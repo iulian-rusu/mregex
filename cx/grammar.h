@@ -2,6 +2,7 @@
 #define CX_GRAMMAR_H
 
 #include "char_class.h"
+#include "backref_builder.h"
 
 /**
  * Namespace containing the rules for the grammar
@@ -309,7 +310,7 @@ namespace cx::grammar
     template<auto C>
     struct rule<symbol::esc, character<C>>
     {
-        using type = rule_for_char_class_t<symbol::esc, character<C>>;
+        using type = decide_esc_rule_t<C>;
     };
 
     template<>
@@ -749,7 +750,7 @@ namespace cx::grammar
     template<auto C>
     struct rule<symbol::set_esc, character<C>>
     {
-        using type = rule_for_char_class_t<symbol::set_esc, character<C>>;
+        using type = rule_for_char_class_t<C>;
     };
 
     template<auto C>
@@ -764,6 +765,19 @@ namespace cx::grammar
     struct rule<symbol::set_range_esc, Char>
     {
         using type = reject;
+    };
+
+    // backreference specific rules
+    template<std::size_t ID, auto C>
+    struct rule<symbol::backref_id<ID>, character<C>>
+    {
+        using type = continue_backref_id_t<C, ID>;
+    };
+
+    template<std::size_t ID>
+    struct rule<symbol::backref_id<ID>, symbol::epsilon>
+    {
+        using type = symbol::make_backref<ID>;
     };
 
     template<char C>

@@ -3,7 +3,7 @@
 #ifdef CX_RUN_PARSER_TESTS
 namespace cx::tests
 {
-    // static_assert(std::is_same_v<typename parser<static_string(R"()")>::ast, void>);
+    //static_assert(std::is_same_v<typename parser<static_string(R"((a)\4x)")>::ast, void>);
 
     template<static_string const pattern, typename AST>
     constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast, AST>;
@@ -17,6 +17,15 @@ namespace cx::tests
     static_assert(expected_ast<"\\D", negated<digit>>);
     static_assert(expected_ast<"a.?b", sequence<character<'a'>, optional<wildcard>, character<'b'>>>);
     static_assert(expected_ast<"(c)", capturing<1, character<'c'>>>);
+    static_assert(expected_ast<"\\1", backref<1>>);
+    static_assert(expected_ast<"\\31", backref<31>>);
+    static_assert(expected_ast<"\\1+", plus<backref<1>>>);
+    static_assert(expected_ast<"\\42?", optional<backref<42>>>);
+    static_assert(expected_ast<"(c)\\1", sequence<capturing<1, character<'c'>>, backref<1>>>);
+    static_assert(expected_ast<"(c)\\0", sequence<capturing<1, character<'c'>>, character<'0'>>>);
+    static_assert(expected_ast<"(c)\\12", sequence<capturing<1, character<'c'>>, backref<12>>>);
+    static_assert(expected_ast<"(c)\\01", sequence<capturing<1, character<'c'>>, character<'0'>, character<'1'>>>);
+    static_assert(expected_ast<"(c)\\12?x", sequence<capturing<1, character<'c'>>, optional<backref<12>>, character<'x'>>>);
     static_assert(expected_ast<"((c))(e)", sequence<capturing<1, capturing<2, character<'c'>>>, capturing<3, character<'e'>>>>);
     static_assert(expected_ast<"c?", optional<character<'c'>>>);
     static_assert(expected_ast<"c*", star<character<'c'>>>);

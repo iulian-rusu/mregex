@@ -37,6 +37,9 @@ namespace cx::symbol
 
     struct set_range_esc {};
 
+    template<std::size_t ID>
+    struct backref_id {};
+
     // symbols that require AST updates
     struct ast_update {};
 
@@ -85,6 +88,9 @@ namespace cx::symbol
     struct make_range: ast_update {};
 
     struct make_range_from_stack: ast_update {};
+
+    template<std::size_t ID>
+    struct make_backref: ast_update {};
 
     // type trait to distinguish ast_update symbols from other symbols
     template<typename Symbol>

@@ -11,14 +11,9 @@
  */
 namespace cx
 {
-    template<typename Symbol, typename Char>
-    struct rule_for_char_class
-    {
-        using type = typename rule_for_char_class<symbol::esc, Char>::type;
-    };
 
     template<auto C>
-    struct rule_for_char_class<symbol::esc, character<C>>
+    struct rule_for_char_class
     {
         using type = stack<
                 character<C>,
@@ -26,7 +21,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<symbol::esc, character<'a'>>
+    struct rule_for_char_class<'a'>
     {
         using type = stack<
                 character<'a'>,
@@ -34,7 +29,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<symbol::esc, character<'A'>>
+    struct rule_for_char_class<'A'>
     {
         using type = stack<
                 character<'A'>,
@@ -43,7 +38,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<symbol::esc, character<'d'>>
+    struct rule_for_char_class<'d'>
     {
         using type = stack<
                 character<'d'>,
@@ -51,7 +46,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<symbol::esc, character<'D'>>
+    struct rule_for_char_class<'D'>
     {
         using type = stack<
                 character<'D'>,
@@ -59,7 +54,7 @@ namespace cx
                 symbol::make_negated>;
     };
     template<>
-    struct rule_for_char_class<symbol::esc, character<'w'>>
+    struct rule_for_char_class<'w'>
     {
         using type = stack<
                 character<'w'>,
@@ -67,7 +62,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<symbol::esc, character<'W'>>
+    struct rule_for_char_class<'W'>
     {
         using type = stack<
                 character<'W'>,
@@ -76,7 +71,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<symbol::esc, character<'s'>>
+    struct rule_for_char_class<'s'>
     {
         using type = stack<
                 character<'s'>,
@@ -84,7 +79,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<symbol::esc, character<'S'>>
+    struct rule_for_char_class<'S'>
     {
         using type = stack<
                 character<'S'>,
@@ -93,7 +88,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<symbol::esc, character<'l'>>
+    struct rule_for_char_class<'l'>
     {
         using type = stack<
                 character<'l'>,
@@ -101,7 +96,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<symbol::esc, character<'L'>>
+    struct rule_for_char_class<'L'>
     {
         using type = stack<
                 character<'L'>,
@@ -110,7 +105,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<symbol::esc, character<'u'>>
+    struct rule_for_char_class<'u'>
     {
         using type = stack<
                 character<'u'>,
@@ -118,7 +113,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<symbol::esc, character<'U'>>
+    struct rule_for_char_class<'U'>
     {
         using type = stack<
                 character<'U'>,
@@ -127,7 +122,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<symbol::esc, character<'h'>>
+    struct rule_for_char_class<'h'>
     {
         using type = stack<
                 character<'h'>,
@@ -135,7 +130,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<symbol::esc, character<'H'>>
+    struct rule_for_char_class<'H'>
     {
         using type = stack<
                 character<'H'>,
@@ -143,7 +138,7 @@ namespace cx
                 symbol::make_negated>;
     };
 
-    template<typename Symbol, typename Char>
-    using rule_for_char_class_t = typename rule_for_char_class<Symbol, Char>::type;
+    template<auto C>
+    using rule_for_char_class_t = typename rule_for_char_class<C>::type;
 }
 #endif //CX_CHAR_CLASS_H

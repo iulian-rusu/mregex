@@ -21,6 +21,7 @@ namespace cx
 
     /**
      * Meta-pair containing two types
+     *
      * @tparam First    The first type in the pair
      * @tparam Second   The second type in the pair
      */

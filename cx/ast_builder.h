@@ -148,6 +148,12 @@ namespace cx
         using type = stack<capturing<ID, First>, Rest ...>;
     };
 
+    template<std::size_t ID, typename C, typename ... Elems>
+    struct update_ast<symbol::make_backref<ID>, C, stack<Elems ...>>
+    {
+        using type = stack<backref<ID>, Elems ...>;
+    };
+
     template<typename C, typename ... First>
     struct update_ast<symbol::make_set_from_current_char, C, stack<First ...>>
     {

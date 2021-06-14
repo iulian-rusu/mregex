@@ -10,7 +10,6 @@ namespace cx
      * Metafunction returning the first type in a variadic type pack
      *
      * @tparam First    The type to be returned
-     * @tparam ...      The rest of the type pack
      */
     template<typename First, typename ...>
     struct first
