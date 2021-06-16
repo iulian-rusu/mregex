@@ -32,9 +32,12 @@ namespace cx
     template<auto C, bool = (C != '0' && is_numeric_v<C>)>
     struct decide_esc_rule
     {
-        using type = stack<
-                character<C>,
-                symbol::backref_id<C - '0'>>;
+        using type =
+                stack
+                <
+                    character<C>,
+                    symbol::backref_id<C - '0'>
+                >;
     };
 
     template<auto C>
@@ -56,9 +59,12 @@ namespace cx
     template<auto C, std::size_t ID, bool = is_numeric_v<C>>
     struct continue_backref_id
     {
-        using type = stack<
-                character<C>,
-                symbol::backref_id<10 * ID + C - '0'>>;
+        using type =
+                stack
+                <
+                    character<C>,
+                    symbol::backref_id<10 * ID + C - '0'>
+                >;
     };
 
     template<auto C, std::size_t ID>
