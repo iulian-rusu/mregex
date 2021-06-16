@@ -13,6 +13,7 @@ namespace cx::tests
     static_assert(accepted<R"(\\D)">);
     static_assert(accepted<R"(abcdefg)">);
     static_assert(accepted<R"((c))">);
+    static_assert(accepted<R"((c)\1)">);
     static_assert(accepted<R"(c?)">);
     static_assert(accepted<R"(c*)">);
     static_assert(accepted<R"(c+)">);
