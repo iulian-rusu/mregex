@@ -14,22 +14,21 @@ namespace cx
     /**
      * Type trait to check if a character is numeric at compile-time
      *
-     * @tparam C    The character being checketd
-     * @tparam B    Helper bool to test if the character is numeric
+     * @tparam C    The character being checked
      */
-    template<auto C, bool B = ('0' <= C && C <= '9')>
-    struct is_numeric : std::bool_constant<B> {};
+    template<auto C>
+    struct is_numeric : std::bool_constant<'0' <= C && C <= '9'> {};
 
     template<auto C>
     constexpr bool is_numeric_v = is_numeric<C>::value;
 
     /**
-     * Metafunction that decides using SFINAE if the current rule
-     * is a backreference building rule or an escaped character class rule
+     * Metafunction that decides the current rule is a backreference
+     * building rule or an escaped character class rule
      *
-     * @tparam C    The current character being in the regex pattern
+     * @tparam C    The current character in the regex pattern
      */
-    template<auto C, bool = (C != '0' && is_numeric_v<C>)>
+    template<auto C, bool = C != '0' && is_numeric_v<C>>
     struct decide_esc_rule
     {
         using type =
@@ -50,8 +49,8 @@ namespace cx
     using decide_esc_rule_t = typename decide_esc_rule<C>::type;
 
     /**
-     * Metafunction that decides using SFINAE if the current rule
-     * will continue the backreference building or will finalize it
+     * Metafunction that decides if the current rule will continue
+     * the backreference ID building or will finish it
      *
      * @tparam C    The current character in the regex pattern
      * @tparam ID   The current backreference ID on the stack
