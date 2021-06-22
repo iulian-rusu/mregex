@@ -82,5 +82,8 @@ namespace cx
 
         using pop = stack<>;
     };
+
+    template<typename Stack>
+    constexpr bool is_empty_v = std::is_same_v<empty_stack, typename Stack::top>;
 }
 #endif //CX_STACK_H

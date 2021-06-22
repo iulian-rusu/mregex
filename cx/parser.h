@@ -4,7 +4,7 @@
 #include "static_string.h"
 #include "grammar.h"
 #include "ast_builder.h"
-#include "capture_builder.h"
+#include "capture_indexer.h"
 #include "type_helpers.h"
 
 namespace cx
@@ -24,7 +24,7 @@ namespace cx
             using type = character<pattern[I]>;
         };
 
-        // specialization for indexes that are out of bound
+        // specialization for indices that are out of bound
         template<std::size_t I>
         struct character_at<I, false>
         {
@@ -35,7 +35,7 @@ namespace cx
         using character_at_t = typename character_at<I>::type;
 
         // forward declare helper struct to resolve reference conflicts
-        template<std::size_t I, typename ...>
+        template<std::size_t, typename, typename, typename>
         struct next_step;
 
         // main metafunction used to parse the pattern
@@ -53,12 +53,13 @@ namespace cx
         struct parse<I, AST, Stack, true>
         {
             using next_ast = typename update_ast<typename Stack::top, character_at_t<I - 1>, AST>::type;
+
             using type = typename parse<I, next_ast, typename Stack::pop>::type;
         };
 
         // metafunctions to decide the next step in the parsing algorithm
         template<std::size_t I, typename Rule, typename AST, typename Stack>
-        struct next_step<I, Rule, AST, Stack>
+        struct next_step
         {
             using type = typename parse<I, AST, typename Stack::template push<Rule>>::type;
         };
@@ -88,8 +89,8 @@ namespace cx
         };
 
         using parse_result = typename parse<0, stack<>, stack<symbol::start>>::type;
-        using stack_top = typename parse_result::second::top;
-        using ast = std::conditional_t<std::is_same_v<empty_stack, stack_top>, epsilon, renumber_captures_t<0, stack_top>>;
+        using ast_stack = typename parse_result::second;
+        using ast = std::conditional_t<is_empty_v<ast_stack>, epsilon, index_captures_t<0, typename ast_stack::top>>;
         static constexpr bool accepted = typename parse_result::first{};
     };
 }
