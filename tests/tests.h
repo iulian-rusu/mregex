@@ -3,7 +3,7 @@
 
 #include "../cxregex.h"
 
-// macro defined to run all tests
+// Macro defined to run all tests
 #define CX_RUN_TESTS
 
 #ifdef CX_RUN_TESTS

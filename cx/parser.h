@@ -90,7 +90,7 @@ namespace cx
 
         using parse_result = typename parse<0, stack<>, stack<symbol::start>>::type;
         using ast_stack = typename parse_result::second;
-        using ast = std::conditional_t<is_empty_v<ast_stack>, epsilon, index_captures_t<0, typename ast_stack::top>>;
+        using ast = std::conditional_t<is_empty_v<ast_stack>, epsilon, preorder_indexing_t<0, typename ast_stack::top>>;
         static constexpr bool accepted = typename parse_result::first{};
     };
 }

@@ -4,43 +4,47 @@
 #include "ast.h"
 
 /**
- * File with metafunctions for correctly indexing capturing groups
+ * File with metafunctions for indexing captures
  */
 namespace cx
 {
     /**
-     * Metafunction that reverses the IDs of inner capturing groups
-     * (3(2(1))) -> (1(2(3)))
+     * Metafunction that indexes capturing groups according to Preorder AST traversal.
+     *
+     * During expression parsing and initial AST generation, capturing groups are
+     * assigned IDs according to Postorder traversal. This is due to the stack-like
+     * behavior of the parsing algorithm and needs to be fixed by this metafunction
+     * to comply with indexing standards.
      *
      * @tparam Offset   The ID of the outer-most capturing group
      * @tparam Wrapper  The AST node type contained inside the capture
      */
     template<auto Offset, typename Wrapper>
-    struct index_captures
+    struct preorder_indexing
     {
         using type = Wrapper;
     };
 
     template<auto Offset, typename Wrapper>
-    using index_captures_t = typename index_captures<Offset, Wrapper>::type;
+    using preorder_indexing_t = typename preorder_indexing<Offset, Wrapper>::type;
 
     template<auto Offset, template<typename ...> typename Wrapper, typename ... Inner>
-    struct index_captures<Offset, Wrapper<Inner ...>>
+    struct preorder_indexing<Offset, Wrapper<Inner ...>>
     {
-        using type = Wrapper<index_captures_t<Offset, Inner> ...>;
+        using type = Wrapper<preorder_indexing_t<Offset, Inner> ...>;
     };
 
     template<auto Offset, typename ... Rest>
-    struct index_captures<Offset, sequence < Rest ...>>
+    struct preorder_indexing<Offset, sequence < Rest ...>>
     {
-        using type = sequence<index_captures_t<Offset, Rest> ...>;
+        using type = sequence<preorder_indexing_t<Offset, Rest> ...>;
     };
 
     template<auto Offset, auto N, typename Inner>
-    struct index_captures<Offset, capturing<N, Inner>>
+    struct preorder_indexing<Offset, capturing<N, Inner>>
     {
         static constexpr auto capture_count = Inner::capture_count;
-        using type = capturing<N + Offset - capture_count, index_captures_t<Offset + 1, Inner>>;
+        using type = capturing<N + Offset - capture_count, preorder_indexing_t<Offset + 1, Inner>>;
     };
 }
 #endif //CX_CAPTURE_INDEXER_H
