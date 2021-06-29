@@ -5,7 +5,7 @@
 #include "generator.h"
 
 /**
- * Defines a Regex type used to find_first/match input string-like objects
+ * Defines a Regex type used to match/search input string-like objects
  */
 namespace cx
 {
@@ -52,7 +52,7 @@ namespace cx
             {
                 [&input, pos = start_pos]() mutable {
                     auto result = find_first(input, pos);
-                    pos += result.length() + 1;
+                    pos = result.end();
                     return result;
                 }
             };

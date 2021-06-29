@@ -15,7 +15,7 @@ namespace cx
      *
      * @tparam  The current symbol on the stack
      * @tparam  The current character in the parsed input
-     * @tparam  The current state of the stack with the AST nodes
+     * @tparam  The current active of the stack with the AST nodes
      */
     template<typename, typename, typename>
     struct update_ast;

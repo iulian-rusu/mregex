@@ -21,6 +21,11 @@ namespace cx
         {
             return sv.substr(from, count);
         }
+
+        [[nodiscard]] constexpr std::size_t end() const noexcept
+        {
+            return from + count;
+        }
     };
 
     /**
@@ -70,9 +75,9 @@ namespace cx
             return matched == b;
         }
 
-        [[nodiscard]] constexpr std::size_t length() const noexcept
+        [[nodiscard]] constexpr std::size_t end() const noexcept
         {
-            return std::get<0>(captures).count;
+            return std::get<0>(captures).end();
         }
 
         template<std::size_t ID>

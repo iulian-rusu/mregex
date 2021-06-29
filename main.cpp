@@ -4,7 +4,7 @@ struct phone
 {
     std::string number;
 
-    constexpr explicit phone(auto &&sv) : number(std::forward<decltype(sv)>(sv))
+    constexpr explicit phone(auto &&s) : number(std::forward<decltype(s)>(s))
     {}
 };
 
@@ -58,7 +58,7 @@ int main()
 
     // Lazy iteration over a collection of results
     using word_regex = cx::regex<R"([-A-z']+)">;
-    constexpr std::string_view words = "Let's iterate over all words!";
+    constexpr std::string_view words = "Let's iterate over these words!";
     for (auto &&res : word_regex::find_all(words))
     {
         std::cout << res.get<0>() << '\n';
