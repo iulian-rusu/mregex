@@ -41,7 +41,6 @@ in a compilation error.
 The input can be any object that satisfies the `cx::string_like` concept.
 ```cpp
 using url_regex = cx::regex<R"((\w+):\/\/(((\w+)?(:(\w+))?@)?([\w.]+)(:(\d+))?)?(\/([-/\w]+)?\?([\w=&]+))?)">;
-
 constexpr std::string_view sv = "https://admin:pass123@hostname.com:8080/path/to/resource?id=12345";
 constexpr auto match_res = url_regex::match(sv);
 std::cout << "Scheme:\t" << match_res.get<1>() << '\n';
@@ -63,8 +62,8 @@ constexpr auto parse()
 {
     using test_number = cx::regex<R"([1-9]+(\.\d*)?(e(\+|-)?\d+(\.\d*)?)?)">;
     
-    constexpr std::string_view sv = static_cast<std::string_view>(input);
-    if constexpr (test_number::match(sv))
+    constexpr std::string_view url = static_cast<std::string_view>(input);
+    if constexpr (test_number::match(url))
     {
         return std::stod(std::string(sv));
     }
@@ -73,4 +72,17 @@ constexpr auto parse()
         return std::string(sv);
     }
 }
+```
+
+It is also possible to search for multiple matches in a string. In this case,
+the `cx::regex::find_all` method returns a lazy generator that will evaluate
+on-demand all matches in the string. We can iterate through the generator
+just like any standard container.
+```cpp
+    using word_regex = cx::regex<R"([-A-z']+)">;
+    constexpr std::string_view words = "Let's iterate over all words!";
+    for (auto &&res : word_regex::find_all(words))
+    {
+        std::cout << res.get<0>() << '\n';
+    }
 ```

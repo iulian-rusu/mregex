@@ -3,6 +3,7 @@
 
 #include "capture_counter.h"
 #include "regex_result.h"
+#include "match_result.h"
 
 /**
  * File with the building blocks of the Abstract Syntax Tree

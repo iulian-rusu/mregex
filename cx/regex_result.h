@@ -4,7 +4,7 @@
 #include <tuple>
 
 /**
- * File with data structures that encapsulate matching/searching results
+ * File with data structures that contain matching/searching results
  */
 namespace cx
 {
@@ -44,50 +44,19 @@ namespace cx
     using capture_storage = typename alloc_capture_storage<N>::template type<>;
 
     /**
-     * Intermediate object returned by AST node matching functions
-     */
-    struct match_result
-    {
-        std::size_t count{};
-        bool matched{};
-
-        constexpr explicit operator bool() const noexcept
-        {
-            return matched;
-        }
-
-        constexpr bool operator==(bool b) const noexcept
-        {
-            return matched == b;
-        }
-
-        constexpr match_result operator+(match_result const &other) const noexcept
-        {
-            return match_result{count + other.count, matched || other.matched};
-        }
-
-        constexpr match_result &operator+=(match_result const &other) noexcept
-        {
-            count += other.count;
-            matched = matched || other.matched;
-            return *this;
-        }
-    };
-
-    /**
-     * Result returned by cx::regex match/search methods
+     * Result returned by all Regex matching/searching functions
      *
-     * @tparam N    The number of capture groups (without the implicit <0> group)
+     * @tparam N    The number of capture groups (without the implicit 0 group)
      */
     template<std::size_t N>
-    struct capturing_result
+    struct regex_result
     {
         bool matched{};
         capture_storage<N> captures;
         std::string_view input;
 
         template<typename Storage, typename = std::enable_if_t<std::is_convertible_v<capture_storage<N>, Storage>>>
-        constexpr capturing_result(bool m, Storage &&cs, std::string_view sv)
+        constexpr regex_result(bool m, Storage &&cs, std::string_view sv)
                 : captures(std::forward<Storage>(cs)), matched(m), input(sv)
         {}
 
@@ -101,6 +70,11 @@ namespace cx
             return matched == b;
         }
 
+        [[nodiscard]] constexpr std::size_t length() const noexcept
+        {
+            return std::get<0>(captures).count;
+        }
+
         template<std::size_t ID>
         constexpr decltype(auto) get() const noexcept
         {
@@ -110,7 +84,6 @@ namespace cx
     };
 
     template<typename Storage>
-    capturing_result(bool, Storage &&, std::string_view) -> capturing_result<std::tuple_size_v<Storage> - 1>;
+    regex_result(bool, Storage &&, std::string_view) -> regex_result<std::tuple_size_v<Storage> - 1>;
 }
-
 #endif //CX_REGEX_RESULT_H

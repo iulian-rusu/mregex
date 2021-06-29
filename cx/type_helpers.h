@@ -32,5 +32,4 @@ namespace cx
         using second = Second;
     };
 }
-
 #endif //CX_TYPE_HELPERS_H

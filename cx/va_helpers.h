@@ -63,5 +63,4 @@ namespace cx
     template<typename Test, typename First, typename ... Rest>
     constexpr auto is_any_of_v = is_any_of<Test, First, Rest ...>::value;
 }
-
 #endif //CX_VA_HELPERS_H

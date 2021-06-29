@@ -36,19 +36,10 @@ constexpr auto parse()
 
 int main()
 {
-    // change function return type depending on regex parsing outcome
-    double number = parse<"123.3e-10">();
-    std::cout << number << '\n';
-    phone my_phone = parse<"(+373) 75-44-98">();
-    std::cout << my_phone << '\n';
-    std::string str_value = parse<"hello">();
-    std::cout << str_value << '\n';
-
-    // simple URL parsing example
+    // Basic URL parsing
     using url_regex = cx::regex<R"((\w+):\/\/(((\w+)?(:(\w+))?@)?([\w.]+)(:(\d+))?)?(\/([-/\w]+)?\?([\w=&]+))?)">;
-
-    constexpr std::string_view sv = "https://admin:pass123@hostname.com:8080/path/to/resource?id=12345";
-    constexpr auto match_res = url_regex::match(sv);
+    constexpr std::string_view url = "https://admin:pass123@hostname.com:8080/path/to/resource?id=12345";
+    constexpr auto match_res = url_regex::match(url);
     std::cout << "Scheme:\t" << match_res.get<1>() << '\n';
     std::cout << "User:\t" << match_res.get<4>() << '\n';
     std::cout << "Pass:\t" << match_res.get<6>() << '\n';
@@ -56,4 +47,20 @@ int main()
     std::cout << "Port:\t" << match_res.get<9>() << '\n';
     std::cout << "Path:\t" << match_res.get<11>() << '\n';
     std::cout << "Query:\t" << match_res.get<12>() << '\n';
+
+    // Changing function return type depending on input string format
+    double number = parse<"123.3e-10">();
+    std::cout << number << '\n';
+    phone my_phone = parse<"(+373) 75-44-98">();
+    std::cout << my_phone << '\n';
+    std::string str_value = parse<"hello">();
+    std::cout << str_value << '\n';
+
+    // Lazy iteration over a collection of results
+    using word_regex = cx::regex<R"([-A-z']+)">;
+    constexpr std::string_view words = "Let's iterate over all words!";
+    for (auto &&res : word_regex::find_all(words))
+    {
+        std::cout << res.get<0>() << '\n';
+    }
 }
