@@ -6,7 +6,7 @@
  */
 namespace cx::symbol
 {
-    // non-terminal symbols
+    // Non-terminal symbols
     struct epsilon {};
 
     struct start {};
@@ -22,6 +22,10 @@ namespace cx::symbol
     struct seq0 {};
 
     struct seq {};
+
+    struct captureless_begin {};
+
+    struct capture_mod {};
 
     struct set_begin {};
 
@@ -40,7 +44,7 @@ namespace cx::symbol
     template<std::size_t ID>
     struct backref_id {};
 
-    // symbols that require AST updates
+    // Symbols that require AST updates
     struct ast_update {};
 
     struct make_char: ast_update {};
@@ -77,6 +81,8 @@ namespace cx::symbol
 
     struct make_negated: ast_update {};
 
+    struct make_captureless: ast_update{};
+
     struct make_capturing: ast_update {};
 
     struct make_set: ast_update {};
@@ -92,7 +98,7 @@ namespace cx::symbol
     template<std::size_t ID>
     struct make_backref: ast_update {};
 
-    // type trait to distinguish ast_update symbols from other symbols
+    // Type trait to distinguish ast_update symbols from other symbols
     template<typename Symbol>
     constexpr bool is_ast_update_v = std::is_base_of_v<ast_update, Symbol>;
 }

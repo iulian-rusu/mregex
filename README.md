@@ -16,6 +16,7 @@ The library currently supports the following regex features:
 * `+` - plus quantifier
 * `?` - optional quantifier
 * `(expr)` - capturing subexpressions
+* `(?:expr)` - non-capturing subexpressions
 * `\12` - backreferences
 * `|` - alternation of two subexpressions
 * `\?`, `\*`, `\\` - escaping characters
@@ -27,7 +28,6 @@ The library currently supports the following regex features:
 * `[a-z0-9]` - ranges inside sets
 
 Some features planned for the future:
-* `(?:expr)` - non-capturing groups
 * `++`, `?+`, `*+` - possesive quantifiers
 * `{5}` - exact quantifier
 * `{3, 5}` - range quantifier
@@ -40,16 +40,16 @@ in a compilation error.
 
 The input can be any object that satisfies the `cx::string_like` concept.
 ```cpp
-using url_regex = cx::regex<R"((\w+):\/\/(((\w+)?(:(\w+))?@)?([\w.]+)(:(\d+))?)?(\/([-/\w]+)?\?([\w=&]+))?)">;
-constexpr std::string_view sv = "https://admin:pass123@hostname.com:8080/path/to/resource?id=12345";
-constexpr auto match_res = url_regex::match(sv);
+using url_regex = cx::regex<R"((\w+):\/\/(?:(?:(\w+)?(?::(\w+))?@)?([\w.]+)(?::(\d+))?)?(?:\/([-/\w]+)?\?([\w=&]+))?)">;
+constexpr std::string_view url = "https://username:password@hostname.com:8080/path/to/resource?id=12345";
+constexpr auto match_res = url_regex::match(url);
 std::cout << "Scheme:\t" << match_res.get<1>() << '\n';
-std::cout << "User:\t" << match_res.get<4>() << '\n';
-std::cout << "Pass:\t" << match_res.get<6>() << '\n';
-std::cout << "Host:\t" << match_res.get<7>() << '\n';
-std::cout << "Port:\t" << match_res.get<9>() << '\n';
-std::cout << "Path:\t" << match_res.get<11>() << '\n';
-std::cout << "Query:\t" << match_res.get<12>() << '\n';
+std::cout << "User:\t" << match_res.get<2>() << '\n';
+std::cout << "Pass:\t" << match_res.get<3>() << '\n';
+std::cout << "Host:\t" << match_res.get<4>() << '\n';
+std::cout << "Port:\t" << match_res.get<5>() << '\n';
+std::cout << "Path:\t" << match_res.get<6>() << '\n';
+std::cout << "Query:\t" << match_res.get<7>() << '\n';
 ```
 
 Searching and matching can also be done in `constexpr` if the input is known at 

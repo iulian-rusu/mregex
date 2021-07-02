@@ -6,7 +6,7 @@ namespace cx::tests
 {
     using namespace std::string_view_literals;
 
-    // test matching inputs
+    // Test matching inputs
     static_assert(regex<R"()">::match(""sv));
     static_assert(regex<R"(a)">::match("a"sv));
     static_assert(regex<R"(^a)">::match("a"sv));
@@ -52,7 +52,7 @@ namespace cx::tests
     static_assert(regex<R"(.+)">::match("this regex will match any input"sv));
     static_assert(regex<R"(hello|salut|bonjour|привет)">::match("salut"sv));
 
-    // test non-matching inputs
+    // Test non-matching inputs
     static_assert(regex<R"()">::match("t"sv) == false);
     static_assert(regex<R"(a)">::match("b"sv) == false);
     static_assert(regex<R"(^a)">::match(" a"sv) == false);

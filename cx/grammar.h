@@ -9,7 +9,7 @@
  */
 namespace cx::grammar
 {
-    // helper types defining decisions imposed by the grammar rules
+    // Helper types defining decisions imposed by the grammar rules
     struct pop_input {};
 
     struct accept: std::true_type {};
@@ -25,10 +25,10 @@ namespace cx::grammar
     template<typename, typename>
     struct rule
     {
-        using type = reject; // the default rule is to reject the input
+        using type = reject;
     };
 
-    // specialized rules for specific inputs
+    // Specialized rules for specific inputs
     template<>
     struct rule<symbol::start, character<'['>>
     {
@@ -216,12 +216,6 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::alt0, character<'?'>>
-    {
-        using type = reject;
-    };
-
-    template<>
     struct rule<symbol::alt0, character<'\\'>>
     {
         using type =
@@ -284,6 +278,159 @@ namespace cx::grammar
 
     template<>
     struct rule<symbol::alt0, symbol::epsilon>
+    {
+        using type = symbol::epsilon;
+    };
+
+    template<>
+    struct rule<symbol::alt0, character<'?'>>
+    {
+        using type =
+                stack
+                <
+                    character<'?'>,
+                    symbol::capture_mod
+                >;
+    };
+
+    template<>
+    struct rule<symbol::capture_mod, character<':'>>
+    {
+        using type =
+                stack
+                <
+                    character<':'>,
+                    symbol::captureless_begin,
+                    symbol::make_captureless
+                >;
+    };
+
+    template<auto C>
+    struct rule<symbol::capture_mod, character<C>>
+    {
+        using type = reject;
+    };
+
+    // Special begin marker symbol for captureless subexpressions
+    template<>
+    struct rule<symbol::captureless_begin, character<'['>>
+    {
+        using type =
+                stack
+                <
+                    character<'['>,
+                    symbol::make_set,
+                    symbol::set_begin,
+                    character<']'>,
+                    symbol::mod,
+                    symbol::seq,
+                    symbol::alt
+                >;
+    };
+
+    template<>
+    struct rule<symbol::captureless_begin, character<'('>>
+    {
+        using type =
+                stack
+                <
+                    character<'('>,
+                    symbol::alt0,
+                    character<')'>,
+                    symbol::make_capturing,
+                    symbol::mod,
+                    symbol::seq,
+                    symbol::alt
+                >;
+    };
+
+    template<>
+    struct rule<symbol::captureless_begin, character<')'>>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct rule<symbol::captureless_begin, character<'?'>>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct rule<symbol::captureless_begin, character<'*'>>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct rule<symbol::captureless_begin, character<'+'>>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct rule<symbol::captureless_begin, character<'\\'>>
+    {
+        using type =
+                stack
+                <
+                    character<'\\'>,
+                    symbol::esc,
+                    symbol::mod,
+                    symbol::seq,
+                    symbol::alt
+                >;
+    };
+
+    template<>
+    struct rule<symbol::captureless_begin, character<'|'>>
+    {
+        using type = reject;
+    };
+
+    template<auto C>
+    struct rule<symbol::captureless_begin, character<C>>
+    {
+        using type =
+                stack
+                <
+                    character<C>,
+                    symbol::make_char,
+                    symbol::mod,
+                    symbol::seq,
+                    symbol::alt
+                >;
+    };
+
+    template<>
+    struct rule<symbol::captureless_begin, character<'.'>>
+    {
+        using type =
+                stack
+                <
+                    character<'.'>,
+                    symbol::make_wildcard,
+                    symbol::mod,
+                    symbol::seq,
+                    symbol::alt
+                >;
+    };
+
+    template<>
+    struct rule<symbol::captureless_begin, character<'^'>>
+    {
+        using type =
+                stack
+                <
+                    character<'^'>,
+                    symbol::make_beginning,
+                    symbol::seq,
+                    symbol::alt
+                >;
+    };
+
+    template<>
+    struct rule<symbol::captureless_begin, symbol::epsilon>
     {
         using type = symbol::epsilon;
     };
@@ -701,7 +848,7 @@ namespace cx::grammar
         using type = symbol::epsilon;
     };
 
-    // set-specific rules
+    // Rules for parsing sets
     template<>
     struct rule<symbol::set_begin, character<'^'>>
     {
@@ -893,7 +1040,7 @@ namespace cx::grammar
         using type = reject;
     };
 
-    // backreference specific rules
+    // Rules for parsing backreferences
     template<std::size_t ID, auto C>
     struct rule<symbol::backref_id<ID>, character<C>>
     {
@@ -924,7 +1071,6 @@ namespace cx::grammar
         using type = accept;
     };
 
-    // type alias for easier usage
     template<typename A, typename B>
     using rule_t = typename rule<A, B>::type;
 }

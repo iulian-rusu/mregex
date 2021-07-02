@@ -137,8 +137,15 @@ namespace cx
     template<typename C, typename ... Elems>
     struct update_ast<symbol::make_set, C, stack<Elems ...>>
     {
-        // push a control symbol::set_begin to prevent set alternation combining with previous alternations
+        // Push a control symbol::set_begin to prevent set alternation combining with previous alternations
         using type = stack<symbol::set_begin, Elems ...>;
+    };
+
+    // Temporarily wrap AST node into captureless<T> to signal symbol::make_capturing to not capture anything later
+    template<typename C, typename First,  typename ... Rest>
+    struct update_ast<symbol::make_captureless, C, stack<First, Rest ...>>
+    {
+        using type = stack<captureless<First>, Rest ...>;
     };
 
     template<typename C, typename First,  typename ... Rest>
@@ -146,6 +153,13 @@ namespace cx
     {
         static constexpr auto ID = count_captures<First, Rest ...>::capture_count + 1;
         using type = stack<capturing<ID, First>, Rest ...>;
+    };
+
+    // Captureless mode has higher priority than the default capturing mode for groups
+    template<typename C, typename First,  typename ... Rest>
+    struct update_ast<symbol::make_capturing, C, stack<captureless<First>, Rest ...>>
+    {
+            using type = stack<First, Rest ...>;
     };
 
     template<std::size_t ID, typename C, typename ... Elems>

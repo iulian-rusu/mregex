@@ -17,14 +17,14 @@ namespace cx
     template<auto const pattern>
     struct parser
     {
-        // helper struct that contains either a symbol::character or symbol::epsilon based on the size of the index
+        // Helper struct that contains either a symbol::character or symbol::epsilon based on the size of the index
         template<std::size_t I, bool = I < pattern.length()>
         struct character_at
         {
             using type = character<pattern[I]>;
         };
 
-        // specialization for indices that are out of bound
+        // Specialization for indices that are out of bound
         template<std::size_t I>
         struct character_at<I, false>
         {
@@ -34,11 +34,11 @@ namespace cx
         template<std::size_t I>
         using character_at_t = typename character_at<I>::type;
 
-        // forward declare helper struct to resolve reference conflicts
+        // Forward declare helper struct to resolve reference conflicts
         template<std::size_t, typename, typename, typename>
         struct next_step;
 
-        // main metafunction used to parse the pattern
+        // Main metafunction used to parse the pattern
         template<std::size_t I, typename AST, typename Stack, bool = symbol::is_ast_update_v<typename Stack::top>>
         struct parse
         {
@@ -57,7 +57,7 @@ namespace cx
             using type = typename parse<I, next_ast, typename Stack::pop>::type;
         };
 
-        // metafunctions to decide the next step in the parsing algorithm
+        // Metafunctions to decide the next step in the parsing algorithm
         template<std::size_t I, typename Rule, typename AST, typename Stack>
         struct next_step
         {

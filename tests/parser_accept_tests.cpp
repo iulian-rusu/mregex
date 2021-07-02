@@ -6,7 +6,7 @@ namespace cx::tests
     template<static_string const pattern>
     static constexpr auto accepted = parser<pattern>::accepted;
 
-    // test valid inputs
+    // Test valid inputs
     static_assert(accepted<R"()">);
     static_assert(accepted<R"(a)">);
     static_assert(accepted<R"(\\a)">);
@@ -27,6 +27,10 @@ namespace cx::tests
     static_assert(accepted<R"((\++)*)">);
     static_assert(accepted<R"((\?+)?)">);
     static_assert(accepted<R"((\|+\))?)">);
+    static_assert(accepted<R"((?:(abc)))">);
+    static_assert(accepted<R"((?:(?:abc)))">);
+    static_assert(accepted<R"((?:(((?:abd))+)x?)|(?:xyz)+)">);
+    static_assert(accepted<R"(x*(x?(abc+(?:xyz)?)+x)*x)">);
     static_assert(accepted<R"(\\)">);
     static_assert(accepted<R"([a])">);
     static_assert(accepted<R"(^[a]$)">);
@@ -54,7 +58,7 @@ namespace cx::tests
     static_assert(accepted<R"(((a|\\a+)|(d?|\\d))*)">);
     static_assert(accepted<R"(((a|\\a)|(0|1|2|3))?)">);
     static_assert(accepted<R"((((a|\\a)|(0|1|2|3))?)*x?y+abcd|efgh((x|z)?t)+)">);
-    // test invalid inputs
+    // Test invalid inputs
     static_assert(accepted<R"(()"> == false);
     static_assert(accepted<R"())"> == false);
     static_assert(accepted<R"(+)"> == false);
@@ -73,6 +77,10 @@ namespace cx::tests
     static_assert(accepted<R"((*))"> == false);
     static_assert(accepted<R"((())"> == false);
     static_assert(accepted<R"(()))"> == false);
+    static_assert(accepted<R"((?:))"> == false);
+    static_assert(accepted<R"((?x))"> == false);
+    static_assert(accepted<R"((?:abc)"> == false);
+    static_assert(accepted<R"((?:abc()))"> == false);
     static_assert(accepted<R"((|))"> == false);
     static_assert(accepted<R"(a|)"> == false);
     static_assert(accepted<R"(|a)"> == false);

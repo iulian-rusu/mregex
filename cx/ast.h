@@ -72,7 +72,7 @@ namespace cx
             {
                 return alternation<Rest ...>::template match<N>(input, mp, captures);
             }
-            // if negated == true and nothing was matched before, match one character (in case of negated sets)
+            // If negated == true and nothing was matched before, match one character (in case of negated sets)
             return {mp.negated, mp.negated};
         }
     };
@@ -107,7 +107,7 @@ namespace cx
 
     struct epsilon : terminal
     {
-        // epsilon always matches anything and consumes no characters
+        // epsilon node always matches anything and consumes no characters
         template<std::size_t N>
         static constexpr match_result match(auto const &, match_params, capture_storage<N> &) noexcept
         {
@@ -201,7 +201,7 @@ namespace cx
 
     using hexa = alternation<digit, range<'a', 'f'>, range<'A', 'F'>>;
 
-    // decorators for AST nodes
+    // Decorators for AST nodes
     template<typename Inner>
     struct negated
     {
@@ -228,6 +228,8 @@ namespace cx
         }
     };
 
+    template<typename>
+    struct captureless {};
 
     template<std::size_t ID>
     struct backref : terminal

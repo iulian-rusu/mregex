@@ -37,16 +37,16 @@ constexpr auto parse()
 int main()
 {
     // Basic URL parsing
-    using url_regex = cx::regex<R"((\w+):\/\/(((\w+)?(:(\w+))?@)?([\w.]+)(:(\d+))?)?(\/([-/\w]+)?\?([\w=&]+))?)">;
-    constexpr std::string_view url = "https://admin:pass123@hostname.com:8080/path/to/resource?id=12345";
+    using url_regex = cx::regex<R"((\w+):\/\/(?:(?:(\w+)?(?::(\w+))?@)?([\w.]+)(?::(\d+))?)?(?:\/([-/\w]+)?\?([\w=&]+))?)">;
+    constexpr std::string_view url = "https://username:password@hostname.com:8080/path/to/resource?id=12345";
     constexpr auto match_res = url_regex::match(url);
     std::cout << "Scheme:\t" << match_res.get<1>() << '\n';
-    std::cout << "User:\t" << match_res.get<4>() << '\n';
-    std::cout << "Pass:\t" << match_res.get<6>() << '\n';
-    std::cout << "Host:\t" << match_res.get<7>() << '\n';
-    std::cout << "Port:\t" << match_res.get<9>() << '\n';
-    std::cout << "Path:\t" << match_res.get<11>() << '\n';
-    std::cout << "Query:\t" << match_res.get<12>() << '\n';
+    std::cout << "User:\t" << match_res.get<2>() << '\n';
+    std::cout << "Pass:\t" << match_res.get<3>() << '\n';
+    std::cout << "Host:\t" << match_res.get<4>() << '\n';
+    std::cout << "Port:\t" << match_res.get<5>() << '\n';
+    std::cout << "Path:\t" << match_res.get<6>() << '\n';
+    std::cout << "Query:\t" << match_res.get<7>() << '\n';
 
     // Changing function return type depending on input string format
     double number = parse<"123.3e-10">();
