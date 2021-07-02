@@ -9,13 +9,14 @@ namespace cx
      * signals iteration ending.
      *
      * @tparam Gen   The generator type to be iterated over
+     * @tparam Val   The value type produced by the generator
      */
-    template<typename Gen>
+    template<typename Gen, typename Val = std::invoke_result_t<Gen>>
     struct lazy_iterator
     {
     private:
         Gen &generator;
-        std::invoke_result_t<Gen> current_result;
+        Val current_result;
         bool active;
     public:
         template<typename Res>
@@ -28,7 +29,7 @@ namespace cx
             return active;
         }
 
-        decltype(auto) operator*() noexcept
+        Val &operator*() noexcept
         {
             return current_result;
         }
@@ -38,6 +39,12 @@ namespace cx
             current_result = std::move(generator());
             active = static_cast<bool>(current_result);
             return *this;
+        }
+
+        template<typename Iter>
+        bool operator==(Iter const &rhs) const noexcept
+        {
+            return static_cast<bool>(*this) == static_cast<bool>(rhs);
         }
 
         template<typename Iter>

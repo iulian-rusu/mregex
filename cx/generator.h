@@ -15,8 +15,7 @@ namespace cx
     struct generator : Prod
     {
         template<typename Func>
-        constexpr explicit generator(Func &&func)
-        noexcept((std::is_nothrow_move_constructible_v<Prod>))
+        constexpr explicit generator(Func &&func) noexcept(std::is_nothrow_move_constructible_v<Prod>)
                 : Prod(std::forward<Func>(func))
         {}
 

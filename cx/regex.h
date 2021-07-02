@@ -16,8 +16,8 @@ namespace cx
         using ast = typename parser<pattern>::ast;
         static constexpr auto capture_count = ast::capture_count;
 
-        template<string_like SL>
-        [[nodiscard]] static constexpr auto match(SL const &input) noexcept
+        template<string_like Str>
+        [[nodiscard]] static constexpr auto match(Str const &input) noexcept
         -> regex_result<capture_count>
         {
             capture_storage<capture_count> captures;
@@ -27,8 +27,8 @@ namespace cx
             return regex_result{res.matched, std::move(captures), input};
         }
 
-        template<string_like SL>
-        [[nodiscard]] static constexpr auto find_first(SL const &input, std::size_t start_pos = 0) noexcept
+        template<string_like Str>
+        [[nodiscard]] static constexpr auto find_first(Str const &input, std::size_t start_pos = 0) noexcept
         -> regex_result<capture_count>
         {
             capture_storage<capture_count> captures;
@@ -45,17 +45,17 @@ namespace cx
             return regex_result{false, std::move(captures), input};
         }
 
-        template<string_like SL>
-        [[nodiscard]] static constexpr auto find_all(SL const &input, std::size_t start_pos = 0) noexcept
+        template<string_like Str>
+        [[nodiscard]] static constexpr auto find_all(Str &&input, std::size_t start_pos = 0) noexcept
         {
             return generator
-            {
-                [&input, pos = start_pos]() mutable {
-                    auto result = find_first(input, pos);
-                    pos = result.end();
-                    return result;
-                }
-            };
+                    {
+                            [input = std::forward<Str>(input), pos = start_pos]() mutable {
+                                auto result = find_first(input, pos);
+                                pos = result.end();
+                                return result;
+                            }
+                    };
         }
     };
 }
