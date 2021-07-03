@@ -50,7 +50,7 @@ namespace cx::tests
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("0x1234F"sv));
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("0X0h"sv));
     static_assert(regex<R"(.+)">::match("this regex will match any input"sv));
-    static_assert(regex<R"(hello|salut|bonjour|привет)">::match("salut"sv));
+    static_assert(regex<R"(hello|salut|bonjour)">::match("salut"sv));
 
     // Test non-matching inputs
     static_assert(regex<R"()">::match("t"sv) == false);

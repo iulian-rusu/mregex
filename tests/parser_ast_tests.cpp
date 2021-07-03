@@ -3,14 +3,16 @@
 #ifdef CX_RUN_PARSER_TESTS
 namespace cx::tests
 {
-    //static_assert(std::is_same_v<typename parser<static_string(R"(xyz?(.(?:a(?:b(?:c(d)))))*zyx?)")>::ast, void>);
+    namespace detail
+    {
+        template<static_string const pattern, typename AST>
+        constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast, AST>;
+    }
 
-    template<static_string const pattern, typename AST>
-    constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast, AST>;
-
-    static_assert(expected_ast<R"())", epsilon>);
-    static_assert(expected_ast<R"(a))", character<'a'>>);
-    static_assert(expected_ast<R"(^ab))",
+    //static_assert(std::is_same_v<typename parser<static_string(R"((?:abcd)|xy)")>::ast, void>);
+    static_assert(detail::expected_ast<R"())", epsilon>);
+    static_assert(detail::expected_ast<R"(a))", character<'a'>>);
+    static_assert(detail::expected_ast<R"(^ab))",
             sequence
             <
                 beginning,
@@ -18,7 +20,7 @@ namespace cx::tests
                 character<'b'>
             >
     >);
-    static_assert(expected_ast<R"(ab$))",
+    static_assert(detail::expected_ast<R"(ab$))",
             sequence
             <
                 character<'a'>,
@@ -26,7 +28,7 @@ namespace cx::tests
                 ending
             >
     >);
-    static_assert(expected_ast<R"(^ab$))",
+    static_assert(detail::expected_ast<R"(^ab$))",
             sequence
             <
                 beginning,
@@ -35,14 +37,14 @@ namespace cx::tests
                 ending
             >
     >);
-    static_assert(expected_ast<R"(\a))", alnum>);
-    static_assert(expected_ast<R"(\D))",
+    static_assert(detail::expected_ast<R"(\a))", alnum>);
+    static_assert(detail::expected_ast<R"(\D))",
             negated
             <
                 digit
             >
     >);
-    static_assert(expected_ast<R"(a.?b)",
+    static_assert(detail::expected_ast<R"(a.?b)",
             sequence
             <
                 character<'a'>,
@@ -53,29 +55,29 @@ namespace cx::tests
                 character<'b'>
             >
     >);
-    static_assert(expected_ast<R"((c))",
+    static_assert(detail::expected_ast<R"((c))",
             capturing
             <
                 1,
                 character<'c'>
             >
     >);
-    static_assert(expected_ast<R"((?:c))", character<'c'>>);
-    static_assert(expected_ast<R"(\1)", backref<1>>);
-    static_assert(expected_ast<R"(\31)", backref<31>>);
-    static_assert(expected_ast<R"(\1+)",
+    static_assert(detail::expected_ast<R"((?:c))", character<'c'>>);
+    static_assert(detail::expected_ast<R"(\1)", backref<1>>);
+    static_assert(detail::expected_ast<R"(\31)", backref<31>>);
+    static_assert(detail::expected_ast<R"(\1+)",
             plus
             <
                 backref<1>
             >
     >);
-    static_assert(expected_ast<R"(\42?)",
+    static_assert(detail::expected_ast<R"(\42?)",
             optional
             <
                 backref<42>
             >
     >);
-    static_assert(expected_ast<R"((c)\1)",
+    static_assert(detail::expected_ast<R"((c)\1)",
             sequence
             <
                 capturing
@@ -86,7 +88,7 @@ namespace cx::tests
                 backref<1>
             >
     >);
-    static_assert(expected_ast<R"((c)\0)",
+    static_assert(detail::expected_ast<R"((c)\0)",
             sequence
             <
                 capturing
@@ -97,7 +99,7 @@ namespace cx::tests
                 character<'0'>
             >
     >);
-    static_assert(expected_ast<R"((c)\12)",
+    static_assert(detail::expected_ast<R"((c)\12)",
             sequence
             <
                 capturing
@@ -108,7 +110,7 @@ namespace cx::tests
                 backref<12>
             >
     >);
-    static_assert(expected_ast<R"((c)\01)",
+    static_assert(detail::expected_ast<R"((c)\01)",
             sequence
             <
                 capturing
@@ -120,7 +122,7 @@ namespace cx::tests
                 character<'1'>
             >
     >);
-    static_assert(expected_ast<R"((c)\12?x)",
+    static_assert(detail::expected_ast<R"((c)\12?x)",
             sequence
             <
                 capturing
@@ -135,7 +137,7 @@ namespace cx::tests
                 character<'x'>
             >
     >);
-    static_assert(expected_ast<R"(((c))(e))",
+    static_assert(detail::expected_ast<R"(((c))(e))",
             sequence
             <
                 capturing
@@ -154,7 +156,7 @@ namespace cx::tests
                 >
             >
     >);
-    static_assert(expected_ast<R"(((?:c))(e))",
+    static_assert(detail::expected_ast<R"(((?:c))(e))",
             sequence
             <
                 capturing
@@ -169,25 +171,25 @@ namespace cx::tests
                 >
             >
     >);
-    static_assert(expected_ast<R"(c?)",
+    static_assert(detail::expected_ast<R"(c?)",
             optional
             <
                 character<'c'>
             >
     >);
-    static_assert(expected_ast<R"(c*)",
+    static_assert(detail::expected_ast<R"(c*)",
             star
             <
                 character<'c'>
             >
     >);
-    static_assert(expected_ast<R"(c+)",
+    static_assert(detail::expected_ast<R"(c+)",
             plus
             <
                 character<'c'>
             >
     >);
-    static_assert(expected_ast<R"((\(+)*)",
+    static_assert(detail::expected_ast<R"((\(+)*)",
             star
             <
                 capturing
@@ -200,7 +202,7 @@ namespace cx::tests
                 >
             >
     >);
-    static_assert(expected_ast<R"((\++)*)",
+    static_assert(detail::expected_ast<R"((\++)*)",
             star
             <
                 capturing
@@ -213,7 +215,7 @@ namespace cx::tests
                 >
             >
     >);
-    static_assert(expected_ast<R"((?:\++)*)",
+    static_assert(detail::expected_ast<R"((?:\++)*)",
             star
             <
                 plus
@@ -222,7 +224,7 @@ namespace cx::tests
                 >
             >
     >);
-    static_assert(expected_ast<R"(x(?:abc)*x)",
+    static_assert(detail::expected_ast<R"(x(?:abc)*x)",
             sequence
             <
                 character<'x'>,
@@ -238,7 +240,7 @@ namespace cx::tests
                 character<'x'>
             >
     >);
-    static_assert(expected_ast<R"(xyz?(.(?:a(?:b(?:c(d))?)*)?)+zyx?)",
+    static_assert(detail::expected_ast<R"(xyz?(.(?:a(?:b(?:c(d))?)*)?)+zyx?)",
             sequence
             <
                 character<'x'>,
@@ -292,8 +294,8 @@ namespace cx::tests
                 >
             >
     >);
-    static_assert(expected_ast<R"(\\)", character<'\\'>>);
-    static_assert(expected_ast<R"(\(?x+)",
+    static_assert(detail::expected_ast<R"(\\)", character<'\\'>>);
+    static_assert(detail::expected_ast<R"(\(?x+)",
             sequence
             <
                 optional
@@ -306,7 +308,7 @@ namespace cx::tests
                 >
             >
     >);
-    static_assert(expected_ast<R"(abc)",
+    static_assert(detail::expected_ast<R"(abc)",
             sequence
             <
                 character<'a'>,
@@ -314,7 +316,7 @@ namespace cx::tests
                 character<'c'>
             >
     >);
-    static_assert(expected_ast<R"(a|b|c)",
+    static_assert(detail::expected_ast<R"(a|b|c)",
             alternation
             <
                 character<'a'>,
@@ -322,7 +324,7 @@ namespace cx::tests
                 character<'c'>
             >
     >);
-    static_assert(expected_ast<R"(aa|bb|cc)",
+    static_assert(detail::expected_ast<R"(aa|bb|cc)",
             alternation
             <
                 sequence
@@ -343,7 +345,7 @@ namespace cx::tests
             >
     >);
     // alternation<optional<a>, b> simplifies to alternation<a, epsilon, b>
-    static_assert(expected_ast<R"(a?|b|c)",
+    static_assert(detail::expected_ast<R"(a?|b|c)",
             alternation
             <
                 character<'a'>,
@@ -352,13 +354,13 @@ namespace cx::tests
                 character<'c'>
             >
     >);
-    static_assert(expected_ast<R"([a])",
+    static_assert(detail::expected_ast<R"([a])",
             alternation
             <
                 character<'a'>
             >
     >);
-    static_assert(expected_ast<R"([a][b])",
+    static_assert(detail::expected_ast<R"([a][b])",
             sequence
             <
                 alternation
@@ -371,7 +373,7 @@ namespace cx::tests
                 >
             >
     >);
-    static_assert(expected_ast<R"([a]?[b])",
+    static_assert(detail::expected_ast<R"([a]?[b])",
             sequence
             <
                 optional
@@ -387,7 +389,7 @@ namespace cx::tests
                 >
             >
     >);
-    static_assert(expected_ast<R"([a]?[b]?)",
+    static_assert(detail::expected_ast<R"([a]?[b]?)",
             sequence
             <
                 optional
@@ -406,7 +408,7 @@ namespace cx::tests
                 >
             >
     >);
-    static_assert(expected_ast<R"([abc])",
+    static_assert(detail::expected_ast<R"([abc])",
             alternation
             <
                 character<'c'>,
@@ -414,13 +416,13 @@ namespace cx::tests
                 character<'a'>
             >
     >);
-    static_assert(expected_ast<R"([a-z])",
+    static_assert(detail::expected_ast<R"([a-z])",
             alternation
             <
                 range<'a', 'z'>
             >
     >);
-    static_assert(expected_ast<R"([a\-z])",
+    static_assert(detail::expected_ast<R"([a\-z])",
             alternation
             <
                 character<'z'>,
@@ -428,14 +430,14 @@ namespace cx::tests
                 character<'a'>
             >
     >);
-    static_assert(expected_ast<R"([a-z-])",
+    static_assert(detail::expected_ast<R"([a-z-])",
             alternation
             <
                 character<'-'>,
                 range<'a', 'z'>
             >
     >);
-    static_assert(expected_ast<R"([a-z-A])",
+    static_assert(detail::expected_ast<R"([a-z-A])",
             alternation
             <
                 character<'A'>,
@@ -443,7 +445,7 @@ namespace cx::tests
                 range<'a', 'z'>
             >
     >);
-    static_assert(expected_ast<R"([a-z0-9A-Z])",
+    static_assert(detail::expected_ast<R"([a-z0-9A-Z])",
             alternation
             <
                 range<'A', 'Z'>,
@@ -451,14 +453,14 @@ namespace cx::tests
                 range<'a', 'z'>
             >
     >);
-    static_assert(expected_ast<R"([a-[0-\]])",
+    static_assert(detail::expected_ast<R"([a-[0-\]])",
             alternation
             <
                 range<'0', ']'>,
                 range<'a', '['>
             >
     >);
-    static_assert(expected_ast<R"([^a-[0-\]])",
+    static_assert(detail::expected_ast<R"([^a-[0-\]])",
             negated
             <
                 alternation
@@ -468,14 +470,14 @@ namespace cx::tests
                 >
             >
     >);
-    static_assert(expected_ast<R"([a-[0-\]])",
+    static_assert(detail::expected_ast<R"([a-[0-\]])",
             alternation
             <
                 range<'0', ']'>,
                 range<'a', '['>
             >
     >);
-    static_assert(expected_ast<R"([-a-[0-\]])",
+    static_assert(detail::expected_ast<R"([-a-[0-\]])",
             alternation
             <
                 range<'0', ']'>,
@@ -483,7 +485,7 @@ namespace cx::tests
                 character<'-'>
             >
     >);
-    static_assert(expected_ast<R"([^-aA-Z]))",
+    static_assert(detail::expected_ast<R"([^-aA-Z]))",
             negated
             <
                 alternation
@@ -494,7 +496,7 @@ namespace cx::tests
                 >
             >
     >);
-    static_assert(expected_ast<R"(a[^-a-z\WA-Z])",
+    static_assert(detail::expected_ast<R"(a[^-a-z\WA-Z])",
             sequence
             <
                 character<'a'>,
@@ -510,7 +512,7 @@ namespace cx::tests
                 >
             >
     >);
-    static_assert(expected_ast<R"(\x\x[^a^[\]b\c]yy)",
+    static_assert(detail::expected_ast<R"(\x\x[^a^[\]b\c]yy)",
             sequence
             <
                 character<'x'>,
@@ -531,7 +533,7 @@ namespace cx::tests
                 character<'y'>
             >
     >);
-    static_assert(expected_ast<R"(((tuv)?b+)*|xy)",
+    static_assert(detail::expected_ast<R"(((tuv)?b+)*|xy)",
             alternation
             <
                 star

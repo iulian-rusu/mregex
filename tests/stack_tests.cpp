@@ -3,20 +3,23 @@
 #ifdef CX_RUN_STACK_TESTS
 namespace cx::tests
 {
-    template<typename First, typename ... Rest>
-    struct push_all
+    namespace detail
     {
-        using type = typename push_all<Rest ...>::type::template push<First>;
-    };
+        template<typename First, typename ... Rest>
+        struct push_all
+        {
+            using type = typename push_all<Rest ...>::type::template push<First>;
+        };
 
-    template<typename First>
-    struct push_all<First>
-    {
-        using type = stack<First>;
-    };
+        template<typename First>
+        struct push_all<First>
+        {
+            using type = stack<First>;
+        };
 
-    template<typename First, typename ... Rest>
-    using push_all_t = typename push_all<First, Rest ...>::type;
+        template<typename First, typename ... Rest>
+        using push_all_t = typename push_all<First, Rest ...>::type;
+    }
 
     // Top of an empty stack must be the type cx::empty_stack
     static_assert(std::is_same_v<empty_stack, stack<>::top>);
@@ -33,6 +36,7 @@ namespace cx::tests
     // Pushing a stack on the stack must yield the concatenation of two stacks
     static_assert(std::is_same_v<stack<double, int, long, char>, stack<long, char>::push<stack<double, int>>>);
     // Pushing multiple elements on the stack
-    static_assert(std::is_same_v<stack<char, int, float, double, long>, push_all_t<char, int, float, double, long>>);
+    static_assert(std::is_same_v<stack<char, int, float, double, long, long double, long long, short int>,
+            detail::push_all_t<char, int, float, double, long, long double, long long, short int>>);
 }
 #endif //CX_RUN_STACK_TESTS
