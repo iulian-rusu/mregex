@@ -52,7 +52,7 @@ namespace cx::grammar
                 stack
                 <
                     character<'('>,
-                    symbol::alt0,
+                    symbol::capture_begin,
                     character<')'>,
                     symbol::make_capturing,
                     symbol::mod,
@@ -166,7 +166,7 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::alt0, character<'['>>
+    struct rule<symbol::capture_begin, character<'['>>
     {
         using type =
                 stack
@@ -182,13 +182,13 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::alt0, character<'('>>
+    struct rule<symbol::capture_begin, character<'('>>
     {
         using type =
                 stack
                 <
                     character<'('>,
-                    symbol::alt0,
+                    symbol::capture_begin,
                     character<')'>,
                     symbol::make_capturing,
                     symbol::mod,
@@ -198,25 +198,25 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::alt0, character<')'>>
+    struct rule<symbol::capture_begin, character<')'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::alt0, character<'*'>>
+    struct rule<symbol::capture_begin, character<'*'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::alt0, character<'+'>>
+    struct rule<symbol::capture_begin, character<'+'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::alt0, character<'\\'>>
+    struct rule<symbol::capture_begin, character<'\\'>>
     {
         using type =
                 stack
@@ -230,13 +230,13 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::alt0, character<'|'>>
+    struct rule<symbol::capture_begin, character<'|'>>
     {
         using type = reject;
     };
 
     template<auto C>
-    struct rule<symbol::alt0, character<C>>
+    struct rule<symbol::capture_begin, character<C>>
     {
         using type =
                 stack
@@ -250,7 +250,7 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::alt0, character<'.'>>
+    struct rule<symbol::capture_begin, character<'.'>>
     {
         using type =
                 stack
@@ -264,7 +264,7 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::alt0, character<'^'>>
+    struct rule<symbol::capture_begin, character<'^'>>
     {
         using type =
                 stack
@@ -277,13 +277,13 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::alt0, symbol::epsilon>
+    struct rule<symbol::capture_begin, symbol::epsilon>
     {
         using type = symbol::epsilon;
     };
 
     template<>
-    struct rule<symbol::alt0, character<'?'>>
+    struct rule<symbol::capture_begin, character<'?'>>
     {
         using type =
                 stack
@@ -300,7 +300,7 @@ namespace cx::grammar
                 stack
                 <
                     character<':'>,
-                    symbol::captureless_begin,
+                    symbol::capture_begin_no_mod,
                     symbol::make_captureless
                 >;
     };
@@ -313,7 +313,7 @@ namespace cx::grammar
 
     // Special begin marker symbol for captureless subexpressions
     template<>
-    struct rule<symbol::captureless_begin, character<'['>>
+    struct rule<symbol::capture_begin_no_mod, character<'['>>
     {
         using type =
                 stack
@@ -329,13 +329,13 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::captureless_begin, character<'('>>
+    struct rule<symbol::capture_begin_no_mod, character<'('>>
     {
         using type =
                 stack
                 <
                     character<'('>,
-                    symbol::alt0,
+                    symbol::capture_begin,
                     character<')'>,
                     symbol::make_capturing,
                     symbol::mod,
@@ -345,31 +345,31 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::captureless_begin, character<')'>>
+    struct rule<symbol::capture_begin_no_mod, character<')'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::captureless_begin, character<'?'>>
+    struct rule<symbol::capture_begin_no_mod, character<'?'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::captureless_begin, character<'*'>>
+    struct rule<symbol::capture_begin_no_mod, character<'*'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::captureless_begin, character<'+'>>
+    struct rule<symbol::capture_begin_no_mod, character<'+'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::captureless_begin, character<'\\'>>
+    struct rule<symbol::capture_begin_no_mod, character<'\\'>>
     {
         using type =
                 stack
@@ -383,13 +383,13 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::captureless_begin, character<'|'>>
+    struct rule<symbol::capture_begin_no_mod, character<'|'>>
     {
         using type = reject;
     };
 
     template<auto C>
-    struct rule<symbol::captureless_begin, character<C>>
+    struct rule<symbol::capture_begin_no_mod, character<C>>
     {
         using type =
                 stack
@@ -403,7 +403,7 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::captureless_begin, character<'.'>>
+    struct rule<symbol::capture_begin_no_mod, character<'.'>>
     {
         using type =
                 stack
@@ -417,7 +417,7 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::captureless_begin, character<'^'>>
+    struct rule<symbol::capture_begin_no_mod, character<'^'>>
     {
         using type =
                 stack
@@ -430,7 +430,7 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::captureless_begin, symbol::epsilon>
+    struct rule<symbol::capture_begin_no_mod, symbol::epsilon>
     {
         using type = symbol::epsilon;
     };
@@ -605,7 +605,7 @@ namespace cx::grammar
                 stack
                 <
                     character<'('>,
-                    symbol::alt0,
+                    symbol::capture_begin,
                     character<')'>,
                     symbol::make_capturing,
                     symbol::mod,
@@ -735,7 +735,7 @@ namespace cx::grammar
                 stack
                 <
                     character<'('>,
-                    symbol::alt0,
+                    symbol::capture_begin,
                     character<')'>,
                     symbol::make_capturing,
                     symbol::mod,

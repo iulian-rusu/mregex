@@ -141,11 +141,11 @@ namespace cx
         using type = stack<symbol::set_begin, Elems ...>;
     };
 
-    // Temporarily wrap AST node into captureless<T> to signal symbol::make_capturing to not capture anything later
+    // Temporarily wrap AST node into symbol::captureless_wrapper to avoid making a capturing group later
     template<typename C, typename First,  typename ... Rest>
     struct update_ast<symbol::make_captureless, C, stack<First, Rest ...>>
     {
-        using type = stack<captureless<First>, Rest ...>;
+        using type = stack<symbol::captureless_wrapper<First>, Rest ...>;
     };
 
     template<typename C, typename First,  typename ... Rest>
@@ -157,7 +157,7 @@ namespace cx
 
     // Captureless mode has higher priority than the default capturing mode for groups
     template<typename C, typename First,  typename ... Rest>
-    struct update_ast<symbol::make_capturing, C, stack<captureless<First>, Rest ...>>
+    struct update_ast<symbol::make_capturing, C, stack<symbol::captureless_wrapper<First>, Rest ...>>
     {
             using type = stack<First, Rest ...>;
     };

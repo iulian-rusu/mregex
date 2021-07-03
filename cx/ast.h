@@ -228,9 +228,6 @@ namespace cx
         }
     };
 
-    template<typename>
-    struct captureless {};
-
     template<std::size_t ID>
     struct backref : terminal
     {

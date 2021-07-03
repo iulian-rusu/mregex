@@ -11,8 +11,6 @@ namespace cx::symbol
 
     struct start {};
 
-    struct alt0 {};
-
     struct alt {};
 
     struct esc {};
@@ -23,9 +21,14 @@ namespace cx::symbol
 
     struct seq {};
 
-    struct captureless_begin {};
+    struct capture_begin {};
+
+    struct capture_begin_no_mod {};
 
     struct capture_mod {};
+
+    template<typename>
+    struct captureless_wrapper {};
 
     struct set_begin {};
 
