@@ -72,8 +72,9 @@ namespace cx
             {
                 return alternation<Rest ...>::template match<N>(input, mp, captures);
             }
-            // If negated == true and nothing was matched before, match one character (in case of negated sets)
-            return {mp.negated, mp.negated};
+            // Default case if no node has matched in the entire alternation
+            bool default_res = mp.from < input.length() && mp.negated;
+            return {default_res, default_res};
         }
     };
 
