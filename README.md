@@ -28,7 +28,7 @@ The library currently supports the following regex features:
 * `[a-z0-9]` - ranges inside sets
 
 Some features planned for the future:
-* `++`, `?+`, `*+` - possesive quantifiers
+* `++`, `?+`, `*+` - possessive quantifiers
 * `{5}` - exact quantifier
 * `{3, 5}` - range quantifier
 
