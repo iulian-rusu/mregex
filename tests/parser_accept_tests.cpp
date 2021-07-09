@@ -12,6 +12,7 @@ namespace cx::tests
     // Test valid inputs
     static_assert(detail::accepted<R"()">);
     static_assert(detail::accepted<R"(a)">);
+    static_assert(detail::accepted<R"(\\)">);
     static_assert(detail::accepted<R"(\\a)">);
     static_assert(detail::accepted<R"(\\D)">);
     static_assert(detail::accepted<R"(abcdefg)">);
@@ -26,6 +27,12 @@ namespace cx::tests
     static_assert(detail::accepted<R"((one|two)?)">);
     static_assert(detail::accepted<R"((one|two)*)">);
     static_assert(detail::accepted<R"((one|two)+)">);
+    static_assert(detail::accepted<R"(one+|two)">);
+    static_assert(detail::accepted<R"((one|two?)?)">);
+    static_assert(detail::accepted<R"((one*|two)*)">);
+    static_assert(detail::accepted<R"((one|two|three?)?)">);
+    static_assert(detail::accepted<R"((one+|two|three)*)">);
+    static_assert(detail::accepted<R"((one|two+|three)+)">);
     static_assert(detail::accepted<R"((\(+)*)">);
     static_assert(detail::accepted<R"((\++)*)">);
     static_assert(detail::accepted<R"((\?+)?)">);
@@ -43,8 +50,13 @@ namespace cx::tests
     static_assert(detail::accepted<R"(12(ab(?:cd)ef)\1gh)">);
     static_assert(detail::accepted<R"((?:(((?:abd))+)x?)|(?:xyz)+)">);
     static_assert(detail::accepted<R"(x*(x?(abc+(?:xyz)?)+x)*x)">);
-    static_assert(detail::accepted<R"(\\)">);
+    static_assert(detail::accepted<R"(x*(x?(abc+(?:xyz)?)+x)*x\1+\2?)">);
+    static_assert(detail::accepted<R"(x\*\(x\?(abc\+(?:xyz)\?)\+x\)\*x)">);
     static_assert(detail::accepted<R"([a])">);
+    static_assert(detail::accepted<R"([a][b])">);
+    static_assert(detail::accepted<R"([])">);
+    static_assert(detail::accepted<R"([a][])">);
+    static_assert(detail::accepted<R"([][b])">);
     static_assert(detail::accepted<R"(^[a]$)">);
     static_assert(detail::accepted<R"(])">);
     static_assert(detail::accepted<R"([]])">);
@@ -63,6 +75,7 @@ namespace cx::tests
     static_assert(detail::accepted<R"(f?[a-z-A]?a?)">);
     static_assert(detail::accepted<R"(f*[a-zA-Z]*a?)">);
     static_assert(detail::accepted<R"(f+[a-zA-Z]+a+)">);
+    static_assert(detail::accepted<R"(f?[a-zA-Z]?a?[xyzt\w0-9]+d?)">);
     static_assert(detail::accepted<R"(ab|cd|[a-zA-Z]|ab|ac)">);
     static_assert(detail::accepted<R"(ab|(cd|[a-zA-Z]|ab)|ac)">);
     static_assert(detail::accepted<R"(^(ab|(cd|[a-zA-Z]|ab)|ac)$)">);
@@ -102,12 +115,15 @@ namespace cx::tests
     static_assert(detail::accepted<R"((?x))"> == false);
     static_assert(detail::accepted<R"((?:abc)"> == false);
     static_assert(detail::accepted<R"((?:abc()))"> == false);
+    static_assert(detail::accepted<R"(xy?((?:abc)zt\)?)"> == false);
     static_assert(detail::accepted<R"((|))"> == false);
     static_assert(detail::accepted<R"(a|)"> == false);
     static_assert(detail::accepted<R"(|a)"> == false);
     static_assert(detail::accepted<R"(\)"> == false);
-    static_assert(detail::accepted<R"([])"> == false);
+    static_assert(detail::accepted<R"([\])"> == false);
+    static_assert(detail::accepted<R"([][)"> == false);
     static_assert(detail::accepted<R"([)"> == false);
+    static_assert(detail::accepted<R"([a][)"> == false);
     static_assert(detail::accepted<R"([^a-])"> == false);
     static_assert(detail::accepted<R"(?[a-zA-Z]?a?)"> == false);
     static_assert(detail::accepted<R"(ab||[a-zA-Z])"> == false);

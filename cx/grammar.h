@@ -874,6 +874,12 @@ namespace cx::grammar
                 >;
     };
 
+    template<>
+    struct rule<symbol::set_begin, character<']'>>
+    {
+        using type = symbol::epsilon;
+    };
+
     template<auto C>
     struct rule<symbol::set_begin, character<C>>
     {

@@ -108,11 +108,21 @@ namespace cx
 
     struct epsilon : terminal
     {
-        // epsilon node always matches anything and consumes no characters
+        // epsilon node always matches everything and consumes no characters
         template<std::size_t N>
         static constexpr match_result match(auto const &, match_params, capture_storage<N> &) noexcept
         {
             return {0, true};
+        }
+    };
+
+    struct null : terminal
+    {
+        // null node never matches anything and consumes no characters
+        template<std::size_t N>
+        static constexpr match_result match(auto const &, match_params, capture_storage<N> &) noexcept
+        {
+            return {0, false};
         }
     };
 

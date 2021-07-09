@@ -137,8 +137,8 @@ namespace cx
     template<typename C, typename ... Elems>
     struct update_ast<symbol::make_set, C, stack<Elems ...>>
     {
-        // Push a control symbol::set_begin to prevent set alternation combining with previous alternations
-        using type = stack<symbol::set_begin, Elems ...>;
+        // Push a null node to prevent set alternation combining with previous alternations
+        using type = stack<null, Elems ...>;
     };
 
     // Temporarily wrap AST node into symbol::captureless_wrapper to avoid making a capturing group later
@@ -181,7 +181,7 @@ namespace cx
     };
 
     template<typename C, typename ... Rest>
-    struct update_ast<symbol::make_set_from_current_char, C, stack<symbol::set_begin, Rest ...>>
+    struct update_ast<symbol::make_set_from_current_char, C, stack<null, Rest ...>>
     {
         using type = stack<alternation<C>, Rest ...>;
     };
@@ -199,7 +199,7 @@ namespace cx
     };
 
     template<typename C, typename First, typename ... Rest>
-    struct update_ast<symbol::make_set_from_stack, C, stack<First, symbol::set_begin, Rest ...>>
+    struct update_ast<symbol::make_set_from_stack, C, stack<First, null, Rest ...>>
     {
         using type = stack<alternation<First>, Rest ...>;
     };

@@ -23,7 +23,7 @@ namespace cx
     constexpr bool is_numeric_v = is_numeric<C>::value;
 
     /**
-     * Metafunction that decides the current rule is a backreference
+     * Metafunction that decides if the current rule is a backreference
      * building rule or an escaped character class rule
      *
      * @tparam C    The current character in the regex pattern

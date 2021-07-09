@@ -11,6 +11,8 @@ namespace cx::tests
     static_assert(regex<R"(a)">::match("a"sv));
     static_assert(regex<R"(^a)">::match("a"sv));
     static_assert(regex<R"(a$)">::match("a"sv));
+    static_assert(regex<R"(abcdef)">::match("abcdef"sv));
+    static_assert(regex<R"(abc[]?def)">::match("abcdef"sv));
     static_assert(regex<R"(^abcd$)">::match("abcd"sv));
     static_assert(regex<R"([\^a]+)">::match("^a"sv));
     static_assert(regex<R"([^\^a]+)">::match("b$"sv));
@@ -59,6 +61,7 @@ namespace cx::tests
     static_assert(regex<R"(^a)">::match(" a"sv) == false);
     static_assert(regex<R"(a$)">::match("a "sv) == false);
     static_assert(regex<R"(^abcd$)">::match(" abcd"sv) == false);
+    static_assert(regex<R"(abc[]def)">::match("abcdef"sv) == false);
     static_assert(regex<R"([\^a]+)">::match("^ca"sv) == false);
     static_assert(regex<R"([^\^a]+)">::match("bb^$"sv) == false);
     static_assert(regex<R"([a-z]+)">::match("abasbdbAasdbasbdabs"sv) == false);
