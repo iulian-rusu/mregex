@@ -3,6 +3,7 @@
 
 #include "parser.h"
 #include "generator.h"
+#include "va_helpers.h"
 
 /**
  * Defines a Regex type used to match/search input string-like objects
@@ -40,6 +41,12 @@ namespace cx
                     std::get<0>(captures) = capture<0>{start_pos, res.count};
                     return regex_result{true, std::move(captures), input};
                 }
+                if constexpr (has_atomic_group_v<ast>)
+                {
+                    map_tuple(captures, [](auto &capture) {
+                        capture.reset();
+                    });
+                }
                 ++start_pos;
             }
             return regex_result{false, std::move(captures), input};
@@ -49,13 +56,13 @@ namespace cx
         [[nodiscard]] static constexpr auto find_all(Str &&input, std::size_t start_pos = 0) noexcept
         {
             return generator
-                    {
-                            [input = std::forward<Str>(input), pos = start_pos]() mutable {
-                                auto result = find_first(input, pos);
-                                pos = result.end();
-                                return result;
-                            }
-                    };
+            {
+                [input = std::forward<Str>(input), pos = start_pos]() mutable {
+                    auto result = find_first(input, pos);
+                    pos = result.end();
+                    return result;
+                }
+            };
         }
     };
 }

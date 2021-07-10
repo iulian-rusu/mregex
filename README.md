@@ -17,6 +17,7 @@ The library currently supports the following regex features:
 * `?` - optional quantifier
 * `(expr)` - capturing subexpressions
 * `(?:expr)` - non-capturing subexpressions
+* `(?>expr)` - atomic subexpressions
 * `\12` - backreferences
 * `|` - alternation of two subexpressions
 * `\?`, `\*`, `\\` - escaping characters

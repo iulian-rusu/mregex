@@ -305,6 +305,18 @@ namespace cx::grammar
                 >;
     };
 
+    template<>
+    struct rule<symbol::capture_mod, character<'>'>>
+    {
+        using type =
+                stack
+                <
+                    character<'>'>,
+                    symbol::capture_begin_no_mod,
+                    symbol::make_atomic
+                >;
+    };
+
     template<auto C>
     struct rule<symbol::capture_mod, character<C>>
     {

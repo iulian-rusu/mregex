@@ -149,6 +149,12 @@ namespace cx
     };
 
     template<typename C, typename First,  typename ... Rest>
+    struct update_ast<symbol::make_atomic, C, stack<First, Rest ...>>
+    {
+    using type = stack<atomic<First>, Rest ...>;
+    };
+
+    template<typename C, typename First,  typename ... Rest>
     struct update_ast<symbol::make_capturing, C, stack<First, Rest ...>>
     {
         static constexpr auto ID = count_captures<First, Rest ...>::capture_count + 1;

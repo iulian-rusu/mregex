@@ -212,6 +212,25 @@ namespace cx
 
     using hexa = alternation<digit, range<'a', 'f'>, range<'A', 'F'>>;
 
+    template<std::size_t ID>
+    struct backref : terminal
+    {
+        template<std::size_t N>
+        static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &captures) noexcept
+        {
+            decltype(auto) str_to_match = std::get<ID>(captures).evaluate(input);
+            std::size_t max_match = str_to_match.length();
+            std::size_t offset = 0;
+            while (offset < max_match)
+            {
+                if(input[mp.from + offset] != str_to_match[offset])
+                    return {0, false};
+                ++offset;
+            }
+            return {max_match, true};
+        }
+    };
+
     // Decorators for AST nodes
     template<typename Inner>
     struct negated
@@ -222,6 +241,18 @@ namespace cx
         static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &captures) noexcept
         {
             return Inner::template match<N>(input, {mp.from, mp.max_chars, !mp.negated}, captures);
+        }
+    };
+
+    template<typename Inner>
+    struct atomic
+    {
+        static constexpr std::size_t capture_count = Inner::capture_count;
+
+        template<std::size_t N>
+        static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &captures) noexcept
+        {
+            return Inner::template match<N>(input, mp, captures);
         }
     };
 
@@ -239,22 +270,20 @@ namespace cx
         }
     };
 
-    template<std::size_t ID>
-    struct backref : terminal
+    template<std::size_t ID, typename Inner>
+    struct capturing<ID, atomic<Inner>>
     {
+        static constexpr std::size_t capture_count = 1 + Inner::capture_count;
+
         template<std::size_t N>
         static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &captures) noexcept
         {
-            decltype(auto) str_to_match = std::get<ID>(captures).evaluate(input);
-            std::size_t max_match = str_to_match.length();
-            std::size_t offset = 0;
-            while (offset < max_match)
-            {
-                if(input[mp.from + offset] != str_to_match[offset])
-                    return {0, false};
-                ++offset;
-            }
-            return {max_match, true};
+            auto &this_capture = std::get<ID>(captures);
+            if(this_capture.count)
+                return {0, false};
+            auto inner_match = Inner::template match<N>(input, mp, captures);
+            this_capture = capture<ID>{mp.from, inner_match.count};
+            return inner_match;
         }
     };
 }

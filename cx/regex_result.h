@@ -26,6 +26,12 @@ namespace cx
         {
             return from + count;
         }
+
+        constexpr void reset() noexcept
+        {
+            from = 0u;
+            count = 0u;
+        }
     };
 
     /**

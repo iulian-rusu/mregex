@@ -62,6 +62,16 @@ namespace cx::tests
                 character<'c'>
             >
     >);
+    static_assert(detail::expected_ast<R"((?>c))",
+            capturing
+            <
+                    1,
+                    atomic
+                    <
+                        character<'c'>
+                    >
+            >
+    >);
     static_assert(detail::expected_ast<R"((?:c))", character<'c'>>);
     static_assert(detail::expected_ast<R"(\1)", backref<1>>);
     static_assert(detail::expected_ast<R"(\31)", backref<31>>);
@@ -240,7 +250,7 @@ namespace cx::tests
                 character<'x'>
             >
     >);
-    static_assert(detail::expected_ast<R"(xyz?(.(?:a(?:b(?:c(d))?)*)?)+zyx?)",
+    static_assert(detail::expected_ast<R"(xyz?(.(?:a(?:b(?>c(d))?)*)?)+zyx?)",
             sequence
             <
                 character<'x'>,
@@ -269,13 +279,20 @@ namespace cx::tests
                                             character<'b'>,
                                             optional
                                             <
-                                                sequence
+                                                capturing
                                                 <
-                                                    character<'c'>,
-                                                    capturing
+                                                    2,
+                                                    atomic
                                                     <
-                                                        2,
-                                                        character<'d'>
+                                                        sequence
+                                                        <
+                                                            character<'c'>,
+                                                            capturing
+                                                            <
+                                                                3,
+                                                                character<'d'>
+                                                            >
+                                                        >
                                                     >
                                                 >
                                             >
