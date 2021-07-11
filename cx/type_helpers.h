@@ -28,9 +28,6 @@ namespace cx
 
     /**
      * Meta-pair containing two types
-     *
-     * @tparam First    The first type in the pair
-     * @tparam Second   The second type in the pair
      */
     template<typename First, typename Second>
     struct pair
@@ -38,32 +35,5 @@ namespace cx
         using first = First;
         using second = Second;
     };
-
-    template<typename T>
-    struct has_atomic_group
-    {
-        static constexpr bool value = false;
-    };
-
-    template<typename Inner>
-    struct has_atomic_group<atomic<Inner>>
-    {
-        static constexpr bool value = true;
-    };
-
-    template<template<typename> typename Outer, typename ... Inners>
-    struct has_atomic_group<Outer<Inners ...>>
-    {
-        static constexpr bool value = (has_atomic_group<Inners>::value || ...);
-    };
-
-    template<template<auto, typename> typename Outer, auto I, typename ... Inners>
-    struct has_atomic_group<Outer<I, Inners ...>>
-    {
-        static constexpr bool value = (has_atomic_group<Inners>::value || ...);
-    };
-
-    template<typename T>
-    constexpr bool has_atomic_group_v = has_atomic_group<T>::value;
 }
 #endif //CX_TYPE_HELPERS_H

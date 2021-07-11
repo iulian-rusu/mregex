@@ -4,6 +4,7 @@
 #include "capture_counter.h"
 #include "regex_result.h"
 #include "match_result.h"
+#include "atomic.h"
 
 /**
  * File with the building blocks of the Abstract Syntax Tree
@@ -14,7 +15,7 @@ namespace cx
     {
         std::size_t from{};
         std::size_t max_chars{};
-        bool negated = false;
+        bool negated{false};
     };
 
     template<typename First, typename ... Rest>
@@ -264,23 +265,12 @@ namespace cx
         template<std::size_t N>
         static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &captures) noexcept
         {
-            auto inner_match = Inner::template match<N>(input, mp, captures);
-            std::get<ID>(captures) = capture<ID>{mp.from, inner_match.count};
-            return inner_match;
-        }
-    };
-
-    template<std::size_t ID, typename Inner>
-    struct capturing<ID, atomic<Inner>>
-    {
-        static constexpr std::size_t capture_count = 1 + Inner::capture_count;
-
-        template<std::size_t N>
-        static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &captures) noexcept
-        {
             auto &this_capture = std::get<ID>(captures);
-            if(this_capture.count)
-                return {0, false};
+            if constexpr (is_atomic_v<Inner>)
+            {
+                if (this_capture.count)
+                    return {0, false};
+            }
             auto inner_match = Inner::template match<N>(input, mp, captures);
             this_capture = capture<ID>{mp.from, inner_match.count};
             return inner_match;
