@@ -34,17 +34,5 @@ namespace cx
 
     template<typename T>
     constexpr bool has_atomic_group_v = has_atomic_group<T>::value;
-
-    /**
-     * Helper type trait to identify if a type is of the form atomic<T>
-     */
-    template<typename>
-    struct is_atomic : std::false_type {};
-
-    template<typename Inner>
-    struct is_atomic<atomic<Inner>> : std::true_type {};
-
-    template<typename Inner>
-    constexpr bool is_atomic_v = is_atomic<Inner>::value;
 }
 #endif //CX_ATOMIC_H

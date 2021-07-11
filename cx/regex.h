@@ -4,6 +4,7 @@
 #include "parser.h"
 #include "generator.h"
 #include "va_helpers.h"
+#include "atomic.h"
 
 /**
  * Defines a Regex type used to match/search input string-like objects
