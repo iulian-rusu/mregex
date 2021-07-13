@@ -35,7 +35,7 @@ namespace cx
     };
 
     template<auto Offset, typename ... Rest>
-    struct preorder_indexing<Offset, sequence < Rest ...>>
+    struct preorder_indexing<Offset, sequence<Rest ...>>
     {
         using type = sequence<preorder_indexing_t<Offset, Rest> ...>;
     };

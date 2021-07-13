@@ -30,12 +30,18 @@ namespace cx
             {
                 auto first_match = First::template match<N>(input, {mp.from, match_limit, mp.negated}, captures);
                 if (!first_match)
+                {
                     return {0, false};
+                }
                 match_params updated_mp{mp.from + first_match.count, mp.max_chars - first_match.count, mp.negated};
                 if (auto rest_matched = sequence<Rest ...>::template match<N>(input, updated_mp, captures))
+                {
                     return first_match + rest_matched;
+                }
                 if (first_match.count == 0 || match_limit == 0)
+                {
                     return {0, false};
+                }
                 match_limit = first_match.count - 1;
             } while (true);
         }
@@ -62,15 +68,18 @@ namespace cx
         static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &captures) noexcept
         {
             auto first_match = First::template match<N>(input, {mp.from, mp.max_chars, false}, captures);
+
             if (first_match && first_match.count <= mp.max_chars)
             {
                 first_match.matched ^= mp.negated;
                 return first_match;
             }
+
             if constexpr (sizeof... (Rest) > 0)
             {
                 return alternation<Rest ...>::template match<N>(input, mp, captures);
             }
+
             // Default case if no node has matched in the entire alternation
             bool default_res = mp.from < input.length() && mp.negated;
             return {default_res, default_res};
@@ -86,7 +95,9 @@ namespace cx
         static constexpr match_result match(auto const &input, match_params mp, capture_storage<N> &captures) noexcept
         {
             if (mp.max_chars == 0)
+            {
                 return {0, true};
+            }
 
             if (auto inner_match = Inner::template match<N>(input, mp, captures))
             {
@@ -222,7 +233,9 @@ namespace cx
             while (offset < max_match)
             {
                 if (input[mp.from + offset] != str_to_match[offset])
+                {
                     return {0, false};
+                }
                 ++offset;
             }
             return {max_match, true};
@@ -278,7 +291,9 @@ namespace cx
         {
             auto &this_capture = std::get<ID>(captures);
             if (this_capture.count)
+            {
                 return {0, false};
+            }
             auto inner_match = Inner::template match<N>(input, mp, captures);
             this_capture = capture<ID>{mp.from, inner_match.count};
             return inner_match;

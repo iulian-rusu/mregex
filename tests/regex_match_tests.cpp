@@ -74,6 +74,7 @@ namespace cx::tests
     static_assert(regex<R"(a?)">::match("b"sv) == false);
     static_assert(regex<R"(a?)">::match("ab"sv) == false);
     static_assert(regex<R"(a*)">::match("aaaaaaaaabaaaa"sv) == false);
+    static_assert(regex<R"((a|ab)*x)">::match("aaaabbabx"sv) == false);
     static_assert(regex<R"(a+)">::match(""sv) == false);
     static_assert(regex<R"(abc)">::match("cba"sv) == false);
     static_assert(regex<R"(a?b?c?)">::match("abbc"sv) == false);
