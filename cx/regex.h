@@ -3,15 +3,12 @@
 
 #include "parser.h"
 #include "generator.h"
-#include "atomic.h"
+#include "ast/atomic.h"
 #include "match_context.h"
 
-/**
- * Defines a Regex type used to match/search input string-like objects
- */
 namespace cx
 {
-    template<static_string const pattern>
+    template<static_string const pattern, typename ... Flags>
     struct regex
     {
         static_assert(parser<pattern>::accepted, "syntax error in regular expression");

@@ -2,13 +2,10 @@
 #define CX_CHAR_CLASS_H
 
 #include <type_traits>
-#include "stack.h"
-#include "symbol.h"
+#include "../utility/stack.h"
+#include "../symbol.h"
 #include "ast.h"
 
-/**
- * File defining rules for special character classes recognized by the grammar
- */
 namespace cx
 {
 

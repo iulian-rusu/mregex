@@ -1,10 +1,6 @@
 #ifndef CX_ATOMIC_H
 #define CX_ATOMIC_H
 
-/**
- * File with utilities for the cx::atomic decorator.
- * This node wrapper prevents any backtracking after the inner node has matched once
- */
 namespace cx
 {
     template<typename>

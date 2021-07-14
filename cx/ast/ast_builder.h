@@ -1,13 +1,10 @@
 #ifndef CX_AST_BUILDER_H
 #define CX_AST_BUILDER_H
 
-#include "stack.h"
-#include "symbol.h"
+#include "../utility/stack.h"
+#include "../symbol.h"
 #include "ast.h"
 
-/**
- * File with metafunctions for building the Abstract Syntax Tree of the regular expression
- */
 namespace cx
 {
     /**

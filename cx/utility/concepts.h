@@ -1,9 +1,6 @@
-#ifndef CX_TYPE_HELPERS_H
-#define CX_TYPE_HELPERS_H
+#ifndef CX_CONCEPTS_H
+#define CX_CONCEPTS_H
 
-/**
- * File with concepts and metafunctions for type management
- */
 namespace cx
 {
     /**
@@ -25,15 +22,5 @@ namespace cx
     {
         p();
     };
-
-    /**
-     * Meta-pair containing two types
-     */
-    template<typename First, typename Second>
-    struct pair
-    {
-        using first = First;
-        using second = Second;
-    };
 }
-#endif //CX_TYPE_HELPERS_H
+#endif //CX_CONCEPTS_H

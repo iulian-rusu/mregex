@@ -1,9 +1,6 @@
 #ifndef CX_SYMBOL_H
 #define CX_SYMBOL_H
 
-/**
- * Namespace with symbols used by the LL(1) parser to generate the Abstract Syntax Tree
- */
 namespace cx::symbol
 {
     // Non-terminal symbols

@@ -3,9 +3,6 @@
 
 #include "ast.h"
 
-/**
- * File with metafunctions for indexing captures
- */
 namespace cx
 {
     /**

@@ -2,11 +2,8 @@
 #define CX_REGEX_RESULT_H
 
 #include <tuple>
-#include "capture.h"
+#include "ast/capture.h"
 
-/**
- * File with data structures that contain matching/searching results
- */
 namespace cx
 {
     /**

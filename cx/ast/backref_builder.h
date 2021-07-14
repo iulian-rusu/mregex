@@ -2,13 +2,10 @@
 #define CX_BACKREF_BUILDER_H
 
 #include <type_traits>
-#include "stack.h"
-#include "symbol.h"
+#include "../utility/stack.h"
+#include "../symbol.h"
 #include "ast.h"
 
-/**
- * File with metafunctions for building backreference nodes
- */
 namespace cx
 {
     /**

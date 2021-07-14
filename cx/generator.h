@@ -6,7 +6,7 @@
 namespace cx
 {
     /**
-     * Gen that produces results based on a specified generating function.
+     * Generator that produces results based on a specified generating function.
      *
      * @tparam Prod   The type of callable used to produce the desired data
      */

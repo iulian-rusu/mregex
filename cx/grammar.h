@@ -1,12 +1,9 @@
 #ifndef CX_GRAMMAR_H
 #define CX_GRAMMAR_H
 
-#include "char_class.h"
-#include "backref_builder.h"
+#include "ast/char_class.h"
+#include "ast/backref_builder.h"
 
-/**
- * Namespace containing the rules for the grammar
- */
 namespace cx::grammar
 {
     // Helper types defining decisions imposed by the grammar rules

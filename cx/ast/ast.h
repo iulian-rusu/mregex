@@ -2,13 +2,10 @@
 #define CX_AST_H
 
 #include "capture_counter.h"
-#include "regex_result.h"
-#include "match_result.h"
-#include "match_context.h"
+#include "../regex_result.h"
+#include "../match_result.h"
+#include "../match_context.h"
 
-/**
- * File with the building blocks of the Abstract Syntax Tree
- */
 namespace cx
 {
     struct match_params
