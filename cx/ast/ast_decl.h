@@ -18,26 +18,26 @@ namespace cx
 
     struct terminal;
 
-    struct epsilon : terminal;
+    struct epsilon;
 
-    struct null : terminal;
+    struct null;
 
-    struct beginning : terminal;
+    struct beginning;
 
-    struct ending : terminal;
+    struct ending;
 
     template<auto>
-    struct character : terminal;
+    struct character;
 
-    struct whitespace : terminal;
+    struct whitespace;
 
-    struct wildcard : terminal;
+    struct wildcard;
 
     template<auto, auto>
-    struct range : terminal;
+    struct range;
 
     template<std::size_t>
-    struct backref : terminal;
+    struct backref;
 
     template<typename>
     struct negated;
