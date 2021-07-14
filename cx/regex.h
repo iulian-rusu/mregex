@@ -3,8 +3,8 @@
 
 #include "parser.h"
 #include "generator.h"
-#include "va_helpers.h"
 #include "atomic.h"
+#include "match_context.h"
 
 /**
  * Defines a Regex type used to match/search input string-like objects
@@ -22,35 +22,33 @@ namespace cx
         [[nodiscard]] static constexpr auto match(Str const &input) noexcept
         -> regex_result<capture_count>
         {
-            capture_storage<capture_count> captures;
-            auto res = ast::template match<capture_count>(input, {0, input.length()}, captures);
+            match_context<regex> ctx{};
+            auto res = ast::template match<regex>(input, {0, input.length()}, ctx);
             res.matched = res.matched && (res.count == input.length());
-            std::get<0>(captures) = capture<0>{0, res.count};
-            return regex_result{res.matched, std::move(captures), input};
+            std::get<0>(ctx.captures) = capture<0>{0, res.count};
+            return regex_result{res.matched, std::move(ctx.captures), input};
         }
 
         template<string_like Str>
         [[nodiscard]] static constexpr auto find_first(Str const &input, std::size_t start_pos = 0) noexcept
         -> regex_result<capture_count>
         {
-            capture_storage<capture_count> captures;
+            match_context<regex> ctx{};
             while (start_pos < input.length())
             {
-                auto res = ast::template match<capture_count>(input, {start_pos, input.length()}, captures);
+                auto res = ast::template match<regex>(input, {start_pos, input.length()}, ctx);
                 if (res)
                 {
-                    std::get<0>(captures) = capture<0>{start_pos, res.count};
-                    return regex_result{true, std::move(captures), input};
+                    std::get<0>(ctx.captures) = capture<0>{start_pos, res.count};
+                    return regex_result{true, std::move(ctx.captures), input};
                 }
                 if constexpr (has_atomic_group_v<ast>)
                 {
-                    map_tuple(captures, [](auto &capture) {
-                        capture.reset();
-                    });
+                    ctx.clear_captures();
                 }
                 ++start_pos;
             }
-            return regex_result{false, std::move(captures), input};
+            return regex_result{false, std::move(ctx.captures), input};
         }
 
         template<string_like Str>
