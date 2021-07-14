@@ -7,6 +7,11 @@
 
 namespace cx
 {
+    /**
+     * Data structure containing information necessary to match a Regex
+     *
+     * @tparam Regex    The cx::regex type used to match the input
+     */
     template<typename Regex>
     struct match_context
     {

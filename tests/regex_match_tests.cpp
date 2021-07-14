@@ -14,11 +14,18 @@ namespace cx::tests
     static_assert(regex<R"(abcdef)">::match("abcdef"sv));
     static_assert(regex<R"(abc[]?def)">::match("abcdef"sv));
     static_assert(regex<R"(^abcd$)">::match("abcd"sv));
+    static_assert(regex<R"(^abcd$)", flag::multiline>::match("\nabcd\n"sv));
+    static_assert(regex<R"(^abcd$)", flag::multiline>::match("abcd\n"sv));
+    static_assert(regex<R"(^abcd$)", flag::multiline>::match("\nabcd"sv));
+    static_assert(regex<R"(^abcd$.+$)", flag::multiline>::match("\nabcd\nabc"sv));
+    static_assert(regex<R"(^abcd$.+$)", flag::multiline>::match("abcd\nabc\n"sv));
+    static_assert(regex<R"(^abcd$.+$)", flag::multiline>::match("\nabcd\nabc\n"sv));
     static_assert(regex<R"([\^a]+)">::match("^a"sv));
     static_assert(regex<R"([^\^a]+)">::match("b$"sv));
-    static_assert(regex<R"([a-z]+)">::match("abasbdbasdbasbdabs"sv));
-    static_assert(regex<R"([A-Z]+)">::match("AAAAVVVVVVVVCCCCCCCD"sv));
-    static_assert(regex<R"([A-Z]+)", flag::ignore_case>::match("abABasdaBSDBASBDabsds"sv));
+    static_assert(regex<R"([a-z]+)">::match("aqwertyz"sv));
+    static_assert(regex<R"([A-Z]+)">::match("AAABBBCCEEFFZZZ"sv));
+    static_assert(regex<R"([A-Z]+)", flag::ignore_case>::match("aBcDeFiOyZ"sv));
+    static_assert(regex<R"([0-Z]+)", flag::ignore_case>::match("1234abczABCZ"sv));
     static_assert(regex<R"([0-9]+)">::match("123123123123"sv));
     static_assert(regex<R"([(|)][^0-9]+[a-z]+)">::match("(xy"sv));
     static_assert(regex<R"(a?)">::match(""sv));
@@ -29,6 +36,8 @@ namespace cx::tests
     static_assert(regex<R"(a*)">::match("aaaaaaaaaaa"sv));
     static_assert(regex<R"(abc)">::match("abc"sv));
     static_assert(regex<R"(a?b?c?)">::match("abc"sv));
+    static_assert(regex<R"(a?b?c?)", flag::extended>::match("abc"sv));
+    static_assert(regex<R"(a?   b? c?)", flag::extended>::match("abc"sv));
     static_assert(regex<R"(a?b?c?)">::match("a"sv));
     static_assert(regex<R"(a?b?c?)">::match("b"sv));
     static_assert(regex<R"(a?b?c?)">::match("c"sv));
@@ -56,6 +65,8 @@ namespace cx::tests
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("0x1234F"sv));
     static_assert(regex<R"(0(x)(\h+)(h)?)", flag::ignore_case>::match("0X0h"sv));
     static_assert(regex<R"(.+)">::match("this regex will match any input"sv));
+    static_assert(regex<R"(.+)", flag::dotall>::match("this regex will match any input"sv));
+    static_assert(regex<R"(.+)", flag::dotall>::match("\neven new lines!"sv));
     static_assert(regex<R"(hello|salut|bonjour)", flag::ignore_case>::match("SaLuT"sv));
 
     // Test non-matching inputs
@@ -64,6 +75,10 @@ namespace cx::tests
     static_assert(regex<R"(^a)">::match(" a"sv) == false);
     static_assert(regex<R"(a$)">::match("a "sv) == false);
     static_assert(regex<R"(^abcd$)">::match(" abcd"sv) == false);
+    static_assert(regex<R"(^abcd$)", flag::multiline>::match("\nabcd\ne"sv) == false);
+    static_assert(regex<R"(^abcd$)", flag::multiline>::match("a\nbcd\n"sv) == false);
+    static_assert(regex<R"(^abcd$)", flag::multiline>::match("\nabcd\n\n"sv) == false);
+    static_assert(regex<R"(^abcd$.+$)", flag::multiline>::match("\n\nabcd\n"sv) == false);
     static_assert(regex<R"(abc[]def)">::match("abcdef"sv) == false);
     static_assert(regex<R"([\^a]+)">::match("^ca"sv) == false);
     static_assert(regex<R"([^\^a]+)">::match("bb^$"sv) == false);
@@ -99,5 +114,6 @@ namespace cx::tests
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("X0h"sv) == false);
     static_assert(regex<R"(0(x)(\h+)(h)?)", flag::ignore_case>::match("0x012323Ejh"sv) == false);
     static_assert(regex<R"(a.+)">::match("this regex will match any input"sv) == false);
+    static_assert(regex<R"(.+)">::match("\nexcept new lines"sv) == false);
 }
 #endif // CX_RUN_REGEX_TESTS

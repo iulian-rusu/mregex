@@ -8,7 +8,10 @@ namespace cx
     namespace flag
     {
         struct ignore_case {};
-        struct lazy_cycle {};
+        struct dotall {};
+        struct multiline {};
+        struct extended {};
+        struct lazy_cycle {}; // experimental
     }
 
     template<typename Regex>

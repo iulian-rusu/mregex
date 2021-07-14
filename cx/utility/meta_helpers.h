@@ -70,14 +70,5 @@ namespace cx
 
     template<typename Test, typename ... Rest>
     constexpr auto is_any_of_v = is_any_of<Test, Rest ...>::value;
-
-    template<typename>
-    struct requires_successor_context : std::false_type {};
-
-    template<typename Inner>
-    struct requires_successor_context<star<Inner>> : std::true_type {};
-
-    template<typename First, typename ... Rest>
-    struct requires_successor_context<alternation<First, Rest ...>> : std::true_type {};
 }
 #endif //CX_META_HELPERS_H

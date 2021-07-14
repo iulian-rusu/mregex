@@ -6,7 +6,6 @@
 #include "../match_result.h"
 #include "../match_context.h"
 #include "../utility/char_helpers.h"
-#include <iostream>
 
 namespace cx
 {
@@ -25,10 +24,10 @@ namespace cx
         template<typename Regex>
         static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &ctx) noexcept
         {
-            std::size_t match_limit = mp.max_chars;
+            std::size_t max_chars = mp.max_chars;
             do
             {
-                auto first_match = First::template match<Regex>(input, {mp.from, match_limit, mp.negated}, ctx);
+                auto first_match = First::template match<Regex>(input, {mp.from, max_chars, mp.negated}, ctx);
                 if (!first_match)
                 {
                     return {0, false};
@@ -38,11 +37,11 @@ namespace cx
                 {
                     return first_match + rest_matched;
                 }
-                if (first_match.count == 0 || match_limit == 0)
+                if (first_match.count == 0 || max_chars == 0)
                 {
                     return {0, false};
                 }
-                match_limit = first_match.count - 1;
+                max_chars = first_match.count - 1;
             } while (true);
         }
     };
@@ -138,9 +137,16 @@ namespace cx
     struct beginning : terminal
     {
         template<typename Regex>
-        static constexpr match_result match(auto const &, match_params mp, match_context<Regex> &) noexcept
+        static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &) noexcept
         {
-            return {0, mp.from == 0u};
+            auto res = mp.from == 0u;
+            bool consume = false;
+            if constexpr (flags<Regex>::multiline)
+            {
+                consume = mp.from < input.length() && input[mp.from] == '\n';
+                res |= consume;
+            }
+            return {consume, res};
         }
     };
 
@@ -149,7 +155,14 @@ namespace cx
         template<typename Regex>
         static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &) noexcept
         {
-            return {0, mp.from == input.length()};
+            auto res = mp.from == input.length();
+            bool consume = false;
+            if constexpr (flags<Regex>::multiline)
+            {
+                consume = mp.from < input.length() && input[mp.from] == '\n';
+                res |= consume;
+            }
+            return {consume, res};
         }
     };
 
@@ -159,6 +172,10 @@ namespace cx
         template<typename Regex>
         static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &ctx) noexcept
         {
+            if constexpr (flags<Regex>::extended && is_whitespace_v<C>)
+            {
+                return {0, true};
+            }
             if (mp.from < input.length())
             {
                 auto subject = input[mp.from];
@@ -179,6 +196,10 @@ namespace cx
         template<typename Regex>
         static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &) noexcept
         {
+            if constexpr (flags<Regex>::extended)
+            {
+                return {0, true};
+            }
             if (mp.from < input.length())
             {
                 auto subject = input[mp.from];
@@ -189,6 +210,7 @@ namespace cx
                 return {res, res};
             }
             return {mp.negated, mp.negated};
+
         }
     };
 
@@ -197,13 +219,17 @@ namespace cx
         template<typename Regex>
         static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &) noexcept
         {
-            if (mp.from < input.length())
+            if (mp.from >= input.length())
             {
-                auto subject = input[mp.from];
-                bool res = (subject != '\n' && subject != '\r') ^ mp.negated;
-                return {res, res};
+                return {mp.negated, mp.negated};
             }
-            return {mp.negated, mp.negated};
+            if constexpr (flags<Regex>::dotall)
+            {
+                return{1, true};
+            }
+            auto subject = input[mp.from];
+            bool res = (subject != '\n' && subject != '\r') ^ mp.negated;
+            return {res, res};
         }
     };
 

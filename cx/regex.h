@@ -18,6 +18,9 @@ namespace cx
         struct flags
         {
             static constexpr bool ignore_case = is_any_of_v<flag::ignore_case, Flags ...>;
+            static constexpr bool dotall = is_any_of_v<flag::dotall, Flags ...>;
+            static constexpr bool multiline = is_any_of_v<flag::multiline, Flags ...>;
+            static constexpr bool extended = is_any_of_v<flag::extended, Flags ...>;
             static constexpr bool lazy_cycle = is_any_of_v<flag::lazy_cycle, Flags ...>;
         };
 
