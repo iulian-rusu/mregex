@@ -68,8 +68,8 @@ namespace cx
         static constexpr auto value = false;
     };
 
-    template<typename Test, typename First, typename ... Rest>
-    constexpr auto is_any_of_v = is_any_of<Test, First, Rest ...>::value;
+    template<typename Test, typename ... Rest>
+    constexpr auto is_any_of_v = is_any_of<Test, Rest ...>::value;
 
     template<typename>
     struct requires_successor_context : std::false_type {};

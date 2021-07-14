@@ -27,6 +27,7 @@ The library currently supports the following regex features:
 * `[abc]` - sets
 * `[^abc]` - negated sets
 * `[a-z0-9]` - ranges inside sets
+* flags for ignoring case and lazy cycles
 
 Some features planned for the future:
 * `++`, `?+`, `*+` - possessive quantifiers
@@ -41,7 +42,7 @@ in a compilation error.
 
 The input can be any object that satisfies the `cx::string_like` concept.
 ```cpp
-using url_regex = cx::regex<R"((\w+):\/\/(?:(?:(\w+)?(?::(\w+))?@)?([\w.]+)(?::(\d+))?)?(?:\/([-/\w]+)?\?([\w=&]+))?)">;
+using url_regex = cx::regex<R"((\w+):\/\/(?:(?:(\w+)?(?::(\w+))?@)?([\w.]+)(?::(\d+))?)?(?:(\/[-/\w]+)?\?([\w=&]+))?)">;
 constexpr std::string_view url = "https://username:password@hostname.com:8080/path/to/resource?id=12345";
 constexpr auto match_res = url_regex::match(url);
 std::cout << "Scheme:\t" << match_res.get<1>() << '\n';
@@ -80,10 +81,10 @@ the `cx::regex::find_all` method returns a lazy generator that will evaluate
 on-demand all matches in the string. We can iterate through the generator
 just like any standard container.
 ```cpp
-    using word_regex = cx::regex<R"([-A-z']+)">;
-    constexpr std::string_view words = "Let's iterate over all words!";
+    using word_regex = cx::regex<R"([-a-z']+)", cx::flag::ignore_case>;
+    constexpr std::string_view words = "Let's iterate over these words!";
     for (auto &&res : word_regex::find_all(words))
     {
-        std::cout << res.get<0>() << '\n';
+    std::cout << res.get<0>() << '\n';
     }
 ```

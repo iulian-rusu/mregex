@@ -15,6 +15,12 @@ namespace cx
         using ast = typename parser<pattern>::ast;
         static constexpr auto capture_count = ast::capture_count;
 
+        struct flags
+        {
+            static constexpr bool ignore_case = is_any_of_v<flag::ignore_case, Flags ...>;
+            static constexpr bool lazy_cycle = is_any_of_v<flag::lazy_cycle, Flags ...>;
+        };
+
         template<string_like Str>
         [[nodiscard]] static constexpr auto match(Str const &input) noexcept
         -> regex_result<capture_count>

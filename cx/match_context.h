@@ -10,8 +10,6 @@ namespace cx
     template<typename Regex>
     struct match_context
     {
-        using flags = resolve_flags<Regex>;
-
         capture_storage<Regex::capture_count> captures{};
 
         constexpr void clear_captures() noexcept

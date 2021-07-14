@@ -18,6 +18,7 @@ namespace cx::tests
     static_assert(regex<R"([^\^a]+)">::match("b$"sv));
     static_assert(regex<R"([a-z]+)">::match("abasbdbasdbasbdabs"sv));
     static_assert(regex<R"([A-Z]+)">::match("AAAAVVVVVVVVCCCCCCCD"sv));
+    static_assert(regex<R"([A-Z]+)", flag::ignore_case>::match("abABasdaBSDBASBDabsds"sv));
     static_assert(regex<R"([0-9]+)">::match("123123123123"sv));
     static_assert(regex<R"([(|)][^0-9]+[a-z]+)">::match("(xy"sv));
     static_assert(regex<R"(a?)">::match(""sv));
@@ -53,9 +54,9 @@ namespace cx::tests
     static_assert(regex<R"((?>ab+)c)">::match("abc"sv));
     static_assert(regex<R"((?>[^ @]+)@([^ @]+))">::match("example@gmail.com"sv));
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("0x1234F"sv));
-    static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("0X0h"sv));
+    static_assert(regex<R"(0(x)(\h+)(h)?)", flag::ignore_case>::match("0X0h"sv));
     static_assert(regex<R"(.+)">::match("this regex will match any input"sv));
-    static_assert(regex<R"(hello|salut|bonjour)">::match("salut"sv));
+    static_assert(regex<R"(hello|salut|bonjour)", flag::ignore_case>::match("SaLuT"sv));
 
     // Test non-matching inputs
     static_assert(regex<R"()">::match("t"sv) == false);
@@ -68,6 +69,7 @@ namespace cx::tests
     static_assert(regex<R"([^\^a]+)">::match("bb^$"sv) == false);
     static_assert(regex<R"([a-z]+)">::match("abasbdbAasdbasbdabs"sv) == false);
     static_assert(regex<R"([A-Z]+)">::match("AAAAVVVVVVVVCCCCCCxCD"sv) == false);
+    static_assert(regex<R"([^a-z]+)", flag::ignore_case>::match("AABBBDBDBDBBSABBDBDBABBA"sv) == false);
     static_assert(regex<R"([0-9]+)">::match("123123f123123"sv) == false);
     static_assert(regex<R"([0-3]+)">::match("1231243123123"sv) == false);
     static_assert(regex<R"([(|)][^0-9]+[a-z]+)">::match("(x"sv) == false);
@@ -95,7 +97,7 @@ namespace cx::tests
     static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("abc123_321bca.gmail.com"sv) == false);
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("01234F"sv) == false);
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("X0h"sv) == false);
-    static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("0x12345GFD"sv) == false);
+    static_assert(regex<R"(0(x)(\h+)(h)?)", flag::ignore_case>::match("0x012323Ejh"sv) == false);
     static_assert(regex<R"(a.+)">::match("this regex will match any input"sv) == false);
 }
 #endif // CX_RUN_REGEX_TESTS

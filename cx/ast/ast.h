@@ -5,6 +5,8 @@
 #include "../regex_result.h"
 #include "../match_result.h"
 #include "../match_context.h"
+#include "../utility/char_helpers.h"
+#include <iostream>
 
 namespace cx
 {
@@ -155,10 +157,20 @@ namespace cx
     struct character : terminal
     {
         template<typename Regex>
-        static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &) noexcept
+        static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &ctx) noexcept
         {
-            bool res = (mp.from < input.length() && C == input[mp.from]) ^ mp.negated;
-            return {res, res};
+            if (mp.from < input.length())
+            {
+                auto subject = input[mp.from];
+                bool res = C == subject;
+                if constexpr (flags<Regex>::ignore_case)
+                {
+                    res |= toggle_case_v<C> == subject;
+                }
+                res ^= mp.negated;
+                return {res, res};
+            }
+            return {mp.negated, mp.negated};
         }
     };
 
@@ -167,12 +179,16 @@ namespace cx
         template<typename Regex>
         static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &) noexcept
         {
-            auto from = mp.from;
-            bool res = (from < input.length() &&
-                        (input[from] == ' ' || input[from] == '\t' ||
-                         input[from] == '\n' || input[from] == '\r' ||
-                         input[from] == '\f' || input[from] == '\x0B')) ^ mp.negated;
-            return {res, res};
+            if (mp.from < input.length())
+            {
+                auto subject = input[mp.from];
+                bool res = subject == ' ' || subject == '\t' ||
+                           subject == '\n' || subject == '\r' ||
+                           subject == '\f' || subject == '\x0B';
+                res ^= mp.negated;
+                return {res, res};
+            }
+            return {mp.negated, mp.negated};
         }
     };
 
@@ -181,9 +197,13 @@ namespace cx
         template<typename Regex>
         static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &) noexcept
         {
-            auto from = mp.from;
-            bool res = (from < input.length() && input[from] != '\n' && input[from] != '\r') ^ mp.negated;
-            return {res, res};
+            if (mp.from < input.length())
+            {
+                auto subject = input[mp.from];
+                bool res = (subject != '\n' && subject != '\r') ^ mp.negated;
+                return {res, res};
+            }
+            return {mp.negated, mp.negated};
         }
     };
 
@@ -195,9 +215,21 @@ namespace cx
         template<typename Regex>
         static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &) noexcept
         {
-            auto from = mp.from;
-            bool res = (from < input.length() && A <= input[from] && input[from] <= B) ^ mp.negated;
-            return {res, res};
+            if (mp.from < input.length())
+            {
+                auto subject = input[mp.from];
+                bool res = A <= subject && subject <= B;
+                if constexpr (flags<Regex>::ignore_case)
+                {
+                    subject = to_lower(subject);
+                    res |= A <= subject && subject <= B;
+                    subject = to_upper(subject);
+                    res |= A <= subject && subject <= B;
+                }
+                res ^= mp.negated;
+                return {res, res};
+            }
+            return {mp.negated, mp.negated};
         }
     };
 
@@ -228,9 +260,17 @@ namespace cx
             decltype(auto) str_to_match = std::get<ID>(ctx.captures).evaluate(input);
             std::size_t max_match = str_to_match.length();
             std::size_t offset = 0;
+
             while (offset < max_match)
             {
-                if (input[mp.from + offset] != str_to_match[offset])
+                auto subject = input[mp.from + offset];
+                auto to_match = str_to_match[offset];
+                if constexpr (flags<Regex>::ignore_case)
+                {
+                    subject = to_lower(subject);
+                    to_match = to_lower(to_match);
+                }
+                if (subject != to_match)
                 {
                     return {0, false};
                 }
