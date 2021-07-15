@@ -37,7 +37,7 @@ constexpr auto parse()
 int main()
 {
     // Basic URL parsing
-    using url_regex = cx::regex<R"((\w+):\/\/(?:(?:(\w+)?(?::(\w+))?@)?([\w.]+)(?::(\d+))?)?(?:(\/[-/\w]+)?\?([\w=&]+))?)">;
+    using url_regex = cx::regex<R"((\w+):\/\/(?:(?:(\w+)?(?::(\w+))?@)?([\w.]+)(?::(\d+))?)?(?:\/([-/\w]+)?\?([\w=&]+))?)">;
     constexpr std::string_view url = "https://username:password@hostname.com:8080/path/to/resource?id=12345";
     constexpr auto match_res = url_regex::match(url);
     std::cout << "Scheme:\t" << match_res.get<1>() << '\n';
@@ -57,7 +57,7 @@ int main()
     std::cout << str_value << '\n';
 
     // Lazy iteration over a collection of results
-    using word_regex = cx::regex<R"([-a-z']+)", cx::flag::ignore_case>;
+    using word_regex = cx::regex<R"([-a-z']+)">::with_flags<cx::flag::ignore_case>;
     constexpr std::string_view words = "Let's iterate over these words!";
     for (auto &&res : word_regex::find_all(words))
     {

@@ -81,7 +81,7 @@ the `cx::regex::find_all` method returns a lazy generator that will evaluate
 on-demand all matches in the string. We can iterate through the generator
 just like any standard container.
 ```cpp
-    using word_regex = cx::regex<R"([-a-z']+)", cx::flag::ignore_case>;
+    using word_regex = cx::regex<R"([-a-z']+)">::with_flags<cx::flag::ignore_case>;
     constexpr std::string_view words = "Let's iterate over these words!";
     for (auto &&res : word_regex::find_all(words))
     {
