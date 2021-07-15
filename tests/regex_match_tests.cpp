@@ -45,6 +45,14 @@ namespace cx::tests
     static_assert(regex<R"(a+b+c+)">::match("abc"sv));
     static_assert(regex<R"(a+b+c+)">::match("aaabbcccccc"sv));
     static_assert(regex<R"((x|y|z)+)">::match("xyzxzyxyzxyzyxyxxxzxxzyxyzx"sv));
+    static_assert(regex<R"(a|ab)">::match("a"sv));
+    static_assert(regex<R"(a|ab)", flag::greedy_alt>::match("a"sv));
+    static_assert(regex<R"(a|ab)", flag::greedy_alt>::match("ab"sv));
+    static_assert(regex<R"((a|ab)+x)", flag::greedy_alt>::match("aaaababx"sv));
+    static_assert(regex<R"((a|ab|abc)+x)", flag::greedy_alt>::match("ax"sv));
+    static_assert(regex<R"((a|ab|abc)+x)", flag::greedy_alt>::match("abx"sv));
+    static_assert(regex<R"((a|ab|abc)+x)", flag::greedy_alt>::match("abcx"sv));
+    static_assert(regex<R"((a|ab|abc)+x)", flag::greedy_alt>::match("aabcaaabababcx"sv));
     static_assert(regex<R"((abc)+)">::match("abcabcabc"sv));
     static_assert(regex<R"((a+|b+)x\1)">::match("aaaxaaa"sv));
     static_assert(regex<R"(a*aa)">::match("aa"sv));
@@ -97,10 +105,13 @@ namespace cx::tests
     static_assert(regex<R"(a?b?c?)">::match("abbc"sv) == false);
     static_assert(regex<R"(a+b+c+)">::match("ab"sv) == false);
     static_assert(regex<R"((x|y|z)+)">::match("xyzxzyxyzxyzyxyqxxxzxxzyxyzx"sv) == false);
+    static_assert(regex<R"(a|ab)">::match("ab"sv) == false);
+    static_assert(regex<R"((a|ab)+x)">::match("aaaababx"sv) == false);
     static_assert(regex<R"((abc)+)">::match("abcabcbc"sv) == false);
     static_assert(regex<R"((a+|b+)x\1)">::match("aaaxbbb"sv) == false);
     static_assert(regex<R"(a*aa)">::match("a"sv) == false);
     static_assert(regex<R"(a*aab+bb)">::match("aaabb"sv) == false);
+    static_assert(regex<R"((a|ab|abc)+x)", flag::greedy_alt>::match("aaaabcbabx"sv) == false);
     static_assert(regex<R"((abc)+|tu ?(xyz)+)">::match("xyz"sv) == false);
     static_assert(regex<R"((abc)+|tu ?(xyz ?)+)">::match("tuxyxyz"sv) == false);
     static_assert(regex<R"((abc)+|tu ?(xyz ?)+)">::match("tu xyz  xyz "sv) == false);
@@ -112,7 +123,7 @@ namespace cx::tests
     static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("abc123_321bca.gmail.com"sv) == false);
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("01234F"sv) == false);
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("X0h"sv) == false);
-    static_assert(regex<R"(0(x)(\h+)(h)?)", flag::ignore_case>::match("0x012323Ejh"sv) == false);
+    static_assert(regex<R"(0x(\h+)h?)", flag::ignore_case>::match("0X012323EJh"sv) == false);
     static_assert(regex<R"(a.+)">::match("this regex will match any input"sv) == false);
     static_assert(regex<R"(.+)">::match("\nexcept new lines"sv) == false);
 }

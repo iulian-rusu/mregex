@@ -11,7 +11,7 @@ namespace cx
         struct dotall {};
         struct multiline {};
         struct extended {};
-        struct lazy_cycle {}; // experimental
+        struct greedy_alt {};
     }
 
     template<typename Regex>

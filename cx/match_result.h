@@ -8,7 +8,7 @@ namespace cx
     */
     struct match_result
     {
-        std::size_t count{};
+        std::size_t consumed{};
         bool matched{};
 
         constexpr explicit operator bool() const noexcept
@@ -23,13 +23,24 @@ namespace cx
 
         constexpr match_result operator+(match_result const &other) const noexcept
         {
-            return match_result{count + other.count, matched || other.matched};
+            return match_result{consumed + other.consumed, matched || other.matched};
         }
 
         constexpr match_result &operator+=(match_result const &other) noexcept
         {
-            count += other.count;
+            consumed += other.consumed;
             matched = matched || other.matched;
+            return *this;
+        }
+
+        constexpr match_result operator^(bool const b) const noexcept
+        {
+            return match_result{consumed, static_cast<bool>(matched ^ b)};
+        }
+
+        constexpr match_result &operator^=(bool const b) noexcept
+        {
+            matched ^= b;
             return *this;
         }
     };

@@ -4,28 +4,28 @@
 namespace cx
 {
     /**
-     * Struct that remembers the start coordinate and length of a capture group result
+     * Struct that remembers the start coordinate and span of a capture group result
      */
     template<std::size_t>
     struct capture
     {
         std::size_t from{};
-        std::size_t count{};
+        std::size_t consumed{};
 
         constexpr decltype(auto) evaluate(std::string_view sv) const noexcept
         {
-            return sv.substr(from, count);
+            return sv.substr(from, consumed);
         }
 
         [[nodiscard]] constexpr std::size_t end() const noexcept
         {
-            return from + count;
+            return from + consumed;
         }
 
         constexpr void reset() noexcept
         {
             from = 0u;
-            count = 0u;
+            consumed = 0u;
         }
     };
 

@@ -2,6 +2,7 @@
 #define CX_AST_H
 
 #include "capture_counter.h"
+#include "match_params.h"
 #include "../regex_result.h"
 #include "../match_result.h"
 #include "../match_context.h"
@@ -9,13 +10,6 @@
 
 namespace cx
 {
-    struct match_params
-    {
-        std::size_t from{};
-        std::size_t max_chars{};
-        bool negated{false};
-    };
-
     template<typename First, typename ... Rest>
     struct sequence
     {
@@ -24,24 +18,24 @@ namespace cx
         template<typename Regex>
         static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &ctx) noexcept
         {
-            std::size_t max_chars = mp.max_chars;
+            std::size_t consume_limit = mp.consume_limit;
             do
             {
-                auto first_match = First::template match<Regex>(input, {mp.from, max_chars, mp.negated}, ctx);
+                auto first_match = First::template match<Regex>(input, {mp.from, consume_limit, mp.negated}, ctx);
                 if (!first_match)
                 {
                     return {0, false};
                 }
-                match_params updated_mp{mp.from + first_match.count, mp.max_chars - first_match.count, mp.negated};
+                match_params updated_mp = mp.consume(first_match.consumed);
                 if (auto rest_matched = sequence<Rest ...>::template match<Regex>(input, updated_mp, ctx))
                 {
                     return first_match + rest_matched;
                 }
-                if (first_match.count == 0 || max_chars == 0)
+                if (first_match.consumed == 0 || consume_limit == 0)
                 {
                     return {0, false};
                 }
-                max_chars = first_match.count - 1;
+                consume_limit = first_match.consumed - 1;
             } while (true);
         }
     };
@@ -64,24 +58,51 @@ namespace cx
         static constexpr std::size_t capture_count = count_captures<First, Rest ...>::capture_count;
 
         template<typename Regex>
+        static constexpr auto match(auto const &input, match_params mp, match_context<Regex> &ctx) noexcept
+        -> std::enable_if_t<!flags<Regex>::greedy_alt, match_result>
+        {
+            auto first_match = First::template match<Regex>(input, {mp.from, mp.consume_limit, false}, ctx);
+
+            if (first_match)
+            {
+                return first_match ^ mp.negated;
+            }
+
+            return alternation<Rest ...>::template match<Regex>(input, mp, ctx);
+        }
+
+        // SFINAE check for greedy_alt flag, which makes the alternation always verify all options
+        // and pick the one that consumes the most characters. It is useful for patterns where an
+        // alternation contains prefixes (a|ab|abc)
+        template<typename Regex>
+        static constexpr auto match(auto const &input, match_params mp, match_context<Regex> &ctx) noexcept
+        -> std::enable_if_t<flags<Regex>::greedy_alt, match_result>
+        {
+            auto first_match = First::template match<Regex>(input, {mp.from, mp.consume_limit, false}, ctx);
+
+            if (first_match)
+            {
+                auto rest_match = alternation<Rest ...>::template match<Regex>(input, mp, ctx);
+                if (rest_match)
+                {
+                    first_match = rest_match;
+                }
+                return first_match ^ mp.negated;
+            }
+
+            return alternation<Rest ...>::template match<Regex>(input, mp, ctx);
+        }
+    };
+
+    template<typename First>
+    struct alternation<First>
+    {
+        static constexpr std::size_t capture_count = First::capture_count;
+
+        template<typename Regex>
         static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &ctx) noexcept
         {
-            auto first_match = First::template match<Regex>(input, {mp.from, mp.max_chars, false}, ctx);
-
-            if (first_match && first_match.count <= mp.max_chars)
-            {
-                first_match.matched ^= mp.negated;
-                return first_match;
-            }
-
-            if constexpr (sizeof... (Rest) > 0)
-            {
-                return alternation<Rest ...>::template match<Regex>(input, mp, ctx);
-            }
-
-            // Default case if no node has matched in the entire alternation
-            bool default_res = mp.from < input.length() && mp.negated;
-            return {default_res, default_res};
+            return First::template match<Regex>(input, mp, ctx);
         }
     };
 
@@ -93,16 +114,16 @@ namespace cx
         template<typename Regex>
         static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &ctx) noexcept
         {
-            if (mp.max_chars == 0)
+            if (mp.consume_limit == 0)
             {
                 return {0, true};
             }
 
             if (auto inner_match = Inner::template match<Regex>(input, mp, ctx))
             {
-                if (inner_match.count > mp.max_chars)
+                if (inner_match.consumed > mp.consume_limit)
                     return {0, true};
-                match_params updated_mp{mp.from + inner_match.count, mp.max_chars - inner_match.count, mp.negated};
+                match_params updated_mp = mp.consume(inner_match.consumed);
                 return inner_match + match<Regex>(input, updated_mp, ctx);
             }
             return {0, true};
@@ -146,6 +167,12 @@ namespace cx
                 consume = mp.from < input.length() && input[mp.from] == '\n';
                 res |= consume;
             }
+
+            if (mp.consume_limit == 0 && consume)
+            {
+                return {0, false};
+            }
+
             return {consume, res};
         }
     };
@@ -162,6 +189,12 @@ namespace cx
                 consume = mp.from < input.length() && input[mp.from] == '\n';
                 res |= consume;
             }
+
+            if (mp.consume_limit == 0 && consume)
+            {
+                return {0, false};
+            }
+
             return {consume, res};
         }
     };
@@ -176,6 +209,12 @@ namespace cx
             {
                 return {0, true};
             }
+
+            if (mp.consume_limit == 0)
+            {
+                return {mp.negated, mp.negated};
+            }
+
             if (mp.from < input.length())
             {
                 auto subject = input[mp.from];
@@ -200,6 +239,12 @@ namespace cx
             {
                 return {0, true};
             }
+
+            if (mp.consume_limit == 0)
+            {
+                return {mp.negated, mp.negated};
+            }
+
             if (mp.from < input.length())
             {
                 auto subject = input[mp.from];
@@ -219,10 +264,16 @@ namespace cx
         template<typename Regex>
         static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &) noexcept
         {
-            if (mp.from >= input.length())
+            if (mp.consume_limit == 0)
             {
                 return {mp.negated, mp.negated};
             }
+
+            if (mp.from >= input.length())
+            {
+                return {0, false};
+            }
+
             if constexpr (flags<Regex>::dotall)
             {
                 return{1, true};
@@ -241,6 +292,11 @@ namespace cx
         template<typename Regex>
         static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &) noexcept
         {
+            if (mp.consume_limit == 0)
+            {
+                return {mp.negated, mp.negated};
+            }
+
             if (mp.from < input.length())
             {
                 auto subject = input[mp.from];
@@ -315,7 +371,7 @@ namespace cx
         template<typename Regex>
         static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &ctx) noexcept
         {
-            return Inner::template match<Regex>(input, {mp.from, mp.max_chars, !mp.negated}, ctx);
+            return Inner::template match<Regex>(input, {mp.from, mp.consume_limit, !mp.negated}, ctx);
         }
     };
 
@@ -340,7 +396,7 @@ namespace cx
         static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &ctx) noexcept
         {
             auto inner_match = Inner::template match<Regex>(input, mp, ctx);
-            std::get<ID>(ctx.captures) = capture<ID>{mp.from, inner_match.count};
+            std::get<ID>(ctx.captures) = capture<ID>{mp.from, inner_match.consumed};
             return inner_match;
         }
     };
@@ -354,12 +410,12 @@ namespace cx
         static constexpr match_result match(auto const &input, match_params mp, match_context<Regex> &ctx) noexcept
         {
             auto &this_capture = std::get<ID>(ctx.captures);
-            if (this_capture.count)
+            if (this_capture.consumed)
             {
                 return {0, false};
             }
             auto inner_match = Inner::template match<Regex>(input, mp, ctx);
-            this_capture = capture<ID>{mp.from, inner_match.count};
+            this_capture = capture<ID>{mp.from, inner_match.consumed};
             return inner_match;
         }
     };
