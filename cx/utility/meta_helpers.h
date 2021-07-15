@@ -5,9 +5,6 @@
 
 namespace cx
 {
-    /**
-     * Meta-pair containing two types
-     */
     template<typename First, typename Second>
     struct pair
     {

@@ -18,20 +18,20 @@ namespace cx
     {
         /**
          * Data structure associated with matching/searching.
-         * Holds information like capture groups and Regex flags
+         * Holds information like capture groups and Context flags
          *
-         * @tparam Regex    The type of Regex used to match the input
+         * @tparam Regex    The type of Context used to match the input
          */
         template<typename Regex>
         struct match_context
         {
             struct flags
             {
-                static constexpr bool ignore_case = is_any_of_v<flag::ignore_case, Flags ...>;
-                static constexpr bool dotall = is_any_of_v<flag::dotall, Flags ...>;
-                static constexpr bool multiline = is_any_of_v<flag::multiline, Flags ...>;
-                static constexpr bool extended = is_any_of_v<flag::extended, Flags ...>;
-                static constexpr bool greedy_alt = is_any_of_v<flag::greedy_alt, Flags ...>;
+                static constexpr bool ignore_case = check_flag_v<flag::ignore_case, Flags ...>;
+                static constexpr bool dotall = check_flag_v<flag::dotall, Flags ...>;
+                static constexpr bool multiline = check_flag_v<flag::multiline, Flags ...>;
+                static constexpr bool extended = check_flag_v<flag::extended, Flags ...>;
+                static constexpr bool greedy_alt = check_flag_v<flag::greedy_alt, Flags ...>;
             };
 
             capture_storage<Regex::capture_count> captures{};
@@ -46,6 +46,6 @@ namespace cx
     };
 
     template<typename Regex, typename ... Flags>
-    using create_match_context_t = typename match_context_factory<Flags ...>::template match_context<Regex>;
+    using create_match_context = typename match_context_factory<Flags ...>::template match_context<Regex>;
 }
 #endif //CX_MATCH_CONTEXT_H

@@ -1,10 +1,10 @@
-# Constexpr Regex in C++
+# Constexpr Context in C++
 
 ## Summary
 This is a minimalist `constexpr` implementation of a regular expression
 library using template metaprogramming in C++20. The implementation relies
-heavily on the declarative behavior of templates in C++ and uses 
-functional techniques to implement the parser and generate the abstract syntax 
+heavily on the declarative behavior of templates in C++ and uses
+functional techniques to implement the parser and generate the abstract syntax
 tree from an input string.
 
 ## Features
@@ -54,7 +54,7 @@ std::cout << "Path:\t" << match_res.get<6>() << '\n';
 std::cout << "Query:\t" << match_res.get<7>() << '\n';
 ```
 
-Searching and matching can also be done in `constexpr` if the input is known at 
+Searching and matching can also be done in `constexpr` if the input is known at
 compile-time. Using `if constexpr` we can conditionally compile code based
 on regex matching results. For example, we can generate functions with a different
 return type based on some format pattern (`double` or `std::string`).
@@ -81,10 +81,10 @@ the `cx::regex::find_all` method returns a lazy generator that will evaluate
 on-demand all matches in the string. We can iterate through the generator
 just like any standard container.
 ```cpp
-    using word_regex = cx::regex<R"([-a-z']+)">::with_flags<cx::flag::ignore_case>;
-    constexpr std::string_view words = "Let's iterate over these words!";
-    for (auto &&res : word_regex::find_all(words))
-    {
-    std::cout << res.get<0>() << '\n';
-    }
+using word_regex = cx::regex<R"([-a-z']+)">::with_flags<cx::flag::i>;
+constexpr std::string_view words = "Let's iterate over these words!";
+for (auto &&res : word_regex::find_all(words))
+{
+std::cout << res.get<0>() << '\n';
+}
 ```

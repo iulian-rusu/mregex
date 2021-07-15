@@ -50,10 +50,6 @@ namespace cx
 
     struct empty_stack {};
 
-    /**
-     * Specialization for stack with no elements
-     * The top metafunction is defined as empty_stack
-     */
     template<>
     struct stack<>
     {

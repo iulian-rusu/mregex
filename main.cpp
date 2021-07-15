@@ -57,7 +57,7 @@ int main()
     std::cout << str_value << '\n';
 
     // Lazy iteration over a collection of results
-    using word_regex = cx::regex<R"([-a-z']+)">::with_flags<cx::flag::ignore_case>;
+    using word_regex = cx::regex<R"([-a-z']+)">::with_flags<cx::flag::i>;
     constexpr std::string_view words = "Let's iterate over these words!";
     for (auto &&res : word_regex::find_all(words))
     {

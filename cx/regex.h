@@ -18,7 +18,7 @@ namespace cx
         template<typename ... Flags>
         struct with_flags
         {
-            using match_context = create_match_context_t<regex, Flags ...>;
+            using match_context = create_match_context<regex, Flags ...>;
 
             template<string_like Str>
             [[nodiscard]] static constexpr auto match(Str const &input) noexcept
@@ -67,8 +67,7 @@ namespace cx
                 };
             }
         };
-
-
+        
         template<string_like Str>
         [[nodiscard]] static constexpr decltype(auto) match(Str const &input) noexcept
         {
