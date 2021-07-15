@@ -37,7 +37,7 @@ constexpr auto parse()
 int main()
 {
     // Basic URL parsing
-    using url_regex = cx::regex<R"((\w+):\/\/(?:(?:(\w+)?(?::(\w+))?@)?([\w.]+)(?::(\d+))?)?(?:\/([-/\w]+)?\?([\w=&]+))?)">;
+    using url_regex = cx::regex<R"((\w+):\/\/(?:(?:(\w+)?(?::(\w+))?@)?([\w.]+)(?::(\d+))?)?(?:(\/[-/\w]+)?\?([\w=&]+))?)">;
     constexpr std::string_view url = "https://username:password@hostname.com:8080/path/to/resource?id=12345";
     constexpr auto match_res = url_regex::match(url);
     std::cout << "Scheme:\t" << match_res.get<1>() << '\n';
