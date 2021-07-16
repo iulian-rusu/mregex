@@ -25,7 +25,7 @@ The library currently supports the following regex features:
 * `.` - wildcard character
 * `^`, `$` - string beginning/ending matchers
 * `[abc]` - sets
-* `[^abc]` - consume_if_not_matched sets
+* `[^abc]` - negated sets
 * `[a-z0-9]` - ranges inside sets
 * various flags like `ignore_case`, `dotall`, `extended` and `multiline`
 
