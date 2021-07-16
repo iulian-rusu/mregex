@@ -6,7 +6,7 @@ namespace cx::tests
 {
     using namespace std::string_view_literals;
 
-    // Flag matching inputs
+    // Test matching inputs
     static_assert(regex<R"()">::match(""sv));
     static_assert(regex<R"(a)">::match("a"sv));
     static_assert(regex<R"(\a)">::match("b"sv));
@@ -86,7 +86,7 @@ namespace cx::tests
     static_assert(regex<R"(^abcd$)">::with_flags<flag::multiline>::match("abcd\n"sv));
     static_assert(regex<R"(^abcd$)">::with_flags<flag::multiline>::match("\nabcd"sv));
 
-    // Flag non-matching inputs
+    // Test non-matching inputs
     static_assert(regex<R"()">::match("t"sv) == false);
     static_assert(regex<R"(a)">::match("b"sv) == false);
     static_assert(regex<R"(\a)">::match("1"sv) == false);

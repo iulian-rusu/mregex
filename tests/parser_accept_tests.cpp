@@ -9,7 +9,7 @@ namespace cx::tests
         static constexpr auto accepted = parser<pattern>::accepted;
     }
 
-    // Flag valid inputs
+    // Test valid inputs
     static_assert(detail::accepted<R"()">);
     static_assert(detail::accepted<R"(a)">);
     static_assert(detail::accepted<R"(\\)">);
@@ -84,7 +84,7 @@ namespace cx::tests
     static_assert(detail::accepted<R"(((a|\\a)|(0|1|2|3))?)">);
     static_assert(detail::accepted<R"((((a|\\a)|(0|1|2|3))?)*x?y+abcd|efgh((x|z)?t)+)">);
 
-    // Flag invalid inputs
+    // Test invalid inputs
     static_assert(detail::accepted<R"(()"> == false);
     static_assert(detail::accepted<R"())"> == false);
     static_assert(detail::accepted<R"(+)"> == false);
