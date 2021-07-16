@@ -37,7 +37,7 @@ namespace cx::tests
                 ending
             >
     >);
-    static_assert(detail::expected_ast<R"(\a))", alnum>);
+    static_assert(detail::expected_ast<R"(\a))", alpha>);
     static_assert(detail::expected_ast<R"(\D))",
             negated
             <

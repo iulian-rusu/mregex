@@ -322,9 +322,9 @@ namespace cx
 
     using upper = range<'A', 'Z'>;
 
-    using alnum = alternation<range<'A', 'z'>, digit>;
+    using alpha = range<'A', 'z'>;
 
-    using word = alternation<range<'A', 'z'>, digit, character<'_'>>;
+    using word = alternation<alpha, digit, character<'_'>>;
 
     using hexa = alternation<digit, range<'a', 'f'>, range<'A', 'F'>>;
 
