@@ -1,4 +1,4 @@
-# Constexpr Context in C++
+# Constexpr Regex in C++
 
 ## Summary
 This is a minimalist `constexpr` implementation of a regular expression
