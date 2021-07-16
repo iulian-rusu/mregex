@@ -27,7 +27,14 @@ namespace cx
                 match_context ctx{};
                 auto res = ast::template match<match_context>(input, {0, input.length()}, ctx);
                 res.matched = res.matched && (res.consumed == input.length());
-                std::get<0>(ctx.captures) = capture<0>{0, res.consumed};
+                if (!res.matched)
+                {
+                    ctx.clear_captures();
+                }
+                else
+                {
+                    std::get<0>(ctx.captures) = capture<0>{0, res.consumed};
+                }
                 return regex_result{res.matched, std::move(ctx.captures), input};
             }
 
