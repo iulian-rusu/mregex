@@ -1,8 +1,7 @@
 #ifndef CX_REGEX_RESULT_H
 #define CX_REGEX_RESULT_H
 
-#include <tuple>
-#include "ast/capture.h"
+#include "capture.h"
 
 namespace cx
 {

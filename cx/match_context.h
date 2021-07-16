@@ -3,7 +3,6 @@
 
 #include "utility/tuple_helpers.h"
 #include "regex_flags.h"
-#include "ast/capture.h"
 
 namespace cx
 {

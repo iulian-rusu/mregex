@@ -100,7 +100,7 @@ namespace cx::symbol
     template<std::size_t ID>
     struct make_backref: ast_update {};
 
-    // Type trait to distinguish ast_update symbols from other symbols
+    // Type trait to distinguish AST update symbols from other symbols
     template<typename Symbol>
     constexpr bool is_ast_update_v = std::is_base_of_v<ast_update, Symbol>;
 }

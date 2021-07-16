@@ -5,10 +5,10 @@
 #include "capture_counter.h"
 #include "capture.h"
 #include "match_params.h"
-#include "../match_result.h"
-#include "../regex_flags.h"
-#include "../utility/char_helpers.h"
-#include "../utility/concepts.h"
+#include "match_result.h"
+#include "regex_flags.h"
+#include "utility/char_helpers.h"
+#include "utility/concepts.h"
 
 namespace cx
 {

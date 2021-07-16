@@ -3,7 +3,8 @@
 
 #include "parser.h"
 #include "generator.h"
-#include "ast/atomic.h"
+#include "regex_result.h"
+#include "atomic.h"
 #include "match_context.h"
 
 namespace cx

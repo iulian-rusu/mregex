@@ -1,14 +1,12 @@
 #ifndef CX_CHAR_CLASS_H
 #define CX_CHAR_CLASS_H
 
-#include <type_traits>
-#include "../utility/stack.h"
-#include "../symbol.h"
-#include "ast.h"
+#include "utility/stack.h"
+#include "symbol.h"
+#include "ast_decl.h"
 
 namespace cx
 {
-
     template<auto C>
     struct rule_for_char_class
     {

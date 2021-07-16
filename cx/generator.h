@@ -1,8 +1,6 @@
 #ifndef CX_GENERATOR_H
 #define CX_GENERATOR_H
 
-#include "regex_result.h"
-
 namespace cx
 {
     /**

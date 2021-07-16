@@ -1,12 +1,10 @@
 #ifndef CX_PARSER_H
 #define CX_PARSER_H
 
-#include "utility/static_string.h"
 #include "grammar.h"
-#include "ast/ast_builder.h"
-#include "ast/capture_indexer.h"
-#include "utility/concepts.h"
-#include "utility/meta_helpers.h"
+#include "ast_builder.h"
+#include "capture_indexer.h"
+#include "utility/static_string.h"
 
 namespace cx
 {

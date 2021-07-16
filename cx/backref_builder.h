@@ -1,10 +1,9 @@
 #ifndef CX_BACKREF_BUILDER_H
 #define CX_BACKREF_BUILDER_H
 
-#include <type_traits>
-#include "../utility/stack.h"
-#include "../symbol.h"
-#include "ast.h"
+#include "utility/stack.h"
+#include "symbol.h"
+#include "ast_decl.h"
 
 namespace cx
 {

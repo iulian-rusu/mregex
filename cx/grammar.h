@@ -1,8 +1,8 @@
 #ifndef CX_GRAMMAR_H
 #define CX_GRAMMAR_H
 
-#include "ast/char_class.h"
-#include "ast/backref_builder.h"
+#include "char_class.h"
+#include "backref_builder.h"
 
 namespace cx::grammar
 {

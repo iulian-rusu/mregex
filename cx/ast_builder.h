@@ -1,8 +1,8 @@
 #ifndef CX_AST_BUILDER_H
 #define CX_AST_BUILDER_H
 
-#include "../utility/stack.h"
-#include "../symbol.h"
+#include "utility/stack.h"
+#include "symbol.h"
 #include "ast.h"
 
 namespace cx

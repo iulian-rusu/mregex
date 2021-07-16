@@ -1,7 +1,7 @@
 #ifndef CX_META_HELPERS_H
 #define CX_META_HELPERS_H
 
-#include "../ast/ast_decl.h"
+#include "../ast_decl.h"
 
 namespace cx
 {
