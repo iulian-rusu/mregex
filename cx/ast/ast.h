@@ -84,7 +84,7 @@ namespace cx
             if (first_match)
             {
                 auto rest_match = alternation<Rest ...>::template match<MatchContext>(input, mp, ctx);
-                if (rest_match)
+                if (rest_match && rest_match.consumed > first_match.consumed)
                 {
                     first_match = rest_match;
                 }

@@ -37,7 +37,10 @@ namespace cx::tests
     static_assert(regex<R"(a+b+c+)">::match("abc"sv));
     static_assert(regex<R"(a+b+c+)">::match("aaabbcccccc"sv));
     static_assert(regex<R"((x|y|z)+)">::match("xyzxzyxyzxyzyxyxxxzxxzyxyzx"sv));
-    static_assert(regex<R"(a|ab)">::match("a"sv));
+    static_assert(regex<R"(a|ab|abc)">::match("a"sv));
+    static_assert(regex<R"(abc|ab|a)">::match("a"sv));
+    static_assert(regex<R"(abc|ab|a)">::match("ab"sv));
+    static_assert(regex<R"(abc|ab|a)">::match("abc"sv));
     static_assert(regex<R"((abc)+)">::match("abcabcabc"sv));
     static_assert(regex<R"((a+|b+)x\1)">::match("aaaxaaa"sv));
     static_assert(regex<R"(a*aa)">::match("aa"sv));
@@ -66,8 +69,12 @@ namespace cx::tests
     static_assert(regex<R"((a|ab|abc)+x)">::with_flags<flag::a>::match("abx"sv));
     static_assert(regex<R"((a|ab|abc)+x)">::with_flags<flag::a>::match("abcx"sv));
     static_assert(regex<R"((a|ab|abc)+x)">::with_flags<flag::a>::match("aabcaaabababcx"sv));
-    static_assert(regex<R"(a|ab)">::with_flags<flag::greedy_alt>::match("a"sv));
-    static_assert(regex<R"(a|ab)">::with_flags<flag::greedy_alt>::match("ab"sv));
+    static_assert(regex<R"(a|ab|abc)">::with_flags<flag::greedy_alt>::match("a"sv));
+    static_assert(regex<R"(a|ab|abc)">::with_flags<flag::greedy_alt>::match("ab"sv));
+    static_assert(regex<R"(a|ab|abc)">::with_flags<flag::greedy_alt>::match("abc"sv));
+    static_assert(regex<R"(abc|ab|a)">::with_flags<flag::greedy_alt>::match("abc"sv));
+    static_assert(regex<R"(abc|ab|a)">::with_flags<flag::greedy_alt>::match("ab"sv));
+    static_assert(regex<R"(abc|ab|a)">::with_flags<flag::greedy_alt>::match("a"sv));
     static_assert(regex<R"((a|ab)+x)">::with_flags<flag::greedy_alt>::match("aaaababx"sv));
     static_assert(regex<R"((a|ab|abc)+x)">::with_flags<flag::greedy_alt>::match("ax"sv));
     static_assert(regex<R"(a?   b? c?)">::with_flags<flag::x>::match("abc"sv));
