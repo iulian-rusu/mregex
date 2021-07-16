@@ -1,6 +1,8 @@
 #ifndef CX_CONCEPTS_H
 #define CX_CONCEPTS_H
 
+#include "meta_helpers.h"
+
 namespace cx
 {
     /**
@@ -22,5 +24,11 @@ namespace cx
     {
         p();
     };
+
+    /**
+     * Concept used to constrain the inner node of cx::negated
+     */
+    template<typename T>
+    concept negatable = is_terminal_v<T> || is_range_v<T> || is_alternation_v<T>;
 }
 #endif //CX_CONCEPTS_H

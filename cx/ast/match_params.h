@@ -11,12 +11,11 @@ namespace cx
     {
         std::size_t from{};
         std::size_t consume_limit{};
-        bool negated{false};
 
-        [[nodiscard]] constexpr match_params consume(std::size_t count) noexcept
+        [[nodiscard]] constexpr match_params consume(std::size_t count) const noexcept
         {
             auto updated_consume_limit = consume_limit >= count ? consume_limit - count : 0;
-            return match_params{from + count, updated_consume_limit, negated};
+            return match_params{from + count, updated_consume_limit};
         }
     };
 }

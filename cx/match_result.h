@@ -33,15 +33,10 @@ namespace cx
             return *this;
         }
 
-        constexpr match_result operator^(bool const b) const noexcept
+        template<std::size_t I>
+        [[nodiscard]] constexpr match_result consume_if_not_matched() const noexcept
         {
-            return match_result{consumed, static_cast<bool>(matched ^ b)};
-        }
-
-        constexpr match_result &operator^=(bool const b) noexcept
-        {
-            matched ^= b;
-            return *this;
+            return match_result{matched ? 0 : I, !matched};
         }
     };
 }

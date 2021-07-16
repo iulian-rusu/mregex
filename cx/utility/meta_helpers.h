@@ -50,22 +50,34 @@ namespace cx
     /***
     * Metafunction used to detect if a type is present inside a type pack
     */
-    template<typename, typename ...>
-    struct is_any_of;
-
-    template<typename Test, typename First, typename ... Rest>
-    struct is_any_of<Test, First, Rest ...>
-    {
-        static constexpr auto value = std::is_same_v<Test, First> || is_any_of<Test, Rest ...>::value;
-    };
-
-    template<typename Test>
-    struct is_any_of<Test>
-    {
-        static constexpr auto value = false;
-    };
+    template<typename Test, typename ... Elems>
+    struct is_any_of : std::bool_constant<(std::is_same_v<Test, Elems> || ... )> {};
 
     template<typename Test, typename ... Rest>
-    constexpr auto is_any_of_v = is_any_of<Test, Rest ...>::value;
+    constexpr bool is_any_of_v = is_any_of<Test, Rest ...>::value;
+
+    /**
+     * Traits to identify some AST nodes
+     */
+    template<typename T>
+    constexpr bool is_terminal_v = std::is_base_of_v<terminal, T>;
+
+    template<typename T>
+    struct is_range : std::false_type {};
+
+    template<auto A, auto B>
+    struct is_range<range<A, B>> : std::true_type {};
+
+    template<typename T>
+    constexpr bool is_range_v = is_range<T>::value;
+
+    template<typename T>
+    struct is_alternation : std::false_type {};
+
+    template<typename First, typename ... Rest>
+    struct is_alternation<alternation<First, Rest ...>> : std::true_type {};
+
+    template<typename T>
+    constexpr bool is_alternation_v = is_alternation<T>::value;
 }
 #endif //CX_META_HELPERS_H

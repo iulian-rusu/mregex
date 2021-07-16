@@ -40,9 +40,6 @@ namespace cx
     struct backref;
 
     template<typename>
-    struct negated;
-
-    template<typename>
     struct atomic;
 
     template<std::size_t, typename>

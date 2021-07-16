@@ -9,7 +9,6 @@ namespace cx::tests
         constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast, AST>;
     }
 
-    //static_assert(std::is_same_v<typename parser<static_string(R"((a|ab)*x)")>::ast, void>);
     static_assert(detail::expected_ast<R"())", epsilon>);
     static_assert(detail::expected_ast<R"(a))", character<'a'>>);
     static_assert(detail::expected_ast<R"(^ab))",

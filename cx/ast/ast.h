@@ -8,6 +8,7 @@
 #include "../match_result.h"
 #include "../regex_flags.h"
 #include "../utility/char_helpers.h"
+#include "../utility/concepts.h"
 
 namespace cx
 {
@@ -22,16 +23,18 @@ namespace cx
             std::size_t consume_limit = mp.consume_limit;
             do
             {
-                auto first_match = First::template match<MatchContext>(input, {mp.from, consume_limit, mp.negated}, ctx);
+                auto first_match = First::template match<MatchContext>(input, {mp.from, consume_limit}, ctx);
                 if (!first_match)
                 {
                     return {0, false};
                 }
+
                 match_params updated_mp = mp.consume(first_match.consumed);
                 if (auto rest_matched = sequence<Rest ...>::template match<MatchContext>(input, updated_mp, ctx))
                 {
                     return first_match + rest_matched;
                 }
+
                 if (first_match.consumed == 0 || consume_limit == 0)
                 {
                     return {0, false};
@@ -62,11 +65,11 @@ namespace cx
         static constexpr auto match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         -> std::enable_if_t<!flags<MatchContext>::greedy_alt, match_result>
         {
-            auto first_match = First::template match<MatchContext>(input, {mp.from, mp.consume_limit, false}, ctx);
+            auto first_match = First::template match<MatchContext>(input, mp, ctx);
 
             if (first_match)
             {
-                return first_match ^ mp.negated;
+                return first_match;
             }
 
             return alternation<Rest ...>::template match<MatchContext>(input, mp, ctx);
@@ -79,7 +82,7 @@ namespace cx
         static constexpr auto match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         -> std::enable_if_t<flags<MatchContext>::greedy_alt, match_result>
         {
-            auto first_match = First::template match<MatchContext>(input, {mp.from, mp.consume_limit, false}, ctx);
+            auto first_match = First::template match<MatchContext>(input, mp, ctx);
 
             if (first_match)
             {
@@ -88,7 +91,7 @@ namespace cx
                 {
                     first_match = rest_match;
                 }
-                return first_match ^ mp.negated;
+                return first_match;
             }
 
             return alternation<Rest ...>::template match<MatchContext>(input, mp, ctx);
@@ -220,7 +223,7 @@ namespace cx
 
             if (mp.consume_limit == 0 || mp.from >= input.length())
             {
-                return {mp.negated, mp.negated};
+                return {0, false};
             }
 
             auto subject = input[mp.from];
@@ -229,7 +232,6 @@ namespace cx
             {
                 res |= toggle_case_v<C> == subject;
             }
-            res ^= mp.negated;
             return {res, res};
         }
     };
@@ -246,14 +248,13 @@ namespace cx
 
             if (mp.consume_limit == 0 || mp.from >= input.length())
             {
-                return {mp.negated, mp.negated};
+                return {0, false};
             }
 
             auto subject = input[mp.from];
             bool res = subject == ' ' || subject == '\t' ||
                        subject == '\n' || subject == '\r' ||
                        subject == '\f' || subject == '\x0B';
-            res ^= mp.negated;
             return {res, res};
         }
     };
@@ -265,7 +266,7 @@ namespace cx
         {
             if (mp.consume_limit == 0)
             {
-                return {mp.negated, mp.negated};
+                return {0, false};
             }
 
             if (mp.from >= input.length())
@@ -278,7 +279,7 @@ namespace cx
                 return{1, true};
             }
             auto subject = input[mp.from];
-            bool res = (subject != '\n' && subject != '\r') ^ mp.negated;
+            bool res = subject != '\n' && subject != '\r';
             return {res, res};
         }
     };
@@ -293,7 +294,7 @@ namespace cx
         {
             if (mp.consume_limit == 0 || mp.from >= input.length())
             {
-                return {mp.negated, mp.negated};
+                return {0, false};
             }
 
             auto subject = input[mp.from];
@@ -305,7 +306,6 @@ namespace cx
                 subject = to_upper(subject);
                 res |= A <= subject && subject <= B;
             }
-            res ^= mp.negated;
             return {res, res};
         }
     };
@@ -360,18 +360,6 @@ namespace cx
 
     // Decorators for AST nodes
     template<typename Inner>
-    struct negated
-    {
-        static constexpr std::size_t capture_count = Inner::capture_count;
-
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
-        {
-            return Inner::template match<MatchContext>(input, {mp.from, mp.consume_limit, !mp.negated}, ctx);
-        }
-    };
-
-    template<typename Inner>
     struct atomic
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
@@ -413,6 +401,18 @@ namespace cx
             auto inner_match = Inner::template match<MatchContext>(input, mp, ctx);
             this_capture = capture<ID>{mp.from, inner_match.consumed};
             return inner_match;
+        }
+    };
+
+    template<negatable Inner>
+    struct negated
+    {
+        static constexpr std::size_t capture_count = Inner::capture_count;
+
+        template<typename MatchContext>
+        static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
+        {
+            return Inner::template match<MatchContext>(input, mp, ctx).template consume_if_not_matched<1>();
         }
     };
 }
