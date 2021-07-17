@@ -69,7 +69,7 @@ namespace cx
     static_string(char const (&)[N]) -> static_string<N-1>;
 
     template<std::size_t N>
-    static_string(static_string<N>) -> static_string<N>;
+    static_string(static_string<N> const &) -> static_string<N>;
 }
 
 template<std::size_t N>

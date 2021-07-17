@@ -43,6 +43,7 @@ namespace cx::tests
     static_assert(regex<R"(abc|ab|a)">::match("abc"sv));
     static_assert(regex<R"((abc)+)">::match("abcabcabc"sv));
     static_assert(regex<R"((a+|b+)x\1)">::match("aaaxaaa"sv));
+    static_assert(regex<R"(.*(.).*\1)">::match("abcdefd"sv));
     static_assert(regex<R"(a*aa)">::match("aa"sv));
     static_assert(regex<R"(a*aab+bb)">::match("aaaaabbb"sv));
     static_assert(regex<R"((abc)+|tu ?(xyz)+)">::match("abcabcabc"sv));
@@ -114,6 +115,7 @@ namespace cx::tests
     static_assert(regex<R"((a|ab)+x)">::match("aaaababx"sv) == false);
     static_assert(regex<R"((abc)+)">::match("abcabcbc"sv) == false);
     static_assert(regex<R"((a+|b+)x\1)">::match("aaaxbbb"sv) == false);
+    static_assert(regex<R"(.*(.).*\1)">::match("abcdef"sv) == false);
     static_assert(regex<R"(a*aa)">::match("a"sv) == false);
     static_assert(regex<R"(a*aab+bb)">::match("aaabb"sv) == false);
     static_assert(regex<R"((abc)+|tu ?(xyz)+)">::match("xyz"sv) == false);

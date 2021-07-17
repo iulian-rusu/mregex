@@ -317,11 +317,15 @@ namespace cx
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
             decltype(auto) str_to_match = std::get<ID>(ctx.captures).evaluate(input);
-            std::size_t max_match = str_to_match.length();
+            std::size_t length_to_match = str_to_match.length();
             std::size_t offset = 0;
-            std::size_t str_lenght = input.length();
+            std::size_t input_length = input.length();
 
-            while (offset < max_match && mp.from + offset < str_lenght)
+            if (mp.consume_limit < length_to_match)
+            {
+                return {0, false};
+            }
+            while (offset < length_to_match && mp.from + offset < input_length)
             {
                 auto subject = input[mp.from + offset];
                 auto to_match = str_to_match[offset];
@@ -336,7 +340,7 @@ namespace cx
                 }
                 ++offset;
             }
-            return {max_match, true};
+            return {length_to_match, true};
         }
     };
 
