@@ -16,7 +16,7 @@ std::ostream &operator<<(std::ostream &out, phone const &p)
 template<cx::static_string const input>
 constexpr auto parse()
 {
-    using test_number = cx::regex<R"([1-9]+(\.\d*)?(e(\+|-)?\d+(\.\d*)?)?)">;
+    using test_number = cx::regex<R"([1-9]\d*(\.\d*)?(e(\+|-)?\d+(\.\d*)?)?)">;
     using test_phone = cx::regex<R"((\(\+\d+\))? ?\d+-\d+(-\d+))">;
 
     constexpr std::string_view sv = static_cast<std::string_view>(input);
@@ -46,14 +46,14 @@ int main()
     std::cout << "Host:\t" << match_res.get<4>() << '\n';
     std::cout << "Port:\t" << match_res.get<5>() << '\n';
     std::cout << "Path:\t" << match_res.get<6>() << '\n';
-    std::cout << "Query:\t" << match_res.get<7>() << '\n';
+    std::cout << "Query:\t" << match_res.get<7>() << "\n\n";
 
     // Changing function return type depending on input string format
-    double number = parse<"123.3e-10">();
+    double number = parse<"103.3e-10">();
     std::cout << number << '\n';
     phone my_phone = parse<"(+373) 75-44-98">();
     std::cout << my_phone << '\n';
-    std::string str_value = parse<"hello">();
+    std::string str_value = parse<"message\n">();
     std::cout << str_value << '\n';
 
     // Lazy iteration over a collection of results

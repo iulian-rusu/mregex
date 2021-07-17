@@ -24,7 +24,7 @@ namespace cx
     };
 
     template<typename C, typename Stack>
-    struct update_ast<symbol::make_alnum, C, Stack>
+    struct update_ast<symbol::make_alpha, C, Stack>
     {
         using type = typename Stack::template push<alpha>;
     };

@@ -62,7 +62,7 @@ return type based on some format pattern (`double` or `std::string`).
 template<cx::static_string const input>
 constexpr auto parse()
 {
-    using test_number = cx::regex<R"([1-9]+(\.\d*)?(e(\+|-)?\d+(\.\d*)?)?)">;
+    using test_number = cx::regex<R"([1-9]\d*(\.\d*)?(e(\+|-)?\d+(\.\d*)?)?)">;
     
     constexpr std::string_view url = static_cast<std::string_view>(input);
     if constexpr (test_number::match(url))

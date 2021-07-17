@@ -25,7 +25,7 @@ namespace cx
                 stack
                 <
                     character<'a'>,
-                    symbol::make_alnum
+                    symbol::make_alpha
                 >;
     };
 
@@ -36,7 +36,7 @@ namespace cx
                 stack
                 <
                     character<'A'>,
-                    symbol::make_alnum,
+                    symbol::make_alpha,
                     symbol::make_negated
                 >;
     };

@@ -28,13 +28,11 @@ namespace cx
                 {
                     return {0, false};
                 }
-
                 match_params updated_mp = mp.consume(first_match.consumed);
                 if (auto rest_matched = sequence<Rest ...>::template match<MatchContext>(input, updated_mp, ctx))
                 {
                     return first_match + rest_matched;
                 }
-
                 if (first_match.consumed == 0 || consume_limit == 0)
                 {
                     return {0, false};
@@ -66,12 +64,10 @@ namespace cx
         -> std::enable_if_t<!flags<MatchContext>::greedy_alt, match_result>
         {
             auto first_match = First::template match<MatchContext>(input, mp, ctx);
-
             if (first_match)
             {
                 return first_match;
             }
-
             return alternation<Rest ...>::template match<MatchContext>(input, mp, ctx);
         }
 
@@ -83,7 +79,6 @@ namespace cx
         -> std::enable_if_t<flags<MatchContext>::greedy_alt, match_result>
         {
             auto first_match = First::template match<MatchContext>(input, mp, ctx);
-
             if (first_match)
             {
                 auto rest_match = alternation<Rest ...>::template match<MatchContext>(input, mp, ctx);
@@ -93,7 +88,6 @@ namespace cx
                 }
                 return first_match;
             }
-
             return alternation<Rest ...>::template match<MatchContext>(input, mp, ctx);
         }
     };
@@ -126,7 +120,6 @@ namespace cx
             match_result res{0, true};
             match_params updated_mp = mp;
             std::size_t str_length = input.length();
-
             while(updated_mp.from < str_length)
             {
                 auto inner_match = Inner::template match<MatchContext>(input, updated_mp, ctx);
@@ -178,12 +171,10 @@ namespace cx
                 consume = mp.from < input.length() && input[mp.from] == '\n';
                 res |= consume;
             }
-
             if (mp.consume_limit == 0 && consume)
             {
                 return {0, false};
             }
-
             return {consume, res};
         }
     };
@@ -200,12 +191,10 @@ namespace cx
                 consume = mp.from < input.length() && input[mp.from] == '\n';
                 res |= consume;
             }
-
             if (mp.consume_limit == 0 && consume)
             {
                 return {0, false};
             }
-
             return {consume, res};
         }
     };
@@ -220,12 +209,10 @@ namespace cx
             {
                 return {0, true};
             }
-
             if (mp.consume_limit == 0 || mp.from >= input.length())
             {
                 return {0, false};
             }
-
             auto subject = input[mp.from];
             bool res = C == subject;
             if constexpr (flags<MatchContext>::ignore_case)
@@ -245,12 +232,10 @@ namespace cx
             {
                 return {0, true};
             }
-
             if (mp.consume_limit == 0 || mp.from >= input.length())
             {
                 return {0, false};
             }
-
             auto subject = input[mp.from];
             bool res = subject == ' ' || subject == '\t' ||
                        subject == '\n' || subject == '\r' ||
@@ -268,12 +253,10 @@ namespace cx
             {
                 return {0, false};
             }
-
             if (mp.from >= input.length())
             {
                 return {0, false};
             }
-
             if constexpr (flags<MatchContext>::dotall)
             {
                 return{1, true};
@@ -296,7 +279,6 @@ namespace cx
             {
                 return {0, false};
             }
-
             auto subject = input[mp.from];
             bool res = A <= subject && subject <= B;
             if constexpr (flags<MatchContext>::ignore_case)

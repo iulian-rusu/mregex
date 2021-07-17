@@ -59,7 +59,7 @@ namespace cx::symbol
 
     struct make_plus: ast_update {};
 
-    struct make_alnum: ast_update {};
+    struct make_alpha: ast_update {};
 
     struct make_digit: ast_update {};
 
