@@ -59,6 +59,7 @@ namespace cx
                     }
                     ++start_pos;
                 }
+                ctx.clear_captures();
                 return regex_result{false, std::move(ctx.captures), input};
             }
 
