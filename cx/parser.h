@@ -70,7 +70,7 @@ namespace cx
         };
 
         template<std::size_t I, typename AST, typename Stack>
-        struct next_step<I, grammar::pop_input, AST, Stack>
+        struct next_step<I, grammar::advance_input, AST, Stack>
         {
             using type = typename parse<I + 1, AST, Stack>::type;
         };

@@ -2,13 +2,13 @@
 #define CX_AST_H
 
 #include <tuple>
+#include "utility/char_helpers.h"
+#include "utility/concepts.h"
 #include "capture_counter.h"
 #include "capture.h"
 #include "match_params.h"
 #include "match_result.h"
 #include "regex_flags.h"
-#include "utility/char_helpers.h"
-#include "utility/concepts.h"
 
 namespace cx
 {
@@ -71,9 +71,9 @@ namespace cx
             return alternation<Rest ...>::template match<MatchContext>(input, mp, ctx);
         }
 
-        // SFINAE check for greedy_alt flag, which makes the alternation always verify all options
+        // SFINAE overload for greedy alternation, which makes it always verify all options
         // and pick the one that consumes the most characters. It is useful for patterns where an
-        // alternation contains prefixes (a|ab|abc)
+        // alternation contains prefixes: (a|ab|abc)
         template<typename MatchContext>
         static constexpr auto match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         -> std::enable_if_t<flags<MatchContext>::greedy_alt, match_result>
@@ -120,7 +120,7 @@ namespace cx
             match_result res{0, true};
             match_params updated_mp = mp;
             std::size_t str_length = input.length();
-            while(updated_mp.from < str_length)
+            while (updated_mp.from < str_length)
             {
                 auto inner_match = Inner::template match<MatchContext>(input, updated_mp, ctx);
                 if (!inner_match || inner_match.consumed > updated_mp.consume_limit)
@@ -131,6 +131,54 @@ namespace cx
                 updated_mp = updated_mp.consume(inner_match.consumed);
             }
             return res;
+        }
+    };
+
+    template<std::size_t N, typename Inner>
+    struct repeated
+    {
+        static constexpr std::size_t capture_count = Inner::capture_count;
+
+        template<typename MatchContext>
+        static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
+        {
+            if (mp.consume_limit == 0)
+            {
+                return {0, false};
+            }
+
+            match_result res{0, false};
+            match_params updated_mp = mp;
+            std::size_t str_length = input.length();
+            std::size_t matched_so_far = 0;
+            while (matched_so_far < N && updated_mp.from < str_length)
+            {
+                auto inner_match = Inner::template match<MatchContext>(input, updated_mp, ctx);
+                if (!inner_match || inner_match.consumed > updated_mp.consume_limit)
+                {
+                    break;
+                }
+                res += inner_match;
+                ++matched_so_far;
+                updated_mp = updated_mp.consume(inner_match.consumed);
+            }
+            if (matched_so_far != N)
+            {
+                return {0, false};
+            }
+            return res;
+        }
+    };
+
+    template<typename Inner>
+    struct repeated<0, Inner>
+    {
+        static constexpr std::size_t capture_count = Inner::capture_count;
+
+        template<typename MatchContext>
+        static constexpr match_result match(auto const &input, match_params, MatchContext &ctx) noexcept
+        {
+            return {0, true};
         }
     };
 

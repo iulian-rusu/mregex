@@ -18,15 +18,18 @@ namespace cx::symbol
 
     struct seq {};
 
+    // Symbols for parsing capturing groups
     struct capture_begin {};
 
     struct capture_begin_no_mod {};
 
     struct capture_mod {};
 
+    // Wrapper for marking a non-capturing group
     template<typename>
     struct captureless_wrapper {};
 
+    // Symbols for parsing sets
     struct set_begin {};
 
     struct set_begin_no_neg {};
@@ -41,13 +44,23 @@ namespace cx::symbol
 
     struct set_range_esc {};
 
-    template<std::size_t ID>
+    // Symbol for parsing a backreference ID
+    template<std::size_t>
     struct backref_id {};
+
+    // Symbol for parsing a quantifier value
+    struct quantifier_begin {};
+
+    template<std::size_t>
+    struct quantifier_value {};
 
     // Symbols that require AST updates
     struct ast_update {};
 
     struct make_char: ast_update {};
+
+    template<auto>
+    struct push_char: ast_update {};
 
     struct make_sequence: ast_update {};
 
@@ -97,8 +110,11 @@ namespace cx::symbol
 
     struct make_range_from_stack: ast_update {};
 
-    template<std::size_t ID>
+    template<std::size_t>
     struct make_backref: ast_update {};
+
+    template<std::size_t>
+    struct make_repeated: ast_update {};
 
     // Type trait to distinguish AST update symbols from other symbols
     template<typename Symbol>

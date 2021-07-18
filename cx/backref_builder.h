@@ -2,22 +2,12 @@
 #define CX_BACKREF_BUILDER_H
 
 #include "utility/stack.h"
+#include "utility/char_helpers.h"
 #include "symbol.h"
 #include "ast_decl.h"
 
 namespace cx
 {
-    /**
-     * Type trait to check if a character is numeric at compile-time
-     *
-     * @tparam C    The character being checked
-     */
-    template<auto C>
-    struct is_numeric : std::bool_constant<'0' <= C && C <= '9'> {};
-
-    template<auto C>
-    constexpr bool is_numeric_v = is_numeric<C>::value;
-
     /**
      * Metafunction that decides if the current rule is a backreference
      * building rule or an escaped character class rule

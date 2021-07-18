@@ -14,6 +14,7 @@ The library currently supports the following regex features:
 * extracting captures
 * `*` - Kleene start quantifier
 * `+` - plus quantifier
+* `{5}` - exact quantifier
 * `?` - optional quantifier
 * `(expr)` - capturing subexpressions
 * `(?:expr)` - non-capturing subexpressions
@@ -31,7 +32,6 @@ The library currently supports the following regex features:
 
 Some features planned for the future:
 * `++`, `?+`, `*+` - possessive quantifiers
-* `{5}` - exact quantifier
 * `{3, 5}` - range quantifier
 
 ## Usage

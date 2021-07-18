@@ -3,6 +3,17 @@
 
 namespace cx
 {
+    /**
+     * Type trait to check if a character is numeric at compile-time
+     *
+     * @tparam C    The character being checked
+     */
+    template<auto C>
+    struct is_numeric : std::bool_constant<'0' <= C && C <= '9'> {};
+
+    template<auto C>
+    constexpr bool is_numeric_v = is_numeric<C>::value;
+
     template<auto C>
     constexpr bool is_whitespace_v = C == ' ' || C == '\t' ||
                                      C == '\n' || C == '\r' ||

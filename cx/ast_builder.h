@@ -23,6 +23,12 @@ namespace cx
         using type = typename Stack::template push<C>;
     };
 
+    template<auto A, typename C, typename Stack>
+    struct update_ast<symbol::push_char<A>, C, Stack>
+    {
+        using type = typename Stack::template push<character<A>>;
+    };
+
     template<typename C, typename Stack>
     struct update_ast<symbol::make_alpha, C, Stack>
     {
@@ -169,6 +175,12 @@ namespace cx
     struct update_ast<symbol::make_backref<ID>, C, stack<Elems ...>>
     {
         using type = stack<backref<ID>, Elems ...>;
+    };
+
+    template<std::size_t N, typename C, typename First, typename ... Rest>
+    struct update_ast<symbol::make_repeated<N>, C, stack<First, Rest ...>>
+    {
+        using type = stack<repeated<N, First>, Rest ...>;
     };
 
     template<typename C, typename ... First>

@@ -3,11 +3,12 @@
 
 #include "char_class.h"
 #include "backref_builder.h"
+#include "quantifier_builder.h"
 
 namespace cx::grammar
 {
     // Helper types defining decisions imposed by the grammar rules
-    struct pop_input {};
+    struct advance_input {};
 
     struct accept: std::true_type {};
 
@@ -445,39 +446,9 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::alt, character<'('>>
-    {
-        using type = reject;
-    };
-
-    template<>
     struct rule<symbol::alt, character<')'>>
     {
         using type = symbol::epsilon;
-    };
-
-    template<>
-    struct rule<symbol::alt, character<'*'>>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct rule<symbol::alt, character<'+'>>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct rule<symbol::alt, character<'?'>>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct rule<symbol::alt, character<'\\'>>
-    {
-        using type = reject;
     };
 
     template<>
@@ -518,24 +489,6 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::mod, character<'['>>
-    {
-        using type = symbol::epsilon;
-    };
-
-    template<>
-    struct rule<symbol::mod, character<'('>>
-    {
-        using type = symbol::epsilon;
-    };
-
-    template<>
-    struct rule<symbol::mod, character<')'>>
-    {
-        using type = symbol::epsilon;
-    };
-
-    template<>
     struct rule<symbol::mod, character<'*'>>
     {
         using type =
@@ -569,15 +522,20 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<symbol::mod, character<'\\'>>
+    struct rule<symbol::mod, character<'{'>>
     {
-        using type = symbol::epsilon;
+        using type =
+                stack
+                <
+                    character<'{'>,
+                    symbol::quantifier_begin
+                >;
     };
 
-    template<>
-    struct rule<symbol::mod, character<'|'>>
+    template<auto C>
+    struct rule<symbol::quantifier_begin, character<C>>
     {
-        using type = symbol::epsilon;
+        using type = begin_quantifier_value_t<C>;
     };
 
     template<auto C>
@@ -590,6 +548,33 @@ namespace cx::grammar
     struct rule<symbol::mod, symbol::epsilon>
     {
         using type = symbol::epsilon;
+    };
+
+    template<std::size_t N, auto C>
+    struct rule<symbol::quantifier_value<N>, character<C>>
+    {
+        using type =
+                std::conditional_t
+                <
+                    is_numeric_v<C>,
+                    stack
+                    <
+                        character<C>,
+                        symbol::quantifier_value<10 * N + C - '0'>
+                    >,
+                    reject
+                >;
+    };
+
+    template<std::size_t N>
+    struct rule<symbol::quantifier_value<N>, character<'}'>>
+    {
+        using type =
+                stack
+                <
+                    character<'}'>,
+                    symbol::make_repeated<N>
+                >;
     };
 
     template<>
@@ -1071,7 +1056,7 @@ namespace cx::grammar
     template<char C>
     struct rule<character<C>, character<C>>
     {
-        using type = pop_input;
+        using type = advance_input;
     };
 
     template<char C, typename Symbol>

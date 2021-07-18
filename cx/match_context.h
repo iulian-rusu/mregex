@@ -7,21 +7,18 @@
 namespace cx
 {
     /**
-     * Creates a flag-depended cx::match_context
+     * Contains a cx::match_context dependent on a Regex and matching flags
      *
+     * @tparam Regex    The type of Regex used to match the input
      * @tparam Flags    A variable pack of cx::flag types
-     * @see regex_flags.h
      */
-    template<typename ... Flags>
+    template<typename Regex, typename ... Flags>
     struct match_context_factory
     {
         /**
          * Data structure associated with matching/searching.
-         * Holds information like capture groups and Context flags
-         *
-         * @tparam Regex    The type of Context used to match the input
+         * Holds information like capture groups and Regex flags
          */
-        template<typename Regex>
         struct match_context
         {
             struct flags
@@ -45,6 +42,6 @@ namespace cx
     };
 
     template<typename Regex, typename ... Flags>
-    using create_match_context = typename match_context_factory<Flags ...>::template match_context<Regex>;
+    using create_match_context = typename match_context_factory<Regex, Flags ...>::match_context;
 }
 #endif //CX_MATCH_CONTEXT_H

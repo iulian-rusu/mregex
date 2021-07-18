@@ -9,6 +9,8 @@ namespace cx::tests
         constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast, AST>;
     }
 
+   //static_assert(std::is_same_v<typename parser<static_string(R"(c+{012})")>::ast, void>);
+
     static_assert(detail::expected_ast<R"())", epsilon>);
     static_assert(detail::expected_ast<R"(a))", character<'a'>>);
     static_assert(detail::expected_ast<R"(^ab))",
@@ -196,6 +198,75 @@ namespace cx::tests
             plus
             <
                 character<'c'>
+            >
+    >);
+    static_assert(detail::expected_ast<R"(c{2})",
+            repeated
+            <
+                2,
+                character<'c'>
+            >
+    >);
+    static_assert(detail::expected_ast<R"(c{22})",
+            repeated
+            <
+                22,
+                character<'c'>
+            >
+    >);
+    static_assert(detail::expected_ast<R"(c{012})",
+            repeated
+            <
+                12,
+                character<'c'>
+            >
+    >);
+    static_assert(detail::expected_ast<R"(c{x})",
+            sequence
+            <
+                character<'c'>,
+                sequence
+                <
+                    character<'{'>,
+                    character<'x'>,
+                    character<'}'>
+                >
+            >
+    >);
+    static_assert(detail::expected_ast<R"(c*{012})",
+            sequence
+            <
+                star
+                <
+                    character<'c'>
+                >,
+                character<'{'>,
+                character<'0'>,
+                character<'1'>,
+                character<'2'>,
+                character<'}'>
+            >
+    >);
+    static_assert(detail::expected_ast<R"((c*{012}){3})",
+            repeated
+            <
+                3,
+                capturing
+                <
+                    1,
+                    sequence
+                    <
+                        star
+                        <
+                            character<'c'>
+                        >,
+                        character<'{'>,
+                        character<'0'>,
+                        character<'1'>,
+                        character<'2'>,
+                        character<'}'>
+                    >
+                >
             >
     >);
     static_assert(detail::expected_ast<R"((\(+)*)",
