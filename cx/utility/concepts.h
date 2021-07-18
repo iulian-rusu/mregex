@@ -5,15 +5,21 @@
 
 namespace cx
 {
+    template<typename From, typename To>
+    concept convertible_to = std::is_convertible_v<From, To>;
+
+    template<typename T>
+    concept not_void = !std::is_same_v<std::remove_cvref_t<T>, void>;
+
     /**
      * Concept used to constrain the generic type accepted by matching/searching functions
      */
     template<typename T>
     concept string_like = requires(T s, std::size_t index)
     {
-        static_cast<char>(s[index]);
-        static_cast<std::size_t>(s.length());
-        s.substr(index, index);
+        { s[index] } -> convertible_to<char32_t>;
+        { s.length() } -> convertible_to<std::size_t>;
+        { s.substr(index, index) } -> convertible_to<std::string_view>;
     };
 
     /**
@@ -22,7 +28,7 @@ namespace cx
     template<typename T>
     concept producer = requires(T p)
     {
-        p();
+        { p() } -> not_void;
     };
 
     /**

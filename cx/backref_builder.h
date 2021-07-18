@@ -4,7 +4,7 @@
 #include "utility/stack.h"
 #include "utility/char_helpers.h"
 #include "symbol.h"
-#include "ast_decl.h"
+#include "ast_fwd.h"
 
 namespace cx
 {

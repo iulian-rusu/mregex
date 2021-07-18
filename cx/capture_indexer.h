@@ -1,7 +1,7 @@
 #ifndef CX_CAPTURE_INDEXER_H
 #define CX_CAPTURE_INDEXER_H
 
-#include "ast_decl.h"
+#include "ast_fwd.h"
 
 namespace cx
 {

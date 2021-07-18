@@ -1,5 +1,5 @@
-#ifndef CX_AST_DECL_H
-#define CX_AST_DECL_H
+#ifndef CX_AST_FWD_H
+#define CX_AST_FWD_H
 
 namespace cx
 {
@@ -15,6 +15,9 @@ namespace cx
 
     template<typename>
     struct star;
+
+    template<std::size_t, typename>
+    struct repeated;
 
     struct terminal;
 
@@ -45,4 +48,4 @@ namespace cx
     template<std::size_t, typename>
     struct capturing;
 }
-#endif //CX_AST_DECL_H
+#endif //CX_AST_FWD_H
