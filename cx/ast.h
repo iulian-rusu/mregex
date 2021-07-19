@@ -6,9 +6,9 @@
 #include "utility/concepts.h"
 #include "capture_counter.h"
 #include "capture.h"
+#include "match_context.h"
 #include "match_params.h"
 #include "match_result.h"
-#include "regex_flags.h"
 
 namespace cx
 {

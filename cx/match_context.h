@@ -15,6 +15,8 @@ namespace cx
     template<typename Regex, typename ... Flags>
     struct match_context_factory
     {
+        static_assert((is_flag_v<Flags> && ... ), "invalid flag");
+
         /**
          * Data structure associated with matching/searching.
          * Holds information like capture groups and Regex flags
@@ -43,5 +45,8 @@ namespace cx
 
     template<typename Regex, typename ... Flags>
     using create_match_context = typename match_context_factory<Regex, Flags ...>::match_context;
+
+    template<typename Context>
+    using flags = typename Context::flags;
 }
 #endif //CX_MATCH_CONTEXT_H

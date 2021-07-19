@@ -76,7 +76,7 @@ namespace cx
                 };
             }
         };
-        
+
         template<string_like Str>
         [[nodiscard]] static constexpr decltype(auto) match(Str const &input) noexcept
         {

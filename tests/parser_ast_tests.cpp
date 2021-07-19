@@ -66,11 +66,11 @@ namespace cx::tests
     static_assert(detail::expected_ast<R"((?>c))",
             capturing
             <
-                    1,
-                    atomic
-                    <
-                        character<'c'>
-                    >
+                1,
+                atomic
+                <
+                    character<'c'>
+                >
             >
     >);
     static_assert(detail::expected_ast<R"((?:c))", character<'c'>>);
