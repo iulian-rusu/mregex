@@ -17,9 +17,6 @@ namespace cx
         static constexpr std::size_t alias_value = ID ^ 1u;
     };
 
-    /**
-     * Namespace with some PCRE flags and some custom ones
-     */
     namespace flag
     {
         // Enables case-insensitive matching

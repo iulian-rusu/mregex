@@ -9,17 +9,17 @@
 
 namespace cx
 {
-    template<static_string const pattern>
+    template<static_string const pattern, typename ... Flags>
     struct regex
     {
         static_assert(parser<pattern>::accepted, "syntax error in regular expression");
         using ast = typename parser<pattern>::ast;
         static constexpr auto capture_count = ast::capture_count;
 
-        template<typename ... Flags>
+        template<typename ... ExtraFlags>
         struct with_flags
         {
-            using match_context = create_match_context<regex, Flags ...>;
+            using match_context = create_match_context<regex, Flags ..., ExtraFlags ...>;
 
             template<string_like Str>
             [[nodiscard]] static constexpr auto match(Str const &input) noexcept
