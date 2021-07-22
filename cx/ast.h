@@ -23,22 +23,19 @@ namespace cx
             std::size_t consume_limit = mp.consume_limit;
             do
             {
-                auto first_match = First::template match<MatchContext>(input, {mp.from, consume_limit}, ctx);
+                auto first_match = First::match(input, {mp.from, consume_limit}, ctx);
                 if (!first_match)
-                {
                     return {0, false};
-                }
+
                 match_params updated_mp = mp.consume(first_match.consumed);
-                if (auto rest_matched = sequence<Rest ...>::template match<MatchContext>(input, updated_mp, ctx))
-                {
+                if (auto rest_matched = sequence<Rest ...>::match(input, updated_mp, ctx))
                     return first_match + rest_matched;
-                }
+
                 if (first_match.consumed == 0 || consume_limit == 0)
-                {
                     return {0, false};
-                }
+
                 consume_limit = first_match.consumed - 1;
-            } while (true);
+            } while (true); // not an infinite loop I promise
         }
     };
 
@@ -50,7 +47,7 @@ namespace cx
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            return First::template match<MatchContext>(input, mp, ctx);
+            return First::match(input, mp, ctx);
         }
     };
 
@@ -63,12 +60,11 @@ namespace cx
         static constexpr auto match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         -> std::enable_if_t<!flags<MatchContext>::greedy_alt, match_result>
         {
-            auto first_match = First::template match<MatchContext>(input, mp, ctx);
+            auto first_match = First::match(input, mp, ctx);
             if (first_match)
-            {
                 return first_match;
-            }
-            return alternation<Rest ...>::template match<MatchContext>(input, mp, ctx);
+
+            return alternation<Rest ...>::match(input, mp, ctx);
         }
 
         // SFINAE overload for greedy alternation, which makes it always verify all options
@@ -78,17 +74,15 @@ namespace cx
         static constexpr auto match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         -> std::enable_if_t<flags<MatchContext>::greedy_alt, match_result>
         {
-            auto first_match = First::template match<MatchContext>(input, mp, ctx);
+            auto first_match = First::match(input, mp, ctx);
             if (first_match)
             {
-                auto rest_match = alternation<Rest ...>::template match<MatchContext>(input, mp, ctx);
+                auto rest_match = alternation<Rest ...>::match(input, mp, ctx);
                 if (rest_match && rest_match.consumed > first_match.consumed)
-                {
                     first_match = rest_match;
-                }
                 return first_match;
             }
-            return alternation<Rest ...>::template match<MatchContext>(input, mp, ctx);
+            return alternation<Rest ...>::match(input, mp, ctx);
         }
     };
 
@@ -100,7 +94,7 @@ namespace cx
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            return First::template match<MatchContext>(input, mp, ctx);
+            return First::match(input, mp, ctx);
         }
     };
 
@@ -113,20 +107,17 @@ namespace cx
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
             if (mp.consume_limit == 0)
-            {
                 return {0, true};
-            }
 
             match_result res{0, true};
             match_params updated_mp = mp;
             std::size_t str_length = input.length();
             while (updated_mp.from < str_length)
             {
-                auto inner_match = Inner::template match<MatchContext>(input, updated_mp, ctx);
+                auto inner_match = Inner::match(input, updated_mp, ctx);
                 if (!inner_match || inner_match.consumed > updated_mp.consume_limit)
-                {
                     break;
-                }
+
                 res += inner_match;
                 updated_mp = updated_mp.consume(inner_match.consumed);
             }
@@ -143,9 +134,7 @@ namespace cx
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
             if (mp.consume_limit == 0)
-            {
                 return {0, false};
-            }
 
             match_result res{0, false};
             match_params updated_mp = mp;
@@ -153,19 +142,18 @@ namespace cx
             std::size_t matched_so_far = 0;
             while (matched_so_far < N && updated_mp.from < str_length)
             {
-                auto inner_match = Inner::template match<MatchContext>(input, updated_mp, ctx);
+                auto inner_match = Inner::match(input, updated_mp, ctx);
                 if (!inner_match || inner_match.consumed > updated_mp.consume_limit)
-                {
                     break;
-                }
+
                 res += inner_match;
                 ++matched_so_far;
                 updated_mp = updated_mp.consume(inner_match.consumed);
             }
+
             if (matched_so_far != N)
-            {
                 return {0, false};
-            }
+
             return res;
         }
     };
@@ -219,10 +207,10 @@ namespace cx
                 consume = mp.from < input.length() && input[mp.from] == '\n';
                 res |= consume;
             }
+
             if (mp.consume_limit == 0 && consume)
-            {
                 return {0, false};
-            }
+
             return {consume, res};
         }
     };
@@ -239,10 +227,10 @@ namespace cx
                 consume = mp.from < input.length() && input[mp.from] == '\n';
                 res |= consume;
             }
+
             if (mp.consume_limit == 0 && consume)
-            {
                 return {0, false};
-            }
+
             return {consume, res};
         }
     };
@@ -254,19 +242,16 @@ namespace cx
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
             if constexpr (flags<MatchContext>::extended && is_whitespace_v<C>)
-            {
                 return {0, true};
-            }
+
             if (mp.consume_limit == 0 || mp.from >= input.length())
-            {
                 return {0, false};
-            }
+
             auto subject = input[mp.from];
             bool res = C == subject;
             if constexpr (flags<MatchContext>::ignore_case)
-            {
                 res |= toggle_case_v<C> == subject;
-            }
+
             return {res, res};
         }
     };
@@ -277,13 +262,11 @@ namespace cx
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &) noexcept
         {
             if constexpr (flags<MatchContext>::extended)
-            {
                 return {0, true};
-            }
+
             if (mp.consume_limit == 0 || mp.from >= input.length())
-            {
                 return {0, false};
-            }
+
             auto subject = input[mp.from];
             bool res = subject == ' ' || subject == '\t' ||
                        subject == '\n' || subject == '\r' ||
@@ -298,17 +281,14 @@ namespace cx
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &) noexcept
         {
             if (mp.consume_limit == 0)
-            {
                 return {0, false};
-            }
+
             if (mp.from >= input.length())
-            {
                 return {0, false};
-            }
+
             if constexpr (flags<MatchContext>::dotall)
-            {
                 return{1, true};
-            }
+
             auto subject = input[mp.from];
             bool res = subject != '\n' && subject != '\r';
             return {res, res};
@@ -324,9 +304,8 @@ namespace cx
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &) noexcept
         {
             if (mp.consume_limit == 0 || mp.from >= input.length())
-            {
                 return {0, false};
-            }
+
             auto subject = input[mp.from];
             bool res = A <= subject && subject <= B;
             if constexpr (flags<MatchContext>::ignore_case)
@@ -370,9 +349,8 @@ namespace cx
             std::size_t input_length = input.length();
 
             if (mp.consume_limit < length_to_match)
-            {
                 return {0, false};
-            }
+
             while (offset < length_to_match && mp.from + offset < input_length)
             {
                 auto subject = input[mp.from + offset];
@@ -382,10 +360,10 @@ namespace cx
                     subject = to_lower(subject);
                     to_match = to_lower(to_match);
                 }
+
                 if (subject != to_match)
-                {
                     return {0, false};
-                }
+
                 ++offset;
             }
             return {length_to_match, true};
@@ -401,7 +379,7 @@ namespace cx
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            return Inner::template match<MatchContext>(input, mp, ctx);
+            return Inner::match(input, mp, ctx);
         }
     };
 
@@ -413,7 +391,7 @@ namespace cx
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            auto inner_match = Inner::template match<MatchContext>(input, mp, ctx);
+            auto inner_match = Inner::match(input, mp, ctx);
             std::get<ID>(ctx.captures) = capture<ID>{mp.from, inner_match.consumed};
             return inner_match;
         }
@@ -429,10 +407,9 @@ namespace cx
         {
             auto &this_capture = std::get<ID>(ctx.captures);
             if (this_capture.consumed)
-            {
                 return {0, false};
-            }
-            auto inner_match = Inner::template match<MatchContext>(input, mp, ctx);
+
+            auto inner_match = Inner::match(input, mp, ctx);
             this_capture = capture<ID>{mp.from, inner_match.consumed};
             return inner_match;
         }
@@ -446,7 +423,7 @@ namespace cx
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            return Inner::template match<MatchContext>(input, mp, ctx).template consume_if_not_matched<1>();
+            return Inner::match(input, mp, ctx).template consume_if_not_matched<1>();
         }
     };
 }

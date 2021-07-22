@@ -151,6 +151,18 @@ namespace cx::tests
     static_assert(detail::accepted<R"(\((Inner|a)+))"> == false);
     static_assert(detail::accepted<R"(((((((a))))))"> == false);
     static_assert(detail::accepted<R"(((((((a)))))\))"> == false);
+    static_assert(detail::accepted<R"(f?[a-zA-]?a?)"> == false);
+    static_assert(detail::accepted<R"(f?[a--z-]?a?)"> == false);
+    static_assert(detail::accepted<R"(f?[a-z-A]??)"> == false);
+    static_assert(detail::accepted<R"(f*[a-zA-Z*a?)"> == false);
+    static_assert(detail::accepted<R"(+[a-zA-Z]+a+)"> == false);
+    static_assert(detail::accepted<R"(ab|cd|[a-zA-Z]|ab{3|ac)"> == false);
+    static_assert(detail::accepted<R"(ab|(cd|[a-zA-Z]|ab\)|ac)"> == false);
+    static_assert(detail::accepted<R"(^(ab||(cd|[a-zA-Z]|ab)|ac)$)"> == false);
+    static_assert(detail::accepted<R"(((a|\\a)|\(d|\\d))?)"> == false);
+    static_assert(detail::accepted<R"(((a|\\a++)|(d?|\\d))*)"> == false);
+    static_assert(detail::accepted<R"(((a|\\a)|(0|1|?2|3))?)"> == false);
+    static_assert(detail::accepted<R"((((|\\a)|(0|1|2|3))?)*x?y+abcd|efgh((x|z)?t)+)"> == false);
 }
 #endif // CX_RUN_PARSER_TESTS
 

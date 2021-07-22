@@ -26,16 +26,12 @@ namespace cx
             -> regex_result<capture_count>
             {
                 match_context ctx{};
-                auto res = ast::template match<match_context>(input, {0, input.length()}, ctx);
+                auto res = ast::match(input, {0, input.length()}, ctx);
                 res.matched = res.matched && (res.consumed == input.length());
                 if (!res.matched)
-                {
                     ctx.clear_captures();
-                }
                 else
-                {
                     std::get<0>(ctx.captures) = capture<0>{0, res.consumed};
-                }
                 return regex_result{res.matched, std::move(ctx.captures), input};
             }
 
@@ -47,16 +43,15 @@ namespace cx
                 std::size_t str_length = input.length();
                 while (start_pos < str_length)
                 {
-                    auto res = ast::template match<match_context>(input, {start_pos, str_length}, ctx);
+                    auto res = ast::match(input, {start_pos, str_length}, ctx);
                     if (res)
                     {
                         std::get<0>(ctx.captures) = capture<0>{start_pos, res.consumed};
                         return regex_result{true, std::move(ctx.captures), input};
                     }
+
                     if constexpr (has_atomic_group_v<ast>)
-                    {
                         ctx.clear_captures();
-                    }
                     ++start_pos;
                 }
                 ctx.clear_captures();
@@ -80,7 +75,7 @@ namespace cx
         template<string_like Str>
         [[nodiscard]] static constexpr decltype(auto) match(Str const &input) noexcept
         {
-            return with_flags<>::template match(input);
+            return with_flags<>::match(input);
         }
 
         template<string_like Str>

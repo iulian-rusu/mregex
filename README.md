@@ -28,7 +28,7 @@ The library currently supports the following regex features:
 * `[abc]` - sets
 * `[^abc]` - negated sets
 * `[a-z0-9]` - ranges inside sets
-* various fs like `ignore_case`, `dotall`, `extended` and `multiline`
+* various flags like `ignore_case`, `dotall`, `extended` and `multiline`
 
 Some features planned for the future:
 * `++`, `?+`, `*+` - possessive quantifiers

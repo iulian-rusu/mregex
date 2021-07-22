@@ -36,18 +36,16 @@ namespace cx
     constexpr auto to_lower(auto c) noexcept
     {
         if ('A' <= c && c <= 'Z')
-        {
             return static_cast<decltype(c)>(c ^ 0x20);
-        }
+
         return c;
     }
 
     constexpr auto to_upper(auto c) noexcept
     {
         if ('a' <= c && c <= 'z')
-        {
             return static_cast<decltype(c)>(c ^ 0x20);
-        }
+
         return c;
     }
 }

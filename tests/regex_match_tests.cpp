@@ -78,6 +78,7 @@ namespace cx::tests
     static_assert(regex<R"((a|ab|abc)+x)", flag::a>::match("abx"sv));
     static_assert(regex<R"((a|ab|abc)+x)", flag::a>::match("abcx"sv));
     static_assert(regex<R"((a|ab|abc)+x)", flag::a>::match("aabcaaabababcx"sv));
+    static_assert(regex<R"((a|ab|abc){3}x)", flag::a>::match("aabcabx"sv));
     static_assert(regex<R"(a|ab|abc)", flag::greedy_alt>::match("a"sv));
     static_assert(regex<R"(a|ab|abc)">::with_flags<flag::a>::match("ab"sv));
     static_assert(regex<R"(a|ab|abc)">::with_flags<flag::greedy_alt>::match("abc"sv));
@@ -148,6 +149,8 @@ namespace cx::tests
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("X0h"sv) == false);
     static_assert(regex<R"(a.+)">::match("this regex will match any input"sv) == false);
     static_assert(regex<R"(.+)">::match("\nexcept new lines"sv) == false);
+    static_assert(regex<R"(a?   b? c?)">::match("abc"sv) == false);
+    static_assert(regex<R"(a?b?c?)">::with_flags<flag::extended>::match("aaa"sv) == false);
     static_assert(regex<R"(0x(\h+)h?)", flag::i>::match("0X012323EJH"sv) == false);
     static_assert(regex<R"([^a-z]+)">::with_flags<flag::ignore_case>::match("AABBBDBDBDBBSABBDBDBABBA"sv) == false);
     static_assert(regex<R"(^abcd$)", flag::m>::match("\nabcd\n\n"sv) == false);
@@ -155,5 +158,16 @@ namespace cx::tests
     static_assert(regex<R"((a|ab|abc)+x)", flag::multiline>::match("aaaabcbabx"sv) == false);
     static_assert(regex<R"(^abcd$)">::with_flags<flag::multiline>::match("\nabcd\ne"sv) == false);
     static_assert(regex<R"(^abcd$)">::with_flags<flag::multiline>::match("a\nbcd\n"sv) == false);
+    static_assert(regex<R"(.+)", flag::s>::match(""sv) == false);
+    static_assert(regex<R"(.+x)">::with_flags<flag::dotall>::match("xy"sv) == false);
+    static_assert(regex<R"((a|ab|abc)+x)", flag::a>::match("ab"sv) == false);
+    static_assert(regex<R"((a|ab|abc)+)", flag::a>::match("abcx"sv) == false);
+    static_assert(regex<R"((a|ab|abc){2}x)", flag::a>::match("aabcabx"sv) == false);
+    static_assert(regex<R"((a|ab|abc){4}x)", flag::a>::match("aabcabx"sv) == false);
+    static_assert(regex<R"(a|ab|abc)", flag::greedy_alt>::match(""sv) == false);
+    static_assert(regex<R"(a|ab|abc)">::with_flags<flag::a>::match("a|ab|abc"sv) == false);
+    static_assert(regex<R"(a|ab|abc)">::with_flags<flag::greedy_alt>::match("aba"sv) == false);
+    static_assert(regex<R"((a|ab)+x)">::with_flags<flag::greedy_alt>::match("aaaabcabx"sv) == false);
+    static_assert(regex<R"((a|ab|abc)+x)">::with_flags<flag::greedy_alt>::match("x"sv) == false);
 }
 #endif // CX_RUN_REGEX_TESTS

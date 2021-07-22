@@ -8,7 +8,6 @@
 
 namespace cx
 {
-
     /**
      * Metafunction that decides if the parser will begin parsing a quantifier value
      * or will parse it as a normal character sequence

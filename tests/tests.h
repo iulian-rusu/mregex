@@ -11,6 +11,7 @@
 #define CX_RUN_REGEX_TESTS
 #define CX_RUN_STACK_TESTS
 #define CX_RUN_UTILITY_TESTS
+#define CX_RUN_FLAG_TESTS
 #endif
 
 #endif //CX_TESTS_H

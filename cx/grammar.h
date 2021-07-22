@@ -7,7 +7,7 @@
 
 namespace cx::grammar
 {
-    // Helper types defining decisions imposed by the grammar rules
+    // Helper types defining decisions imposed by grammar rules
     struct advance_input {};
 
     struct accept: std::true_type {};
