@@ -23,6 +23,7 @@ namespace cx::tests
     static_assert(detail::accepted<R"(c+)">);
     static_assert(detail::accepted<R"(c{2})">);
     static_assert(detail::accepted<R"(c{})">);
+    static_assert(detail::accepted<R"(c{)">);
     static_assert(detail::accepted<R"(c{?})">);
     static_assert(detail::accepted<R"(c{*})">);
     static_assert(detail::accepted<R"(c{+})">);
@@ -104,7 +105,6 @@ namespace cx::tests
     static_assert(detail::accepted<R"(|)"> == false);
     static_assert(detail::accepted<R"(^?)"> == false);
     static_assert(detail::accepted<R"(c{2x})"> == false);
-    static_assert(detail::accepted<R"(c{)"> == false);
     static_assert(detail::accepted<R"(c{123)"> == false);
     static_assert(detail::accepted<R"(c{123\})"> == false);
     static_assert(detail::accepted<R"($?)"> == false);

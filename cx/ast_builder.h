@@ -113,16 +113,32 @@ namespace cx
         using type = stack<plus<First>, Rest ...>;
     };
 
+    // Combine any two non-sequence symbols into a sequence
     template<typename C, typename First, typename Second, typename ... Rest>
     struct update_ast<symbol::make_sequence, C, stack<First, Second, Rest ...>>
     {
         using type = stack<sequence<Second, First>, Rest ...>;
     };
 
+    // Add current symbol to previous sequence
     template<typename C, typename First, typename ... Second, typename ... Rest>
     struct update_ast<symbol::make_sequence, C, stack<First, sequence<Second ...>, Rest ...>>
     {
         using type = stack<sequence<Second ..., First>, Rest ...>;
+    };
+
+    // Add previous symbol to current sequence
+    template<typename C, typename Second, typename ... First, typename ... Rest>
+    struct update_ast<symbol::make_sequence, C, stack<sequence<First ...>, Second, Rest ...>>
+    {
+        using type = stack<sequence<Second, First ...>, Rest ...>;
+    };
+
+    // Concatenate two sequences
+    template<typename C, typename ... First, typename ... Second, typename ... Rest>
+    struct update_ast<symbol::make_sequence, C, stack<sequence<First ...>, sequence<Second ...>, Rest ...>>
+    {
+        using type = stack<sequence<Second ..., First ...>, Rest ...>;
     };
 
     template<typename C, typename First, typename Second, typename ... Rest>

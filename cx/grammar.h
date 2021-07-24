@@ -538,6 +538,12 @@ namespace cx::grammar
         using type = begin_quantifier_value_t<C>;
     };
 
+    template<>
+    struct rule<symbol::quantifier_begin, symbol::epsilon>
+    {
+        using type = abort_quantifier_parsing_t<'{'>;
+    };
+
     template<auto C>
     struct rule<symbol::mod, character<C>>
     {

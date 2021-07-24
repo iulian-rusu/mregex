@@ -9,7 +9,7 @@ namespace cx::tests
         constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast, AST>;
     }
 
-   //static_assert(std::is_same_v<typename parser<static_string(R"(c+{012})")>::ast, void>);
+   //static_assert(std::is_same_v<typename parser<static_string(R"(\(?x+)")>::ast, void>);
 
     static_assert(detail::expected_ast<R"())", epsilon>);
     static_assert(detail::expected_ast<R"(a))", character<'a'>>);
@@ -207,11 +207,36 @@ namespace cx::tests
                 character<'c'>
             >
     >);
+    static_assert(detail::expected_ast<R"(c{)",
+            sequence
+            <
+                character<'c'>,
+                character<'{'>
+            >
+    >);
+    static_assert(detail::expected_ast<R"(c{})",
+            sequence
+            <
+                character<'c'>,
+                character<'{'>,
+                character<'}'>
+            >
+    >);
     static_assert(detail::expected_ast<R"(c{22})",
             repeated
             <
                 22,
                 character<'c'>
+            >
+    >);
+    static_assert(detail::expected_ast<R"(c\{22})",
+            sequence
+            <
+                character<'c'>,
+                character<'{'>,
+                character<'2'>,
+                character<'2'>,
+                character<'}'>
             >
     >);
     static_assert(detail::expected_ast<R"(c{012})",
@@ -225,12 +250,9 @@ namespace cx::tests
             sequence
             <
                 character<'c'>,
-                sequence
-                <
-                    character<'{'>,
-                    character<'x'>,
-                    character<'}'>
-                >
+                character<'{'>,
+                character<'x'>,
+                character<'}'>
             >
     >);
     static_assert(detail::expected_ast<R"(c*{012})",
@@ -320,7 +342,7 @@ namespace cx::tests
                 character<'x'>
             >
     >);
-    static_assert(detail::expected_ast<R"(xyz?(.(?:a(?:b(?>c(d))?)*)?)+zyx?)",
+    static_assert(detail::expected_ast<R"(xyz?(.(?:a(?:b(?>c(d))?)*)?)*zyx?)",
             sequence
             <
                 character<'x'>,
@@ -329,7 +351,7 @@ namespace cx::tests
                 <
                     character<'z'>
                 >,
-                plus
+                star
                 <
                     capturing
                     <
@@ -389,7 +411,8 @@ namespace cx::tests
                 <
                     character<'('>
                 >,
-                plus
+                character<'x'>,
+                star
                 <
                     character<'x'>
                 >
@@ -654,7 +677,8 @@ namespace cx::tests
                                     >
                                 >
                             >,
-                            plus
+                            character<'b'>,
+                            star
                             <
                                 character<'b'>
                             >
