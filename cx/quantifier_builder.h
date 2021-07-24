@@ -10,7 +10,7 @@ namespace cx
 {
     /**
      * Metafunction used as a grammar rule when the parsing of a quantifier fails.
-     * It pushed a replacement character on the stack to recover any skipped special characters
+     * The skipped metacharacter is pushed back on the stack to be parsed as a normal character instead
      *
      * @tparam C    The character that is parsed as replacement for the failed quantifier
      */
