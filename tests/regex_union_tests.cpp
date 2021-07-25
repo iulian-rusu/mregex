@@ -15,6 +15,11 @@ namespace cx::tests
     static_assert(regex_union<R"((((((a))))))", R"(a(bc)d)", R"(a(bd(de))(fg))">::capture_count == 5);
     static_assert(regex_union<R"()", R"(a(bc)d)", R"(a(bd(de))(fg))", R"(((((?:((a)))))))">::capture_count == 5);
 
+    // Test cx::make_union helper metafunction
+    static_assert(std::is_base_of_v<make_union<regex<R"()">>, regex_union<R"()">>);
+    static_assert(std::is_base_of_v<make_union<regex<R"(ab?c+d{3})">>, regex_union<R"(ab?c+d{3})">>);
+    static_assert(std::is_base_of_v<make_union<regex<R"(ab+)">, regex<R"(x|z*)">>, regex_union<R"(ab+)", R"(x|z*)">>);
+
     // Test matching inputs
     static_assert(regex_union<R"()">::match(""sv));
     static_assert(regex_union<R"(a)">::match("a"sv));
@@ -28,7 +33,6 @@ namespace cx::tests
     static_assert(regex_union<R"(a(bc)+d)", R"(x(y|z)t)", R"(\d+)">::match("0"sv));
     static_assert(regex_union<R"(a(bc)+d)", R"(x(y|z)t)", R"(\d+)">::match("01"sv));
     static_assert(regex_union<R"(a(bc)+d)", R"(x(y|z)t)", R"(\d+)">::match("012312324"sv));
-    static_assert(regex_union<R"(in)", R"(intern)", R"(internal)">::match("internal"sv));
     static_assert(regex_union<R"(in)", R"(intern)", R"(internal)">::match("internal"sv));
     static_assert(regex_union<R"(in)", R"(intern)", R"(internal)">::match("intern"sv));
     static_assert(regex_union<R"(in)", R"(intern)", R"(internal)">::match("in"sv));

@@ -7,7 +7,7 @@
 namespace cx
 {
     template<static_string const pattern, typename ... Flags>
-    struct regex : regex_base<get_ast<pattern>, Flags ...>
+    struct regex : regex_base<ast_of<pattern>, Flags ...>
     {
         static_assert(parser<pattern>::accepted, "syntax error in regular expression");
     };

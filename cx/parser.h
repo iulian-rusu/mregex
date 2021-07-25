@@ -94,6 +94,6 @@ namespace cx
     };
 
     template<auto const pattern>
-    using get_ast = typename parser<pattern>::ast;
+    using ast_of = typename parser<pattern>::ast;
 }
 #endif //CX_PARSER_H

@@ -9,7 +9,7 @@
 namespace cx
 {
     /**
-     * Base for all Regex-like types.
+     * Base for all Regex-like types
      *
      * @tparam AST      The Abstract Syntax Tree of the Regex object
      * @tparam Flags    Optional flags for matching
@@ -18,6 +18,7 @@ namespace cx
     struct regex_base
     {
         using ast = AST;
+
         static constexpr std::size_t capture_count = ast::capture_count;
 
         template<typename ... ExtraFlags>

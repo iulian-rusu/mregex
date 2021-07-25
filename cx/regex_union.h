@@ -7,13 +7,13 @@
 namespace cx
 {
     /**
-     * Type that represents a convenient interface for creating unions of multiple Regexes
+     * Interface for creating unions of several Regexes
      *
      * @tparam first    The first pattern in the union
      * @tparam rest     The remaining union patterns
      */
     template<static_string const first, static_string const ... rest>
-    struct regex_union : regex_base<disjunction<get_ast<first>, get_ast<rest> ...>>
+    struct regex_union : regex_base<disjunction<ast_of<first>, ast_of<rest> ...>>
     {
         static_assert(
             (parser<first>::accepted && (parser<rest>::accepted && ... )),
