@@ -3,7 +3,7 @@
 
 #include "utility/stack.h"
 #include "symbol.h"
-#include "ast_fwd.h"
+#include "astfwd.h"
 
 namespace cx
 {

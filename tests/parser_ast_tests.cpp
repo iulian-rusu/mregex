@@ -9,7 +9,7 @@ namespace cx::tests
         constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast, AST>;
     }
 
-   //static_assert(std::is_same_v<typename parser<static_string(R"(\(?x+)")>::ast, void>);
+   //static_assert(std::is_same_v<typename parser<static_string(R"(x(a(b(c(d)*){15})))")>::ast, void>);
 
     static_assert(detail::expected_ast<R"())", epsilon>);
     static_assert(detail::expected_ast<R"(a))", character<'a'>>);
@@ -287,6 +287,36 @@ namespace cx::tests
                         character<'1'>,
                         character<'2'>,
                         character<'}'>
+                    >
+                >
+            >
+    >);
+    static_assert(detail::expected_ast<R"(a(b(cd)*){15})",
+            sequence
+            <
+                character<'a'>,
+                repeated
+                <
+                    15,
+                    capturing
+                    <
+                        1,
+                        sequence
+                        <
+                            character<'b'>,
+                            star
+                            <
+                                capturing
+                                <
+                                    2,
+                                    sequence
+                                    <
+                                        character<'c'>,
+                                        character<'d'>
+                                    >
+                                >
+                            >
+                        >
                     >
                 >
             >

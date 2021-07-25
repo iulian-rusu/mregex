@@ -1,7 +1,7 @@
 #ifndef CX_CAPTURE_INDEXER_H
 #define CX_CAPTURE_INDEXER_H
 
-#include "ast_fwd.h"
+#include "astfwd.h"
 
 namespace cx
 {
@@ -31,17 +31,17 @@ namespace cx
         using type = Wrapper<preorder_indexing_t<Offset, Inner> ...>;
     };
 
-    template<auto Offset, typename ... Rest>
-    struct preorder_indexing<Offset, sequence<Rest ...>>
+    template<auto Offset, auto I, template<auto, typename ...> typename Wrapper, typename ... Inner>
+    struct preorder_indexing<Offset, Wrapper<I, Inner ...>>
     {
-        using type = sequence<preorder_indexing_t<Offset, Rest> ...>;
+        using type = Wrapper<I, preorder_indexing_t<Offset, Inner> ...>;
     };
 
-    template<auto Offset, auto N, typename Inner>
-    struct preorder_indexing<Offset, capturing<N, Inner>>
+    template<auto Offset, auto I, typename Inner>
+    struct preorder_indexing<Offset, capturing<I, Inner>>
     {
         static constexpr auto capture_count = Inner::capture_count;
-        using type = capturing<N + Offset - capture_count, preorder_indexing_t<Offset + 1, Inner>>;
+        using type = capturing<I + Offset - capture_count, preorder_indexing_t<Offset + 1, Inner>>;
     };
 }
 #endif //CX_CAPTURE_INDEXER_H

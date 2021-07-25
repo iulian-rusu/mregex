@@ -4,13 +4,14 @@
 #include "utility/stack.h"
 #include "utility/char_helpers.h"
 #include "symbol.h"
-#include "ast_fwd.h"
+#include "astfwd.h"
 
 namespace cx
 {
     /**
      * Metafunction used as a grammar rule when the parsing of a quantifier fails.
-     * The skipped metacharacter is pushed back on the stack to be parsed as a normal character instead
+     * In this case, the parser has to recover the skipped metacharacter used to
+     * identify the start of a quantifier, like '{'
      *
      * @tparam C    The character that is parsed as replacement for the failed quantifier
      */

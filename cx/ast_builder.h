@@ -8,11 +8,11 @@
 namespace cx
 {
     /**
-     * Declaration fo the update_ast metafunction
+     * Metafunction used to build the Abstract Syntax Tree
      *
-     * @tparam  The current symbol on the stack
-     * @tparam  The current character in the parsed input
-     * @tparam  The current active of the stack with the AST nodes
+     * @tparam  The current symbol on the parsing stack
+     * @tparam  The current character being parsed
+     * @tparam  The stack containing current AST nodes being built
      */
     template<typename, typename, typename>
     struct update_ast;

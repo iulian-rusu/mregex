@@ -1,5 +1,5 @@
-#ifndef CX_AST_FWD_H
-#define CX_AST_FWD_H
+#ifndef CX_ASTFWD_H
+#define CX_ASTFWD_H
 
 namespace cx
 {
@@ -48,4 +48,4 @@ namespace cx
     template<std::size_t, typename>
     struct capturing;
 }
-#endif //CX_AST_FWD_H
+#endif //CX_ASTFWD_H
