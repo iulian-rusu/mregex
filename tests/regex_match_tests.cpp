@@ -18,6 +18,7 @@ namespace cx::tests
     static_assert(regex<R"(abcdef)">::match("abcdef"sv));
     static_assert(regex<R"(abc[]?def)">::match("abcdef"sv));
     static_assert(regex<R"(^abcd$)">::match("abcd"sv));
+    static_assert(regex<R"([a])">::match("a"sv));
     static_assert(regex<R"([\^a]+)">::match("^a"sv));
     static_assert(regex<R"([^]+)">::match("aA01-^*@#(){}[]\n"sv));
     static_assert(regex<R"([^\^a]+)">::match("b$"sv));

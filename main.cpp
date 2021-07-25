@@ -63,4 +63,18 @@ int main()
     {
         std::cout << res.get<0>() << '\n';
     }
+    std::cout << '\n';
+
+    // Combining multiple Regex-types into an union
+    using phone_regex = cx::regex<R"(\d{3}-\d{3}-\d{3})">;
+    using email_regex = cx::regex<R"(([^@\s]+)@([^@\s]+))">;
+    using contact_regex = cx::make_union<email_regex, phone_regex>;
+    constexpr std::string_view email_test = "example.name@emailservice.com";
+    constexpr std::string_view phone_test = "023-784-332";
+    auto is_email = contact_regex::match(email_test);
+    if (is_email)
+        std::cout << "Email with local part '" << is_email.get<1>() << "' and domain '" << is_email.get<2>() << "'\n";
+    auto is_phone = contact_regex::match(phone_test);
+    if (is_phone)
+        std::cout << "Phone: " << is_phone.get<0>() << '\n';
 }

@@ -182,7 +182,7 @@ namespace cx
     template<typename C, typename First,  typename ... Rest>
     struct update_ast<symbol::make_capturing, C, stack<First, Rest ...>>
     {
-        static constexpr auto ID = count_captures<First, Rest ...>::capture_count + 1;
+        static constexpr auto ID = capture_counter<First, Rest ...>::count + 1;
         using type = stack<capturing<ID, First>, Rest ...>;
     };
 

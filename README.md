@@ -76,6 +76,20 @@ constexpr auto parse()
 }
 ```
 
+To avoid long and complex regular expressions, it is possible to combine two separate
+`cx::regex` types into a union. The union behaves like an efficient alternation 
+of all inner regular expressions.
+```cpp
+using phone_regex = cx::regex<R"(\d{3}-\d{3}-\d{3})">;
+using email_regex = cx::regex<R"(([^@\s]+)@([^@\s]+))">;
+using contact_regex = cx::make_union<email_regex, phone_regex>;
+```
+It is also possible to directly create a union, without intermediate `cx::regex`
+types.
+```cpp
+using contact_regex = cx::regex_union<R"(\d{3}-\d{3}-\d{3})", R"(([^@\s]+)@([^@\s]+))">;
+```
+
 It is also possible to search for multiple matches in a string. In this case,
 the `cx::regex::find_all` method returns a lazy generator that will evaluate
 on-demand all matches in the string. We can iterate through the generator

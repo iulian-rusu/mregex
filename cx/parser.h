@@ -92,5 +92,8 @@ namespace cx
         using ast = std::conditional_t<is_empty_v<ast_stack>, epsilon, preorder_indexing_t<0, typename ast_stack::top>>;
         static constexpr bool accepted = typename parse_result::first{};
     };
+
+    template<auto const pattern>
+    using get_ast = typename parser<pattern>::ast;
 }
 #endif //CX_PARSER_H

@@ -15,7 +15,7 @@ namespace cx
     template<typename First, typename ... Rest>
     struct sequence
     {
-        static constexpr std::size_t capture_count = count_captures<First, Rest ...>::capture_count;
+        static constexpr std::size_t capture_count = capture_counter<First, Rest ...>::count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
@@ -54,7 +54,7 @@ namespace cx
     template<typename First, typename ... Rest>
     struct alternation
     {
-        static constexpr std::size_t capture_count = count_captures<First, Rest ...>::capture_count;
+        static constexpr std::size_t capture_count = capture_counter<First, Rest ...>::count;
 
         template<typename MatchContext>
         static constexpr auto match(auto const &input, match_params mp, MatchContext &ctx) noexcept
@@ -88,6 +88,39 @@ namespace cx
 
     template<typename First>
     struct alternation<First>
+    {
+        static constexpr std::size_t capture_count = First::capture_count;
+
+        template<typename MatchContext>
+        static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
+        {
+            return First::match(input, mp, ctx);
+        }
+    };
+
+    /**
+     * Disjunction is a special AST node used to implement cx::regex_union.
+     * Unlike cx::alternation, cx::disjuction needs to consume all characters to match
+     */
+    template<typename First, typename ... Rest>
+    struct disjunction
+    {
+        static constexpr std::size_t capture_count = max_capture_counter<First, Rest ...>::count;
+
+        template<typename MatchContext>
+        static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
+        {
+            auto first_match = First::match(input, mp, ctx);
+            if (first_match && first_match.consumed == mp.consume_limit)
+                return first_match;
+
+            ctx.clear_captures();
+            return disjunction<Rest ...>::match(input, mp, ctx);
+        }
+    };
+
+    template<typename First>
+    struct disjunction<First>
     {
         static constexpr std::size_t capture_count = First::capture_count;
 

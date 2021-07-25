@@ -13,6 +13,9 @@ namespace cx
     template<typename, typename ...>
     struct alternation;
 
+    template<typename, typename ...>
+    struct disjunction;
+
     template<typename>
     struct star;
 

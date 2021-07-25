@@ -10,15 +10,36 @@ namespace cx
      * @tparam Rest     The rest of AST nodes
      */
     template<typename First, typename ... Rest>
-    struct count_captures
+    struct capture_counter
     {
-        static constexpr std::size_t capture_count = First::capture_count + count_captures<Rest ...>::capture_count;
+        static constexpr std::size_t count = First::capture_count + capture_counter<Rest ...>::count;
     };
 
     template<typename First>
-    struct count_captures<First>
+    struct capture_counter<First>
     {
-        static constexpr std::size_t capture_count = First::capture_count;
+        static constexpr std::size_t count = First::capture_count;
+    };
+
+    /**
+     * Metafunction used to get the maximum number of capturing groups in any AST node
+     *
+     * @tparam First    The first AST node
+     * @tparam Rest     The rest of AST nodes
+     */
+    template<typename First, typename ... Rest>
+    struct max_capture_counter
+    {
+        static constexpr std::size_t first_count = First::capture_count;
+        static constexpr std::size_t rest_count = max_capture_counter<Rest ...>::count;
+
+        static constexpr std::size_t count = first_count > rest_count ? first_count : rest_count;
+    };
+
+    template<typename First>
+    struct max_capture_counter<First>
+    {
+        static constexpr std::size_t count = First::capture_count;
     };
 }
 #endif //CX_CAPTURE_COUNTER_H
