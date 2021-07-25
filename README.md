@@ -90,7 +90,7 @@ types.
 using contact_regex = cx::regex_union<R"(\d{3}-\d{3}-\d{3})", R"(([^@\s]+)@([^@\s]+))">;
 ```
 
-It is also possible to search for multiple matches in a string. In this case,
+The library supports searching for multiple matches in a string. In this case,
 the `cx::regex::find_all` method returns a lazy generator that will evaluate
 on-demand all matches in the string. We can iterate through the generator
 just like any standard container.
