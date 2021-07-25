@@ -166,4 +166,3 @@ namespace cx::tests
     static_assert(detail::accepted<R"((((|\\a)|(0|1|2|3))?)*x?y+abcd|efgh((x|z)?t)+)"> == false);
 }
 #endif // CX_RUN_PARSER_TESTS
-

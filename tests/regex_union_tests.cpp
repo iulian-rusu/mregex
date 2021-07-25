@@ -50,4 +50,3 @@ namespace cx::tests
     static_assert(regex_union<R"(aB+b)", R"(A+)", R"(a?Ab?)">::match("aaaaaaa"sv) == false);
 }
 #endif // CX_RUN_REGEX_UNION_TESTS
-
