@@ -67,6 +67,7 @@ namespace cx::tests
     static_assert(detail::accepted<R"([a])">);
     static_assert(detail::accepted<R"([a][b])">);
     static_assert(detail::accepted<R"([])">);
+    static_assert(detail::accepted<R"([^])">);
     static_assert(detail::accepted<R"([a]{12}[])">);
     static_assert(detail::accepted<R"([][b])">);
     static_assert(detail::accepted<R"(^[a]$)">);

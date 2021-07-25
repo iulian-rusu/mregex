@@ -54,67 +54,69 @@ namespace cx::symbol
     template<std::size_t>
     struct quantifier_value {};
 
-    // Symbols that require AST updates
+    // Tag for symbols that require AST updates
     struct ast_update {};
 
-    struct make_char: ast_update {};
+    struct make_char : ast_update {};
 
     template<auto>
-    struct push_char: ast_update {};
+    struct push_char : ast_update {};
 
-    struct make_sequence: ast_update {};
+    struct make_sequence : ast_update {};
 
-    struct make_alternation: ast_update {};
+    struct make_alternation : ast_update {};
 
-    struct make_star: ast_update {};
+    struct make_star : ast_update {};
 
-    struct make_optional: ast_update {};
+    struct make_optional : ast_update {};
 
-    struct make_plus: ast_update {};
+    struct make_plus : ast_update {};
 
-    struct make_alpha: ast_update {};
+    struct make_newline : ast_update {};
 
-    struct make_digit: ast_update {};
+    struct make_alpha : ast_update {};
 
-    struct make_word: ast_update {};
+    struct make_digit : ast_update {};
 
-    struct make_whitespace: ast_update  {};
+    struct make_word : ast_update {};
 
-    struct make_lower: ast_update  {};
+    struct make_whitespace : ast_update  {};
 
-    struct make_upper: ast_update  {};
+    struct make_lower : ast_update  {};
 
-    struct make_hexa: ast_update {};
+    struct make_upper : ast_update  {};
 
-    struct make_wildcard: ast_update {};
+    struct make_hexa : ast_update {};
 
-    struct make_beginning: ast_update {};
+    struct make_wildcard : ast_update {};
 
-    struct make_ending: ast_update {};
+    struct make_beginning : ast_update {};
 
-    struct make_negated: ast_update {};
+    struct make_ending : ast_update {};
 
-    struct make_captureless: ast_update{};
+    struct make_negated : ast_update {};
 
-    struct make_atomic: ast_update{};
+    struct make_captureless : ast_update{};
 
-    struct make_capturing: ast_update {};
+    struct make_atomic : ast_update{};
 
-    struct make_set: ast_update {};
+    struct make_capturing : ast_update {};
 
-    struct make_set_from_current_char: ast_update {};
+    struct make_set : ast_update {};
 
-    struct make_set_from_stack: ast_update {};
+    struct make_set_from_current_char : ast_update {};
 
-    struct make_range: ast_update {};
+    struct make_set_from_stack : ast_update {};
 
-    struct make_range_from_stack: ast_update {};
+    struct make_range : ast_update {};
+
+    struct make_range_from_stack : ast_update {};
 
     template<std::size_t>
-    struct make_backref: ast_update {};
+    struct make_backref : ast_update {};
 
     template<std::size_t>
-    struct make_repeated: ast_update {};
+    struct make_repeated : ast_update {};
 
     // Type trait to distinguish AST update symbols from other symbols
     template<typename Symbol>

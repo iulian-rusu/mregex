@@ -30,6 +30,12 @@ namespace cx
     };
 
     template<typename C, typename Stack>
+    struct update_ast<symbol::make_newline, C, Stack>
+    {
+        using type = typename Stack::template push<newline>;
+    };
+
+    template<typename C, typename Stack>
     struct update_ast<symbol::make_alpha, C, Stack>
     {
         using type = typename Stack::template push<alpha>;

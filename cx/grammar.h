@@ -10,9 +10,9 @@ namespace cx::grammar
     // Helper types defining decisions imposed by grammar rules
     struct advance_input {};
 
-    struct accept: std::true_type {};
+    struct accept : std::true_type {};
 
-    struct reject: std::false_type {};
+    struct reject : std::false_type {};
 
     /**
      * Metafunction defining a grammar rule based on two parameters.
@@ -890,6 +890,12 @@ namespace cx::grammar
                     symbol::make_set_from_current_char,
                     symbol::set_seq
                 >;
+    };
+
+    template<>
+    struct rule<symbol::set_begin_no_neg, character<']'>>
+    {
+        using type = symbol::epsilon;
     };
 
     template<>

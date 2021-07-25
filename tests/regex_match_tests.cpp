@@ -10,6 +10,8 @@ namespace cx::tests
     static_assert(regex<R"()">::match(""sv));
     static_assert(regex<R"(a)">::match("a"sv));
     static_assert(regex<R"(\a)">::match("b"sv));
+    static_assert(regex<R"(\n)">::match("\n"sv));
+    static_assert(regex<R"(\N)">::match("N"sv));
     static_assert(regex<R"(\a+)">::match("aBcDefghijklmnopqrstuvqXyZ"sv));
     static_assert(regex<R"(^a)">::match("a"sv));
     static_assert(regex<R"(a$)">::match("a"sv));
@@ -17,6 +19,7 @@ namespace cx::tests
     static_assert(regex<R"(abc[]?def)">::match("abcdef"sv));
     static_assert(regex<R"(^abcd$)">::match("abcd"sv));
     static_assert(regex<R"([\^a]+)">::match("^a"sv));
+    static_assert(regex<R"([^]+)">::match("aA01-^*@#(){}[]\n"sv));
     static_assert(regex<R"([^\^a]+)">::match("b$"sv));
     static_assert(regex<R"([a-z]+)">::match("aqwertyz"sv));
     static_assert(regex<R"([A-Z]+)">::match("AAABBBCCEEFFZZZ"sv));
@@ -100,11 +103,15 @@ namespace cx::tests
     static_assert(regex<R"()">::match("t"sv) == false);
     static_assert(regex<R"(a)">::match("b"sv) == false);
     static_assert(regex<R"(\a)">::match("1"sv) == false);
+    static_assert(regex<R"(\n)">::match("n"sv) == false);
+    static_assert(regex<R"(\N)">::match("\r"sv) == false);
     static_assert(regex<R"(^a)">::match(" a"sv) == false);
     static_assert(regex<R"(a$)">::match("a "sv) == false);
     static_assert(regex<R"(^abcd$)">::match(" abcd"sv) == false);
     static_assert(regex<R"(abc[]def)">::match("abcdef"sv) == false);
     static_assert(regex<R"([\^a]+)">::match("^ca"sv) == false);
+    static_assert(regex<R"([])">::match("a"sv) == false);
+    static_assert(regex<R"([])">::match(""sv) == false);
     static_assert(regex<R"([^\^a]+)">::match("bb^$"sv) == false);
     static_assert(regex<R"([a-z]+)">::match("abasbdbAasdbasbdabs"sv) == false);
     static_assert(regex<R"([A-Z]+)">::match("AAAAVVVVVVVVCCCCCCxCD"sv) == false);

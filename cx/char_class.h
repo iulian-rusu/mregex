@@ -19,6 +19,17 @@ namespace cx
     };
 
     template<>
+    struct rule_for_char_class<'n'>
+    {
+        using type =
+        stack
+                <
+                        character<'n'>,
+                        symbol::make_newline
+                >;
+    };
+
+    template<>
     struct rule_for_char_class<'a'>
     {
         using type =
