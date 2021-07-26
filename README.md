@@ -99,6 +99,6 @@ using word_regex = cx::regex<R"([-a-z']+)", cx::flag::i>;
 constexpr std::string_view words = "Let's iterate over these words!";
 for (auto &&res : word_regex::find_all(words))
 {
-std::cout << res.get<0>() << '\n';
+    std::cout << res.get<0>() << '\n';
 }
 ```
