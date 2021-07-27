@@ -365,24 +365,6 @@ namespace cx
         }
     };
 
-    template<typename T>
-    using optional = alternation<T, epsilon>;
-
-    template<typename T>
-    using plus = sequence<T, star<T>>;
-
-    using digit = range<'0', '9'>;
-
-    using lower = range<'a', 'z'>;
-
-    using upper = range<'A', 'Z'>;
-
-    using alpha = range<'A', 'z'>;
-
-    using word = alternation<alpha, digit, character<'_'>>;
-
-    using hexa = alternation<digit, range<'a', 'f'>, range<'A', 'F'>>;
-
     template<std::size_t ID>
     struct backref : terminal
     {
@@ -461,13 +443,18 @@ namespace cx
         }
     };
 
-    template<negatable Inner>
+    template<typename Inner>
     struct negated
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
 
+        /**
+         * Only a subset of AST nodes support negated mode while matching.
+         * This is checked using the requires clause and a custom type trait
+         */
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
+        requires is_negatable_v<Inner>
         {
             return Inner::match(input, mp, ctx).template consume_if_not_matched<1>();
         }

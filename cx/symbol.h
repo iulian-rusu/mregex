@@ -48,7 +48,7 @@ namespace cx::symbol
     template<std::size_t>
     struct backref_id {};
 
-    // Symbol for parsing a quantifier value
+    // Symbols for parsing a quantifier value
     struct quantifier_begin {};
 
     template<std::size_t>

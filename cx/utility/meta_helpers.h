@@ -63,15 +63,6 @@ namespace cx
     constexpr bool is_terminal_v = std::is_base_of_v<terminal, T>;
 
     template<typename T>
-    struct is_range : std::false_type {};
-
-    template<auto A, auto B>
-    struct is_range<range<A, B>> : std::true_type {};
-
-    template<typename T>
-    constexpr bool is_range_v = is_range<T>::value;
-
-    template<typename T>
     struct is_alternation : std::false_type {};
 
     template<typename First, typename ... Rest>
@@ -79,5 +70,8 @@ namespace cx
 
     template<typename T>
     constexpr bool is_alternation_v = is_alternation<T>::value;
+
+    template<typename T>
+    constexpr bool is_negatable_v = is_terminal_v<T> || is_alternation_v<T>;
 }
 #endif //CX_META_HELPERS_H

@@ -22,9 +22,6 @@ namespace cx::tests
     static_assert(is_alternation_v<star<int>> == false);
     static_assert(is_alternation_v<alternation<alternation<int>>>);
     static_assert(is_alternation_v<star<alternation<int>>> == false);
-    static_assert(is_range_v<range<1, 2>>);
-    static_assert(is_range_v<star<int>> == false);
-    static_assert(is_range_v<alternation<range<1, 2>>> == false);
     static_assert(is_terminal_v<character<'a'>>);
     static_assert(is_terminal_v<range<'a', 'z'>>);
     static_assert(is_terminal_v<wildcard>);

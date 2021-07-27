@@ -9,9 +9,8 @@ tree from an input string.
 
 ## Features
 The library currently supports the following regex features:
-* full support for `constexpr` matching
-* detecting incorrect syntax at compile-time
-* extracting captures
+* `constexpr` matching
+* compile-time syntax checking
 * `*` - Kleene start quantifier
 * `+` - plus quantifier
 * `{5}` - exact quantifier
@@ -21,13 +20,11 @@ The library currently supports the following regex features:
 * `(?>expr)` - atomic subexpressions
 * `\12` - backreferences
 * `|` - alternation of two subexpressions
-* `\?`, `\*`, `\\` - escaping characters
+* `\?`, `\\`, `\n` - escaped characters
 * `\w`, `\d`, `\S` - special character classes
 * `.` - wildcard character
-* `^`, `$` - string beginning/ending matchers
-* `[abc]` - sets
-* `[^abc]` - negated sets
-* `[a-z0-9]` - ranges inside sets
+* `^`, `$` - anchors
+* `[abc]`, `[^abc]`, `[a-z0-9]` - sets
 * various flags like `ignore_case`, `dotall`, `extended` and `multiline`
 
 Some features planned for the future:
@@ -43,6 +40,7 @@ in a compilation error.
 The input can be any object that satisfies the `cx::string_like` concept.
 ```cpp
 using url_regex = cx::regex<R"((\w+):\/\/(?:(?:(\w+)?(?::(\w+))?@)?([\w.]+)(?::(\d+))?)?(?:(\/[-/\w]+)?\?([\w=&]+))?)">;
+
 constexpr std::string_view url = "https://username:password@hostname.com:8080/path/to/resource?id=12345";
 constexpr auto match_res = url_regex::match(url);
 std::cout << "Scheme:\t" << match_res.get<1>() << '\n';
@@ -96,6 +94,7 @@ on-demand all matches in the string. We can iterate through the generator
 just like any standard container.
 ```cpp
 using word_regex = cx::regex<R"([-a-z']+)", cx::flag::i>;
+
 constexpr std::string_view words = "Let's iterate over these words!";
 for (auto &&res : word_regex::find_all(words))
 {

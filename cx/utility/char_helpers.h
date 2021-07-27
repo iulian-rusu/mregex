@@ -18,6 +18,7 @@ namespace cx
     constexpr bool is_whitespace_v = C == ' ' || C == '\t' ||
                                      C == '\n' || C == '\r' ||
                                      C == '\f' || C == '\x0B';
+
     template<auto C>
     constexpr bool is_lower_v = 'a' <= C && C <= 'z';
 
