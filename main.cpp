@@ -65,7 +65,7 @@ int main()
     }
     std::cout << '\n';
 
-    // Combining multiple Regex-types into an union
+    // Combining multiple Regex-types into a union
     using phone_regex = cx::regex<R"(\d{3}-\d{3}-\d{3})">;
     using email_regex = cx::regex<R"(([^@\s]+)@([^@\s]+))">;
     using contact_regex = cx::make_union<email_regex, phone_regex>;

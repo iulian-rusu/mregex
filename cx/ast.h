@@ -35,7 +35,7 @@ namespace cx
                     return {0, false};
 
                 consume_limit = first_match.consumed - 1;
-            } while (true); // not an infinite loop I promise
+            } while (true);
         }
     };
 

@@ -8,7 +8,7 @@
 namespace cx::grammar
 {
     // Helper types defining decisions imposed by grammar rules
-    struct advance_input {};
+    struct advance {};
 
     struct accept : std::true_type {};
 
@@ -17,10 +17,10 @@ namespace cx::grammar
     /**
      * Metafunction defining a grammar rule based on two parameters.
      *
-     * @tparam  The current symbol on the stack
-     * @tparam  The current character in the input string
+     * @tparam S  The current symbol on the stack
+     * @tparam C  The current character in the input string
      */
-    template<typename, typename>
+    template<typename S, typename C>
     struct rule
     {
         using type = reject;
@@ -1068,7 +1068,7 @@ namespace cx::grammar
     template<char C>
     struct rule<character<C>, character<C>>
     {
-        using type = advance_input;
+        using type = advance;
     };
 
     template<char C, typename Symbol>

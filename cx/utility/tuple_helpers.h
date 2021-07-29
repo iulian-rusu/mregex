@@ -1,6 +1,8 @@
 #ifndef CX_TUPLE_HELPERS_H
 #define CX_TUPLE_HELPERS_H
 
+#include <tuple>
+
 namespace cx
 {
     template<typename Tuple, typename Mapper, std::size_t ... Indices>

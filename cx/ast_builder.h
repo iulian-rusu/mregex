@@ -10,11 +10,11 @@ namespace cx
     /**
      * Metafunction used to build the Abstract Syntax Tree
      *
-     * @tparam  The current symbol on the parsing stack
-     * @tparam  The current character being parsed
-     * @tparam  The stack containing current AST nodes being built
+     * @tparam S    The current symbol on the parsing stack
+     * @tparam C    The current character being parsed
+     * @tparam ASR  The stack containing current AST nodes being built
      */
-    template<typename, typename, typename>
+    template<typename S, typename C, typename AST>
     struct update_ast;
 
     template<typename C, typename Stack>
