@@ -1077,7 +1077,7 @@ namespace cx::grammar
     };
 
     template<>
-    struct rule<empty_stack, symbol::epsilon>
+    struct rule<empty_stack_marker, symbol::epsilon>
     {
         using type = accept;
     };

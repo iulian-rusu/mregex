@@ -22,7 +22,7 @@ namespace cx::tests
     }
 
     // Top of an empty stack must be the type cx::empty_stack
-    static_assert(std::is_same_v<empty_stack, stack<>::top>);
+    static_assert(std::is_same_v<empty_stack_marker, stack<>::top>);
     // Popping empty stack should do nothing
     static_assert(std::is_same_v<stack<>, stack<>::pop>);
     // Push one type to the stack
