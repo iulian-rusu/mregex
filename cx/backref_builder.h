@@ -28,7 +28,7 @@ namespace cx
     template<auto C>
     struct decide_esc_rule<C, false>
     {
-        using type = rule_for_char_class_t<C>;
+        using type = rule_for_escaped_char_t<C>;
     };
 
     template<auto C>
