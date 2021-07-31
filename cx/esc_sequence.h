@@ -10,10 +10,10 @@
 namespace cx
 {
     /**
-     * Metafunction that decides if the current rule is a backreference
-     * building rule or an escaped character class rule
+     * Metafunction that decides the rule which handles an escaped character
+     * or sequence in the input being parsed
      *
-     * @tparam C    The current character in the regex pattern
+     * @tparam C    The current character in the input pattern
      */
     template<auto C, bool = C != '0' && is_numeric_v<C>>
     struct esc_rule
