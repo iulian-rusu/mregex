@@ -1,5 +1,5 @@
-#ifndef CX_ESCAPED_CHAR_H
-#define CX_ESCAPED_CHAR_H
+#ifndef CX_CHAR_CLASS_H
+#define CX_CHAR_CLASS_H
 
 #include "utility/stack.h"
 #include "symbol.h"
@@ -8,7 +8,7 @@
 namespace cx
 {
     template<auto C>
-    struct rule_for_escaped_char
+    struct rule_for_char_class
     {
         using type =
                 stack
@@ -19,18 +19,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<'n'>
-    {
-        using type =
-                stack
-                <
-                    character<'n'>,
-                    symbol::make_newline
-                >;
-    };
-
-    template<>
-    struct rule_for_escaped_char<'a'>
+    struct rule_for_char_class<'a'>
     {
         using type =
                 stack
@@ -41,7 +30,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<'A'>
+    struct rule_for_char_class<'A'>
     {
         using type =
                 stack
@@ -53,7 +42,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<'d'>
+    struct rule_for_char_class<'d'>
     {
         using type =
                 stack
@@ -64,7 +53,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<'D'>
+    struct rule_for_char_class<'D'>
     {
         using type =
                 stack
@@ -75,7 +64,7 @@ namespace cx
                 >;
     };
     template<>
-    struct rule_for_escaped_char<'w'>
+    struct rule_for_char_class<'w'>
     {
         using type =
                 stack
@@ -86,7 +75,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<'W'>
+    struct rule_for_char_class<'W'>
     {
         using type =
                 stack
@@ -98,7 +87,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<'s'>
+    struct rule_for_char_class<'s'>
     {
         using type =
                 stack
@@ -109,7 +98,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<'S'>
+    struct rule_for_char_class<'S'>
     {
         using type =
                 stack
@@ -121,7 +110,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<'l'>
+    struct rule_for_char_class<'l'>
     {
         using type =
                 stack
@@ -132,7 +121,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<'L'>
+    struct rule_for_char_class<'L'>
     {
         using type =
                 stack
@@ -144,7 +133,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<'u'>
+    struct rule_for_char_class<'u'>
     {
         using type =
                 stack
@@ -155,7 +144,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<'U'>
+    struct rule_for_char_class<'U'>
     {
         using type =
                 stack
@@ -167,7 +156,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<'h'>
+    struct rule_for_char_class<'h'>
     {
         using type =
                 stack
@@ -178,7 +167,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_escaped_char<'H'>
+    struct rule_for_char_class<'H'>
     {
         using type =
                 stack
@@ -190,6 +179,6 @@ namespace cx
     };
 
     template<auto C>
-    using rule_for_escaped_char_t = typename rule_for_escaped_char<C>::type;
+    using rule_for_char_class_t = typename rule_for_char_class<C>::type;
 }
-#endif //CX_ESCAPED_CHAR_H
+#endif //CX_CHAR_CLASS_H

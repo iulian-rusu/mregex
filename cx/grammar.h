@@ -1,8 +1,7 @@
 #ifndef CX_GRAMMAR_H
 #define CX_GRAMMAR_H
 
-#include "escaped_char.h"
-#include "backref_builder.h"
+#include "esc_sequence.h"
 #include "quantifier_builder.h"
 
 namespace cx::grammar
@@ -479,7 +478,7 @@ namespace cx::grammar
     template<auto C>
     struct rule<symbol::esc, character<C>>
     {
-        using type = decide_esc_rule_t<C>;
+        using type = esc_rule_t<C>;
     };
 
     template<>
@@ -1032,7 +1031,7 @@ namespace cx::grammar
     template<auto C>
     struct rule<symbol::set_esc, character<C>>
     {
-        using type = rule_for_escaped_char_t<C>;
+        using type = rule_for_char_class_t<C>;
     };
 
     template<auto C>

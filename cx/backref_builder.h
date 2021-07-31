@@ -9,32 +9,6 @@
 namespace cx
 {
     /**
-     * Metafunction that decides if the current rule is a backreference
-     * building rule or an escaped character class rule
-     *
-     * @tparam C    The current character in the regex pattern
-     */
-    template<auto C, bool = C != '0' && is_numeric_v<C>>
-    struct decide_esc_rule
-    {
-        using type =
-                stack
-                <
-                    character<C>,
-                    symbol::backref_id<C - '0'>
-                >;
-    };
-
-    template<auto C>
-    struct decide_esc_rule<C, false>
-    {
-        using type = rule_for_escaped_char_t<C>;
-    };
-
-    template<auto C>
-    using decide_esc_rule_t = typename decide_esc_rule<C>::type;
-
-    /**
      * Metafunction that decides if the current rule will continue
      * the backreference ID building or will finish it
      *
