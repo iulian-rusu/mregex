@@ -8,7 +8,7 @@
 namespace cx
 {
     template<auto C>
-    struct rule_for_char_class
+    struct char_class_rule
     {
         using type =
                 stack
@@ -19,7 +19,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<'a'>
+    struct char_class_rule<'a'>
     {
         using type =
                 stack
@@ -30,7 +30,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<'A'>
+    struct char_class_rule<'A'>
     {
         using type =
                 stack
@@ -42,7 +42,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<'d'>
+    struct char_class_rule<'d'>
     {
         using type =
                 stack
@@ -53,7 +53,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<'D'>
+    struct char_class_rule<'D'>
     {
         using type =
                 stack
@@ -64,7 +64,7 @@ namespace cx
                 >;
     };
     template<>
-    struct rule_for_char_class<'w'>
+    struct char_class_rule<'w'>
     {
         using type =
                 stack
@@ -75,7 +75,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<'W'>
+    struct char_class_rule<'W'>
     {
         using type =
                 stack
@@ -87,7 +87,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<'s'>
+    struct char_class_rule<'s'>
     {
         using type =
                 stack
@@ -98,7 +98,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<'S'>
+    struct char_class_rule<'S'>
     {
         using type =
                 stack
@@ -110,7 +110,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<'l'>
+    struct char_class_rule<'l'>
     {
         using type =
                 stack
@@ -121,7 +121,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<'L'>
+    struct char_class_rule<'L'>
     {
         using type =
                 stack
@@ -133,7 +133,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<'u'>
+    struct char_class_rule<'u'>
     {
         using type =
                 stack
@@ -144,7 +144,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<'U'>
+    struct char_class_rule<'U'>
     {
         using type =
                 stack
@@ -156,7 +156,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<'h'>
+    struct char_class_rule<'h'>
     {
         using type =
                 stack
@@ -167,7 +167,7 @@ namespace cx
     };
 
     template<>
-    struct rule_for_char_class<'H'>
+    struct char_class_rule<'H'>
     {
         using type =
                 stack
@@ -179,6 +179,6 @@ namespace cx
     };
 
     template<auto C>
-    using rule_for_char_class_t = typename rule_for_char_class<C>::type;
+    using char_class_rule_t = typename char_class_rule<C>::type;
 }
 #endif //CX_CHAR_CLASS_H

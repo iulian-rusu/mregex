@@ -1031,7 +1031,7 @@ namespace cx::grammar
     template<auto C>
     struct rule<symbol::set_esc, character<C>>
     {
-        using type = rule_for_char_class_t<C>;
+        using type = char_class_rule_t<C>;
     };
 
     template<auto C>
@@ -1055,7 +1055,7 @@ namespace cx::grammar
     template<std::size_t ID, auto C>
     struct rule<symbol::backref_id<ID>, character<C>>
     {
-        using type = continue_backref_id_t<C, ID>;
+        using type = backref_rule_t<C, ID>;
     };
 
     template<std::size_t ID>

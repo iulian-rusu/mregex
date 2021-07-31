@@ -40,7 +40,7 @@ namespace cx
     template<auto C>
     struct esc_rule<C, false>
     {
-        using type = rule_for_char_class_t<C>;
+        using type = char_class_rule_t<C>;
     };
 
     template<auto C>

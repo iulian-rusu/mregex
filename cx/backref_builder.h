@@ -16,7 +16,7 @@ namespace cx
      * @tparam ID   The current backreference ID on the stack
      */
     template<auto C, std::size_t ID, bool = is_numeric_v<C>>
-    struct continue_backref_id
+    struct backref_rule
     {
         using type =
                 stack
@@ -27,12 +27,12 @@ namespace cx
     };
 
     template<auto C, std::size_t ID>
-    struct continue_backref_id<C, ID, false>
+    struct backref_rule<C, ID, false>
     {
         using type = symbol::make_backref<ID>;
     };
 
     template<auto C, std::size_t ID>
-    using continue_backref_id_t = typename continue_backref_id<C, ID>::type;
+    using backref_rule_t = typename backref_rule<C, ID>::type;
 }
 #endif //CX_BACKREF_BUILDER_H
