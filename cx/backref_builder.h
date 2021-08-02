@@ -6,7 +6,7 @@
 #include "symbol.h"
 #include "astfwd.h"
 
-namespace cx
+namespace cx::grammar
 {
     /**
      * Metafunction that decides if the current rule will continue

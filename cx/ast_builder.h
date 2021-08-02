@@ -12,7 +12,7 @@ namespace cx
      *
      * @tparam S    The current symbol on the parsing stack
      * @tparam C    The current character being parsed
-     * @tparam ASR  The stack containing current AST nodes being built
+     * @tparam AST  The stack containing current AST nodes being built
      */
     template<typename S, typename C, typename AST>
     struct update_ast;

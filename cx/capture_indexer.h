@@ -14,7 +14,7 @@ namespace cx
      * to comply with indexing standards.
      *
      * @tparam Offset   The ID of the outer-most capturing group
-     * @tparam Wrapper  The AST node type contained inside the capture
+     * @tparam Wrapper  The AST node type being traversed
      */
     template<auto Offset, typename Wrapper>
     struct preorder_indexing

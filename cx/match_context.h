@@ -36,7 +36,7 @@ namespace cx
 
             constexpr void clear_captures() noexcept
             {
-                map_tuple(captures, [](auto &capture) {
+                tuple_map(captures, [](auto &capture) {
                     capture.reset();
                 });
             }

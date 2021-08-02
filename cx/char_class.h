@@ -5,7 +5,7 @@
 #include "symbol.h"
 #include "astfwd.h"
 
-namespace cx
+namespace cx::grammar
 {
     template<auto C>
     struct char_class_rule

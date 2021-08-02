@@ -6,7 +6,7 @@
 #include "symbol.h"
 #include "astfwd.h"
 
-namespace cx
+namespace cx::grammar
 {
     /**
      * Metafunction used as a grammar rule when the parsing of a quantifier fails.

@@ -7,7 +7,7 @@
 #include "char_class.h"
 #include "backref_builder.h"
 
-namespace cx
+namespace cx::grammar
 {
     /**
      * Metafunction that decides the rule which handles an escaped character
