@@ -35,8 +35,6 @@ namespace cx
     template<auto>
     struct character;
 
-    struct newline;
-
     struct whitespace;
 
     struct wildcard;

@@ -10,8 +10,8 @@
 namespace cx::grammar
 {
     /**
-     * Metafunction that decides the rule which handles an escaped character
-     * or sequence in the input being parsed
+     * Metafunction that decides how to handle an escaped character
+     * or sequence of characters
      *
      * @tparam C    The current character in the input pattern
      */
@@ -27,13 +27,46 @@ namespace cx::grammar
     };
 
     template<>
+    struct esc_rule<'0', false>
+    {
+        using type =
+                stack
+                <
+                    character<'0'>,
+                    symbol::push_char<'\0'>
+                >;
+    };
+
+    template<>
     struct esc_rule<'n', false>
     {
         using type =
                 stack
                 <
                     character<'n'>,
-                    symbol::make_newline
+                    symbol::push_char<'\n'>
+                >;
+    };
+
+    template<>
+    struct esc_rule<'r', false>
+    {
+        using type =
+                stack
+                <
+                    character<'r'>,
+                    symbol::push_char<'\r'>
+                >;
+    };
+
+    template<>
+    struct esc_rule<'t', false>
+    {
+        using type =
+                stack
+                <
+                    character<'t'>,
+                    symbol::push_char<'\t'>
                 >;
     };
 

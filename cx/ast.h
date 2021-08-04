@@ -289,19 +289,6 @@ namespace cx
         }
     };
 
-    struct newline : terminal
-    {
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_params mp, MatchContext &) noexcept
-        {
-            if (mp.consume_limit == 0 || mp.from >= input.length())
-                return {0, false};
-
-            bool res = input[mp.from] == '\n';
-            return {res, res};
-        }
-    };
-
     struct whitespace : terminal
     {
         template<typename MatchContext>

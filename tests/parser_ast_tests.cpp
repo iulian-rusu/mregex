@@ -38,7 +38,9 @@ namespace cx::tests
                 ending
             >
     >);
-    static_assert(detail::expected_ast<R"(\n))", newline>);
+    static_assert(detail::expected_ast<R"(\n))", character<'\n'>>);
+    static_assert(detail::expected_ast<R"(\r))", character<'\r'>>);
+    static_assert(detail::expected_ast<R"(\t))", character<'\t'>>);
     static_assert(detail::expected_ast<R"(\a))", alpha>);
     static_assert(detail::expected_ast<R"(\D))",
             negated
@@ -108,7 +110,7 @@ namespace cx::tests
                     1,
                     character<'c'>
                 >,
-                character<'0'>
+                character<'\0'>
             >
     >);
     static_assert(detail::expected_ast<R"((c)\12)",
@@ -130,7 +132,7 @@ namespace cx::tests
                     1,
                     character<'c'>
                 >,
-                character<'0'>,
+                character<'\0'>,
                 character<'1'>
             >
     >);
