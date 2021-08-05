@@ -26,7 +26,7 @@ namespace cx
 
     struct epsilon;
 
-    struct null;
+    struct nothing;
 
     struct beginning;
 

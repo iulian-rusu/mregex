@@ -153,13 +153,6 @@ namespace cx
         using type = stack<alternation<Second ..., First>, Rest ...>;
     };
 
-    template<typename C, typename ... Elems>
-    struct update_ast<symbol::make_set, C, stack<Elems ...>>
-    {
-        // Push a null node to prevent set alternation combining with previous alternations
-        using type = stack<null, Elems ...>;
-    };
-
     // Temporarily wrap AST node into symbol::captureless_wrapper to avoid making a capturing group later
     template<typename C, typename First,  typename ... Rest>
     struct update_ast<symbol::make_captureless, C, stack<First, Rest ...>>
@@ -177,6 +170,7 @@ namespace cx
     struct update_ast<symbol::make_capturing, C, stack<First, Rest ...>>
     {
         static constexpr auto ID = capture_counter<First, Rest ...>::count + 1;
+
         using type = stack<capturing<ID, First>, Rest ...>;
     };
 
@@ -199,6 +193,13 @@ namespace cx
         using type = stack<repeated<N, First>, Rest ...>;
     };
 
+    // Set building rules
+    template<typename C, typename ... Elems>
+    struct update_ast<symbol::make_set, C, stack<Elems ...>>
+    {
+        using type = stack<nothing, Elems ...>;
+    };
+
     template<typename C, typename ... First>
     struct update_ast<symbol::make_set_from_current_char, C, stack<First ...>>
     {
@@ -212,7 +213,7 @@ namespace cx
     };
 
     template<typename C, typename ... Rest>
-    struct update_ast<symbol::make_set_from_current_char, C, stack<null, Rest ...>>
+    struct update_ast<symbol::make_set_from_current_char, C, stack<nothing, Rest ...>>
     {
         using type = stack<alternation<C>, Rest ...>;
     };
@@ -230,7 +231,7 @@ namespace cx
     };
 
     template<typename C, typename First, typename ... Rest>
-    struct update_ast<symbol::make_set_from_stack, C, stack<First, null, Rest ...>>
+    struct update_ast<symbol::make_set_from_stack, C, stack<First, nothing, Rest ...>>
     {
         using type = stack<alternation<First>, Rest ...>;
     };

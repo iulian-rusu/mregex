@@ -210,7 +210,6 @@ namespace cx
 
     struct epsilon : terminal
     {
-        // epsilon node always matches everything and consumes no characters
         template<typename MatchContext>
         static constexpr match_result match(auto const &, match_params, MatchContext &) noexcept
         {
@@ -218,9 +217,8 @@ namespace cx
         }
     };
 
-    struct null : terminal
+    struct nothing : terminal
     {
-        // null node never matches anything and consumes no characters
         template<typename MatchContext>
         static constexpr match_result match(auto const &, match_params, MatchContext &) noexcept
         {

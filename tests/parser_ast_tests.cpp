@@ -503,8 +503,8 @@ namespace cx::tests
                 character<'a'>
             >
     >);
-    static_assert(detail::expected_ast<R"([])", null>);
-    static_assert(detail::expected_ast<R"([^])", negated<null>>);
+    static_assert(detail::expected_ast<R"([])", nothing>);
+    static_assert(detail::expected_ast<R"([^])", negated<nothing>>);
     static_assert(detail::expected_ast<R"([a][b])",
             sequence
             <
@@ -521,7 +521,7 @@ namespace cx::tests
     static_assert(detail::expected_ast<R"([][b])",
             sequence
             <
-                null,
+                nothing,
                 alternation
                 <
                     character<'b'>

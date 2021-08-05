@@ -32,6 +32,7 @@ namespace cx
     {
         static constexpr std::size_t first_count = First::capture_count;
         static constexpr std::size_t rest_count = max_capture_counter<Rest ...>::count;
+
         static constexpr std::size_t count = first_count > rest_count ? first_count : rest_count;
     };
 

@@ -41,6 +41,7 @@ namespace cx
     struct preorder_indexing<Offset, capturing<I, Inner>>
     {
         static constexpr auto capture_count = Inner::capture_count;
+
         using type = capturing<I + Offset - capture_count, preorder_indexing_t<Offset + 1, Inner>>;
     };
 }
