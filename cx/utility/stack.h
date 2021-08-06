@@ -50,9 +50,9 @@ namespace cx
         template<typename E>
         using push = detail::push<E, Elems ...>;
 
-        using top = first_t<Elems ...>;
-
         using pop = detail::template pop<Elems ...>;
+
+        using top = first_t<Elems ...>;
     };
 
     struct empty_stack_marker {};
@@ -60,12 +60,12 @@ namespace cx
     template<>
     struct stack<>
     {
-        using top = empty_stack_marker;
-
         template<typename E>
         using push = detail::push<E>;
 
         using pop = stack<>;
+
+        using top = empty_stack_marker;
     };
 
     template<typename Stack>

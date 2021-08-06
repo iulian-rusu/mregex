@@ -163,7 +163,7 @@ namespace cx
     template<typename C, typename First,  typename ... Rest>
     struct update_ast<symbol::make_atomic, C, stack<First, Rest ...>>
     {
-    using type = stack<atomic<First>, Rest ...>;
+        using type = stack<atomic<First>, Rest ...>;
     };
 
     template<typename C, typename First,  typename ... Rest>
@@ -178,7 +178,7 @@ namespace cx
     template<typename C, typename First,  typename ... Rest>
     struct update_ast<symbol::make_capturing, C, stack<symbol::captureless_wrapper<First>, Rest ...>>
     {
-            using type = stack<First, Rest ...>;
+        using type = stack<First, Rest ...>;
     };
 
     template<std::size_t ID, typename C, typename ... Elems>
