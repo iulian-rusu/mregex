@@ -61,10 +61,7 @@ namespace cx
         -> std::enable_if_t<!flags<MatchContext>::greedy_alt, match_result>
         {
             auto first_match = First::match(input, mp, ctx);
-            if (first_match)
-                return first_match;
-
-            return alternation<Rest ...>::match(input, mp, ctx);
+            return first_match ?: alternation<Rest ...>::match(input, mp, ctx);
         }
 
         // SFINAE overload for greedy alternation, which makes it always verify all options
@@ -79,7 +76,7 @@ namespace cx
             {
                 auto rest_match = alternation<Rest ...>::match(input, mp, ctx);
                 if (rest_match && rest_match.consumed > first_match.consumed)
-                    first_match = rest_match;
+                    return rest_match;
                 return first_match;
             }
             return alternation<Rest ...>::match(input, mp, ctx);
@@ -148,9 +145,8 @@ namespace cx
             while (updated_mp.from < str_length)
             {
                 auto inner_match = Inner::match(input, updated_mp, ctx);
-                if (!inner_match || inner_match.consumed > updated_mp.consume_limit)
+                if (!inner_match || inner_match.consumed == 0 || inner_match.consumed > updated_mp.consume_limit)
                     break;
-
                 res += inner_match;
                 updated_mp = updated_mp.consume(inner_match.consumed);
             }
@@ -173,12 +169,11 @@ namespace cx
             match_params updated_mp = mp;
             std::size_t str_length = input.length();
             std::size_t matched_so_far = 0;
-            while (matched_so_far < N && updated_mp.from < str_length)
+            while (matched_so_far < N)
             {
                 auto inner_match = Inner::match(input, updated_mp, ctx);
                 if (!inner_match || inner_match.consumed > updated_mp.consume_limit)
                     break;
-
                 res += inner_match;
                 ++matched_so_far;
                 updated_mp = updated_mp.consume(inner_match.consumed);
@@ -358,12 +353,11 @@ namespace cx
         {
             decltype(auto) str_to_match = std::get<ID>(ctx.captures).evaluate(input);
             std::size_t length_to_match = str_to_match.length();
-            std::size_t offset = 0;
-            std::size_t input_length = input.length();
-
             if (mp.consume_limit < length_to_match)
                 return {0, false};
 
+            std::size_t offset = 0;
+            std::size_t input_length = input.length();
             while (offset < length_to_match && mp.from + offset < input_length)
             {
                 auto subject = input[mp.from + offset];
@@ -373,10 +367,8 @@ namespace cx
                     subject = to_lower(subject);
                     to_match = to_lower(to_match);
                 }
-
                 if (subject != to_match)
                     return {0, false};
-
                 ++offset;
             }
             return {length_to_match, true};

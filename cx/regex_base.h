@@ -54,7 +54,6 @@ namespace cx
                         std::get<0>(ctx.captures) = capture<0>{start_pos, res.consumed};
                         return regex_result{true, std::move(ctx.captures), input};
                     }
-
                     if constexpr (has_atomic_group_v<ast>)
                         ctx.clear_captures();
                     ++start_pos;
