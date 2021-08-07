@@ -2,12 +2,14 @@
 #define CX_MATCH_CONTEXT_H
 
 #include "utility/tuple_helpers.h"
-#include "regex_flags.h"
+#include "match_context_base.h"
+#include "match_context_atomic.h"
 
 namespace cx
 {
+
     /**
-     * Contains a cx::match_context dependent on a Regex and matching flags
+     * Contains a cx::match_context that depends on a Regex and matching flags
      *
      * @tparam Regex    The type of Regex used to match the input
      * @tparam Flags    A variable pack of cx::flag types
@@ -17,28 +19,20 @@ namespace cx
     {
         static_assert((is_flag_v<Flags> && ... ), "invalid flag");
 
+        using base_context = match_context_base<Regex, Flags ...>;
+        using atomic_context =  match_context_atomic<Regex>;
+
         /**
          * Data structure associated with matching/searching.
-         * Holds information like capture groups and Regex flags
+         * Holds information like capture groups, Regex flags and context for atomic groups
          */
-        struct match_context
+        struct match_context : base_context, atomic_context
         {
-            struct flags
+            constexpr void reset() noexcept
             {
-                static constexpr bool ignore_case = check_flag_v<flag::ignore_case, Flags ...>;
-                static constexpr bool dotall = check_flag_v<flag::dotall, Flags ...>;
-                static constexpr bool multiline = check_flag_v<flag::multiline, Flags ...>;
-                static constexpr bool extended = check_flag_v<flag::extended, Flags ...>;
-                static constexpr bool greedy_alt = check_flag_v<flag::greedy_alt, Flags ...>;
-            };
-
-            capture_storage<Regex::capture_count> captures{};
-
-            constexpr void clear_captures() noexcept
-            {
-                tuple_map(captures, [](auto &capture) {
-                    capture.reset();
-                });
+                base_context::clear_captures();
+                if constexpr (has_atomic_group_v<typename Regex::ast>)
+                    atomic_context::clear_states();
             }
         };
     };

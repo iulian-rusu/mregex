@@ -63,7 +63,7 @@ namespace cx
     template<std::size_t>
     struct backref;
 
-    template<typename>
+    template<std::size_t, typename>
     struct atomic;
 
     template<std::size_t, typename>

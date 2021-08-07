@@ -4,6 +4,7 @@
 #include <tuple>
 #include "utility/char_helpers.h"
 #include "utility/concepts.h"
+#include "atomic_counter.h"
 #include "capture_counter.h"
 #include "capture.h"
 #include "match_context.h"
@@ -16,6 +17,7 @@ namespace cx
     struct sequence
     {
         static constexpr std::size_t capture_count = capture_counter<First, Rest ...>::count;
+        static constexpr std::size_t atomic_count = atomic_counter<First, Rest ...>::count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
@@ -43,6 +45,7 @@ namespace cx
     struct sequence<First>
     {
         static constexpr std::size_t capture_count = First::capture_count;
+        static constexpr std::size_t atomic_count = First::atomic_count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
@@ -55,6 +58,7 @@ namespace cx
     struct alternation
     {
         static constexpr std::size_t capture_count = capture_counter<First, Rest ...>::count;
+        static constexpr std::size_t atomic_count = atomic_counter<First, Rest ...>::count;
 
         template<typename MatchContext>
         static constexpr auto match(auto const &input, match_params mp, MatchContext &ctx) noexcept
@@ -87,6 +91,7 @@ namespace cx
     struct alternation<First>
     {
         static constexpr std::size_t capture_count = First::capture_count;
+        static constexpr std::size_t atomic_count = First::atomic_count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
@@ -103,6 +108,7 @@ namespace cx
     struct disjunction
     {
         static constexpr std::size_t capture_count = max_capture_counter<First, Rest ...>::count;
+        static constexpr std::size_t atomic_count = max_atomic_counter<First, Rest ...>::count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
@@ -111,7 +117,7 @@ namespace cx
             if (first_match && first_match.consumed == mp.consume_limit)
                 return first_match;
 
-            ctx.clear_captures();
+            ctx.reset();
             return disjunction<Rest ...>::match(input, mp, ctx);
         }
     };
@@ -120,6 +126,7 @@ namespace cx
     struct disjunction<First>
     {
         static constexpr std::size_t capture_count = First::capture_count;
+        static constexpr std::size_t atomic_count = First::atomic_count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
@@ -132,6 +139,7 @@ namespace cx
     struct star
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
+        static constexpr std::size_t atomic_count = Inner::atomic_count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
@@ -158,6 +166,7 @@ namespace cx
     struct repeated
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
+        static constexpr std::size_t atomic_count = Inner::atomic_count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
@@ -190,6 +199,7 @@ namespace cx
     struct repeated<0, Inner>
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
+        static constexpr std::size_t atomic_count = Inner::atomic_count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params, MatchContext &ctx) noexcept
@@ -201,6 +211,7 @@ namespace cx
     struct terminal
     {
         static constexpr std::size_t capture_count = 0;
+        static constexpr std::size_t atomic_count = 0;
     };
 
     struct epsilon : terminal
@@ -376,15 +387,22 @@ namespace cx
     };
 
     // Decorators for AST nodes
-    template<typename Inner>
+    template<std::size_t ID, typename Inner>
     struct atomic
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
+        static constexpr std::size_t atomic_count = 1 + Inner::atomic_count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            return Inner::match(input, mp, ctx);
+            if (ctx.atomic_match_states[ID])
+                return {0, false};
+
+
+            auto inner_match = Inner::match(input, mp, ctx);
+            ctx.atomic_match_states[ID] = static_cast<bool>(inner_match);
+            return inner_match;
         }
     };
 
@@ -392,6 +410,7 @@ namespace cx
     struct capturing
     {
         static constexpr std::size_t capture_count = 1 + Inner::capture_count;
+        static constexpr std::size_t atomic_count = Inner::atomic_count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
@@ -402,28 +421,11 @@ namespace cx
         }
     };
 
-    template<std::size_t ID, typename Inner>
-    struct capturing<ID, atomic<Inner>>
-    {
-        static constexpr std::size_t capture_count = 1 + Inner::capture_count;
-
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
-        {
-            auto &this_capture = std::get<ID>(ctx.captures);
-            if (this_capture.consumed)
-                return {0, false};
-
-            auto inner_match = Inner::match(input, mp, ctx);
-            this_capture = capture<ID>{mp.from, inner_match.consumed};
-            return inner_match;
-        }
-    };
-
     template<typename Inner>
     struct negated
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
+        static constexpr std::size_t atomic_count = Inner::atomic_count;
 
         /**
          * Only a subset of AST nodes support negated mode while matching.

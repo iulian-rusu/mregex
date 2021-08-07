@@ -320,7 +320,6 @@ namespace cx::grammar
         using type = reject;
     };
 
-    // Special begin marker symbol for captureless subexpressions
     template<>
     struct rule<symbol::capture_begin_no_mod, character<'['>>
     {

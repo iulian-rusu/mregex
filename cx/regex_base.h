@@ -20,6 +20,7 @@ namespace cx
         using ast = AST;
 
         static constexpr std::size_t capture_count = ast::capture_count;
+        static constexpr std::size_t atomic_count = ast::atomic_count;
 
         template<typename ... ExtraFlags>
         struct with_flags
@@ -34,7 +35,7 @@ namespace cx
                 auto res = ast::match(input, {0, input.length()}, ctx);
                 res.matched = res.matched && (res.consumed == input.length());
                 if (!res.matched)
-                    ctx.clear_captures();
+                    ctx.reset();
                 else
                     std::get<0>(ctx.captures) = capture<0>{0, res.consumed};
                 return regex_result{res.matched, std::move(ctx.captures), input};
@@ -55,10 +56,10 @@ namespace cx
                         return regex_result{true, std::move(ctx.captures), input};
                     }
                     if constexpr (has_atomic_group_v<ast>)
-                        ctx.clear_captures();
+                        ctx.reset();
                     ++start_pos;
                 }
-                ctx.clear_captures();
+                ctx.reset();
                 return regex_result{false, std::move(ctx.captures), input};
             }
 

@@ -73,8 +73,12 @@ int main()
     constexpr std::string_view phone_test = "023-784-332";
     auto email_match = contact_regex::match(email_test);
     if (email_match)
-        std::cout << "Email with local part '" << email_match.get<1>() << "' and domain '" << email_match.get<2>() << "'\n";
+    {
+        std::cout << "Email user '" << email_match.get<1>() << "' on domain '" << email_match.get<2>() << "'\n";
+    }
     auto phone_match = contact_regex::match(phone_test);
     if (phone_match)
+    {
         std::cout << "Phone: " << phone_match.get<0>() << '\n';
+    }
 }

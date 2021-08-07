@@ -67,11 +67,19 @@ namespace cx::tests
             >
     >);
     static_assert(detail::expected_ast<R"((?>c))",
+            atomic
+            <
+                0,
+                character<'c'>
+            >
+    >);
+    static_assert(detail::expected_ast<R"(((?>c)))",
             capturing
             <
                 1,
                 atomic
                 <
+                    0,
                     character<'c'>
                 >
             >
@@ -404,19 +412,16 @@ namespace cx::tests
                                             character<'b'>,
                                             optional
                                             <
-                                                capturing
+                                                atomic
                                                 <
-                                                    2,
-                                                    atomic
+                                                    0,
+                                                    sequence
                                                     <
-                                                        sequence
+                                                        character<'c'>,
+                                                        capturing
                                                         <
-                                                            character<'c'>,
-                                                            capturing
-                                                            <
-                                                                3,
-                                                                character<'d'>
-                                                            >
+                                                            2,
+                                                            character<'d'>
                                                         >
                                                     >
                                                 >

@@ -163,7 +163,9 @@ namespace cx
     template<typename C, typename First,  typename ... Rest>
     struct update_ast<symbol::make_atomic, C, stack<First, Rest ...>>
     {
-        using type = stack<atomic<First>, Rest ...>;
+        static constexpr auto ID = atomic_counter<First, Rest ...>::count;
+
+        using type = stack<symbol::captureless_wrapper<atomic<ID, First>>, Rest ...>;
     };
 
     template<typename C, typename First,  typename ... Rest>
