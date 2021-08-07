@@ -1,6 +1,8 @@
 #ifndef CX_CAPTURE_H
 #define CX_CAPTURE_H
 
+#include <iosfwd>
+
 namespace cx
 {
     /**
@@ -12,9 +14,9 @@ namespace cx
         std::size_t from{};
         std::size_t consumed{};
 
-        constexpr decltype(auto) evaluate(std::string_view sv) const noexcept
+        [[nodiscard]] constexpr std::string_view evaluate(std::string_view input) const noexcept
         {
-            return sv.substr(from, consumed);
+            return input.substr(from, consumed);
         }
 
         [[nodiscard]] constexpr std::size_t end() const noexcept

@@ -26,6 +26,7 @@ The library currently supports the following regex features:
 * `^`, `$` - anchors
 * `[abc]`, `[^abc]`, `[a-z0-9]` - sets
 * various flags like `ignore_case`, `dotall`, `extended` and `multiline`
+* structured binding decomposition of `cx::regex_result`
 
 Some features planned for the future:
 * `++`, `?+`, `*+` - possessive quantifiers

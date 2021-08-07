@@ -48,4 +48,18 @@ namespace cx
     template<typename Storage>
     regex_result(bool, Storage &&, std::string_view) -> regex_result<std::tuple_size_v<Storage> - 1>;
 }
+
+namespace std
+{
+    // Specialize STL metafunctions for structured binding decomposition
+
+    template <std::size_t N>
+    struct tuple_size<cx::regex_result<N>> : std::integral_constant<std::size_t, N + 1> {};
+
+    template <std::size_t ID, std::size_t N>
+    struct tuple_element<ID, cx::regex_result<N>>
+    {
+        using type = std::string_view;
+    };
+}
 #endif //CX_REGEX_RESULT_H

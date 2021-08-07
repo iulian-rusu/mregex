@@ -57,6 +57,21 @@ namespace cx
     constexpr bool is_any_of_v = is_any_of<Test, Rest ...>::value;
 
     /**
+     * Metafunction to retrieve the ID of some AST nodes
+     */
+    template<typename T>
+    struct id_of;
+
+    template<std::size_t ID, template<std::size_t, typename ...> typename Outer, typename ... Inners>
+    struct id_of<Outer<ID, Inners ...>>
+    {
+        static constexpr std::size_t value = ID;
+    };
+
+    template<typename T>
+    static constexpr std::size_t id_of_v = id_of<T>::value;
+
+    /**
      * Traits to identify some AST nodes
      */
     template<typename T>
