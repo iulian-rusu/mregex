@@ -396,7 +396,7 @@ namespace cx
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            if (ctx.atomic_match_states[ID])
+            if (ctx.atomic_match_states[ID]) [[likely]]
                 return {0, false};
 
 
