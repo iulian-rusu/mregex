@@ -7,7 +7,7 @@
 namespace cx
 {
     /**
-     * Interface for creating unions of several Regexes
+     * Interface for creating unions of several Regexes.
      *
      * @tparam first    The first pattern in the union
      * @tparam rest     The remaining union patterns

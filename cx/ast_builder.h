@@ -8,7 +8,7 @@
 namespace cx
 {
     /**
-     * Metafunction used to build the Abstract Syntax Tree
+     * Metafunction used to build the Abstract Syntax Tree.
      *
      * @tparam S    The current symbol on the parsing stack
      * @tparam C    The current character being parsed

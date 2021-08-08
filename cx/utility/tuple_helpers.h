@@ -12,7 +12,7 @@ namespace cx
     }
 
     /**
-     * Calls a Mapper for each element of a tuple-like container
+     * Calls a Mapper for each element of a tuple-like container.
      *
      * @param tuple     The type tuple to map the function onto
      * @param mapper    The function used as a mapper

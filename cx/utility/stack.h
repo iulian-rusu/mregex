@@ -7,7 +7,7 @@
 namespace cx
 {
     /**
-     * Compile-time stack implementation
+     * Compile-time stack implementation.
      *
      * @tparam Elems    Inner variadic pack of types - the elemets on the stack
      */
@@ -15,7 +15,7 @@ namespace cx
     struct stack;
 
     /**
-     * Namespace with helper metafunctions for stack manipulation
+     * Namespace with helper metafunctions for stack manipulation.
      */
     namespace detail
     {

@@ -7,7 +7,7 @@ namespace cx
 {
     /**
     * Helper type trait to find if the tree-like template structure
-    * contains at least one atomic group
+    * contains at least one atomic group.
     */
     template<typename T>
     struct has_atomic_group : std::false_type {};

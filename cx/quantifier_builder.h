@@ -11,7 +11,7 @@ namespace cx::grammar
     /**
      * Metafunction used as a grammar rule when the parsing of a quantifier fails.
      * In this case, the parser has to recover the skipped metacharacter used to
-     * identify the start of a quantifier, like '{'
+     * identify the start of a quantifier, like '{'.
      *
      * @tparam C    The character that is parsed as replacement for the failed quantifier
      */
@@ -34,7 +34,7 @@ namespace cx::grammar
 
     /**
      * Metafunction that decides if the parser will begin parsing a quantifier value
-     * or will parse it as a normal character sequence
+     * or will parse it as a normal character sequence.
      *
      * @tparam C    The current character being parsed
      */

@@ -3,13 +3,13 @@
 
 #include "utility/tuple_helpers.h"
 #include "match_context_base.h"
-#include "match_context_atomic.h"
+#include "atomic_match_context.h"
 
 namespace cx
 {
 
     /**
-     * Contains a cx::match_context that depends on a Regex and matching flags
+     * Contains a cx::match_context that depends on a Regex and matching flags.
      *
      * @tparam Regex    The type of Regex used to match the input
      * @tparam Flags    A variable pack of cx::flag types
@@ -20,11 +20,11 @@ namespace cx
         static_assert((is_flag_v<Flags> && ... ), "invalid flag");
 
         using base_context = match_context_base<Regex, Flags ...>;
-        using atomic_context =  match_context_atomic<Regex>;
+        using atomic_context =  atomic_match_context<Regex>;
 
         /**
          * Data structure associated with matching/searching.
-         * Holds information like capture groups, Regex flags and context for atomic groups
+         * Holds information like capture groups, Regex flags and context for atomic groups.
          */
         struct match_context : base_context, atomic_context
         {

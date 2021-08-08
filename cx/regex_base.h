@@ -9,7 +9,7 @@
 namespace cx
 {
     /**
-     * Base for all Regex-like types
+     * Base for all Regex-like types.
      *
      * @tparam AST      The Abstract Syntax Tree of the Regex object
      * @tparam Flags    Optional flags for matching

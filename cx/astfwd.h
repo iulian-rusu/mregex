@@ -4,7 +4,7 @@
 namespace cx
 {
     /**
-     * Forward declaration of basic AST node types for type resolution
+     * Forward declaration of basic AST node types for type resolution.
      */
 
     template<typename, typename ...>

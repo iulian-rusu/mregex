@@ -4,8 +4,8 @@
 namespace cx
 {
     /**
-     * Lightweight struct used to transmit matching information to AST nodes
-     * It is separated from cx::match_context to minimize mutability
+     * Lightweight struct used to transmit matching information to AST nodes.
+     * It is separated from cx::match_context to minimize mutability.
      */
     struct match_params
     {

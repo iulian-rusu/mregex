@@ -7,7 +7,7 @@ namespace cx
 {
     /**
      * Type used for Regex flags.
-     * Every flag must have an alias value which is defined as its ID xor 1
+     * Every flag must have an alias value which is defined as its ID xor 1.
      *
      * @tparam ID   The unique identifier of the flag
      */

@@ -6,7 +6,7 @@
 namespace cx
 {
     /**
-     * Struct that remembers the start coordinate and span of a capture group result
+     * Struct that remembers the start coordinate and span of a capture group result.
      */
     template<std::size_t>
     struct capture
@@ -32,7 +32,7 @@ namespace cx
     };
 
     /**
-     * Defines recursively a std::tuple with N + 1 elements of type capture
+     * Defines recursively a std::tuple with N + 1 elements of type capture.
      */
     template<std::size_t N>
     struct alloc_capture_storage

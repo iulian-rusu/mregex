@@ -4,7 +4,7 @@
 namespace cx
 {
     /**
-     * Type trait to check if a character is numeric at compile-time
+     * Type trait to check if a character is numeric at compile-time.
      *
      * @tparam C    The character being checked
      */

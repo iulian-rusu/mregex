@@ -7,7 +7,7 @@
 namespace cx
 {
     /**
-     * Result returned by all Regex matching/searching functions
+     * Result returned by all Regex matching/searching functions.
      *
      * @tparam N    The number of capture groups (without the implicit 0 group)
      */
@@ -47,7 +47,7 @@ namespace cx
 
         /**
          * Method used for structured binding decomposition.
-         * Prefer the group() method for manually extracting groups
+         * Prefer the group() method for manually extracting groups.
          */
         template<std::size_t ID>
         constexpr decltype(auto) get() const noexcept

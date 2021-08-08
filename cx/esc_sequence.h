@@ -11,7 +11,7 @@ namespace cx::grammar
 {
     /**
      * Metafunction that decides how to handle an escaped character
-     * or sequence of characters
+     * or sequence of characters.
      *
      * @tparam C    The current character in the input pattern
      */

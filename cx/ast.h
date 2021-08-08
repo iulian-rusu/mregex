@@ -102,7 +102,7 @@ namespace cx
 
     /**
      * Disjunction is a special AST node used to implement cx::regex_union.
-     * Unlike cx::alternation, cx::disjuction needs to consume all characters to match
+     * Unlike cx::alternation, cx::disjuction needs to consume all characters to match.
      */
     template<typename First, typename ... Rest>
     struct disjunction
@@ -429,7 +429,7 @@ namespace cx
 
         /**
          * Only a subset of AST nodes support negated mode while matching.
-         * This is checked using the requires clause and a custom type trait
+         * This is checked using the requires clause and a custom type trait.
          */
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept

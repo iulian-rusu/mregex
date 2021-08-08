@@ -4,7 +4,7 @@
 namespace cx
 {
     /**
-     * Metafunction used to count the number of capturing groups in the regex AST
+     * Metafunction used to count the number of capturing groups in the regex AST.
      *
      * @tparam First    The first AST node
      * @tparam Rest     The rest of AST nodes
@@ -22,7 +22,7 @@ namespace cx
     };
 
     /**
-     * Metafunction used to get the maximum number of capturing groups in any AST node
+     * Metafunction used to get the maximum number of capturing groups in any AST node.
      *
      * @tparam First    The first AST node
      * @tparam Rest     The rest of AST nodes

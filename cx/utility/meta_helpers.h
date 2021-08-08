@@ -13,7 +13,7 @@ namespace cx
     };
 
     /**
-     * Metafunction returning the first type in a variadic type pack
+     * Metafunction returning the first type in a variadic type pack.
      *
      * @tparam First    The type to be returned
      */
@@ -27,7 +27,7 @@ namespace cx
     using first_t = typename first<Elems ...>::type;
 
     /**
-     * Metafunction returning the last type in a variadic type pack
+     * Metafunction returning the last type in a variadic type pack.
      *
      * @tparam First    The first type in the pack
      * @tparam Rest      The rest of the type pack
@@ -48,7 +48,7 @@ namespace cx
     using last_t = typename last<Elems ...>::type;
 
     /***
-    * Metafunction used to detect if a type is present inside a type pack
+    * Metafunction used to detect if a type is present inside a type pack.
     */
     template<typename Test, typename ... Elems>
     struct is_any_of : std::bool_constant<(std::is_same_v<Test, Elems> || ... )> {};
@@ -57,7 +57,7 @@ namespace cx
     constexpr bool is_any_of_v = is_any_of<Test, Rest ...>::value;
 
     /**
-     * Metafunction to retrieve the ID of some AST nodes
+     * Metafunction to retrieve the ID of some AST nodes.
      */
     template<typename T>
     struct id_of;
@@ -72,7 +72,7 @@ namespace cx
     static constexpr std::size_t id_of_v = id_of<T>::value;
 
     /**
-     * Traits to identify some AST nodes
+     * Traits to identify some AST nodes.
      */
     template<typename T>
     constexpr bool is_terminal_v = std::is_base_of_v<terminal, T>;

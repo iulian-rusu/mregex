@@ -4,7 +4,7 @@
 namespace cx
 {
     /**
-    * Data structure returned by all matching functions of AST nodes
+    * Data structure returned by all matching functions of AST nodes.
     */
     struct match_result
     {

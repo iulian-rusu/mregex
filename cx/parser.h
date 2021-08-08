@@ -9,7 +9,7 @@
 namespace cx
 {
     /**
-     * Constexpr parser using the LL(1) algorithm
+     * Constexpr parser using the LL(1) algorithm.
      *
      * @tparam pattern  The input to be parsed
      */

@@ -9,7 +9,7 @@
 namespace cx
 {
     /**
-     * Helper class that implements a constexpr string as a literal type
+     * Helper class that implements a constexpr string as a literal type.
      *
      * @tparam N    The length of the string (excluding '\0')
      */
