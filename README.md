@@ -44,13 +44,13 @@ using url_regex = cx::regex<R"((\w+):\/\/(?:(?:(\w+)?(?::(\w+))?@)?([\w.]+)(?::(
 
 constexpr std::string_view url = "https://username:password@hostname.com:8080/path/to/resource?id=12345";
 constexpr auto match_res = url_regex::match(url);
-std::cout << "Scheme:\t" << match_res.get<1>() << '\n';
-std::cout << "User:\t" << match_res.get<2>() << '\n';
-std::cout << "Pass:\t" << match_res.get<3>() << '\n';
-std::cout << "Host:\t" << match_res.get<4>() << '\n';
-std::cout << "Port:\t" << match_res.get<5>() << '\n';
-std::cout << "Path:\t" << match_res.get<6>() << '\n';
-std::cout << "Query:\t" << match_res.get<7>() << '\n';
+std::cout << "Scheme:\t" << match_res.group<1>() << '\n';
+std::cout << "User:\t" << match_res.group<2>() << '\n';
+std::cout << "Pass:\t" << match_res.group<3>() << '\n';
+std::cout << "Host:\t" << match_res.group<4>() << '\n';
+std::cout << "Port:\t" << match_res.group<5>() << '\n';
+std::cout << "Path:\t" << match_res.group<6>() << '\n';
+std::cout << "Query:\t" << match_res.group<7>() << "\n";
 ```
 
 Searching and matching can also be done in `constexpr` if the input is known at
@@ -99,6 +99,14 @@ using word_regex = cx::regex<R"([-a-z']+)", cx::flag::i>;
 constexpr std::string_view words = "Let's iterate over these words!";
 for (auto &&res : word_regex::find_all(words))
 {
-    std::cout << res.get<0>() << '\n';
+    std::cout << res << '\n';
 }
+```
+
+C++17 structured binding declaration is also supported.
+```cpp
+using date_regex = cx::regex<R"((\d+)\/(\d+)\/(\d+))">;
+constexpr std::string_view date = "07/08/2021";
+auto [day, month, year] = date_regex::match(date);
+std::cout << "Day: " << day << "\nMonth: " << month << "\nYear: " << year;
 ```

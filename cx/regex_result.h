@@ -1,6 +1,7 @@
 #ifndef CX_REGEX_RESULT_H
 #define CX_REGEX_RESULT_H
 
+#include <iosfwd>
 #include "capture.h"
 
 namespace cx
@@ -38,15 +39,32 @@ namespace cx
         }
 
         template<std::size_t ID>
-        constexpr decltype(auto) get() const noexcept
+        constexpr decltype(auto) group() const noexcept
         {
             static_assert(ID <= N, "capture group does not exist");
             return std::get<ID>(captures).evaluate(input);
+        }
+
+        /**
+         * Method used for structured binding decomposition.
+         * Prefer the group() method for manually extracting groups
+         */
+        template<std::size_t ID>
+        constexpr decltype(auto) get() const noexcept
+        {
+            static_assert(ID < N, "tuple element index out of bounds");
+            return std::get<ID + 1>(captures).evaluate(input);
         }
     };
 
     template<typename Storage>
     regex_result(bool, Storage &&, std::string_view) -> regex_result<std::tuple_size_v<Storage> - 1>;
+
+    template<std::size_t N>
+    std::ostream &operator<<(std::ostream &os, regex_result<N> const & result)
+    {
+        return os << result.template group<0>();
+    }
 }
 
 namespace std
@@ -54,7 +72,7 @@ namespace std
     // Specialize STL metafunctions for structured binding decomposition
 
     template <std::size_t N>
-    struct tuple_size<cx::regex_result<N>> : std::integral_constant<std::size_t, N + 1> {};
+    struct tuple_size<cx::regex_result<N>> : std::integral_constant<std::size_t, N> {};
 
     template <std::size_t ID, std::size_t N>
     struct tuple_element<ID, cx::regex_result<N>>

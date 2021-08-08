@@ -40,13 +40,13 @@ int main()
     using url_regex = cx::regex<R"((\w+):\/\/(?:(?:(\w+)?(?::(\w+))?@)?([\w.]+)(?::(\d+))?)?(?:(\/[-/\w]+)?\?([\w=&]+))?)">;
     constexpr std::string_view url = "https://username:password@hostname.com:8080/path/to/resource?id=12345";
     constexpr auto match_res = url_regex::match(url);
-    std::cout << "Scheme:\t" << match_res.get<1>() << '\n';
-    std::cout << "User:\t" << match_res.get<2>() << '\n';
-    std::cout << "Pass:\t" << match_res.get<3>() << '\n';
-    std::cout << "Host:\t" << match_res.get<4>() << '\n';
-    std::cout << "Port:\t" << match_res.get<5>() << '\n';
-    std::cout << "Path:\t" << match_res.get<6>() << '\n';
-    std::cout << "Query:\t" << match_res.get<7>() << "\n\n";
+    std::cout << "Scheme:\t" << match_res.group<1>() << '\n';
+    std::cout << "User:\t" << match_res.group<2>() << '\n';
+    std::cout << "Pass:\t" << match_res.group<3>() << '\n';
+    std::cout << "Host:\t" << match_res.group<4>() << '\n';
+    std::cout << "Port:\t" << match_res.group<5>() << '\n';
+    std::cout << "Path:\t" << match_res.group<6>() << '\n';
+    std::cout << "Query:\t" << match_res.group<7>() << "\n\n";
 
     // Changing function return type depending on input string format
     double number = parse<"103.3e-10">();
@@ -61,24 +61,13 @@ int main()
     constexpr std::string_view words = "Let's iterate over these words!";
     for (auto &&res : word_regex::find_all(words))
     {
-        std::cout << res.get<0>() << '\n';
+        std::cout << res << '\n';
     }
     std::cout << '\n';
 
-    // Combining multiple Regex-types into a union
-    using phone_regex = cx::regex<R"(\d{3}-\d{3}-\d{3})">;
-    using email_regex = cx::regex<R"(([^@\s]+)@([^@\s]+))">;
-    using contact_regex = cx::make_union<email_regex, phone_regex>;
-    constexpr std::string_view email_test = "example.name@emailservice.com";
-    constexpr std::string_view phone_test = "023-784-332";
-    auto email_match = contact_regex::match(email_test);
-    if (email_match)
-    {
-        std::cout << "Email user '" << email_match.get<1>() << "' on domain '" << email_match.get<2>() << "'\n";
-    }
-    auto phone_match = contact_regex::match(phone_test);
-    if (phone_match)
-    {
-        std::cout << "Phone: " << phone_match.get<0>() << '\n';
-    }
+    // Using structured bindings
+    using date_regex = cx::regex<R"((\d+)\/(\d+)\/(\d+))">;
+    constexpr std::string_view date = "07/08/2021";
+    auto [day, month, year] = date_regex::match(date);
+    std::cout << "Day: " << day << "\nMonth: " << month << "\nYear: " << year;
 }
