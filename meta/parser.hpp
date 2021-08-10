@@ -9,7 +9,7 @@
 namespace meta
 {
     /**
-     * Constexpr parser using the LL(1) algorithm.
+     * Compile-time parser using the LL(1) algorithm.
      *
      * @tparam pattern  The input to be parsed
      */

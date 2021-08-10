@@ -1,4 +1,4 @@
-# Meta-Regex in C++
+# Meta Regex
 
 ## Summary
 This is a minimalist implementation of a regular expression

@@ -22,6 +22,8 @@ namespace meta
         static constexpr std::size_t capture_count = ast_type::capture_count;
         static constexpr std::size_t atomic_count = ast_type::atomic_count;
 
+        constexpr regex_base() noexcept = default;
+
         template<typename ... ExtraFlags>
         struct with_flags
         {
