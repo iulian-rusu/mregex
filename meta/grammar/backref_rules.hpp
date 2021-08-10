@@ -1,6 +1,7 @@
 #ifndef META_BACKREF_BUILDER_HPP
 #define META_BACKREF_BUILDER_HPP
 
+#include "grammar_actions.hpp"
 #include "../utility/stack.hpp"
 #include "../utility/char_traits.hpp"
 #include "../symbol.hpp"
@@ -21,7 +22,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<C>,
+                    advance,
                     symbol::backref_id<10 * ID + C - '0'>
                 >;
     };

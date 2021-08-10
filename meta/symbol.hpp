@@ -25,6 +25,10 @@ namespace meta::symbol
 
     struct capture_mod {};
 
+    // Symbol that requires a specific character to appear
+    template<auto>
+    struct expect {};
+
     // Wrapper for marking a non-capturing group
     template<typename>
     struct captureless_wrapper {};

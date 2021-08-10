@@ -33,9 +33,9 @@ namespace meta
         template<std::size_t I>
         using character_at_t = typename character_at<I>::type;
 
-        // Forward declare helper struct to resolve reference conflicts
+        // Metafunction that models the transition of the parser automaton
         template<std::size_t, typename, typename, typename>
-        struct next_step;
+        struct transition;
 
         // Main metafunction used to parse the pattern
         template<std::size_t I, typename AST, typename Stack, bool = symbol::is_ast_update_v<top<Stack>>>
@@ -45,44 +45,57 @@ namespace meta
             using current_char = character_at_t<I>;
             using current_rule = grammar::rule_t<top<Stack>, current_char>;
 
-            using type = typename next_step<I, current_rule, AST, next_stack>::type;
+            using type = typename transition<I, current_rule, AST, next_stack>::type;
         };
 
         template<std::size_t I, typename AST, typename Stack>
         struct parse<I, AST, Stack, true>
         {
-            using next_ast = typename ast::update_ast<top<Stack>, character_at_t<I - 1>, AST>::type;
+            using next_stack = pop<Stack>;
+            using prev_char = character_at_t<I - 1>;
+            using next_ast = typename ast::update_ast<top<Stack>, prev_char, AST>::type;
 
-            using type = typename parse<I, next_ast, pop<Stack>>::type;
+            using type = typename parse<I, next_ast, next_stack>::type;
         };
 
-        // Metafunctions to decide the next step in the parsing algorithm
+        // Base transition case - just push the rules on the stack
         template<std::size_t I, typename Rule, typename AST, typename Stack>
-        struct next_step
+        struct transition
         {
             using type = typename parse<I, AST, typename Stack::template push<Rule>>::type;
         };
 
+        // Epsilon transition - do nothing
         template<std::size_t I, typename AST, typename Stack>
-        struct next_step<I, symbol::epsilon, AST, Stack>
+        struct transition<I, symbol::epsilon, AST, Stack>
         {
             using type = typename parse<I, AST, Stack>::type;
         };
 
+        // Advance to the next character
         template<std::size_t I, typename AST, typename Stack>
-        struct next_step<I, grammar::advance, AST, Stack>
+        struct transition<I, grammar::advance, AST, Stack>
         {
             using type = typename parse<I + 1, AST, Stack>::type;
         };
 
+        // Advance and also push the rest of the rules on the stack
+        template<std::size_t I, typename AST, typename ... Rules, typename ... MoreRules>
+        struct transition<I, stack<grammar::advance, Rules ...>, AST, stack<MoreRules ...>>
+        {
+            using type = typename parse<I + 1, AST, stack<Rules ..., MoreRules ...>>::type;
+        };
+
+        // Reject the input pattern
         template<std::size_t I, typename AST, typename Stack>
-        struct next_step<I, grammar::reject, AST, Stack>
+        struct transition<I, grammar::reject, AST, Stack>
         {
             using type = pair<std::false_type, AST>;
         };
 
+        // Final transition - accept the input pattern
         template<std::size_t I, typename AST, typename Stack>
-        struct next_step<I, grammar::accept, AST, Stack>
+        struct transition<I, grammar::accept, AST, Stack>
         {
             using type = pair<std::true_type, AST>;
         };

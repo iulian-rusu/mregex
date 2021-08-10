@@ -1,18 +1,12 @@
 #ifndef META_GRAMMAR_HPP
 #define META_GRAMMAR_HPP
 
+#include "grammar_actions.hpp"
 #include "esc_rules.hpp"
 #include "quantifier_rules.hpp"
 
 namespace meta::grammar
 {
-    // Helper types defining decisions imposed by grammar rules
-    struct advance {};
-
-    struct accept : std::true_type {};
-
-    struct reject : std::false_type {};
-
     /**
      * Metafunction defining a grammar rule based on two parameters.
      *
@@ -32,10 +26,10 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'['>,
+                    advance,
                     symbol::make_set,
                     symbol::set_begin,
-                    ast::character<']'>,
+                    symbol::expect<']'>,
                     symbol::mod,
                     symbol::seq,
                     symbol::alt
@@ -48,9 +42,9 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'('>,
+                    advance,
                     symbol::capture_begin,
-                    ast::character<')'>,
+                    symbol::expect<')'>,
                     symbol::make_capturing,
                     symbol::mod,
                     symbol::seq,
@@ -88,7 +82,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'\\'>,
+                    advance,
                     symbol::esc,
                     symbol::mod,
                     symbol::seq,
@@ -108,7 +102,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<C>,
+                    advance,
                     symbol::make_char,
                     symbol::mod,
                     symbol::seq,
@@ -122,7 +116,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'.'>,
+                    advance,
                     symbol::make_wildcard,
                     symbol::mod,
                     symbol::seq,
@@ -136,7 +130,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'^'>,
+                    advance,
                     symbol::make_beginning,
                     symbol::seq,
                     symbol::alt
@@ -149,7 +143,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'$'>,
+                    advance,
                     symbol::make_ending,
                     symbol::seq,
                     symbol::alt
@@ -168,10 +162,10 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'['>,
+                    advance,
                     symbol::make_set,
                     symbol::set_begin,
-                    ast::character<']'>,
+                    symbol::expect<']'>,
                     symbol::mod,
                     symbol::seq,
                     symbol::alt
@@ -184,9 +178,9 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'('>,
+                    advance,
                     symbol::capture_begin,
-                    ast::character<')'>,
+                    symbol::expect<')'>,
                     symbol::make_capturing,
                     symbol::mod,
                     symbol::seq,
@@ -218,7 +212,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'\\'>,
+                    advance,
                     symbol::esc,
                     symbol::mod,
                     symbol::seq,
@@ -238,7 +232,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<C>,
+                    advance,
                     symbol::make_char,
                     symbol::mod,
                     symbol::seq,
@@ -252,7 +246,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'.'>,
+                    advance,
                     symbol::make_wildcard,
                     symbol::mod,
                     symbol::seq,
@@ -266,7 +260,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'^'>,
+                    advance,
                     symbol::make_beginning,
                     symbol::seq,
                     symbol::alt
@@ -285,7 +279,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'?'>,
+                    advance,
                     symbol::capture_mod
                 >;
     };
@@ -296,7 +290,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<':'>,
+                    advance,
                     symbol::capture_begin_no_mod,
                     symbol::make_captureless
                 >;
@@ -308,7 +302,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'>'>,
+                    advance,
                     symbol::capture_begin_no_mod,
                     symbol::make_atomic
                 >;
@@ -326,10 +320,10 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'['>,
+                    advance,
                     symbol::make_set,
                     symbol::set_begin,
-                    ast::character<']'>,
+                    symbol::expect<']'>,
                     symbol::mod,
                     symbol::seq,
                     symbol::alt
@@ -342,9 +336,9 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'('>,
+                    advance,
                     symbol::capture_begin,
-                    ast::character<')'>,
+                    symbol::expect<')'>,
                     symbol::make_capturing,
                     symbol::mod,
                     symbol::seq,
@@ -382,7 +376,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'\\'>,
+                    advance,
                     symbol::esc,
                     symbol::mod,
                     symbol::seq,
@@ -402,7 +396,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<C>,
+                    advance,
                     symbol::make_char,
                     symbol::mod,
                     symbol::seq,
@@ -416,7 +410,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'.'>,
+                    advance,
                     symbol::make_wildcard,
                     symbol::mod,
                     symbol::seq,
@@ -430,7 +424,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'^'>,
+                    advance,
                     symbol::make_beginning,
                     symbol::seq,
                     symbol::alt
@@ -455,7 +449,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'|'>,
+                    advance,
                     symbol::seq0,
                     symbol::make_alternation,
                     symbol::alt
@@ -492,7 +486,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'*'>,
+                    advance,
                     symbol::make_star
                 >;
     };
@@ -503,7 +497,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'+'>,
+                    advance,
                     symbol::make_plus
                 >;
     };
@@ -514,7 +508,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'?'>,
+                    advance,
                     symbol::make_optional
                 >;
     };
@@ -525,7 +519,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'{'>,
+                    advance,
                     symbol::quantifier_begin
                 >;
     };
@@ -563,7 +557,7 @@ namespace meta::grammar
                     is_numeric_v<C>,
                     stack
                     <
-                        ast::character<C>,
+                        advance,
                         symbol::quantifier_value<10 * N + C - '0'>
                     >,
                     reject
@@ -576,7 +570,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'}'>,
+                    advance,
                     symbol::make_repeated<N>
                 >;
     };
@@ -587,10 +581,10 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'['>,
+                    advance,
                     symbol::make_set,
                     symbol::set_begin,
-                    ast::character<']'>,
+                    symbol::expect<']'>,
                     symbol::mod,
                     symbol::seq
                 >;
@@ -602,9 +596,9 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'('>,
+                    advance,
                     symbol::capture_begin,
-                    ast::character<')'>,
+                    symbol::expect<')'>,
                     symbol::make_capturing,
                     symbol::mod,
                     symbol::seq
@@ -641,7 +635,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'\\'>,
+                    advance,
                     symbol::esc,
                     symbol::mod,
                     symbol::seq
@@ -660,7 +654,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<C>,
+                    advance,
                     symbol::make_char,
                     symbol::mod,
                     symbol::seq
@@ -673,7 +667,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'.'>,
+                    advance,
                     symbol::make_wildcard,
                     symbol::mod,
                     symbol::seq
@@ -686,7 +680,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'^'>,
+                    advance,
                     symbol::make_beginning,
                     symbol::seq
                 >;
@@ -698,7 +692,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'$'>,
+                    advance,
                     symbol::make_ending,
                     symbol::seq
                 >;
@@ -716,10 +710,10 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'['>,
+                    advance,
                     symbol::make_set,
                     symbol::set_begin,
-                    ast::character<']'>,
+                    symbol::expect<']'>,
                     symbol::mod,
                     symbol::make_sequence,
                     symbol::seq
@@ -732,9 +726,9 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'('>,
+                    advance,
                     symbol::capture_begin,
-                    ast::character<')'>,
+                    symbol::expect<')'>,
                     symbol::make_capturing,
                     symbol::mod,
                     symbol::make_sequence,
@@ -772,7 +766,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'\\'>,
+                    advance,
                     symbol::esc,
                     symbol::mod,
                     symbol::make_sequence,
@@ -792,7 +786,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<C>,
+                    advance,
                     symbol::make_char,
                     symbol::mod,
                     symbol::make_sequence,
@@ -806,7 +800,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'.'>,
+                    advance,
                     symbol::make_wildcard,
                     symbol::mod,
                     symbol::make_sequence,
@@ -820,7 +814,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'^'>,
+                    advance,
                     symbol::make_beginning,
                     symbol::make_sequence,
                     symbol::seq
@@ -833,7 +827,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'$'>,
+                    advance,
                     symbol::make_ending,
                     symbol::make_sequence,
                     symbol::seq
@@ -853,7 +847,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'^'>,
+                    advance,
                     symbol::set_begin_no_neg,
                     symbol::make_negated
                 >;
@@ -865,7 +859,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'\\'>,
+                    advance,
                     symbol::set_esc,
                     symbol::make_set_from_stack,
                     symbol::set_seq
@@ -884,7 +878,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<C>,
+                    advance,
                     symbol::make_set_from_current_char,
                     symbol::set_seq
                 >;
@@ -902,7 +896,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'\\'>,
+                    advance,
                     symbol::set_esc,
                     symbol::make_set_from_stack,
                     symbol::set_seq
@@ -915,7 +909,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<C>,
+                    advance,
                     symbol::make_set_from_current_char,
                     symbol::set_seq
                 >;
@@ -933,7 +927,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'\\'>,
+                    advance,
                     symbol::set_esc,
                     symbol::make_set_from_stack,
                     symbol::set_seq
@@ -946,7 +940,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'-'>,
+                    advance,
                     symbol::set_range_start,
                     symbol::set_seq
                 >;
@@ -958,7 +952,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<C>,
+                    advance,
                     symbol::make_set_from_current_char,
                     symbol::set_seq
                 >;
@@ -970,7 +964,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<C>,
+                    advance,
                     symbol::make_range,
                     symbol::set_seq0
                 >;
@@ -988,7 +982,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'\\'>,
+                    advance,
                     symbol::set_range_esc,
                     symbol::make_set_from_stack,
                     symbol::make_range_from_stack,
@@ -1002,7 +996,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'\\'>,
+                    advance,
                     symbol::set_esc,
                     symbol::make_set_from_stack,
                     symbol::set_seq
@@ -1021,7 +1015,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<C>,
+                    advance,
                     symbol::make_set_from_current_char,
                     symbol::set_seq
                 >;
@@ -1039,7 +1033,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<C>,
+                    advance,
                     symbol::make_char
                 >;
     };
@@ -1063,16 +1057,10 @@ namespace meta::grammar
         using type = symbol::make_backref<ID>;
     };
 
-    template<char C>
-    struct rule<ast::character<C>, ast::character<C>>
+    template<auto C>
+    struct rule<symbol::expect<C>, ast::character<C>>
     {
         using type = advance;
-    };
-
-    template<char C, typename Symbol>
-    struct rule<ast::character<C>, Symbol>
-    {
-        using type = reject;
     };
 
     template<>

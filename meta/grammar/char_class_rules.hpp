@@ -1,6 +1,7 @@
 #ifndef META_CHAR_CLASS_HPP
 #define META_CHAR_CLASS_HPP
 
+#include "grammar_actions.hpp"
 #include "../utility/stack.hpp"
 #include "../symbol.hpp"
 #include "../ast/astfwd.hpp"
@@ -13,7 +14,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<C>,
+                    advance,
                     symbol::make_char
                 >;
     };
@@ -24,7 +25,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'a'>,
+                    advance,
                     symbol::make_alpha
                 >;
     };
@@ -35,7 +36,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'A'>,
+                    advance,
                     symbol::make_alpha,
                     symbol::make_negated
                 >;
@@ -47,7 +48,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'d'>,
+                    advance,
                     symbol::make_digit
                 >;
     };
@@ -58,7 +59,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'D'>,
+                    advance,
                     symbol::make_digit,
                     symbol::make_negated
                 >;
@@ -69,7 +70,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'w'>,
+                    advance,
                     symbol::make_word
                 >;
     };
@@ -80,7 +81,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'W'>,
+                    advance,
                     symbol::make_word,
                     symbol::make_negated
                 >;
@@ -92,7 +93,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'s'>,
+                    advance,
                     symbol::make_whitespace
                 >;
     };
@@ -103,7 +104,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'S'>,
+                    advance,
                     symbol::make_whitespace,
                     symbol::make_negated
                 >;
@@ -115,7 +116,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'l'>,
+                    advance,
                     symbol::make_lower
                 >;
     };
@@ -126,7 +127,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'L'>,
+                    advance,
                     symbol::make_lower,
                     symbol::make_negated
                 >;
@@ -138,7 +139,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'u'>,
+                    advance,
                     symbol::make_upper
                 >;
     };
@@ -149,7 +150,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'U'>,
+                    advance,
                     symbol::make_upper,
                     symbol::make_negated
                 >;
@@ -161,7 +162,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'h'>,
+                    advance,
                     symbol::make_hexa
                 >;
     };
@@ -172,7 +173,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'H'>,
+                    advance,
                     symbol::make_hexa,
                     symbol::make_negated
                 >;

@@ -21,7 +21,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<C>,
+                    advance,
                     symbol::backref_id<C - '0'>
                 >;
     };
@@ -32,7 +32,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'0'>,
+                    advance,
                     symbol::push_char<'\0'>
                 >;
     };
@@ -43,7 +43,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'n'>,
+                    advance,
                     symbol::push_char<'\n'>
                 >;
     };
@@ -54,7 +54,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'r'>,
+                    advance,
                     symbol::push_char<'\r'>
                 >;
     };
@@ -65,7 +65,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    ast::character<'t'>,
+                    advance,
                     symbol::push_char<'\t'>
                 >;
     };
