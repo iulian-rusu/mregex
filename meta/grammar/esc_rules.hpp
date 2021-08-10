@@ -3,9 +3,6 @@
 
 #include "char_class_rules.hpp"
 #include "backref_rules.hpp"
-#include "../utility/stack.hpp"
-#include "../symbol.hpp"
-#include "../ast/astfwd.hpp"
 
 namespace meta::grammar
 {

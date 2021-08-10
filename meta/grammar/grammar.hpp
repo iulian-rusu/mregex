@@ -1,7 +1,6 @@
 #ifndef META_GRAMMAR_HPP
 #define META_GRAMMAR_HPP
 
-#include "grammar_actions.hpp"
 #include "esc_rules.hpp"
 #include "quantifier_rules.hpp"
 
