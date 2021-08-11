@@ -5,7 +5,7 @@
 
 namespace meta::grammar
 {
-    struct ignore {}; // Ignore the effects of the current rule
+    struct ignore {}; // Ignore the current symbol on top of the stack and continue parsing
 
     struct advance {}; // Move to the next character in the parser input
 
