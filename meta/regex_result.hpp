@@ -7,7 +7,7 @@
 namespace meta
 {
     /**
-     * Result returned by all Regex matching/searching functions.
+     * Result returned by all regex matching/searching functions.
      *
      * @tparam N    The number of capture groups (without the implicit 0 group)
      */

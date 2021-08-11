@@ -9,9 +9,9 @@
 namespace meta
 {
     /**
-     * Base for all Regex-like types.
+     * Base for all regex-like types.
      *
-     * @tparam AST      The Abstract Syntax Tree of the Regex object
+     * @tparam AST      The Abstract Syntax Tree of the regex object
      * @tparam Flags    Optional flags for matching
      */
     template<typename AST, typename ... Flags>

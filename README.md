@@ -1,32 +1,31 @@
-# Meta Regex
+# Meta Regular Expressions
 
 ## Summary
-This is a minimalist implementation of a regular expression
-library using template metaprogramming in C++20. The implementation relies
-heavily on the declarative behavior of templates in C++ and uses
-functional techniques to implement the parser and generate the abstract syntax
-tree from an input string.
+This is a compile-time implementation of a regular expression library in 
+C++20. It parses a regex pattern and compiles it into a native C++ type 
+using template metaprogramming.
 
 ## Features
-The library currently supports the following regex features:
+The library currently supports the following features:
 * `constexpr` matching
 * compile-time syntax checking
-* `*` - Kleene start quantifier
-* `+` - plus quantifier
-* `{5}` - exact quantifier
-* `?` - optional quantifier
-* `(expr)` - capturing subexpressions
-* `(?:expr)` - non-capturing subexpressions
-* `(?>expr)` - atomic subexpressions
-* `\12` - backreferences
-* `|` - alternation of two subexpressions
-* `\?`, `\\`, `\n` - escaped characters
-* `\w`, `\d`, `\S` - special character classes
-* `.` - wildcard character
-* `^`, `$` - anchors
-* `[abc]`, `[^abc]`, `[a-z0-9]` - sets
 * various flags like `ignore_case`, `dotall`, `extended` and `multiline`
 * structured binding decomposition of `meta::regex_result`
+* standard regex syntax:
+    * `*` - Kleene start quantifier
+    * `+` - plus quantifier
+    * `{5}` - exact quantifier
+    * `?` - optional quantifier
+    * `(expr)` - capturing subexpressions
+    * `(?:expr)` - non-capturing subexpressions
+    * `(?>expr)` - atomic subexpressions
+    * `\12` - backreferences
+    * `|` - alternation of two subexpressions
+    * `\?`, `\\`, `\n` - escaped characters
+    * `\w`, `\d`, `\S` - special character classes
+    * `.` - wildcard character
+    * `^`, `$` - anchors
+    * `[abc]`, `[^abc]`, `[a-z0-9]` - sets
 
 Some features planned for the future:
 * `++`, `?+`, `*+` - possessive quantifiers
@@ -35,7 +34,7 @@ Some features planned for the future:
 ## Usage
 Below is an example of extracting data from a URL-string.
 Notice that the generated regular expression is a type and not an object, since the library maps every
-input regex string to a C++ type at compile-time. Invalid regular expression syntax will result
+input regex pattern to a C++ type at compile-time. Invalid regular expression syntax will result
 in a compilation error.
 
 The input can be any object that satisfies the `meta::string_like` concept.
@@ -90,7 +89,7 @@ using contact_regex = meta::regex_union<R"(\d{3}-\d{3}-\d{3})", R"(([^@\s]+)@([^
 ```
 
 The library supports searching for multiple matches in a string. In this case,
-the `meta::regex::find_all` method returns a lazy generator that will evaluate
+the `meta::regex::find_all` method returns a generator that will evaluate
 on-demand all matches in the string. We can iterate through the generator
 just like any standard container.
 ```cpp

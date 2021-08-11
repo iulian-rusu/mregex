@@ -6,7 +6,7 @@
 namespace meta
 {
     /**
-     * Type used for Regex flags.
+     * Type used for regex flags.
      * Every flag must have an alias value which is defined as its ID xor 1.
      *
      * @tparam ID   The unique identifier of the flag
@@ -31,7 +31,7 @@ namespace meta
         using multiline = regex_flag<0x4>;
         using m = regex_flag<0x5>;
 
-        // Ignores any space characters in the Regex
+        // Ignores any space characters in the regex
         using extended = regex_flag<0x6>;
         using x = regex_flag<0x7>;
 
@@ -43,7 +43,7 @@ namespace meta
     template<typename Flag>
     using alias = regex_flag<Flag::alias_value>;
 
-    // Type trait to check if a type is a valid Regex flag
+    // Type trait to check if a type is a valid regex flag
     template<typename T>
     struct is_flag : std::false_type {};
 

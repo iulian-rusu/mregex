@@ -4,8 +4,8 @@
 namespace meta::ast
 {
     /**
-    * Data structure returned by all matching functions of AST nodes.
-    */
+     * Data structure returned by all matching functions of AST nodes.
+     */
     struct match_result
     {
         std::size_t consumed{};

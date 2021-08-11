@@ -10,7 +10,7 @@ namespace meta
      * Extra match context needed to evaluate atomic groups.
      * Contains an array that keeps track of atomic matches.
      *
-     * @tparam Regex    The Regex type that contains the atomic groups
+     * @tparam Regex    The regex type that contains the atomic groups
      */
     template<typename Regex, bool = ast::has_atomic_group_v<typename Regex::ast_type>>
     struct atomic_match_context
@@ -29,7 +29,7 @@ namespace meta
     template<typename Regex>
     struct atomic_match_context<Regex, false>
     {
-        // Empty object used when no atomic groups are contained in the Regex
+        // Empty object used when no atomic groups are contained in the regex
     };
 }
 #endif //META_ATOMIC_MATCH_CONTEXT_HPP

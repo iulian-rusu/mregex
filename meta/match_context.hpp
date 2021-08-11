@@ -8,9 +8,9 @@
 namespace meta
 {
     /**
-     * Contains a meta::match_context that depends on a Regex and matching flags.
+     * Contains a meta::match_context that depends on a regex and matching flags.
      *
-     * @tparam Regex    The type of Regex used to match the input
+     * @tparam Regex    The type of regex used to match the input
      * @tparam Flags    A variable pack of meta::flag types
      */
     template<typename Regex, typename ... Flags>
@@ -23,7 +23,7 @@ namespace meta
 
         /**
          * Data structure associated with matching/searching.
-         * Holds information like capture groups, Regex flags and context for atomic groups.
+         * Holds information like capture groups, regex flags and context for atomic groups.
          */
         struct match_context : base_context, atomic_context
         {

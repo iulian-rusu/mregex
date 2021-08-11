@@ -5,7 +5,7 @@ namespace meta::ast
 {
     /**
      * Lightweight struct used to transmit matching information to AST nodes.
-     * It is separated from meta::match_context to minimize mutability.
+     * It is separated from meta::match_context for flexibility purposes.
      */
     struct match_params
     {
