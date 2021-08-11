@@ -152,7 +152,7 @@ namespace meta::grammar
     template<>
     struct rule<symbol::start, symbol::epsilon>
     {
-        using type = symbol::epsilon;
+        using type = ignore;
     };
 
     template<>
@@ -269,7 +269,7 @@ namespace meta::grammar
     template<>
     struct rule<symbol::capture_begin, symbol::epsilon>
     {
-        using type = symbol::epsilon;
+        using type = ignore;
     };
 
     template<>
@@ -433,13 +433,13 @@ namespace meta::grammar
     template<>
     struct rule<symbol::capture_begin_no_mod, symbol::epsilon>
     {
-        using type = symbol::epsilon;
+        using type = ignore;
     };
 
     template<>
     struct rule<symbol::alt, ast::character<')'>>
     {
-        using type = symbol::epsilon;
+        using type = ignore;
     };
 
     template<>
@@ -464,7 +464,7 @@ namespace meta::grammar
     template<>
     struct rule<symbol::alt, symbol::epsilon>
     {
-        using type = symbol::epsilon;
+        using type = ignore;
     };
 
     template<auto C>
@@ -538,13 +538,13 @@ namespace meta::grammar
     template<auto C>
     struct rule<symbol::mod, ast::character<C>>
     {
-        using type = symbol::epsilon;
+        using type = ignore;
     };
 
     template<>
     struct rule<symbol::mod, symbol::epsilon>
     {
-        using type = symbol::epsilon;
+        using type = ignore;
     };
 
     template<std::size_t N, auto C>
@@ -738,7 +738,7 @@ namespace meta::grammar
     template<>
     struct rule<symbol::seq, ast::character<')'>>
     {
-        using type = symbol::epsilon;
+        using type = ignore;
     };
 
     template<>
@@ -776,7 +776,7 @@ namespace meta::grammar
     template<>
     struct rule<symbol::seq, ast::character<'|'>>
     {
-        using type = symbol::epsilon;
+        using type = ignore;
     };
 
     template<auto C>
@@ -836,7 +836,7 @@ namespace meta::grammar
     template<>
     struct rule<symbol::seq, symbol::epsilon>
     {
-        using type = symbol::epsilon;
+        using type = ignore;
     };
 
     // Rules for parsing sets
@@ -868,7 +868,7 @@ namespace meta::grammar
     template<>
     struct rule<symbol::set_begin, ast::character<']'>>
     {
-        using type = symbol::epsilon;
+        using type = ignore;
     };
 
     template<auto C>
@@ -886,7 +886,7 @@ namespace meta::grammar
     template<>
     struct rule<symbol::set_begin_no_neg, ast::character<']'>>
     {
-        using type = symbol::epsilon;
+        using type = ignore;
     };
 
     template<>
@@ -917,7 +917,7 @@ namespace meta::grammar
     template<>
     struct rule<symbol::set_seq, ast::character<']'>>
     {
-        using type = symbol::epsilon;
+        using type = ignore;
     };
 
     template<>
@@ -1005,7 +1005,7 @@ namespace meta::grammar
     template<>
     struct rule<symbol::set_seq0, ast::character<']'>>
     {
-        using type = symbol::epsilon;
+        using type = ignore;
     };
 
     template<auto C>

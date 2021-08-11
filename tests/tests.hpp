@@ -1,7 +1,8 @@
 #ifndef META_TESTS_HPP
 #define META_TESTS_HPP
 
-#include "../metaregex.hpp"
+#include "../meta/regex.hpp"
+#include "../meta/regex_union.hpp"
 
 // Macro defined to run all tests
 #define META_RUN_TESTS

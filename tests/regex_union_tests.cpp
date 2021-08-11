@@ -53,4 +53,4 @@ namespace meta::tests
     static_assert(regex_union<R"(in)", R"(intern)", R"(internal)">::match("inter"sv) == false);
     static_assert(regex_union<R"(aB+b)", R"(A+)", R"(a?Ab?)">::match("aaaaaaa"sv) == false);
 }
-#endif // META_RUN_REGEX_UNION_TESTS
+#endif //META_RUN_REGEX_UNION_TESTS

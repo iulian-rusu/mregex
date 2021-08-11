@@ -202,4 +202,4 @@ namespace meta::tests
     static_assert(regex<R"((a|ab)+x)">::with_flags<flag::greedy_alt>::match("aaaabcabx"sv) == false);
     static_assert(regex<R"((a|ab|abc)+x)">::with_flags<flag::greedy_alt>::match("x"sv) == false);
 }
-#endif // META_RUN_REGEX_TESTS
+#endif //META_RUN_REGEX_TESTS

@@ -58,16 +58,16 @@ namespace meta
             using type = typename parse<I, next_ast, next_stack>::type;
         };
 
-        // Base transition case - just push the rules on the stack
+        // Base case - push the rule on the stack
         template<std::size_t I, typename Rule, typename AST, typename Stack>
         struct transition
         {
             using type = typename parse<I, AST, typename Stack::template push<Rule>>::type;
         };
 
-        // Epsilon transition - do nothing
+        // Don't push anything
         template<std::size_t I, typename AST, typename Stack>
-        struct transition<I, symbol::epsilon, AST, Stack>
+        struct transition<I, grammar::ignore, AST, Stack>
         {
             using type = typename parse<I, AST, Stack>::type;
         };
@@ -80,10 +80,10 @@ namespace meta
         };
 
         // Advance and also push the rest of the rules on the stack
-        template<std::size_t I, typename AST, typename ... Rules, typename ... MoreRules>
-        struct transition<I, stack<grammar::advance, Rules ...>, AST, stack<MoreRules ...>>
+        template<std::size_t I, typename AST, typename ... Rules, typename ... Rest>
+        struct transition<I, stack<grammar::advance, Rules ...>, AST, stack<Rest ...>>
         {
-            using type = typename parse<I + 1, AST, stack<Rules ..., MoreRules ...>>::type;
+            using type = typename parse<I + 1, AST, stack<Rules ..., Rest ...>>::type;
         };
 
         // Reject the input pattern

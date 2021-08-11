@@ -165,4 +165,4 @@ namespace meta::tests
     static_assert(detail::accepted<R"(((a|\\a)|(0|1|?2|3))?)"> == false);
     static_assert(detail::accepted<R"((((|\\a)|(0|1|2|3))?)*x?y+abcd|efgh((x|z)?t)+)"> == false);
 }
-#endif // META_RUN_PARSER_TESTS
+#endif //META_RUN_PARSER_TESTS

@@ -5,12 +5,12 @@
 
 namespace meta::grammar
 {
-    // Types used to mark actions imposed by grammar rules
+    struct ignore {}; // Ignore the effects of the current rule
 
-    struct advance {};
+    struct advance {}; // Move to the next character in the parser input
 
-    struct accept : std::true_type {};
+    struct accept : std::true_type {}; // Accept the parser input
 
-    struct reject : std::false_type {};
+    struct reject : std::false_type {}; // Reject the parser input
 }
 #endif //META_GRAMMAR_ACTIONS_HPP
