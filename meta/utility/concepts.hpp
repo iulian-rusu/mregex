@@ -1,7 +1,7 @@
 #ifndef META_CONCEPTS_HPP
 #define META_CONCEPTS_HPP
 
-#include "type_traits.hpp"
+#include <type_traits>
 
 namespace meta
 {

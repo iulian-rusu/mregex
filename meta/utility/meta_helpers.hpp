@@ -1,5 +1,5 @@
-#ifndef META_TYPE_TRAITS_HPP
-#define META_TYPE_TRAITS_HPP
+#ifndef META_META_HELPERS_HPP
+#define META_META_HELPERS_HPP
 
 #include "../ast/astfwd.hpp"
 
@@ -56,4 +56,4 @@ namespace meta
     template<typename Test, typename ... Rest>
     constexpr bool is_any_of_v = is_any_of<Test, Rest ...>::value;
 }
-#endif //META_TYPE_TRAITS_HPP
+#endif //META_META_HELPERS_HPP

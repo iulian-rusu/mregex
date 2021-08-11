@@ -77,5 +77,4 @@ std::ostream &operator<<(std::ostream &os, meta::static_string<N> const &str)
 {
     return os << str.substr(0, N);
 }
-
 #endif //META_STATIC_STRING_HPP

@@ -1,7 +1,7 @@
 #ifndef META_REGEX_FLAGS_HPP
 #define META_REGEX_FLAGS_HPP
 
-#include "utility/type_traits.hpp"
+#include "utility/meta_helpers.hpp"
 
 namespace meta
 {

@@ -2,7 +2,7 @@
 #define META_STACK_HPP
 
 #include <type_traits>
-#include "type_traits.hpp"
+#include "meta_helpers.hpp"
 
 namespace meta
 {
