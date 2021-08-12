@@ -1,7 +1,9 @@
 #ifndef META_AST_BUILDER_HPP
 #define META_AST_BUILDER_HPP
 
-#include "ast.hpp"
+#include "astfwd.hpp"
+#include "capture_counter.hpp"
+#include "atomic_counter.hpp"
 #include "../utility/stack.hpp"
 #include "../symbol.hpp"
 

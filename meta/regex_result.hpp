@@ -2,6 +2,7 @@
 #define META_REGEX_RESULT_HPP
 
 #include <iosfwd>
+#include <tuple>
 #include "capture.hpp"
 
 namespace meta

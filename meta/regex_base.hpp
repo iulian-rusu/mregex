@@ -3,8 +3,9 @@
 
 #include "generator.hpp"
 #include "regex_result.hpp"
-#include "ast/ast_traits.hpp"
 #include "match_context.hpp"
+#include "ast/ast_traits.hpp"
+#include "ast/ast.hpp"
 
 namespace meta
 {
