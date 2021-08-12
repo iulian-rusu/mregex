@@ -1,10 +1,9 @@
 #ifndef META_STATIC_STRING_HPP
 #define META_STATIC_STRING_HPP
 
-#include <cstddef>
 #include <array>
 #include <type_traits>
-#include <iostream>
+#include <iosfwd>
 
 namespace meta
 {

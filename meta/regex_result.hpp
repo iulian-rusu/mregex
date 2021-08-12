@@ -23,7 +23,7 @@ namespace meta
             : matched{m}, captures{std::forward<Storage>(cs)}, input{sv}
         {}
 
-        constexpr explicit operator bool() const noexcept
+        constexpr operator bool() const noexcept
         {
             return matched;
         }

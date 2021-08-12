@@ -1,6 +1,8 @@
 #ifndef META_GENERATOR_HPP
 #define META_GENERATOR_HPP
 
+#include "utility/concepts.hpp"
+
 namespace meta
 {
     /**

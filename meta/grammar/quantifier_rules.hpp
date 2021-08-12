@@ -5,7 +5,6 @@
 #include "../utility/stack.hpp"
 #include "../utility/char_traits.hpp"
 #include "../symbol.hpp"
-#include "../ast/astfwd.hpp"
 
 namespace meta::grammar
 {
