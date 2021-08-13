@@ -144,21 +144,39 @@ namespace meta::ast
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            if (mp.consume_limit == 0)
-                return {0, true};
-
             match_result res{0, true};
             match_params updated_mp = mp;
-            std::size_t str_length = input.length();
-            while (updated_mp.from < str_length)
+            while (auto inner_match = Inner::match(input, updated_mp, ctx))
             {
-                auto inner_match = Inner::match(input, updated_mp, ctx);
-                if (!inner_match || inner_match.consumed == 0 || inner_match.consumed > updated_mp.consume_limit)
+                if (inner_match.consumed == 0 || inner_match.consumed > updated_mp.consume_limit)
                     break;
                 res += inner_match;
                 updated_mp = updated_mp.consume(inner_match.consumed);
             }
             return res;
+        }
+    };
+
+    template<>
+    struct star<wildcard>
+    {
+        static constexpr std::size_t capture_count = 0;
+        static constexpr std::size_t atomic_count = 0;
+
+        template<typename MatchContext>
+        static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
+        {
+            if constexpr (flags<MatchContext>::dotall)
+                return {mp.consume_limit, true};
+
+            for(auto consumed = 0u; consumed <= mp.consume_limit; ++consumed)
+            {
+                auto subject = input[mp.from + consumed];
+                if (subject == '\n' || subject == '\r')
+                    return {consumed, true};
+            }
+
+            return {mp.consume_limit, true};
         }
     };
 
@@ -171,8 +189,8 @@ namespace meta::ast
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            if (mp.consume_limit == 0)
-                return {0, false};
+            if constexpr (N == 0)
+                return {0, true};
 
             match_result res{0, false};
             match_params updated_mp = mp;
@@ -194,16 +212,32 @@ namespace meta::ast
         }
     };
 
-    template<typename Inner>
-    struct repeated<0, Inner>
+    template<std::size_t N>
+    struct repeated<N, wildcard>
     {
-        static constexpr std::size_t capture_count = Inner::capture_count;
-        static constexpr std::size_t atomic_count = Inner::atomic_count;
+        static constexpr std::size_t capture_count = 0;
+        static constexpr std::size_t atomic_count = 0;
 
         template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_params, MatchContext &ctx) noexcept
+        static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            return {0, true};
+            if constexpr (N == 0)
+                return {0, true};
+
+            if constexpr (flags<MatchContext>::dotall)
+            {
+                if (N <= mp.consume_limit)
+                    return {N, true};
+                return {0, false};
+            }
+
+            for(auto consumed = 0u; consumed <= N; ++consumed)
+            {
+                auto subject = input[mp.from + consumed];
+                if (subject == '\n' || subject == '\r')
+                    return {0, false};
+            }
+            return {N, true};
         }
     };
 
