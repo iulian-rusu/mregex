@@ -6,6 +6,7 @@
 #include "match_context.hpp"
 #include "ast/ast_traits.hpp"
 #include "ast/ast.hpp"
+#include "utility/universal_capture.hpp"
 
 namespace meta
 {
@@ -67,12 +68,12 @@ namespace meta
             }
 
             template<string_like Str>
-            [[nodiscard]] static constexpr auto find_all(Str const &input, std::size_t start_pos = 0) noexcept
+            [[nodiscard]] static constexpr auto find_all(Str &&input, std::size_t start_pos = 0) noexcept
             {
                 return generator
                 {
-                    [&input = input, pos = start_pos]() mutable {
-                        auto result = find_first(input, pos);
+                    [input = make_universal_capture(std::forward<Str>(input)), pos = start_pos]() mutable {
+                        auto result = find_first(input.get(), pos);
                         pos = result.end();
                         return result;
                     }
@@ -93,9 +94,9 @@ namespace meta
         }
 
         template<string_like Str>
-        [[nodiscard]] static constexpr decltype(auto) find_all(Str const &input, std::size_t start_pos = 0) noexcept
+        [[nodiscard]] static constexpr decltype(auto) find_all(Str &&input, std::size_t start_pos = 0) noexcept
         {
-            return with_flags<>::find_all(input, start_pos);
+            return with_flags<>::find_all(std::forward<Str>(input), start_pos);
         }
     };
 }

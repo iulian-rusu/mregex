@@ -145,10 +145,15 @@ namespace meta::ast
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
             match_result res{0, true};
+            if (mp.consume_limit == 0)
+                return res;
+
             match_params updated_mp = mp;
-            while (auto inner_match = Inner::match(input, updated_mp, ctx))
+            std::size_t str_length = input.length();
+            while (updated_mp.from < str_length)
             {
-                if (inner_match.consumed == 0 || inner_match.consumed > updated_mp.consume_limit)
+                auto inner_match = Inner::match(input, updated_mp, ctx);
+                if (!inner_match || inner_match.consumed == 0 || inner_match.consumed > updated_mp.consume_limit)
                     break;
                 res += inner_match;
                 updated_mp = updated_mp.consume(inner_match.consumed);
