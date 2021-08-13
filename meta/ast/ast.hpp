@@ -270,6 +270,20 @@ namespace meta::ast
         }
     };
 
+    template<typename First, typename ... Rest>
+    struct set : terminal
+    {
+        static_assert(is_terminal_v<First> && (is_terminal_v<Rest> && ... ), "sets can only contain terminal nodes");
+
+        template<typename MatchContext>
+        static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
+        {
+            if (First::match(input, mp, ctx) || (Rest::match(input, mp, ctx) || ... ))
+                return {1, true};
+            return {0, false};
+        }
+    };
+
     struct beginning : terminal
     {
         template<typename MatchContext>

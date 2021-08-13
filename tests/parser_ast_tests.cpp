@@ -516,7 +516,7 @@ namespace meta::tests
             >
     >);
     static_assert(detail::expected_ast<R"([a])",
-            alternation
+            set
             <
                 character<'a'>
             >
@@ -526,11 +526,11 @@ namespace meta::tests
     static_assert(detail::expected_ast<R"([a][b])",
             sequence
             <
-                alternation
+                set
                 <
                     character<'a'>
                 >,
-                alternation
+                set
                 <
                     character<'b'>
                 >
@@ -540,7 +540,7 @@ namespace meta::tests
             sequence
             <
                 nothing,
-                alternation
+                set
                 <
                     character<'b'>
                 >
@@ -551,12 +551,12 @@ namespace meta::tests
             <
                 optional
                 <
-                    alternation
+                    set
                     <
                         character<'a'>
                     >
                 >,
-                alternation
+                set
                 <
                     character<'b'>
                 >
@@ -567,14 +567,14 @@ namespace meta::tests
             <
                 optional
                 <
-                    alternation
+                    set
                     <
                         character<'a'>
                     >
                 >,
                 optional
                 <
-                    alternation
+                    set
                     <
                         character<'b'>
                     >
@@ -582,7 +582,7 @@ namespace meta::tests
             >
     >);
     static_assert(detail::expected_ast<R"([abc])",
-            alternation
+            set
             <
                 character<'c'>,
                 character<'b'>,
@@ -590,13 +590,13 @@ namespace meta::tests
             >
     >);
     static_assert(detail::expected_ast<R"([a-z])",
-            alternation
+            set
             <
                 range<'a', 'z'>
             >
     >);
     static_assert(detail::expected_ast<R"([a\-z])",
-            alternation
+            set
             <
                 character<'z'>,
                 character<'-'>,
@@ -604,14 +604,14 @@ namespace meta::tests
             >
     >);
     static_assert(detail::expected_ast<R"([a-z-])",
-            alternation
+            set
             <
                 character<'-'>,
                 range<'a', 'z'>
             >
     >);
     static_assert(detail::expected_ast<R"([a-z-A])",
-            alternation
+            set
             <
                 character<'A'>,
                 character<'-'>,
@@ -619,7 +619,7 @@ namespace meta::tests
             >
     >);
     static_assert(detail::expected_ast<R"([a-z0-9A-Z])",
-            alternation
+            set
             <
                 range<'A', 'Z'>,
                 range<'0', '9'>,
@@ -627,7 +627,7 @@ namespace meta::tests
             >
     >);
     static_assert(detail::expected_ast<R"([a-[0-\]])",
-            alternation
+            set
             <
                 range<'0', ']'>,
                 range<'a', '['>
@@ -636,7 +636,7 @@ namespace meta::tests
     static_assert(detail::expected_ast<R"([^a-[0-\]])",
             negated
             <
-                alternation
+                set
                 <
                     range<'0', ']'>,
                     range<'a', '['>
@@ -644,14 +644,14 @@ namespace meta::tests
             >
     >);
     static_assert(detail::expected_ast<R"([a-[0-\]])",
-            alternation
+            set
             <
                 range<'0', ']'>,
                 range<'a', '['>
             >
     >);
     static_assert(detail::expected_ast<R"([-a-[0-\]])",
-            alternation
+            set
             <
                 range<'0', ']'>,
                 range<'a', '['>,
@@ -661,7 +661,7 @@ namespace meta::tests
     static_assert(detail::expected_ast<R"([^-aA-Z]))",
             negated
             <
-                alternation
+                set
                 <
                     range<'A', 'Z'>,
                     character<'a'>,
@@ -675,7 +675,7 @@ namespace meta::tests
                 character<'a'>,
                 negated
                 <
-                    alternation
+                    set
                     <
                         range<'A', 'Z'>,
                         negated<word>,
@@ -692,7 +692,7 @@ namespace meta::tests
                 character<'x'>,
                 negated
                 <
-                    alternation
+                    set
                     <
                         character<'c'>,
                         character<'b'>,

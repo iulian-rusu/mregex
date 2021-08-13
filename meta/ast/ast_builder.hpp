@@ -204,58 +204,58 @@ namespace meta::ast
         using type = stack<nothing, Elems ...>;
     };
 
-    template<typename C, typename ... First>
-    struct update_ast<symbol::make_set_from_current_char, C, stack<First ...>>
+    template<typename C, typename ... Elems>
+    struct update_ast<symbol::make_set_from_current_char, C, stack<Elems ...>>
     {
-        using type = stack<alternation<C>, First ...>;
+        using type = stack<set<C>, Elems ...>;
     };
 
     template<typename C, typename ... First, typename ... Rest>
-    struct update_ast<symbol::make_set_from_current_char, C, stack<alternation<First ...>, Rest ...>>
+    struct update_ast<symbol::make_set_from_current_char, C, stack<set<First ...>, Rest ...>>
     {
-        using type = stack<alternation<C, First ...>, Rest ...>;
+        using type = stack<set<C, First ...>, Rest ...>;
     };
 
     template<typename C, typename ... Rest>
     struct update_ast<symbol::make_set_from_current_char, C, stack<nothing, Rest ...>>
     {
-        using type = stack<alternation<C>, Rest ...>;
+        using type = stack<set<C>, Rest ...>;
     };
 
     template<typename C, typename First, typename ... Rest>
     struct update_ast<symbol::make_set_from_stack, C, stack<First, Rest ...>>
     {
-        using type = stack<alternation<First>, Rest ...>;
+        using type = stack<set<First>, Rest ...>;
     };
 
     template<typename C, typename First, typename ... Second, typename ... Rest>
-    struct update_ast<symbol::make_set_from_stack, C, stack<First, alternation<Second ...>, Rest ...>>
+    struct update_ast<symbol::make_set_from_stack, C, stack<First, set<Second ...>, Rest ...>>
     {
-        using type = stack<alternation<First, Second ...>, Rest ...>;
+        using type = stack<set<First, Second ...>, Rest ...>;
     };
 
     template<typename C, typename First, typename ... Rest>
     struct update_ast<symbol::make_set_from_stack, C, stack<First, nothing, Rest ...>>
     {
-        using type = stack<alternation<First>, Rest ...>;
+        using type = stack<set<First>, Rest ...>;
     };
 
     template<typename C, typename ... First, typename ... Second, typename ... Rest>
-    struct update_ast<symbol::make_set_from_stack, C, stack<alternation<First ...>, alternation<Second ...>, Rest ...>>
+    struct update_ast<symbol::make_set_from_stack, C, stack<set<First ...>, set<Second ...>, Rest ...>>
     {
-        using type = stack<alternation<First ..., Second ...>, Rest ...>;
+        using type = stack<set<First ..., Second ...>, Rest ...>;
     };
 
     template<auto B, auto A, typename ... Second, typename ... Rest>
-    struct update_ast<symbol::make_range, character<B>, stack<alternation<character<A>, Second ...>, Rest ...>>
+    struct update_ast<symbol::make_range, character<B>, stack<set<character<A>, Second ...>, Rest ...>>
     {
-        using type = stack<alternation<range<A, B>, Second ...>, Rest ...>;
+        using type = stack<set<range<A, B>, Second ...>, Rest ...>;
     };
 
     template<typename C, auto B, auto A, typename ... Second, typename ... Rest>
-    struct update_ast<symbol::make_range_from_stack, C, stack<alternation<character<B>, character<A>, Second ...>, Rest ...>>
+    struct update_ast<symbol::make_range_from_stack, C, stack<set<character<B>, character<A>, Second ...>, Rest ...>>
     {
-        using type = stack<alternation<range<A, B>, Second ...>, Rest ...>;
+        using type = stack<set<range<A, B>, Second ...>, Rest ...>;
     };
 }
 #endif //META_AST_BUILDER_HPP

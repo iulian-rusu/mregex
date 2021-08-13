@@ -20,10 +20,6 @@ namespace meta::tests
     static_assert(is_any_of_v<int, float, double, long> == false);
     static_assert(is_any_of_v<int, float, long int> == false);
     static_assert(is_any_of_v<int> == false);
-    static_assert(is_alternation_v<alternation<int>>);
-    static_assert(is_alternation_v<star<int>> == false);
-    static_assert(is_alternation_v<alternation<alternation<int>>>);
-    static_assert(is_alternation_v<star<alternation<int>>> == false);
     static_assert(is_terminal_v<character<'a'>>);
     static_assert(is_terminal_v<range<'a', 'z'>>);
     static_assert(is_terminal_v<wildcard>);

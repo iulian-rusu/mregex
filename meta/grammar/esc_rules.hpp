@@ -1,5 +1,5 @@
-#ifndef META_ESC_SEQUENCE_HPP
-#define META_ESC_SEQUENCE_HPP
+#ifndef META_ESC_RULES_HPP
+#define META_ESC_RULES_HPP
 
 #include "char_class_rules.hpp"
 #include "backref_rules.hpp"
@@ -76,4 +76,4 @@ namespace meta::grammar
     template<auto C>
     using esc_rule_t = typename esc_rule<C>::type;
 }
-#endif //META_ESC_SEQUENCE_HPP
+#endif //META_ESC_RULES_HPP

@@ -1,5 +1,5 @@
-#ifndef META_BACKREF_BUILDER_HPP
-#define META_BACKREF_BUILDER_HPP
+#ifndef META_BACKREF_RULES_HPP
+#define META_BACKREF_RULES_HPP
 
 #include "grammar_actions.hpp"
 #include "../utility/stack.hpp"
@@ -35,4 +35,4 @@ namespace meta::grammar
     template<auto C, std::size_t ID>
     using backref_rule_t = typename backref_rule<C, ID>::type;
 }
-#endif //META_BACKREF_BUILDER_HPP
+#endif //META_BACKREF_RULES_HPP

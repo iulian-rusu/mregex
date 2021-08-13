@@ -28,6 +28,9 @@ namespace meta::ast
 
     struct nothing;
 
+    template<typename, typename ...>
+    struct set;
+
     struct beginning;
 
     struct ending;
@@ -56,9 +59,9 @@ namespace meta::ast
 
     using alpha = range<'A', 'z'>;
 
-    using word = alternation<alpha, digit, ast::character<'_'>>;
+    using word = set<alpha, digit, ast::character<'_'>>;
 
-    using hexa = alternation<digit, range<'a', 'f'>, range<'A', 'F'>>;
+    using hexa = set<digit, range<'a', 'f'>, range<'A', 'F'>>;
 
     template<std::size_t>
     struct backref;

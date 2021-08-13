@@ -1,5 +1,5 @@
-#ifndef META_QUANTIFIER_BUILDER_HPP
-#define META_QUANTIFIER_BUILDER_HPP
+#ifndef META_QUANTIFIER_RULES_HPP
+#define META_QUANTIFIER_RULES_HPP
 
 #include "grammar_actions.hpp"
 #include "../utility/stack.hpp"
@@ -58,4 +58,4 @@ namespace meta::grammar
     template<auto C>
     using begin_quantifier_value_t = typename begin_quantifier_value<C>::type;
 }
-#endif //META_QUANTIFIER_BUILDER_HPP
+#endif //META_QUANTIFIER_RULES_HPP

@@ -1,5 +1,5 @@
-#ifndef META_CHAR_CLASS_HPP
-#define META_CHAR_CLASS_HPP
+#ifndef META_CHAR_CLASS_RULES_HPP
+#define META_CHAR_CLASS_RULES_HPP
 
 #include "grammar_actions.hpp"
 #include "../utility/stack.hpp"
@@ -181,4 +181,4 @@ namespace meta::grammar
     template<auto C>
     using char_class_rule_t = typename char_class_rule<C>::type;
 }
-#endif //META_CHAR_CLASS_HPP
+#endif //META_CHAR_CLASS_RULES_HPP
