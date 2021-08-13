@@ -41,7 +41,7 @@ namespace meta
                 if (!res.matched)
                     ctx.reset();
                 else
-                    std::get<0>(ctx.captures) = capture<0>{0, res.consumed};
+                    std::get<0>(ctx.captures) = regex_capture<0>{0, res.consumed};
                 return regex_result{res.matched, std::move(ctx.captures), input};
             }
 
@@ -56,7 +56,7 @@ namespace meta
                     auto res = ast_type::match(input, {start_pos, str_length}, ctx);
                     if (res)
                     {
-                        std::get<0>(ctx.captures) = capture<0>{start_pos, res.consumed};
+                        std::get<0>(ctx.captures) = regex_capture<0>{start_pos, res.consumed};
                         return regex_result{true, std::move(ctx.captures), input};
                     }
                     if constexpr (ast::has_atomic_group_v<ast_type>)

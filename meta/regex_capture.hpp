@@ -1,13 +1,13 @@
-#ifndef META_CAPTURE_HPP
-#define META_CAPTURE_HPP
+#ifndef META_REGEX_CAPTURE_HPP
+#define META_REGEX_CAPTURE_HPP
 
 namespace meta
 {
     /**
-     * Struct that remembers the start coordinate and span of a capture group result.
+     * Struct that remembers the start coordinate and span of a captured result.
      */
     template<std::size_t>
-    struct capture
+    struct regex_capture
     {
         std::size_t from{};
         std::size_t consumed{};
@@ -30,23 +30,23 @@ namespace meta
     };
 
     /**
-     * Defines recursively a std::tuple with N + 1 elements of type capture.
+     * Defines recursively a std::tuple with N + 1 elements of type regex_capture.
      */
     template<std::size_t N>
     struct alloc_capture_storage
     {
         template<typename ... Captures>
-        using type = typename alloc_capture_storage<N - 1>::template type<capture<N>, Captures ...>;
+        using type = typename alloc_capture_storage<N - 1>::template type<regex_capture<N>, Captures ...>;
     };
 
     template<>
     struct alloc_capture_storage<0>
     {
         template<typename ... Captures>
-        using type = std::tuple<capture<0>, Captures ...>;
+        using type = std::tuple<regex_capture<0>, Captures ...>;
     };
 
     template<std::size_t N>
     using capture_storage = typename alloc_capture_storage<N>::template type<>;
 }
-#endif //META_CAPTURE_HPP
+#endif //META_REGEX_CAPTURE_HPP

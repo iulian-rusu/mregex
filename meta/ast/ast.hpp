@@ -6,7 +6,7 @@
 #include "capture_counter.hpp"
 #include "match_params.hpp"
 #include "match_result.hpp"
-#include "../capture.hpp"
+#include "../regex_capture.hpp"
 #include "../match_context.hpp"
 #include "../utility/char_traits.hpp"
 #include "../utility/concepts.hpp"
@@ -454,7 +454,7 @@ namespace meta::ast
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
             auto inner_match = Inner::match(input, mp, ctx);
-            std::get<ID>(ctx.captures) = capture<ID>{mp.from, inner_match.consumed};
+            std::get<ID>(ctx.captures) = regex_capture<ID>{mp.from, inner_match.consumed};
             return inner_match;
         }
     };
