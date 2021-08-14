@@ -8,7 +8,7 @@ namespace meta
 {
     /**
      * Wrapper class to handle perfect forwarding of lambda expression captures.
-     * Credits to https://vittorioromeo.info/index/blog/capturing_perfectly_forwarded_objects_in_lambdas.html
+     * Adapted from https://vittorioromeo.info/index/blog/capturing_perfectly_forwarded_objects_in_lambdas.html
      */
     template <typename T>
     class value_wrapper

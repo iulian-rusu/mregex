@@ -5,38 +5,29 @@
 
 namespace meta::ast
 {
-    template<typename T>
-    constexpr bool is_terminal_v = std::is_base_of_v<terminal, T>;
-
     /**
-     * Type trait to identify nodes that always consume one chaaacter, used for optimizations
+     * Type trait to identify nodes that can be trivially matched.
+     * A node is trivially matchable if it always consumes one character while matching.
+     * Being trivially matchabale is signaled by defining a static function template
+     * consume_one<T> and is checked using SFINAE tricks.
      */
     template<typename T>
-    struct consumes_one_on_match : std::false_type {};
+    struct is_trivially_matchable
+    {
+        template<typename Test>
+        static auto sfinae_helper(int) -> decltype(Test::template consume_one<int, int>, std::true_type{});
 
-    template<typename Inner>
-    struct consumes_one_on_match<negated<Inner>> : consumes_one_on_match<Inner> {};
+        template<typename Test>
+        static auto sfinae_helper(...) -> std::false_type;
 
-    template<>
-    struct consumes_one_on_match<nothing> : std::true_type {};
-
-    template<typename First, typename ... Rest>
-    struct consumes_one_on_match<set<First, Rest ...>> : std::true_type {};
-
-    template<auto C>
-    struct consumes_one_on_match<character<C>> : std::true_type {};
-
-    template<>
-    struct consumes_one_on_match<whitespace> : std::true_type {};
-
-    template<>
-    struct consumes_one_on_match<wildcard> : std::true_type {};
-
-    template<auto A, auto B>
-    struct consumes_one_on_match<range<A, B>> : std::true_type {};
+        static constexpr bool value = decltype(sfinae_helper<T>(int{}))::value;
+    };
 
     template<typename T>
-    constexpr bool consumes_one_on_match_v = consumes_one_on_match<T>::value;
+    constexpr bool is_trivially_matchable_v = is_trivially_matchable<T>::value;
+
+    template<typename T>
+    constexpr bool is_terminal_v = std::is_base_of_v<terminal, T>;
 
     /**
      * Helper type trait to find if the tree-like template structure

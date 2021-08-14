@@ -50,7 +50,7 @@ namespace meta
             -> regex_result<capture_count>
             {
                 match_context ctx{};
-                std::size_t str_length = input.length();
+                std::size_t const str_length = input.length();
                 while (start_pos < str_length)
                 {
                     auto res = ast_type::match(input, {start_pos, str_length}, ctx);
@@ -73,7 +73,7 @@ namespace meta
                 return generator
                 {
                     [input = make_universal_capture(std::forward<Str>(input)), pos = start_pos]() mutable {
-                        auto result = find_first(input.get(), pos);
+                        auto const result = find_first(input.get(), pos);
                         pos = result.end();
                         return result;
                     }

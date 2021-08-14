@@ -1,6 +1,6 @@
 #include "tests.hpp"
 
-#ifdef META_RUN_UTILITY_TESTS
+#ifdef META_RUN_TRAITS_TESTS
 namespace meta::tests
 {
     using namespace ast;
@@ -20,6 +20,7 @@ namespace meta::tests
     static_assert(is_any_of_v<int, float, double, long> == false);
     static_assert(is_any_of_v<int, float, long int> == false);
     static_assert(is_any_of_v<int> == false);
+
     static_assert(is_terminal_v<character<'a'>>);
     static_assert(is_terminal_v<range<'a', 'z'>>);
     static_assert(is_terminal_v<wildcard>);
@@ -28,5 +29,20 @@ namespace meta::tests
     static_assert(is_terminal_v<optional<character<'a'>>> == false);
     static_assert(is_terminal_v<alternation<character<'a'>>> == false);
     static_assert(is_terminal_v<sequence<character<'a'>>> == false);
+
+    static_assert(is_trivially_matchable_v<nothing>);
+    static_assert(is_trivially_matchable_v<negated<nothing>>);
+    static_assert(is_trivially_matchable_v<character<'a'>>);
+    static_assert(is_trivially_matchable_v<whitespace>);
+    static_assert(is_trivially_matchable_v<wildcard>);
+    static_assert(is_trivially_matchable_v<range<'a', 'z'>>);
+    static_assert(is_trivially_matchable_v<set<wildcard, character<'b'>, whitespace>>);
+    static_assert(is_trivially_matchable_v<epsilon> == false);
+    static_assert(is_trivially_matchable_v<beginning> == false);
+    static_assert(is_trivially_matchable_v<backref<1>> == false);
+    static_assert(is_trivially_matchable_v<sequence<wildcard, whitespace>> == false);
+    static_assert(is_trivially_matchable_v<alternation<wildcard, beginning>> == false);
+    static_assert(is_trivially_matchable_v<capturing<1, wildcard>> == false);
+    static_assert(is_trivially_matchable_v<star<character<'a'>>> == false);
 }
-#endif //META_RUN_UTILITY_TESTS
+#endif //META_RUN_TRAITS_TESTS

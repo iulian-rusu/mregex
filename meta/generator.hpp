@@ -73,7 +73,7 @@ namespace meta
         auto begin() noexcept
         {
             auto initial_result = (*this)();
-            auto initial_state = static_cast<bool>(initial_result);
+            auto const initial_state = static_cast<bool>(initial_result);
             return iterator{*this, std::move(initial_result), initial_state};
         }
 

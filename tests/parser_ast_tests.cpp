@@ -521,6 +521,12 @@ namespace meta::tests
                 character<'a'>
             >
     >);
+    static_assert(detail::expected_ast<R"([.])",
+            set
+            <
+                character<'.'>
+            >
+    >);
     static_assert(detail::expected_ast<R"([])", nothing>);
     static_assert(detail::expected_ast<R"([^])", negated<nothing>>);
     static_assert(detail::expected_ast<R"([a][b])",

@@ -48,8 +48,8 @@ namespace meta
     using last_t = typename last<Elems ...>::type;
 
     /***
-    * Metafunction used to detect if a type is present inside a type pack.
-    */
+     * Metafunction used to detect if a type is present inside a type pack.
+     */
     template<typename Test, typename ... Elems>
     struct is_any_of : std::bool_constant<(std::is_same_v<Test, Elems> || ... )> {};
 

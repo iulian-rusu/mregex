@@ -143,7 +143,7 @@ namespace meta::ast
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
-        requires (!consumes_one_on_match_v<Inner>)
+        requires (!is_trivially_matchable_v<Inner>)
         {
             match_result res{0, true};
             if (mp.consume_limit == 0)
@@ -164,14 +164,13 @@ namespace meta::ast
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
-        requires consumes_one_on_match_v<Inner>
+        requires is_trivially_matchable_v<Inner>
         {
             std::size_t const remaining = input.length() - mp.from;
             std::size_t const max_offset = remaining < mp.consume_limit ? remaining : mp.consume_limit;
             for(auto offset = 0u; offset < max_offset; ++offset)
             {
-                auto const subject = input[mp.from + offset];
-                if (!Inner::match_one(subject, ctx))
+                if (!Inner::consume_one(input[mp.from + offset], ctx))
                     return {offset, true};
             }
 
@@ -187,7 +186,7 @@ namespace meta::ast
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
-        requires (!consumes_one_on_match_v<Inner>)
+        requires (!is_trivially_matchable_v<Inner>)
         {
             if constexpr (N == 0)
                 return {0, true};
@@ -213,14 +212,14 @@ namespace meta::ast
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
-        requires consumes_one_on_match_v<Inner>
+        requires is_trivially_matchable_v<Inner>
         {
             if constexpr (N == 0)
                 return {0, true};
 
             for(auto offset = 0u; offset < N; ++offset)
             {
-                if (!Inner::match_one(input[mp.from + offset], ctx))
+                if (!Inner::consume_one(input[mp.from + offset], ctx))
                     return {0, false};
             }
             return {N, true};
@@ -251,7 +250,7 @@ namespace meta::ast
         }
 
         template<typename MatchContext>
-        static constexpr bool match_one(auto, MatchContext &) noexcept
+        static constexpr bool consume_one(auto const, MatchContext &) noexcept
         {
             return false;
         }
@@ -260,21 +259,22 @@ namespace meta::ast
     template<typename First, typename ... Rest>
     struct set : terminal
     {
+        static_assert(is_trivially_matchable_v<First> && (is_trivially_matchable_v<Rest> && ... ));
+
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
-        requires consumes_one_on_match_v<First> && (consumes_one_on_match_v<Rest> && ... )
         {
             if (mp.consume_limit == 0 || mp.from >= input.length())
                 return {0, false};
 
-            bool const res = match_one(input[mp.from], ctx);
+            bool const res = consume_one(input[mp.from], ctx);
             return {res, res};
         }
 
         template<typename MatchContext>
-        static constexpr bool match_one(auto ch, MatchContext &ctx) noexcept
+        static constexpr bool consume_one(auto const ch, MatchContext &ctx) noexcept
         {
-            return First::match_one(ch, ctx) || (Rest::match_one(ch, ctx) || ... );
+            return First::consume_one(ch, ctx) || (Rest::consume_one(ch, ctx) || ... );
         }
     };
 
@@ -327,12 +327,12 @@ namespace meta::ast
             if (mp.consume_limit == 0 || mp.from >= input.length())
                 return {0, false};
 
-            bool const res = match_one(input[mp.from], ctx);
+            bool const res = consume_one(input[mp.from], ctx);
             return {res, res};
         }
 
         template<typename MatchContext>
-        static constexpr bool match_one(auto ch, MatchContext &ctx) noexcept
+        static constexpr bool consume_one(auto const ch, MatchContext &ctx) noexcept
         {
             bool res = C == ch;
             if constexpr (flags<MatchContext>::ignore_case)
@@ -349,12 +349,12 @@ namespace meta::ast
             if (mp.consume_limit == 0 || mp.from >= input.length())
                 return {0, false};
 
-            bool const res = match_one(input[mp.from]);
+            bool const res = consume_one(input[mp.from]);
             return {res, res};
         }
 
         template<typename MatchContext>
-        static constexpr bool match_one(auto ch, MatchContext &) noexcept
+        static constexpr bool consume_one(auto const ch, MatchContext &) noexcept
         {
             return  ch == ' ' || ch == '\t' ||
                     ch == '\n' || ch == '\r' ||
@@ -370,12 +370,12 @@ namespace meta::ast
             if (mp.consume_limit == 0 || mp.from >= input.length())
                 return {0, false};
 
-            bool const res = match_one(input[mp.from], ctx);
+            bool const res = consume_one(input[mp.from], ctx);
             return {res, res};
         }
 
         template<typename MatchContext>
-        static constexpr bool match_one(auto ch, MatchContext &) noexcept
+        static constexpr bool consume_one(auto const ch, MatchContext &) noexcept
         {
             if constexpr (flags<MatchContext>::dotall)
                 return true;
@@ -386,7 +386,7 @@ namespace meta::ast
     template<auto A, auto B>
     struct range : terminal
     {
-        static_assert(A < B, "invalid range parameters");
+        static_assert(A < B, "invalid range bounds");
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
@@ -394,24 +394,27 @@ namespace meta::ast
             if (mp.consume_limit == 0 || mp.from >= input.length())
                 return {0, false};
 
-            bool const res = match_one(input[mp.from], ctx);
+            bool const res = consume_one(input[mp.from], ctx);
             return {res, res};
         }
 
         template<typename MatchContext>
-        static constexpr bool match_one(auto ch, MatchContext &ctx) noexcept
+        static constexpr bool consume_one(auto const ch, MatchContext &ctx) noexcept
         {
             bool res = A <= ch && ch <= B;
             if constexpr (flags<MatchContext>::ignore_case)
             {
-                ch = to_lower(ch);
-                res |= A <= ch && ch <= B;
-                ch = to_upper(ch);
-                res |= A <= ch && ch <= B;
+                auto tmp = to_lower(ch);
+                res |= A <= tmp && tmp <= B;
+                tmp = to_upper(ch);
+                res |= A <= tmp && tmp <= B;
             }
             return res;
         }
     };
+
+    template<auto A>
+    struct range<A, A> : character<A> {};
 
     template<std::size_t ID>
     struct backref : terminal
@@ -480,25 +483,21 @@ namespace meta::ast
     template<typename Inner>
     struct negated
     {
+        static_assert(is_trivially_matchable_v<Inner>);
+
         static constexpr std::size_t capture_count = Inner::capture_count;
         static constexpr std::size_t atomic_count = Inner::atomic_count;
 
-        /**
-         * Only a subset of AST nodes support negated mode while matching.
-         * This is checked using the requires clause and a custom type trait.
-         */
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
-        requires is_terminal_v<Inner>
         {
             return Inner::match(input, mp, ctx).template consume_if_not_matched<1>();
         }
 
         template<typename MatchContext>
-        static constexpr bool match_one(auto ch, MatchContext &ctx) noexcept
-        requires consumes_one_on_match_v<Inner>
+        static constexpr bool consume_one(auto const ch, MatchContext &ctx) noexcept
         {
-            return !Inner::match_one(ch, ctx);
+            return !Inner::consume_one(ch, ctx);
         }
     };
 }
