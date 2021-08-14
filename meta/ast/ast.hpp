@@ -21,17 +21,18 @@ namespace meta::ast
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
+        requires (!is_trivially_matchable_v<First>)
         {
             std::size_t consume_limit = mp.consume_limit;
             do
             {
-                auto const first_match = First::match(input, {mp.from, consume_limit}, ctx);
+                auto first_match = First::match(input, {mp.from, consume_limit}, ctx);
                 if (!first_match)
                     return {0, false};
 
                 match_params updated_mp = mp.consume(first_match.consumed);
-                if (auto const rest_matched = sequence<Rest ...>::match(input, updated_mp, ctx))
-                    return first_match + rest_matched;
+                if (auto rest_match = sequence<Rest ...>::match(input, updated_mp, ctx))
+                    return first_match + rest_match;
 
                 if (first_match.consumed == 0 || consume_limit == 0)
                     return {0, false};
@@ -39,20 +40,24 @@ namespace meta::ast
                 consume_limit = first_match.consumed - 1;
             } while (true);
         }
-    };
-
-    template<typename First>
-    struct sequence<First>
-    {
-        static constexpr std::size_t capture_count = First::capture_count;
-        static constexpr std::size_t atomic_count = First::atomic_count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
+        requires is_trivially_matchable_v<First>
         {
-            return First::match(input, mp, ctx);
+            if (mp.consume_limit == 0 || mp.from >= input.length())
+                return {0, false};
+
+            if (First::consume_one(input[mp.from], ctx))
+                if (auto rest_match = sequence<Rest ...>::match(input, mp.consume(1), ctx))
+                    return {rest_match.consumed + 1, true};
+
+            return {0, false};
         }
     };
+
+    template<typename First>
+    struct sequence<First> : First {};
 
     template<typename First, typename ... Rest>
     struct alternation
@@ -64,7 +69,7 @@ namespace meta::ast
         static constexpr auto match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         -> std::enable_if_t<!flags<MatchContext>::greedy_alt, match_result>
         {
-            auto const first_match = First::match(input, mp, ctx);
+            auto first_match = First::match(input, mp, ctx);
             return first_match ?: alternation<Rest ...>::match(input, mp, ctx);
         }
 
@@ -75,10 +80,10 @@ namespace meta::ast
         static constexpr auto match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         -> std::enable_if_t<flags<MatchContext>::greedy_alt, match_result>
         {
-            auto const first_match = First::match(input, mp, ctx);
+            auto first_match = First::match(input, mp, ctx);
             if (first_match)
             {
-                auto const rest_match = alternation<Rest ...>::match(input, mp, ctx);
+                auto rest_match = alternation<Rest ...>::match(input, mp, ctx);
                 if (rest_match && rest_match.consumed > first_match.consumed)
                     return rest_match;
                 return first_match;
@@ -88,17 +93,7 @@ namespace meta::ast
     };
 
     template<typename First>
-    struct alternation<First>
-    {
-        static constexpr std::size_t capture_count = First::capture_count;
-        static constexpr std::size_t atomic_count = First::atomic_count;
-
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
-        {
-            return First::match(input, mp, ctx);
-        }
-    };
+    struct alternation<First> : First {};
 
     /**
      * Disjunction is a special AST node used to implement meta::regex_union.
@@ -113,7 +108,7 @@ namespace meta::ast
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            auto const first_match = First::match(input, mp, ctx);
+            auto first_match = First::match(input, mp, ctx);
             if (first_match && first_match.consumed == mp.consume_limit)
                 return first_match;
 
@@ -123,17 +118,7 @@ namespace meta::ast
     };
 
     template<typename First>
-    struct disjunction<First>
-    {
-        static constexpr std::size_t capture_count = First::capture_count;
-        static constexpr std::size_t atomic_count = First::atomic_count;
-
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
-        {
-            return First::match(input, mp, ctx);
-        }
-    };
+    struct disjunction<First> : First {};
 
     template<typename Inner>
     struct star
@@ -153,7 +138,7 @@ namespace meta::ast
             std::size_t const str_length = input.length();
             while (updated_mp.from < str_length)
             {
-                auto const inner_match = Inner::match(input, updated_mp, ctx);
+                auto inner_match = Inner::match(input, updated_mp, ctx);
                 if (!inner_match || inner_match.consumed == 0 || inner_match.consumed > updated_mp.consume_limit)
                     break;
                 res += inner_match;
@@ -196,7 +181,7 @@ namespace meta::ast
             std::size_t matched_so_far = 0;
             while (matched_so_far < N)
             {
-                auto const inner_match = Inner::match(input, updated_mp, ctx);
+                auto inner_match = Inner::match(input, updated_mp, ctx);
                 if (!inner_match || inner_match.consumed > updated_mp.consume_limit)
                     break;
                 res += inner_match;
@@ -463,7 +448,7 @@ namespace meta::ast
             if (ctx.atomic_match_states[ID]) [[likely]]
                 return {0, false};
 
-            auto const inner_match = Inner::match(input, mp, ctx);
+            auto inner_match = Inner::match(input, mp, ctx);
             ctx.atomic_match_states[ID] = static_cast<bool>(inner_match);
             return inner_match;
         }
@@ -475,7 +460,7 @@ namespace meta::ast
             if (ctx.atomic_match_states[ID]) [[likely]]
                 return false;
 
-            auto const inner_match = Inner::consume_one(ch, ctx);
+            auto inner_match = Inner::consume_one(ch, ctx);
             ctx.atomic_match_states[ID] = inner_match;
             return inner_match;
         }
@@ -490,7 +475,7 @@ namespace meta::ast
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            auto const inner_match = Inner::match(input, mp, ctx);
+            auto inner_match = Inner::match(input, mp, ctx);
             std::get<ID>(ctx.captures) = regex_capture<ID>{mp.from, inner_match.consumed};
             return inner_match;
         }

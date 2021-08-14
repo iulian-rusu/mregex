@@ -4,6 +4,7 @@
 #include <array>
 #include <type_traits>
 #include <iosfwd>
+#include <string_view>
 
 namespace meta
 {

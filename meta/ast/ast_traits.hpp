@@ -26,9 +26,6 @@ namespace meta::ast
     template<typename T>
     constexpr bool is_trivially_matchable_v = is_trivially_matchable<T>::value;
 
-    template<typename T>
-    constexpr bool is_terminal_v = std::is_base_of_v<terminal, T>;
-
     /**
      * Helper type trait to find if the tree-like template structure
      * contains at least one atomic group.

@@ -21,15 +21,6 @@ namespace meta::tests
     static_assert(is_any_of_v<int, float, long int> == false);
     static_assert(is_any_of_v<int> == false);
 
-    static_assert(is_terminal_v<character<'a'>>);
-    static_assert(is_terminal_v<range<'a', 'z'>>);
-    static_assert(is_terminal_v<wildcard>);
-    static_assert(is_terminal_v<epsilon>);
-    static_assert(is_terminal_v<star<character<'a'>>> == false);
-    static_assert(is_terminal_v<optional<character<'a'>>> == false);
-    static_assert(is_terminal_v<alternation<character<'a'>>> == false);
-    static_assert(is_terminal_v<sequence<character<'a'>>> == false);
-
     static_assert(is_trivially_matchable_v<nothing>);
     static_assert(is_trivially_matchable_v<negated<nothing>>);
     static_assert(is_trivially_matchable_v<character<'a'>>);
@@ -37,10 +28,13 @@ namespace meta::tests
     static_assert(is_trivially_matchable_v<wildcard>);
     static_assert(is_trivially_matchable_v<range<'a', 'z'>>);
     static_assert(is_trivially_matchable_v<set<wildcard, character<'b'>, whitespace>>);
+    static_assert(is_trivially_matchable_v<sequence<wildcard>>);
+    static_assert(is_trivially_matchable_v<alternation<wildcard>>);
+    static_assert(is_trivially_matchable_v<disjunction<wildcard>>);
+    static_assert(is_trivially_matchable_v<atomic<1, wildcard>>);
     static_assert(is_trivially_matchable_v<epsilon> == false);
     static_assert(is_trivially_matchable_v<beginning> == false);
     static_assert(is_trivially_matchable_v<backref<1>> == false);
-    static_assert(is_trivially_matchable_v<atomic<1, wildcard>>);
     static_assert(is_trivially_matchable_v<sequence<wildcard, whitespace>> == false);
     static_assert(is_trivially_matchable_v<alternation<wildcard, beginning>> == false);
     static_assert(is_trivially_matchable_v<capturing<1, wildcard>> == false);
