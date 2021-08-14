@@ -51,7 +51,7 @@ namespace meta
             {
                 match_context ctx{};
                 std::size_t const str_length = input.length();
-                while (start_pos < str_length)
+                do
                 {
                     auto res = ast_type::match(input, {start_pos, str_length}, ctx);
                     if (res)
@@ -62,7 +62,8 @@ namespace meta
                     if constexpr (ast::has_atomic_group_v<ast_type>)
                         ctx.reset();
                     ++start_pos;
-                }
+                } while (start_pos < str_length);
+
                 ctx.reset();
                 return regex_result{false, std::move(ctx.captures), input};
             }
