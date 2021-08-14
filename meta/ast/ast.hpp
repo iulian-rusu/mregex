@@ -66,19 +66,19 @@ namespace meta::ast
         static constexpr std::size_t atomic_count = atomic_counter<First, Rest ...>::count;
 
         template<typename MatchContext>
-        static constexpr auto match(auto const &input, match_params mp, MatchContext &ctx) noexcept
-        -> std::enable_if_t<!flags<MatchContext>::greedy_alt, match_result>
+        static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
+        requires (!flags<MatchContext>::greedy_alt)
         {
             auto first_match = First::match(input, mp, ctx);
             return first_match ?: alternation<Rest ...>::match(input, mp, ctx);
         }
 
-        // SFINAE overload for greedy alternation, which makes it always verify all options
+        // Overload for greedy alternation, which makes it always verify all options
         // and pick the one that consumes the most characters. It is useful for patterns where an
         // alternation contains prefixes: (a|ab|abc)
         template<typename MatchContext>
-        static constexpr auto match(auto const &input, match_params mp, MatchContext &ctx) noexcept
-        -> std::enable_if_t<flags<MatchContext>::greedy_alt, match_result>
+        static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
+        requires flags<MatchContext>::greedy_alt
         {
             auto first_match = First::match(input, mp, ctx);
             if (first_match)
@@ -111,7 +111,6 @@ namespace meta::ast
             auto first_match = First::match(input, mp, ctx);
             if (first_match && first_match.consumed == mp.consume_limit)
                 return first_match;
-
             ctx.reset();
             return disjunction<Rest ...>::match(input, mp, ctx);
         }
@@ -154,10 +153,8 @@ namespace meta::ast
             std::size_t const remaining = input.length() - mp.from;
             std::size_t const max_offset = remaining < mp.consume_limit ? remaining : mp.consume_limit;
             for (auto offset = 0u; offset < max_offset; ++offset)
-            {
                 if (!Inner::consume_one(input[mp.from + offset], ctx))
                     return {offset, true};
-            }
 
             return {max_offset, true};
         }
@@ -207,10 +204,9 @@ namespace meta::ast
                 return {0, false};
 
             for (auto offset = 0u; offset < N; ++offset)
-            {
                 if (!Inner::consume_one(input[mp.from + offset], ctx))
                     return {0, false};
-            }
+
             return {N, true};
         }
     };
