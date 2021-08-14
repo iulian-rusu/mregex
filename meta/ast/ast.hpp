@@ -370,9 +370,6 @@ namespace meta::ast
             if (mp.consume_limit == 0 || mp.from >= input.length())
                 return {0, false};
 
-            if constexpr (flags<MatchContext>::dotall)
-                return{1, true};
-
             bool const res = match_one(input[mp.from], ctx);
             return {res, res};
         }
@@ -380,6 +377,8 @@ namespace meta::ast
         template<typename MatchContext>
         static constexpr bool match_one(auto ch, MatchContext &) noexcept
         {
+            if constexpr (flags<MatchContext>::dotall)
+                return true;
             return  ch != '\n' && ch != '\r';
         }
     };
