@@ -68,7 +68,7 @@ namespace meta
             }
         };
 
-        struct end_iterator : std::bool_constant<false> {};
+        struct end_iterator : std::false_type {};
 
         auto begin() noexcept
         {

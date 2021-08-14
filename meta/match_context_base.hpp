@@ -14,7 +14,6 @@ namespace meta
             static constexpr bool ignore_case = check_flag_v<flag::ignore_case, Flags ...>;
             static constexpr bool dotall = check_flag_v<flag::dotall, Flags ...>;
             static constexpr bool multiline = check_flag_v<flag::multiline, Flags ...>;
-            static constexpr bool extended = check_flag_v<flag::extended, Flags ...>;
             static constexpr bool greedy_alt = check_flag_v<flag::greedy_alt, Flags ...>;
         };
 

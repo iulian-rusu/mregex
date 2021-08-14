@@ -108,8 +108,6 @@ namespace meta::tests
     static_assert(regex<R"(abc|ab|a)">::with_flags<flag::greedy_alt>::match("a"sv));
     static_assert(regex<R"((a|ab)+x)">::with_flags<flag::greedy_alt>::match("aaaababx"sv));
     static_assert(regex<R"((a|ab|abc)+x)">::with_flags<flag::greedy_alt>::match("ax"sv));
-    static_assert(regex<R"(a?   b? c?)", flag::x>::match("abc"sv));
-    static_assert(regex<R"(a?b?c?)">::with_flags<flag::extended>::match("abc"sv));
     static_assert(regex<R"(^abcd$.+$)", flag::m>::match("\nabcd\nabc"sv));
     static_assert(regex<R"(^abcd$.+$)">::with_flags<flag::m>::match("abcd\nabc\n"sv));
     static_assert(regex<R"(^abcd$.+$)">::with_flags<flag::m>::match("\nabcd\nabc\n"sv));
@@ -127,6 +125,7 @@ namespace meta::tests
     static_assert(regex<R"(a$)">::match("a "sv) == false);
     static_assert(regex<R"(^abcd$)">::match(" abcd"sv) == false);
     static_assert(regex<R"(abc[]def)">::match("abcdef"sv) == false);
+    static_assert(regex<R"(abcdef[^x])">::match("abcdef"sv) == false);
     static_assert(regex<R"([\^a]+)">::match("^ca"sv) == false);
     static_assert(regex<R"([])">::match("a"sv) == false);
     static_assert(regex<R"([])">::match(""sv) == false);
@@ -182,7 +181,6 @@ namespace meta::tests
     static_assert(regex<R"(a.+)">::match("this regex will match any input"sv) == false);
     static_assert(regex<R"(.+)">::match("\nexcept new lines"sv) == false);
     static_assert(regex<R"(a?   b? c?)">::match("abc"sv) == false);
-    static_assert(regex<R"(a?b?c?)">::with_flags<flag::extended>::match("aaa"sv) == false);
     static_assert(regex<R"(0x(\h+)h?)", flag::i>::match("0X012323EJH"sv) == false);
     static_assert(regex<R"([^a-z]+)">::with_flags<flag::ignore_case>::match("AABBBDBDBDBBSABBDBDBABBA"sv) == false);
     static_assert(regex<R"(^abcd$)", flag::m>::match("\nabcd\n\n"sv) == false);

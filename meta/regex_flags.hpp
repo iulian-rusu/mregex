@@ -31,13 +31,9 @@ namespace meta
         using multiline = regex_flag<0x4>;
         using m = regex_flag<0x5>;
 
-        // Ignores any space characters in the regex
-        using extended = regex_flag<0x6>;
-        using x = regex_flag<0x7>;
-
         // Makes alternation always match the longest substring (custom flag)
-        using greedy_alt = regex_flag<0x8>;
-        using a = regex_flag<0x9>;
+        using greedy_alt = regex_flag<0x6>;
+        using a = regex_flag<0x7>;
     }
 
     template<typename Flag>
