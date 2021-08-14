@@ -168,13 +168,13 @@ namespace meta::ast
         {
             std::size_t const remaining = input.length() - mp.from;
             std::size_t const max_offset = remaining < mp.consume_limit ? remaining : mp.consume_limit;
-            for(auto offset = 0u; offset < max_offset; ++offset)
+            for (auto offset = 0u; offset < max_offset; ++offset)
             {
                 if (!Inner::consume_one(input[mp.from + offset], ctx))
                     return {offset, true};
             }
 
-            return {mp.consume_limit, true};
+            return {max_offset, true};
         }
     };
 
@@ -217,7 +217,11 @@ namespace meta::ast
             if constexpr (N == 0)
                 return {0, true};
 
-            for(auto offset = 0u; offset < N; ++offset)
+            std::size_t const remaining = input.length() - mp.from;
+            if (N > remaining || N > mp.consume_limit)
+                return {0, false};
+
+            for (auto offset = 0u; offset < N; ++offset)
             {
                 if (!Inner::consume_one(input[mp.from + offset], ctx))
                     return {0, false};
@@ -461,6 +465,18 @@ namespace meta::ast
 
             auto const inner_match = Inner::match(input, mp, ctx);
             ctx.atomic_match_states[ID] = static_cast<bool>(inner_match);
+            return inner_match;
+        }
+
+        template<typename MatchContext>
+        static constexpr bool consume_one(auto const ch, MatchContext &ctx) noexcept
+        requires is_trivially_matchable_v<Inner>
+        {
+            if (ctx.atomic_match_states[ID]) [[likely]]
+                return false;
+
+            auto const inner_match = Inner::consume_one(ch, ctx);
+            ctx.atomic_match_states[ID] = inner_match;
             return inner_match;
         }
     };

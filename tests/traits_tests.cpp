@@ -40,6 +40,7 @@ namespace meta::tests
     static_assert(is_trivially_matchable_v<epsilon> == false);
     static_assert(is_trivially_matchable_v<beginning> == false);
     static_assert(is_trivially_matchable_v<backref<1>> == false);
+    static_assert(is_trivially_matchable_v<atomic<1, wildcard>>);
     static_assert(is_trivially_matchable_v<sequence<wildcard, whitespace>> == false);
     static_assert(is_trivially_matchable_v<alternation<wildcard, beginning>> == false);
     static_assert(is_trivially_matchable_v<capturing<1, wildcard>> == false);
