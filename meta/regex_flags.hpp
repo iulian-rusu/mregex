@@ -27,7 +27,7 @@ namespace meta
         using dotall = regex_flag<0x2>;
         using s = regex_flag<0x3>;
 
-        // Makes anchors like '^' and '$' also match line beginning/ending
+        // Makes anchors like '^' and '$' also match newlines
         using multiline = regex_flag<0x4>;
         using m = regex_flag<0x5>;
 

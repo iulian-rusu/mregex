@@ -25,12 +25,18 @@ namespace meta::tests
     static_assert(detail::accepted<R"(c{})">);
     static_assert(detail::accepted<R"(c{)">);
     static_assert(detail::accepted<R"(c{?})">);
+    static_assert(detail::accepted<R"(c{,0})">);
     static_assert(detail::accepted<R"(c{*})">);
     static_assert(detail::accepted<R"(c{+})">);
     static_assert(detail::accepted<R"(c{|})">);
     static_assert(detail::accepted<R"(c{x})">);
     static_assert(detail::accepted<R"(c{0})">);
     static_assert(detail::accepted<R"(c{123})">);
+    static_assert(detail::accepted<R"(c{12,3})">);
+    static_assert(detail::accepted<R"(c{12,})">);
+    static_assert(detail::accepted<R"(c{0,123})">);
+    static_assert(detail::accepted<R"(c{1,2})">);
+    static_assert(detail::accepted<R"(c{,})">);
     static_assert(detail::accepted<R"(c\{123})">);
     static_assert(detail::accepted<R"(c\{)">);
     static_assert(detail::accepted<R"(^c+)">);
@@ -108,6 +114,11 @@ namespace meta::tests
     static_assert(detail::accepted<R"(c{2x})"> == false);
     static_assert(detail::accepted<R"(c{123)"> == false);
     static_assert(detail::accepted<R"(c{123\})"> == false);
+
+    static_assert(detail::accepted<R"(c{1,2,3})"> == false);
+    static_assert(detail::accepted<R"(c{12,3)"> == false);
+    static_assert(detail::accepted<R"(c{0,123,})"> == false);
+    static_assert(detail::accepted<R"(c{1\,2})"> == false);
     static_assert(detail::accepted<R"($?)"> == false);
     static_assert(detail::accepted<R"(^$+)"> == false);
     static_assert(detail::accepted<R"(^$*)"> == false);

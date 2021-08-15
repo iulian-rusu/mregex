@@ -37,6 +37,12 @@ namespace meta::ast
         using type = Wrapper<I, preorder_indexing_t<Offset, Inner> ...>;
     };
 
+    template<auto Offset, auto A, auto B, template<auto, auto, typename ...> typename Wrapper, typename ... Inner>
+    struct preorder_indexing<Offset, Wrapper<A, B, Inner ...>>
+    {
+        using type = Wrapper<A, B, preorder_indexing_t<Offset, Inner> ...>;
+    };
+
     template<auto Offset, auto I, typename Inner>
     struct preorder_indexing<Offset, capturing<I, Inner>>
     {

@@ -30,7 +30,7 @@ namespace meta
      * Metafunction returning the last type in a variadic type pack.
      *
      * @tparam First    The first type in the pack
-     * @tparam Rest      The rest of the type pack
+     * @tparam Rest     The rest of the type pack
      */
     template<typename First, typename ... Rest>
     struct last

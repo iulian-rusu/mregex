@@ -1,7 +1,6 @@
 #ifndef META_AST_HPP
 #define META_AST_HPP
 
-#include <tuple>
 #include "atomic_counter.hpp"
 #include "capture_counter.hpp"
 #include "match_params.hpp"
@@ -160,8 +159,91 @@ namespace meta::ast
         }
     };
 
+    template<std::size_t A, std::size_t B, typename Inner>
+    struct repetition
+    {
+        static_assert(A < B, "invalid repetition bounds");
+
+        static constexpr std::size_t R = B - A;
+        static constexpr std::size_t capture_count = Inner::capture_count;
+        static constexpr std::size_t atomic_count = Inner::atomic_count;
+
+        template<typename MatchContext>
+        static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
+        requires (A > 0u)
+        {
+            if (auto exactly_n_match = repetition<A, A, Inner>::match(input, mp, ctx))
+            {
+                match_params updated_mp = mp.consume(exactly_n_match.consumed);
+                auto rest_match = consume_rest(input, updated_mp, ctx);
+                return exactly_n_match + rest_match;
+            }
+            return {0, false};
+        }
+
+        template<typename MatchContext>
+        static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
+        requires (A == 0u)
+        {
+            return consume_rest(input, mp, ctx);;
+        }
+
+        template<typename MatchContext>
+        static constexpr match_result consume_rest(auto const &input, match_params mp, MatchContext &ctx) noexcept
+        requires (!is_trivially_matchable_v<Inner>)
+        {
+            match_result res{0, true};
+            match_params updated_mp = mp;
+            std::size_t matched_so_far = 0;
+            while (matched_so_far < R)
+            {
+                auto inner_match = Inner::match(input, updated_mp, ctx);
+                if (!inner_match || inner_match.consumed > updated_mp.consume_limit)
+                    break;
+                res += inner_match;
+                ++matched_so_far;
+                updated_mp = updated_mp.consume(inner_match.consumed);
+            }
+
+            return res;
+        }
+
+        template<typename MatchContext>
+        static constexpr match_result consume_rest(auto const &input, match_params mp, MatchContext &ctx) noexcept
+        requires is_trivially_matchable_v<Inner>
+        {
+            std::size_t const remaining = input.length() - mp.from;
+            std::size_t const max_offset = remaining < R ? remaining : R;
+            std::size_t const consume_limit = max_offset < mp.consume_limit ? max_offset : mp.consume_limit;
+            for (auto offset = 0u; offset < consume_limit; ++offset)
+                if (!Inner::consume_one(input[mp.from + offset], ctx))
+                    return {offset, true};
+
+            return {consume_limit, true};
+        }
+    };
+
     template<std::size_t N, typename Inner>
-    struct repeated
+    struct repetition<N, 0u, Inner>
+    {
+        static constexpr std::size_t capture_count = Inner::capture_count;
+        static constexpr std::size_t atomic_count = Inner::atomic_count;
+
+        template<typename MatchContext>
+        static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
+        {
+            if (auto exactly_n_match = repetition<N, N, Inner>::match(input, mp, ctx))
+            {
+                match_params updated_mp = mp.consume(exactly_n_match.consumed);
+                auto star_match = star<Inner>::match(input, updated_mp, ctx);
+                return exactly_n_match + star_match;
+            }
+            return {0, false};
+        }
+    };
+
+    template<std::size_t N, typename Inner>
+    struct repetition<N, N, Inner>
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
         static constexpr std::size_t atomic_count = Inner::atomic_count;
@@ -170,9 +252,6 @@ namespace meta::ast
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         requires (!is_trivially_matchable_v<Inner>)
         {
-            if constexpr (N == 0)
-                return {0, true};
-
             match_result res{0, false};
             match_params updated_mp = mp;
             std::size_t matched_so_far = 0;
@@ -196,9 +275,6 @@ namespace meta::ast
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         requires is_trivially_matchable_v<Inner>
         {
-            if constexpr (N == 0)
-                return {0, true};
-
             std::size_t const remaining = input.length() - mp.from;
             if (N > remaining || N > mp.consume_limit)
                 return {0, false};
@@ -210,6 +286,9 @@ namespace meta::ast
             return {N, true};
         }
     };
+
+    template<typename Inner>
+    struct repetition<0u, 0u, Inner> : star<Inner> {};
 
     struct terminal
     {
@@ -431,7 +510,6 @@ namespace meta::ast
         }
     };
 
-    // Decorators for AST nodes
     template<std::size_t ID, typename Inner>
     struct atomic
     {

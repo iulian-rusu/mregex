@@ -570,7 +570,50 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_repeated<N>
+                    std::conditional_t
+                    <
+                        (N > 0),
+                        symbol::make_repetition<N, N>,
+                        symbol::make_epsilon
+                    >
+                >;
+    };
+
+    template<std::size_t N>
+    struct rule<symbol::quantifier_value<N>, ast::character<','>>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::quantifier_values<N, 0u>
+                >;
+    };
+
+    template<std::size_t A, std::size_t B, auto C>
+    struct rule<symbol::quantifier_values<A, B>, ast::character<C>>
+    {
+        using type =
+                std::conditional_t
+                <
+                    is_numeric_v<C>,
+                    stack
+                    <
+                        advance,
+                        symbol::quantifier_values<A, 10 * B + C - '0'>
+                    >,
+                    reject
+                >;
+    };
+
+    template<std::size_t A, std::size_t B>
+    struct rule<symbol::quantifier_values<A, B>, ast::character<'}'>>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::make_repetition<A, B>
                 >;
     };
 

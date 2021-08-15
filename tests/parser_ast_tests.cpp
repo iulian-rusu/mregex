@@ -11,7 +11,7 @@ namespace meta::tests
         constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast_type, AST>;
     }
 
-    //static_assert(std::is_same_v<typename parser<static_string(R"((?>ab+)c)")>::ast_type, void>);
+    //static_assert(std::is_same_v<typename parser<static_string(R"(a{0})")>::ast_type, void>);
 
     static_assert(detail::expected_ast<R"()", epsilon>);
     static_assert(detail::expected_ast<R"(a))", character<'a'>>);
@@ -214,9 +214,9 @@ namespace meta::tests
             >
     >);
     static_assert(detail::expected_ast<R"(c{2})",
-            repeated
+            repetition
             <
-                2,
+                2, 2,
                 character<'c'>
             >
     >);
@@ -247,10 +247,42 @@ namespace meta::tests
             >
     >);
     static_assert(detail::expected_ast<R"(c{22})",
-            repeated
+            repetition
             <
-                22,
+                22, 22,
                 character<'c'>
+            >
+    >);
+    static_assert(detail::expected_ast<R"(c{22,})",
+            repetition
+            <
+                22, 0,
+                character<'c'>
+            >
+    >);
+    static_assert(detail::expected_ast<R"(c{22,23})",
+            repetition
+            <
+                22, 23,
+                character<'c'>
+            >
+    >);
+    static_assert(detail::expected_ast<R"(c{0,22})",
+            repetition
+            <
+                0, 22,
+                character<'c'>
+            >
+    >);
+    static_assert(detail::expected_ast<R"(c{,22})",
+            sequence
+            <
+                character<'c'>,
+                character<'{'>,
+                character<','>,
+                character<'2'>,
+                character<'2'>,
+                character<'}'>
             >
     >);
     static_assert(detail::expected_ast<R"(c\{22})",
@@ -264,9 +296,9 @@ namespace meta::tests
             >
     >);
     static_assert(detail::expected_ast<R"(c{012})",
-            repeated
+            repetition
             <
-                12,
+                12, 12,
                 character<'c'>
             >
     >);
@@ -294,9 +326,9 @@ namespace meta::tests
             >
     >);
     static_assert(detail::expected_ast<R"((c*{012}){3})",
-            repeated
+            repetition
             <
-                3,
+                3, 3,
                 capturing
                 <
                     1,
@@ -319,9 +351,9 @@ namespace meta::tests
             sequence
             <
                 character<'a'>,
-                repeated
+                repetition
                 <
-                    15,
+                    15, 15,
                     capturing
                     <
                         1,

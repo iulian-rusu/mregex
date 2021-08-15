@@ -9,13 +9,14 @@ using template metaprogramming.
 The library currently supports the following features:
 * `constexpr` matching
 * compile-time syntax checking
-* various flags like `ignore_case`, `dotall`, `extended` and `multiline`
+* various flags like `ignore_case`, `dotall` and `multiline`
 * structured binding decomposition of `meta::regex_result`
 * standard regex syntax:
     * `*` - Kleene start quantifier
     * `+` - plus quantifier
-    * `{5}` - exact quantifier
     * `?` - optional quantifier
+    * `{5}` - exact quantifier
+    * `{3,6}`, `{5,}` - range quantifiers
     * `(expr)` - capturing subexpressions
     * `(?:expr)` - non-capturing subexpressions
     * `(?>expr)` - atomic subexpressions

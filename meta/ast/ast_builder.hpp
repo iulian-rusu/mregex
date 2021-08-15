@@ -20,6 +20,12 @@ namespace meta::ast
     struct update_ast;
 
     template<typename C, typename Stack>
+    struct update_ast<symbol::make_epsilon, C, Stack>
+    {
+        using type = typename Stack::template push<epsilon>;
+    };
+
+    template<typename C, typename Stack>
     struct update_ast<symbol::make_char, C, Stack>
     {
         using type = typename Stack::template push<C>;
@@ -191,10 +197,10 @@ namespace meta::ast
         using type = stack<backref<ID>, Elems ...>;
     };
 
-    template<std::size_t N, typename C, typename First, typename ... Rest>
-    struct update_ast<symbol::make_repeated<N>, C, stack<First, Rest ...>>
+    template<std::size_t A, std::size_t B, typename C, typename First, typename ... Rest>
+    struct update_ast<symbol::make_repetition<A, B>, C, stack<First, Rest ...>>
     {
-        using type = stack<repeated<N, First>, Rest ...>;
+        using type = stack<repetition<A, B, First>, Rest ...>;
     };
 
     // Set building rules
