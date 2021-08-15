@@ -1,8 +1,8 @@
 #ifndef META_MATCH_CONTEXT_BASE_HPP
 #define META_MATCH_CONTEXT_BASE_HPP
 
-#include "utility/tuple_map.hpp"
-#include "regex_flags.hpp"
+#include "../utility/tuple_map.hpp"
+#include "../regex_flags.hpp"
 
 namespace meta
 {
@@ -21,7 +21,7 @@ namespace meta
 
         constexpr void clear_captures() noexcept
         {
-            tuple_map(captures, [](auto &capture) {
+            for_each_tuple_element(captures, [](auto &capture) {
                 capture.reset();
             });
         }

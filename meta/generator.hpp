@@ -6,7 +6,7 @@
 namespace meta
 {
     /**
-     * Generator that produces results based on a specified generating function.
+     * Generator that produces result based on a specified generating function.
      *
      * @tparam Prod   The type of callable used to produce the desired data
      */
@@ -22,7 +22,7 @@ namespace meta
         {}
 
         /**
-         * Lazy iterator over the generated results.
+         * Lazy iterator over the generated result.
          * A result that is explicitly convertible to the boolean false
          * signals iteration ending.
          */

@@ -5,8 +5,8 @@
 #include "capture_counter.hpp"
 #include "match_params.hpp"
 #include "match_result.hpp"
-#include "../regex_capture.hpp"
-#include "../match_context.hpp"
+#include "../result/regex_capture.hpp"
+#include "../context/match_context.hpp"
 #include "../utility/char_traits.hpp"
 #include "../utility/concepts.hpp"
 

@@ -2,10 +2,10 @@
 #define META_REGEX_BASE_HPP
 
 #include "generator.hpp"
-#include "regex_result.hpp"
-#include "match_context.hpp"
 #include "ast/ast_traits.hpp"
 #include "ast/ast.hpp"
+#include "context/match_context.hpp"
+#include "result/regex_result.hpp"
 #include "utility/universal_capture.hpp"
 
 namespace meta

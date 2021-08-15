@@ -57,7 +57,7 @@ int main()
     std::string str_value = parse<"message\n">();
     std::cout << str_value << '\n';
 
-    // Lazy iteration over a collection of results
+    // Lazy iteration over a collection of result
     using word_regex = meta::regex<R"([-a-z']+)", meta::flag::i>;
     constexpr std::string_view words = "Let's iterate over these words!";
     for (auto &&res : word_regex::find_all(words))

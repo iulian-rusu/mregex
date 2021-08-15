@@ -2,7 +2,7 @@
 #define META_ATOMIC_MATCH_CONTEXT_HPP
 
 #include <array>
-#include "ast/ast_traits.hpp"
+#include "../ast/ast_traits.hpp"
 
 namespace meta
 {

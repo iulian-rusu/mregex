@@ -1,46 +1,50 @@
 #ifndef META_REGEX_RESULT_HPP
 #define META_REGEX_RESULT_HPP
 
-#include <iosfwd>
-#include <tuple>
-#include "regex_capture.hpp"
+#include "owning_regex_result.hpp"
+#include "../utility/tuple_map.hpp"
 
 namespace meta
 {
+    template<std::size_t N>
+    using result_base = regex_result_base<N, capture_storage<N>>;
+
     /**
-     * Result returned by all regex matching/searching functions.
+     * Result that holds views of captured content.
+     * If the orginal input string expires before this result object,
+     * the behavior is undefined. Use the owning() method to create
+     * an owning regex result.
      *
      * @tparam N    The number of capture groups (without the implicit 0 group)
      */
     template<std::size_t N>
-    struct regex_result
+    class regex_result : public result_base<N>
     {
-        bool matched{};
-        capture_storage<N> captures;
         std::string_view input;
+    public:
+        using result_base<N>::captures;
+        using result_base<N>::matched;
 
-        template<typename Storage, typename = std::enable_if_t<std::is_convertible_v<capture_storage<N>, Storage>>>
-        constexpr regex_result(bool m, Storage &&cs, std::string_view sv)
-            : matched{m}, captures{std::forward<Storage>(cs)}, input{sv}
+        template<typename Storage>
+        constexpr regex_result(bool m, Storage &&storage, std::string_view str)
+            : result_base<N>{m, std::forward<Storage>(storage)}, input{str}
         {}
-
-        constexpr operator bool() const noexcept
-        {
-            return matched;
-        }
-
-        constexpr bool operator==(bool b) const noexcept
-        {
-            return matched == b;
-        }
 
         [[nodiscard]] constexpr std::size_t end() const noexcept
         {
             return std::get<0>(captures).end();
         }
 
+        [[nodiscard]] auto owning() const
+        {
+            auto owning_captures = tuple_map(captures, [&](auto const &capture){
+                return owning_regex_capture(capture, input);
+            });
+            return owning_regex_result{matched, std::move(owning_captures)};
+        }
+
         template<std::size_t ID>
-        constexpr decltype(auto) group() const noexcept
+        [[nodiscard]] constexpr decltype(auto) group() const noexcept
         {
             static_assert(ID <= N, "capture group does not exist");
             return std::get<ID>(captures).evaluate(input);
@@ -60,18 +64,16 @@ namespace meta
 
     template<typename Storage>
     regex_result(bool, Storage &&, std::string_view) -> regex_result<std::tuple_size_v<Storage> - 1>;
+}
 
-    template<std::size_t N>
-    std::ostream &operator<<(std::ostream &os, regex_result<N> const & result)
-    {
-        return os << result.template group<0>();
-    }
+template<std::size_t N>
+std::ostream &operator<<(std::ostream &os, meta::regex_result<N> const & result)
+{
+    return os << result.template group<0>();
 }
 
 namespace std
 {
-    // Specialize STL metafunctions for structured binding decomposition
-
     template <std::size_t N>
     struct tuple_size<meta::regex_result<N>> : std::integral_constant<std::size_t, N> {};
 
