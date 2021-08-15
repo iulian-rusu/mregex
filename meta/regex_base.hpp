@@ -53,7 +53,7 @@ namespace meta
                 std::size_t const str_length = input.length();
                 do
                 {
-                    auto res = ast_type::match(input, {start_pos, str_length}, ctx);
+                    auto res = ast_type::match(input, {start_pos, str_length - start_pos}, ctx);
                     if (res)
                     {
                         std::get<0>(ctx.captures) = regex_capture<0>{start_pos, res.consumed};

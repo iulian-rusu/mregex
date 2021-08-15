@@ -44,7 +44,7 @@ namespace meta::ast
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         requires is_trivially_matchable_v<First>
         {
-            if (mp.consume_limit == 0 || mp.from >= input.length())
+            if (mp.consume_limit == 0)
                 return {0, false};
 
             if (First::consume_one(input[mp.from], ctx))
@@ -149,13 +149,11 @@ namespace meta::ast
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         requires is_trivially_matchable_v<Inner>
         {
-            std::size_t const remaining = input.length() - mp.from;
-            std::size_t const max_offset = remaining < mp.consume_limit ? remaining : mp.consume_limit;
-            for (auto offset = 0u; offset < max_offset; ++offset)
+            for (auto offset = 0u; offset < mp.consume_limit; ++offset)
                 if (!Inner::consume_one(input[mp.from + offset], ctx))
                     return {offset, true};
 
-            return {max_offset, true};
+            return {mp.consume_limit, true};
         }
     };
 
@@ -220,9 +218,7 @@ namespace meta::ast
         static constexpr match_result consume_rest(auto const &input, match_params mp, MatchContext &ctx) noexcept
         requires is_trivially_matchable_v<Inner>
         {
-            std::size_t const remaining = input.length() - mp.from;
-            std::size_t const max_offset = remaining < R ? remaining : R;
-            std::size_t const consume_limit = max_offset < mp.consume_limit ? max_offset : mp.consume_limit;
+            std::size_t const consume_limit = R <= mp.consume_limit ? R : mp.consume_limit;
             for (auto offset = 0u; offset < consume_limit; ++offset)
                 if (!Inner::consume_one(input[mp.from + offset], ctx))
                     return {offset, true};
@@ -285,8 +281,7 @@ namespace meta::ast
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         requires is_trivially_matchable_v<Inner>
         {
-            std::size_t const remaining = input.length() - mp.from;
-            if (N > remaining || N > mp.consume_limit)
+            if (N > mp.consume_limit)
                 return {0, false};
 
             for (auto offset = 0u; offset < N; ++offset)
@@ -353,7 +348,7 @@ namespace meta::ast
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            if (mp.consume_limit == 0 || mp.from >= input.length())
+            if (mp.consume_limit == 0)
                 return {0, false};
 
             bool const res = consume_one(input[mp.from], ctx);
@@ -413,7 +408,7 @@ namespace meta::ast
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            if (mp.consume_limit == 0 || mp.from >= input.length())
+            if (mp.consume_limit == 0)
                 return {0, false};
 
             bool const res = consume_one(input[mp.from], ctx);
@@ -435,7 +430,7 @@ namespace meta::ast
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &) noexcept
         {
-            if (mp.consume_limit == 0 || mp.from >= input.length())
+            if (mp.consume_limit == 0)
                 return {0, false};
 
             bool const res = consume_one(input[mp.from]);
@@ -456,7 +451,7 @@ namespace meta::ast
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            if (mp.consume_limit == 0 || mp.from >= input.length())
+            if (mp.consume_limit == 0)
                 return {0, false};
 
             bool const res = consume_one(input[mp.from], ctx);
@@ -480,7 +475,7 @@ namespace meta::ast
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            if (mp.consume_limit == 0 || mp.from >= input.length())
+            if (mp.consume_limit == 0)
                 return {0, false};
 
             bool const res = consume_one(input[mp.from], ctx);
@@ -516,9 +511,8 @@ namespace meta::ast
             if (mp.consume_limit < length_to_match)
                 return {0, false};
 
-            std::size_t const input_length = input.length();
             std::size_t offset = 0;
-            while (offset < length_to_match && mp.from + offset < input_length)
+            while (offset < length_to_match)
             {
                 auto subject = input[mp.from + offset];
                 auto to_match = str_to_match[offset];

@@ -10,7 +10,7 @@ namespace meta::tests
     using email_regex = regex<R"(([^ @]+)@([^ @]+))">;
 
     static_assert(uri_regex::find_first("https://google.com"sv));
-    static_assert(uri_regex::find_first("        https://google.com"sv));
+    static_assert(uri_regex::find_first("      https://google.com"sv));
     static_assert(uri_regex::find_first("https://google.com       "sv));
     static_assert(uri_regex::find_first("... https://google.com ..."sv));
     static_assert(uri_regex::find_first("... https://google.com\n... https://youtube.com ..."sv));
