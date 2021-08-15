@@ -1,6 +1,8 @@
 #ifndef META_REGEX_CAPTURE_HPP
 #define META_REGEX_CAPTURE_HPP
 
+#include <string_view>
+
 namespace meta
 {
     /**
@@ -14,7 +16,8 @@ namespace meta
 
         [[nodiscard]] constexpr std::string_view evaluate(std::string_view input) const noexcept
         {
-            return input.substr(from, consumed);
+            auto const begin = input.cbegin() + from;
+            return {begin, begin + consumed};
         }
 
         [[nodiscard]] constexpr std::size_t end() const noexcept

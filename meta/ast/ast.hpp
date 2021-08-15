@@ -585,7 +585,10 @@ namespace meta::ast
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            return Inner::match(input, mp, ctx).template consume_if_not_matched<1>();
+            if (mp.consume_limit == 0)
+                return {0, false};
+            bool const res = !Inner::consume_one(input[mp.from], ctx);
+            return {res, res};
         }
 
         template<typename MatchContext>

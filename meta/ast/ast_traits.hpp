@@ -15,7 +15,7 @@ namespace meta::ast
     struct is_trivially_matchable
     {
         template<typename Test>
-        static auto sfinae_helper(int) -> decltype(Test::template consume_one<int, int>, std::true_type{});
+        static auto sfinae_helper(int) -> decltype(&Test::template consume_one<int, int>, std::true_type{});
 
         template<typename Test>
         static auto sfinae_helper(...) -> std::false_type;
