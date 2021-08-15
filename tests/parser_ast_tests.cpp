@@ -216,7 +216,16 @@ namespace meta::tests
     static_assert(detail::expected_ast<R"(c{2})",
             repetition
             <
-                2, 2,
+                symbol::quantifier_value<2>,
+                symbol::quantifier_value<2>,
+                character<'c'>
+            >
+    >);
+    static_assert(detail::expected_ast<R"(c{0})",
+            repetition
+            <
+                symbol::quantifier_value<0>,
+                symbol::quantifier_value<0>,
                 character<'c'>
             >
     >);
@@ -249,28 +258,40 @@ namespace meta::tests
     static_assert(detail::expected_ast<R"(c{22})",
             repetition
             <
-                22, 22,
+                symbol::quantifier_value<22>,
+                symbol::quantifier_value<22>,
                 character<'c'>
             >
     >);
     static_assert(detail::expected_ast<R"(c{22,})",
             repetition
             <
-                22, 0,
+                symbol::quantifier_value<22>,
+                symbol::quantifier_inf,
                 character<'c'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c{22,23})",
+    static_assert(detail::expected_ast<R"(c{22,0})", // parsable syntax but will not compile when trying to match
             repetition
             <
-                22, 23,
+                symbol::quantifier_value<22>,
+                symbol::quantifier_value<0>,
+                character<'c'>
+            >
+    >);
+    static_assert(detail::expected_ast<R"(c{984,7644})",
+            repetition
+            <
+                symbol::quantifier_value<984>,
+                symbol::quantifier_value<7644>,
                 character<'c'>
             >
     >);
     static_assert(detail::expected_ast<R"(c{0,22})",
             repetition
             <
-                0, 22,
+                symbol::quantifier_value<0>,
+                symbol::quantifier_value<22>,
                 character<'c'>
             >
     >);
@@ -298,7 +319,8 @@ namespace meta::tests
     static_assert(detail::expected_ast<R"(c{012})",
             repetition
             <
-                12, 12,
+                symbol::quantifier_value<12>,
+                symbol::quantifier_value<12>,
                 character<'c'>
             >
     >);
@@ -328,7 +350,8 @@ namespace meta::tests
     static_assert(detail::expected_ast<R"((c*{012}){3})",
             repetition
             <
-                3, 3,
+                symbol::quantifier_value<3>,
+                symbol::quantifier_value<3>,
                 capturing
                 <
                     1,
@@ -353,7 +376,8 @@ namespace meta::tests
                 character<'a'>,
                 repetition
                 <
-                    15, 15,
+                    symbol::quantifier_value<15>,
+                    symbol::quantifier_value<15>,
                     capturing
                     <
                         1,

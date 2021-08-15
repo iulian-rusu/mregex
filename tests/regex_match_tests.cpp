@@ -59,6 +59,10 @@ namespace meta::tests
     static_assert(regex<R"((a?){4,5})">::match("aaa"sv));
     static_assert(regex<R"((a|bc){0,5})">::match("abcbcbc"sv));
     static_assert(regex<R"((ab+){1,3})">::match("ababbbbbab"sv));
+    static_assert(regex<R"((_x){7,17})">::match("_x_x_x_x_x_x_x"sv));
+    static_assert(regex<R"((_x){7,17})">::match("_x_x_x_x_x_x_x_x"sv));
+    static_assert(regex<R"((_x){7,17})">::match("_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x"sv));
+    static_assert(regex<R"((_x){7,17})">::match("_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x"sv));
     static_assert(regex<R"((abc){0,})">::match("abcabc"sv));
     static_assert(regex<R"(\w{2}-\w{3}-\w{4})">::match("ab-abc-xyzt"sv));
     static_assert(regex<R"([a-z]{2})">::match("xy"sv));
@@ -165,6 +169,11 @@ namespace meta::tests
     static_assert(regex<R"(a{3,3})">::match("aa"sv) == false);
     static_assert(regex<R"(a{3,6})">::match("aaaaaaa"sv) == false);
     static_assert(regex<R"(a{1,5})">::match(""sv) == false);
+    static_assert(regex<R"((_x){7,17})">::match("_x_x_x_x_x"sv) == false);
+    static_assert(regex<R"((_x){7,17})">::match("_x_x_x_x_x_x_"sv) == false);
+    static_assert(regex<R"((_x){7,17})">::match("_x_x_x_x_x_x_x_x_x_xx_x_x_x_x_x_x"sv) == false);
+    static_assert(regex<R"((_x){7,17})">::match("_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_"sv) == false);
+    static_assert(regex<R"((_x){7,17})">::match("_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x"sv) == false);
     static_assert(regex<R"((abc){0,5})">::match("acabc"sv) == false);
     static_assert(regex<R"((a|bc){0,5})">::match("abcbcbcbcaa"sv) == false);
     static_assert(regex<R"((ab+){1,3})">::match("ababbbbbabab"sv) == false);

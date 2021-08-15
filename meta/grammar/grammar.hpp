@@ -570,12 +570,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    std::conditional_t
-                    <
-                        (N > 0),
-                        symbol::make_repetition<N, N>,
-                        symbol::make_epsilon
-                    >
+                    symbol::make_repetition<symbol::quantifier_value<N>, symbol::quantifier_value<N>>
                 >;
     };
 
@@ -586,11 +581,11 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::quantifier_values<N, 0u>
+                    symbol::quantifier_values<symbol::quantifier_value<N>, symbol::quantifier_inf>
                 >;
     };
 
-    template<std::size_t A, std::size_t B, auto C>
+    template<typename A, typename B, auto C>
     struct rule<symbol::quantifier_values<A, B>, ast::character<C>>
     {
         using type =
@@ -600,13 +595,13 @@ namespace meta::grammar
                     stack
                     <
                         advance,
-                        symbol::quantifier_values<A, 10 * B + C - '0'>
+                        symbol::quantifier_values<A, update_quantifier_t<B, C>>
                     >,
                     reject
                 >;
     };
 
-    template<std::size_t A, std::size_t B>
+    template<typename A, typename B>
     struct rule<symbol::quantifier_values<A, B>, ast::character<'}'>>
     {
         using type =

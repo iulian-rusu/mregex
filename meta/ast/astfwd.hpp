@@ -18,7 +18,7 @@ namespace meta::ast
     template<typename>
     struct star;
 
-    template<std::size_t, std::size_t, typename>
+    template<typename, typename, typename>
     struct repetition;
 
     struct terminal;

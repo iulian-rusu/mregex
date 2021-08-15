@@ -57,5 +57,36 @@ namespace meta::grammar
 
     template<auto C>
     using begin_quantifier_value_t = typename begin_quantifier_value<C>::type;
+
+    /**
+     * Metafunction that updates a given quantifier value which might also be infinite.
+     * Base 10 number parsing is assumed, finite values take priority and overwrite infinity.
+     *
+     * @tparam T    The quantifier value symbol to be updated
+     * @tparam C    The character to be parsed
+     */
+    template<typename T, auto C, bool = is_numeric_v<C>>
+    struct update_quantifier;
+
+    template<auto A, auto C>
+    struct update_quantifier<symbol::quantifier_value<A>, C, true>
+    {
+        using type = symbol::quantifier_value<10 * A + C - '0'>;
+    };
+
+    template<auto C>
+    struct update_quantifier<symbol::quantifier_inf, C, true>
+    {
+        using type = symbol::quantifier_value<C - '0'>;
+    };
+
+    template<typename T, auto C>
+    struct update_quantifier<T, C, false>
+    {
+        using type = T;
+    };
+
+    template<typename T, auto C>
+    using update_quantifier_t = typename update_quantifier<T, C>::type;
 }
 #endif //META_QUANTIFIER_RULES_HPP

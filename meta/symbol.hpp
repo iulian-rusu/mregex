@@ -58,13 +58,13 @@ namespace meta::symbol
     template<std::size_t>
     struct quantifier_value {};
 
-    template<std::size_t, std::size_t>
+    struct quantifier_inf {};
+
+    template<typename, typename>
     struct quantifier_values {};
 
     // Tag for symbols that require AST updates
     struct ast_update {};
-
-    struct make_epsilon : ast_update {};
 
     struct make_char : ast_update {};
 
@@ -77,7 +77,7 @@ namespace meta::symbol
 
     struct make_star : ast_update {};
 
-    template<std::size_t, std::size_t>
+    template<typename, typename>
     struct make_repetition : ast_update {};
 
     struct make_optional : ast_update {};
