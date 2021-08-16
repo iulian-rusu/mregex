@@ -17,7 +17,7 @@ namespace meta
             static constexpr bool greedy_alt = check_flag_v<flag::greedy_alt, Flags ...>;
         };
 
-        capture_storage<Regex::capture_count> captures{};
+        capture_view_storage<Regex::capture_count> captures{};
 
         constexpr void clear_captures() noexcept
         {

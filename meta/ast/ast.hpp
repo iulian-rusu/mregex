@@ -5,7 +5,7 @@
 #include "capture_counter.hpp"
 #include "match_params.hpp"
 #include "match_result.hpp"
-#include "../result/regex_capture.hpp"
+#include "../regex_capture.hpp"
 #include "../context/match_context.hpp"
 #include "../utility/char_traits.hpp"
 #include "../utility/concepts.hpp"
@@ -227,7 +227,7 @@ namespace meta::ast
         }
     };
 
-    // The right end of the interval is infinity
+    // The right length of the interval is infinity
     template<std::size_t N, typename Inner>
     struct repetition<symbol::quantifier_value<N>, symbol::quantifier_inf, Inner>
     {
@@ -506,7 +506,7 @@ namespace meta::ast
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
-            auto const str_to_match = std::get<ID>(ctx.captures).evaluate(input);
+            auto const str_to_match = std::get<ID>(ctx.captures).view();
             std::size_t const length_to_match = str_to_match.length();
             if (mp.consume_limit < length_to_match)
                 return {0, false};
@@ -569,7 +569,12 @@ namespace meta::ast
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
             auto inner_match = Inner::match(input, mp, ctx);
-            std::get<ID>(ctx.captures) = regex_capture<ID>{mp.from, inner_match.consumed};
+            if (inner_match)
+            {
+                auto start_iter = input.cbegin() + mp.from;
+                std::string_view captured_content{start_iter, start_iter + inner_match.consumed};
+                std::get<ID>(ctx.captures) = regex_capture_view<ID>{captured_content};
+            }
             return inner_match;
         }
     };

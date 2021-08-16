@@ -19,7 +19,9 @@ namespace meta
     {
         { s[index] } -> convertible_to<char32_t>;
         { s.length() } -> convertible_to<std::size_t>;
-        { s.substr(index, index) } -> convertible_to<std::string_view>;
+        s.cbegin();
+        s.cend();
+        { T{s.cbegin(), s.cbegin() + index} } -> convertible_to<T>;
     };
 
     /**
