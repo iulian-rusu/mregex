@@ -14,14 +14,14 @@ namespace meta
     /**
      * Concept used to constrain the generic type accepted by matching/searching functions.
      */
-    template<typename T>
+    template<typename T, typename RRT = std::remove_reference_t<T>>
     concept string_like = requires(T s, std::size_t index)
     {
         { s[index] } -> convertible_to<char32_t>;
         { s.length() } -> convertible_to<std::size_t>;
         s.cbegin();
         s.cend();
-        { T{s.cbegin(), s.cbegin() + index} } -> convertible_to<T>;
+        { RRT{s.cbegin(), s.cbegin() + index} } -> convertible_to<RRT>;
     };
 
     /**

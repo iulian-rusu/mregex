@@ -59,7 +59,7 @@ int main()
 
     // Lazy iteration over a collection of result
     using word_regex = meta::regex<R"([-a-z']+)", meta::flag::i>;
-    constexpr std::string_view words = "Let's iterate over these words!";
+    std::string words = "Let's iterate over these words!";
     for (auto &&res : word_regex::find_all(words))
     {
         std::cout << res << '\n';
@@ -67,8 +67,13 @@ int main()
     std::cout << '\n';
 
     // Using structured bindings
-    using date_regex = meta::regex<R"((\d+)\/(\d+)\/(\d+))">;
-    constexpr std::string_view date = "07/08/2021";
-    auto [day, month, year] = date_regex::match(date);
+    auto const get_date_info = []() {
+        using date_regex = meta::regex<R"((\d+)\s*\/\s*(\d+)\s*\/\s*(\d+))">;
+        std::string date = "07  /  08  /  2021";
+        // Calling .copy() to get ownership of captured content
+        return date_regex::match(date).copy();
+    };
+    // Regex captures decompose into std::string_view
+    auto [day, month, year] = get_date_info();
     std::cout << "Day: " << day << "\nMonth: " << month << "\nYear: " << year;
 }

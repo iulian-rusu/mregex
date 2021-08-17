@@ -13,16 +13,16 @@ namespace meta
      * @tparam Str  The type of string like object used to store the captured content
      */
     template<string_like Str>
-    class basic_regex_capture
+    class regex_capture_base
     {
     protected:
         Str content;
     public:
-        constexpr basic_regex_capture()
+        constexpr regex_capture_base()
         noexcept(std::is_nothrow_default_constructible_v<Str>) = default;
 
         template<typename S>
-        constexpr explicit basic_regex_capture(S &&s)
+        constexpr explicit regex_capture_base(S &&s)
         noexcept(std::is_nothrow_move_constructible_v<Str>)
             : content{std::forward<S>(s)}
         {}
@@ -42,20 +42,32 @@ namespace meta
      * Class that holds a view on the captured content of a regex group.
      */
     template<std::size_t>
-    class regex_capture_view : public basic_regex_capture<std::string_view>
+    class regex_capture_view : public regex_capture_base<std::string_view>
     {
-        using basic_regex_capture<std::string_view>::content;
+        using regex_capture_base<std::string_view>::content;
     public:
         constexpr regex_capture_view() noexcept = default;
 
         constexpr explicit regex_capture_view(std::string_view s) noexcept
-            : basic_regex_capture<std::string_view>{s}
+            : regex_capture_base<std::string_view>{s}
         {}
 
         constexpr void reset() noexcept
         {
             content = "";
         }
+    };
+
+    /**
+     * Class that owns a copy of the captured content of a regex group.
+     */
+    template<std::size_t N>
+    class regex_capture : public regex_capture_base<std::string>
+    {
+    public:
+        explicit regex_capture(regex_capture_view<N> const &cap)
+        : regex_capture_base<std::string>{cap.view()}
+        {}
     };
 
     /**
@@ -72,18 +84,6 @@ namespace meta
 
     template<std::size_t N>
     using capture_view_storage = typename alloc_capture_view_storage<std::make_index_sequence<N + 1>>::type;
-
-    /**
-     * Class that owns a copy of the captured content of a regex group.
-     */
-    template<std::size_t N>
-    class regex_capture : public basic_regex_capture<std::string>
-    {
-    public:
-        explicit regex_capture(regex_capture_view<N> const &cap)
-            : basic_regex_capture<std::string>{cap.view()}
-        {}
-    };
 
     /**
      * Defines a std::tuple with N + 1 elements of type regex_capture.

@@ -40,6 +40,7 @@ namespace meta
     public:
         template<typename Strg>
         constexpr basic_regex_result(bool m, Strg &&storage)
+        noexcept(std::is_nothrow_move_constructible_v<Storage>)
         requires std::is_convertible_v<Storage, Strg>
             : matched{m}, captures{std::forward<Strg>(storage)}
         {}

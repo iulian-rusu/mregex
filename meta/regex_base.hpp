@@ -30,7 +30,7 @@ namespace meta
         template<typename ... ExtraFlags>
         struct with_flags
         {
-            using match_context = create_match_context<regex_base, Flags ..., ExtraFlags ...>;
+            using match_context = create_match_context<ast_type, Flags ..., ExtraFlags ...>;
 
             template<string_like Str>
             [[nodiscard]] static constexpr auto match(Str const &input) noexcept
