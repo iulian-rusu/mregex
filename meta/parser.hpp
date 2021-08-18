@@ -16,14 +16,13 @@ namespace meta
     template<auto const pattern>
     struct parser
     {
-        // Helper struct that contains either a symbol::character or symbol::epsilon based on the size of the index
+        // Helper metafunction used to obtain input symbols for the parser
         template<std::size_t I, bool = I < pattern.length()>
         struct character_at
         {
             using type = ast::character<pattern[I]>;
         };
 
-        // Specialization for indices that are out of bound
         template<std::size_t I>
         struct character_at<I, false>
         {

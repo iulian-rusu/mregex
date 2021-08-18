@@ -11,7 +11,7 @@ namespace meta::grammar
     /**
      * Metafunction used as a grammar rule when the parsing of a quantifier fails.
      * In this case, the parser has to recover the skipped metacharacter used to
-     * identify the start of a quantifier, like '{'.
+     * mark the start of a quantifier, like '{'.
      *
      * @tparam C    The character that is parsed as replacement for the failed quantifier
      */
@@ -34,7 +34,7 @@ namespace meta::grammar
 
     /**
      * Metafunction that decides if the parser will begin parsing a quantifier value
-     * or will parse it as a normal character sequence.
+     * or a normal character sequence.
      *
      * @tparam C    The current character being parsed
      */
@@ -60,10 +60,10 @@ namespace meta::grammar
 
     /**
      * Metafunction that updates a given quantifier value which might also be infinite.
-     * Base 10 number parsing is assumed, finite values take priority and overwrite infinity.
+     * Base 10 number parsing is assumed, the absence of a value implies infinity.
      *
      * @tparam T    The quantifier value symbol to be updated
-     * @tparam C    The character to be parsed
+     * @tparam C    The current character being parsed
      */
     template<typename T, auto C, bool = is_numeric_v<C>>
     struct update_quantifier;

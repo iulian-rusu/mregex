@@ -3,11 +3,6 @@
 
 namespace meta
 {
-    /**
-     * Type trait to check if a character is numeric at compile-time.
-     *
-     * @tparam C    The character being checked
-     */
     template<auto C>
     struct is_numeric : std::bool_constant<'0' <= C && C <= '9'> {};
 

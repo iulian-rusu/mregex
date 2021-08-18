@@ -39,7 +39,6 @@ namespace meta
     template<typename Flag>
     using alias = regex_flag<Flag::alias_value>;
 
-    // Type trait to check if a type is a valid regex flag
     template<typename T>
     struct is_flag : std::false_type {};
 
@@ -49,11 +48,11 @@ namespace meta
     template<typename T>
     constexpr bool is_flag_v = is_flag<T>::value;
 
-    // Type trait to check if a flags has been set
+    // Type trait to check if a flags has been enabled
     template<typename Flag, typename ... Flags>
-    struct check_flag : std::bool_constant<is_any_of_v<Flag, Flags ...> || is_any_of_v<alias<Flag>, Flags ...>> {};
+    struct is_flag_enabled : std::bool_constant<is_any_of_v<Flag, Flags ...> || is_any_of_v<alias<Flag>, Flags ...>> {};
 
     template<typename Flag, typename ... Flags>
-    constexpr bool check_flag_v = check_flag<Flag, Flags ...>::value;
+    constexpr bool is_flag_enabled_v = is_flag_enabled<Flag, Flags ...>::value;
 }
 #endif //META_REGEX_FLAGS_HPP

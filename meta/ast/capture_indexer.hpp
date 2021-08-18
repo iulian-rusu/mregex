@@ -7,7 +7,6 @@ namespace meta::ast
 {
     /**
      * Metafunction that indexes capturing groups according to Preorder AST traversal.
-     *
      * During expression parsing and initial AST generation, capturing groups are
      * assigned IDs according to Postorder traversal. This is due to the stack-like
      * behavior of the parsing algorithm and needs to be fixed by this metafunction

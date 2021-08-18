@@ -9,7 +9,7 @@ namespace meta
 {
     /**
      * Extra match context needed to evaluate atomic groups.
-     * Contains an array that keeps track of atomic matches.
+     * Keeps track of match states to prevent backtracking.
      *
      * @tparam AST    The Abstract Syntax Tree that contains the atomic groups
      */
@@ -27,11 +27,12 @@ namespace meta
         }
     };
 
-
-    template<typename Regex>
-    struct atomic_match_context<Regex, false>
+    /**
+     * Empty base class used if the Abstract Syntax Tree does not contain atomic groups.
+     */
+    template<typename AST>
+    struct atomic_match_context<AST, false>
     {
-        // Empty object used when no atomic groups are contained in the regex
         constexpr void clear_states() const noexcept {}
     };
 }

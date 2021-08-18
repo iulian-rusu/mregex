@@ -40,7 +40,7 @@ namespace meta
                 res.matched = res.matched && (res.consumed == input.length());
                 if (!res.matched)
                 {
-                    ctx.reset();
+                    ctx.clear();
                 }
                 else
                 {
@@ -67,12 +67,12 @@ namespace meta
                     }
 
                     if constexpr (ast::has_atomic_group_v<ast_type>)
-                        ctx.reset();
+                        ctx.clear();
 
                     ++start_pos;
                 } while (start_pos < str_length);
 
-                ctx.reset();
+                ctx.clear();
                 return result_type{false, std::move(ctx.captures)};
             }
 

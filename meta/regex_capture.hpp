@@ -10,7 +10,7 @@ namespace meta
     /**
      * Base class for a regex capture container.
      *
-     * @tparam Str  The type of string like object used to store the captured content
+     * @tparam Str  A string-like type used to store the captured content
      */
     template<string_like Str>
     class regex_capture_base
@@ -52,7 +52,7 @@ namespace meta
             : regex_capture_base<std::string_view>{s}
         {}
 
-        constexpr void reset() noexcept
+        constexpr void clear() noexcept
         {
             content = "";
         }

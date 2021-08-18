@@ -72,9 +72,6 @@ namespace meta::ast
             return first_match ?: alternation<Rest ...>::match(input, mp, ctx);
         }
 
-        // Overload for greedy alternation, which makes it always verify all options
-        // and pick the one that consumes the most characters. It is useful for patterns where an
-        // alternation contains prefixes: (a|ab|abc)
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         requires flags<MatchContext>::greedy_alt
@@ -94,10 +91,6 @@ namespace meta::ast
     template<typename First>
     struct alternation<First> : First {};
 
-    /**
-     * Disjunction is a special AST node used to implement meta::regex_union.
-     * Unlike meta::alternation, meta::disjuction needs to consume all characters to match.
-     */
     template<typename First, typename ... Rest>
     struct disjunction
     {
@@ -110,7 +103,7 @@ namespace meta::ast
             auto first_match = First::match(input, mp, ctx);
             if (first_match && first_match.consumed == mp.consume_limit)
                 return first_match;
-            ctx.reset();
+            ctx.clear();
             return disjunction<Rest ...>::match(input, mp, ctx);
         }
     };
@@ -157,7 +150,6 @@ namespace meta::ast
         }
     };
 
-    // Repetition AST node implementation
     template<typename A, typename B, typename Inner>
     struct repetition;
 
