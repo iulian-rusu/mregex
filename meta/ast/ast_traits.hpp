@@ -48,6 +48,12 @@ namespace meta::ast
         static constexpr bool value = (has_atomic_group<Inners>::value || ...);
     };
 
+    template<typename A, typename B, typename Inner>
+    struct has_atomic_group<repetition<A, B, Inner>>
+    {
+        static constexpr bool value = has_atomic_group<Inner>::value;
+    };
+
     template<typename T>
     constexpr bool has_atomic_group_v = has_atomic_group<T>::value;
 }

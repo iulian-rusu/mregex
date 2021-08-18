@@ -11,7 +11,7 @@ namespace meta::tests
         constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast_type, AST>;
     }
 
-    //static_assert(std::is_same_v<typename parser<static_string(R"(a{0})")>::ast_type, void>);
+    //static_assert(std::is_same_v<typename parser<static_string(R"((a(b)(c(d))(x)){5,17})")>::ast_type, void>);
 
     static_assert(detail::expected_ast<R"()", epsilon>);
     static_assert(detail::expected_ast<R"(a))", character<'a'>>);

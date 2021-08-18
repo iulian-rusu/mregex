@@ -5,7 +5,7 @@
 
 namespace meta
 {
-    namespace detail
+    namespace impl
     {
         template<typename Tuple, typename Mapper, std::size_t ... Indices>
         constexpr auto tuple_map(Tuple &&tuple, Mapper &&mapper, std::index_sequence<Indices ...> &&)
@@ -20,10 +20,17 @@ namespace meta
         }
     }
 
+    /**
+     * Creates a new tuple by applying a mapper function on each element of another tuple.
+     *
+     * @param tuple     The original tuple
+     * @param mapper    The function that generates elements for the new tuple
+     * @return          A new std::tuple with elements returned by mapper
+     */
     template<typename Tuple, typename Mapper>
     constexpr auto tuple_map(Tuple &&tuple, Mapper &&mapper)
     {
-        return detail::tuple_map(
+        return impl::tuple_map(
                 std::forward<Tuple>(tuple),
                 std::forward<Mapper>(mapper),
                 std::make_index_sequence<std::tuple_size_v<std::decay_t<Tuple>>>{}
@@ -39,7 +46,7 @@ namespace meta
     template<typename Tuple, typename Mapper>
     constexpr void for_each_tuple_element(Tuple &&tuple, Mapper &&mapper)
     {
-        detail::for_each_tuple_element(
+        impl::for_each_tuple_element(
                 std::forward<Tuple>(tuple),
                 std::forward<Mapper>(mapper),
                 std::make_index_sequence<std::tuple_size_v<std::decay_t<Tuple>>>{}

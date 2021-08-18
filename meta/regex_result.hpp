@@ -20,8 +20,7 @@ namespace meta
     /**
      * Result that holds views of captured content.
      * If the orginal input string expires before this result object,
-     * the behavior is undefined. Use the owning() method to create
-     * an owning regex result.
+     * the behavior is undefined.
      */
     template<std::size_t N>
     using regex_result_view = basic_regex_result<N, capture_view_storage<N>>;

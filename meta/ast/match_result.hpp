@@ -32,12 +32,6 @@ namespace meta::ast
             matched = matched || other.matched;
             return *this;
         }
-
-        template<std::size_t I>
-        [[nodiscard]] constexpr match_result consume_if_not_matched() const noexcept
-        {
-            return match_result{matched ? 0 : I, !matched};
-        }
     };
 }
 #endif //META_MATCH_RESULT_HPP

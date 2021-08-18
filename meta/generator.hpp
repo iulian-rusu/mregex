@@ -18,7 +18,7 @@ namespace meta
         template<typename Func, typename = std::enable_if_t<std::is_convertible_v<Func, Prod>>>
         constexpr explicit generator(Func &&func)
         noexcept(std::is_nothrow_move_constructible_v<Prod>)
-                : Prod{std::forward<Func>(func)}
+            : Prod{std::forward<Func>(func)}
         {}
 
         /**
@@ -35,7 +35,7 @@ namespace meta
             template<typename Res>
             constexpr explicit iterator(generator<Prod> &g, Res &&res, bool a)
             noexcept(std::is_nothrow_move_constructible_v<Res>)
-                    : gen{g}, current_result{std::forward<Res>(res)}, active{a}
+                : gen{g}, current_result{std::forward<Res>(res)}, active{a}
             {}
 
             constexpr explicit operator bool() const noexcept
