@@ -539,10 +539,15 @@ namespace meta::ast
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
         {
             if (ctx.atomic_match_states[ID]) [[likely]]
-                return {0, false};
+            {
+                auto cached = ctx.atomic_match_cache[ID];
+                cached.matched = cached.consumed <= mp.consume_limit;
+                return cached;
+            }
 
             auto inner_match = Inner::match(input, mp, ctx);
-            ctx.atomic_match_states[ID] = static_cast<bool>(inner_match);
+            ctx.atomic_match_states[ID] = true;
+            ctx.atomic_match_cache[ID] = inner_match;
             return inner_match;
         }
 
@@ -551,11 +556,12 @@ namespace meta::ast
         requires is_trivially_matchable_v<Inner>
         {
             if (ctx.atomic_match_states[ID]) [[likely]]
-                return false;
+                return static_cast<bool>(ctx.atomic_match_cache[ID]);
 
-            auto inner_match = Inner::consume_one(ch, ctx);
-            ctx.atomic_match_states[ID] = inner_match;
-            return inner_match;
+            auto res = Inner::consume_one(ch, ctx);
+            ctx.atomic_match_states[ID] = true;
+            ctx.atomic_match_cache[ID] = match_result{res, res};
+            return res;
         }
     };
 

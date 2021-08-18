@@ -3,6 +3,7 @@
 
 #include <array>
 #include "../ast/ast_traits.hpp"
+#include "../ast/match_result.hpp"
 
 namespace meta
 {
@@ -16,6 +17,8 @@ namespace meta
     struct atomic_match_context
     {
         static constexpr std::size_t atomic_count = AST::atomic_count;
+
+        std::array<ast::match_result, atomic_count> atomic_match_cache{};
         std::array<bool, atomic_count> atomic_match_states{};
 
         constexpr void clear_states() noexcept
