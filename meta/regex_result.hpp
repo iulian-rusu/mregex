@@ -35,14 +35,14 @@ namespace meta
     class basic_regex_result
     {
         bool matched{};
-        std::size_t start_pos{};
+        std::size_t match_offset{};
         Storage captures;
     public:
         template<typename Strg>
-        constexpr basic_regex_result(bool m, std::size_t pos, Strg &&storage)
+        constexpr basic_regex_result(bool m, std::size_t offset, Strg &&storage)
         noexcept(std::is_nothrow_move_constructible_v<Storage>)
         requires std::is_convertible_v<Storage, Strg>
-            : matched{m}, start_pos{pos}, captures{std::forward<Strg>(storage)}
+            : matched{m}, match_offset{offset}, captures{std::forward<Strg>(storage)}
         {}
 
         constexpr explicit operator bool() const noexcept
@@ -62,12 +62,12 @@ namespace meta
 
         [[nodiscard]] constexpr std::size_t begin() const noexcept
         {
-            return start_pos;
+            return match_offset;
         }
 
         [[nodiscard]] constexpr std::size_t end() const noexcept
         {
-            return start_pos + length();
+            return match_offset + length();
         }
 
         /**
@@ -82,7 +82,7 @@ namespace meta
             auto owning_captures = tuple_map(captures, [&](auto const &capture) {
                 return regex_capture{capture};
             });
-            return {matched, start_pos, std::move(owning_captures)};
+            return {matched, match_offset, std::move(owning_captures)};
         }
 
         template<std::size_t ID>
