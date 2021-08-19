@@ -47,7 +47,7 @@ namespace meta
                     std::string_view matched_content{input.cbegin(), input.cbegin() + res.consumed};
                     std::get<0>(ctx.captures) = regex_capture_view<0>{matched_content};
                 }
-                return result_type{res.matched, std::move(ctx.captures)};
+                return result_type{res.matched, 0, std::move(ctx.captures)};
             }
 
             template<string_like Str>
@@ -57,23 +57,24 @@ namespace meta
                 std::size_t const str_length = input.length();
                 do
                 {
+
                     auto res = ast_type::match(input, {start_pos, str_length - start_pos}, ctx);
                     if (res)
                     {
                         auto start_iter = input.cbegin() + start_pos;
                         std::string_view matched_content{start_iter, start_iter + res.consumed};
                         std::get<0>(ctx.captures) = regex_capture_view<0>{matched_content};
-                        return result_type{true, std::move(ctx.captures)};
+                        return result_type{true, start_pos, std::move(ctx.captures)};
                     }
 
                     if constexpr (ast::has_atomic_group_v<ast_type>)
                         ctx.clear();
 
                     ++start_pos;
-                } while (start_pos < str_length);
+                } while (start_pos <= str_length);
 
                 ctx.clear();
-                return result_type{false, std::move(ctx.captures)};
+                return result_type{false, start_pos, std::move(ctx.captures)};
             }
 
             template<string_like Str>
@@ -83,7 +84,7 @@ namespace meta
                 {
                     [input = make_universal_capture(std::forward<Str>(input)), pos = start_pos]() mutable {
                         auto const result = find_first(input.get(), pos);
-                        pos += result.length() + 1;
+                        pos = result.end();
                         return result;
                     }
                 };

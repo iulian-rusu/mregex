@@ -5,7 +5,7 @@
 #include "../meta/regex_union.hpp"
 
 // Macro defined to run all tests
-#define META_RUN_TESTS
+#define META_RUN_TESTS1
 
 #ifdef META_RUN_TESTS
 #define META_RUN_PARSER_TESTS
