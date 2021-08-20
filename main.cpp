@@ -1,6 +1,4 @@
 #include <iostream>
-#include <fstream>
-#include <string>
 #include "meta/regex.hpp"
 
 int main()
@@ -30,10 +28,9 @@ int main()
     auto const get_date_info = []() {
         using date_regex = meta::regex<R"((\d+)\s*\/\s*(\d+)\s*\/\s*(\d+))">;
         std::string date = "07  /  08  /  2021";
-        // Calling .copy() to get ownership of captured content
-        return date_regex::match(date).copy();
+        return date_regex::match(date).own();
     };
-    // Regex captures decompose into std::string_view
+    // rvalue-qualified regex_result decomposes into rvalue references to std::string
     auto [day, month, year] = get_date_info();
     std::cout << "Day: " << day << "\nMonth: " << month << "\nYear: " << year;
 }

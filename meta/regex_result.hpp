@@ -38,11 +38,10 @@ namespace meta
         std::size_t match_offset{};
         Storage captures;
     public:
-        template<typename Strg>
-        constexpr basic_regex_result(bool m, std::size_t offset, Strg &&storage)
+        template<typename S>
+        constexpr basic_regex_result(bool m, std::size_t offset, S &&s)
         noexcept(std::is_nothrow_move_constructible_v<Storage>)
-        requires std::is_convertible_v<Storage, Strg>
-            : matched{m}, match_offset{offset}, captures{std::forward<Strg>(storage)}
+            : matched{m}, match_offset{offset}, captures{std::forward<S>(s)}
         {}
 
         constexpr explicit operator bool() const noexcept
@@ -76,7 +75,7 @@ namespace meta
          *
          * @return  A new regex_result object that holds ownership of captures
          */
-        [[nodiscard]] regex_result<N> copy() const
+        [[nodiscard]] regex_result<N> own() const
         requires std::is_same_v<Storage, capture_view_storage<N>>
         {
             auto owning_captures = tuple_map(captures, [&](auto const &capture) {
@@ -100,7 +99,7 @@ namespace meta
         constexpr decltype(auto) get() const noexcept
         {
             static_assert(ID < N, "tuple element index out of bounds");
-            return std::get<ID + 1>(captures).view();
+            return std::get<ID + 1>(captures).get();
         }
     };
 
@@ -122,7 +121,7 @@ namespace std
     template <std::size_t ID, std::size_t N, typename Storage>
     struct tuple_element<ID, meta::basic_regex_result<N, Storage>>
     {
-        using type = std::string_view;
+        using type = decltype(std::declval<meta::basic_regex_result<N, Storage>>().template get<ID>());
     };
 }
 #endif //META_REGEX_RESULT_HPP

@@ -52,6 +52,11 @@ namespace meta
             : regex_capture_base<std::string_view>{s}
         {}
 
+        [[nodiscard]] constexpr std::string_view get() const noexcept
+        {
+            return content;
+        }
+
         constexpr void clear() noexcept
         {
             content = "";
@@ -66,8 +71,23 @@ namespace meta
     {
     public:
         explicit regex_capture(regex_capture_view<N> const &cap)
-        : regex_capture_base<std::string>{cap.view()}
+            : regex_capture_base<std::string>{cap.view()}
         {}
+
+        [[nodiscard]] auto &get() & noexcept
+        {
+            return content;
+        }
+
+        [[nodiscard]] auto const &get() const & noexcept
+        {
+            return content;
+        }
+
+        [[nodiscard]] auto get() && noexcept
+        {
+            return std::move(content);
+        }
     };
 
     /**

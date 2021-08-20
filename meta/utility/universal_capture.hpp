@@ -23,17 +23,17 @@ namespace meta
             : value{std::forward<U>(u)}
         {}
 
-        auto &get() &
+        [[nodiscard]] auto &get() &
         {
             return value;
         }
 
-        auto const &get() const &
+        [[nodiscard]] auto const &get() const &
         {
             return value;
         }
 
-        auto get() &&
+        [[nodiscard]] auto get() &&
         {
             return std::move(value);
         }

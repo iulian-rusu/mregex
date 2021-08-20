@@ -15,7 +15,7 @@ namespace meta
     {
         using value_type = std::invoke_result_t<Prod>;
         
-        template<typename Func, typename = std::enable_if_t<std::is_convertible_v<Func, Prod>>>
+        template<typename Func>
         constexpr explicit generator(Func &&func)
         noexcept(std::is_nothrow_move_constructible_v<Prod>)
             : Prod{std::forward<Func>(func)}
