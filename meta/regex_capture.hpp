@@ -84,7 +84,7 @@ namespace meta
             return content;
         }
 
-        [[nodiscard]] auto get() && noexcept
+        [[nodiscard]] auto get() &&
         {
             return std::move(content);
         }

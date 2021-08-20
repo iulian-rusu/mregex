@@ -23,12 +23,12 @@ namespace meta
             : value{std::forward<U>(u)}
         {}
 
-        [[nodiscard]] auto &get() &
+        [[nodiscard]] auto &get() & noexcept
         {
             return value;
         }
 
-        [[nodiscard]] auto const &get() const &
+        [[nodiscard]] auto const &get() const & noexcept
         {
             return value;
         }
