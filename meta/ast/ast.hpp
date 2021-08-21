@@ -17,6 +17,7 @@ namespace meta::ast
     {
         static constexpr std::size_t capture_count = capture_counter<First, Rest ...>::count;
         static constexpr std::size_t atomic_count = atomic_counter<First, Rest ...>::count;
+        static constexpr std::size_t size = 1 + sizeof ... (Rest);
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
@@ -42,7 +43,7 @@ namespace meta::ast
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
-        requires is_trivially_matchable_v<First>
+        requires (is_trivially_matchable_v<First> && !are_trivially_matchable_v<Rest ...>)
         {
             if (mp.consume_limit == 0)
                 return {0, false};
@@ -50,6 +51,30 @@ namespace meta::ast
             if (First::consume_one(input[mp.from], ctx))
                 if (auto rest_match = sequence<Rest ...>::match(input, mp.consume(1), ctx))
                     return {rest_match.consumed + 1, true};
+
+            return {0, false};
+        }
+
+        template<typename MatchContext>
+        static constexpr match_result match(auto const &input, match_params mp, MatchContext &ctx) noexcept
+        requires are_trivially_matchable_v<First, Rest ...>
+        {
+            if (mp.consume_limit < size)
+                return {0, false};
+
+            return expand_trivial_match(input, mp, ctx, std::make_index_sequence<size>{});
+        }
+    private:
+        template<typename MatchContext, std::size_t Index, std::size_t ... Indices>
+        static constexpr match_result expand_trivial_match(
+                auto const &input,
+                match_params mp,
+                MatchContext &ctx,
+                std::index_sequence<Index, Indices ...> &&
+        ) noexcept
+        {
+            if (First::consume_one(input[mp.from], ctx) && (Rest::consume_one(input[mp.from + Indices], ctx) && ...))
+                    return {size, true};
 
             return {0, false};
         }
