@@ -103,7 +103,7 @@ namespace meta
     };
 
     template<std::size_t N>
-    using capture_view_storage = typename alloc_capture_view_storage<std::make_index_sequence<N + 1>>::type;
+    using regex_capture_view_storage = typename alloc_capture_view_storage<std::make_index_sequence<N + 1>>::type;
 
     /**
      * Defines a std::tuple with N + 1 elements of type regex_capture.
@@ -118,6 +118,6 @@ namespace meta
     };
 
     template<std::size_t N>
-    using capture_storage = typename alloc_capture_storage<std::make_index_sequence<N + 1>>::type;
+    using regex_capture_storage = typename alloc_capture_storage<std::make_index_sequence<N + 1>>::type;
 }
 #endif //META_REGEX_CAPTURE_HPP

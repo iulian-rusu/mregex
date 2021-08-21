@@ -1,7 +1,7 @@
 #ifndef META_MATCH_CONTEXT_BASE_HPP
 #define META_MATCH_CONTEXT_BASE_HPP
 
-#include "../utility/tuple_map.hpp"
+#include "../utility/tuple_helpers.hpp"
 #include "../regex_flags.hpp"
 
 namespace meta
@@ -17,11 +17,11 @@ namespace meta
             static constexpr bool greedy_alt = is_flag_enabled_v<flag::greedy_alt, Flags ...>;
         };
 
-        capture_view_storage<AST::capture_count> captures{};
+        regex_capture_view_storage<AST::capture_count> captures{};
 
         constexpr void clear_captures() noexcept
         {
-            for_each_tuple_element(captures, [](auto &capture) {
+            tuple_for_each(captures, [](auto &capture) {
                 capture.clear();
             });
         }

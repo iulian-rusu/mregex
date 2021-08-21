@@ -4,7 +4,7 @@
 #include <iosfwd>
 #include <tuple>
 #include "regex_capture.hpp"
-#include "utility/tuple_map.hpp"
+#include "utility/tuple_helpers.hpp"
 
 namespace meta
 {
@@ -23,13 +23,13 @@ namespace meta
      * the behavior is undefined.
      */
     template<std::size_t N>
-    using regex_result_view = basic_regex_result<N, capture_view_storage<N>>;
+    using regex_result_view = basic_regex_result<N, regex_capture_view_storage<N>>;
 
     /**
      * Result that holds ownership of captured content.
      */
     template<std::size_t N>
-    using regex_result = basic_regex_result<N, capture_storage<N>>;
+    using regex_result = basic_regex_result<N, regex_capture_storage<N>>;
 
     template<std::size_t N, typename Storage>
     class basic_regex_result
@@ -76,9 +76,9 @@ namespace meta
          * @return  A new regex_result object that holds ownership of captures
          */
         [[nodiscard]] regex_result<N> own() const
-        requires std::is_same_v<Storage, capture_view_storage<N>>
+        requires std::is_same_v<Storage, regex_capture_view_storage<N>>
         {
-            auto owning_captures = tuple_map(captures, [&](auto const &capture) {
+            auto owning_captures = tuple_transform(captures, [&](auto const &capture) {
                 return regex_capture{capture};
             });
             return {matched, match_offset, std::move(owning_captures)};

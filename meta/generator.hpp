@@ -10,7 +10,7 @@ namespace meta
      *
      * @tparam Prod   The type of callable used to produce the desired data
      */
-    template<producer Prod>
+    template<iterable_producer Prod>
     struct generator : Prod
     {
         using value_type = std::invoke_result_t<Prod>;
@@ -23,8 +23,6 @@ namespace meta
 
         /**
          * Lazy iterator over the generated result.
-         * A result that is explicitly convertible to the boolean false
-         * signals iteration ending.
          */
         class iterator
         {
@@ -68,7 +66,7 @@ namespace meta
             }
         };
 
-        struct end_iterator : std::false_type {};
+        struct iteration_end_marker : std::false_type {};
 
         auto begin() noexcept
         {
@@ -79,11 +77,11 @@ namespace meta
 
         auto end() const noexcept
         {
-            return end_iterator{};
+            return iteration_end_marker{};
         }
     };
 
-    template<typename Func>
+    template<iterable_producer Func>
     generator(Func &&) -> generator<std::decay_t<Func>>;
 }
 #endif //META_GENERATOR_HPP
