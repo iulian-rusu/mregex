@@ -40,7 +40,7 @@ namespace meta::tests
     static_assert(regex_union<R"(aB+b)", R"(A+)", R"(a?Ab?)">::match("AAAAA"sv));
     static_assert(regex_union<R"(aB+b)", R"(B+)", R"(a?Ab?)">::match("aA"sv));
     static_assert(regex_union<R"(aB+b)", R"(B+)", R"(a?Ab?)">::match("Ab"sv));
-    static_assert(regex_union<R"(aB+b)", R"(A+)", R"(a?Ab?)">::with_flags<flag::i>::match("aaaaaaa"sv));
+    static_assert(regex_union<R"(aB+b)", R"(A+)", R"(a?Ab?)">::with<flag::i>::match("aaaaaaa"sv));
 
     // Test non-matching inputs
     static_assert(regex_union<R"()">::match("a"sv) == false);
