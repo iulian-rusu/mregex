@@ -16,8 +16,8 @@ namespace meta
     struct regex_union : regex_base<ast::disjunction<ast_of<first>, ast_of<rest> ...>>
     {
         static_assert(
-            (parser<first>::accepted && (parser<rest>::accepted && ... )),
-            "at least one regular expression in the union contains a syntax error"
+                (parser<first>::accepted && (parser<rest>::accepted && ...)),
+                "at least one regular expression in the union contains a syntax error"
         );
     };
 

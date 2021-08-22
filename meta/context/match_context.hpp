@@ -10,7 +10,7 @@ namespace meta
     template<typename AST, typename ... Flags>
     struct match_context_factory
     {
-        static_assert((is_flag_v<Flags> && ... ), "invalid flag");
+        static_assert((is_flag_v<Flags> && ...), "invalid flag");
 
         using base_context = match_context_base<AST, Flags ...>;
         using atomic_context = atomic_match_context<AST>;

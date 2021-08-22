@@ -40,7 +40,7 @@ namespace meta
      * Metafunction used to detect if a type is present inside a type pack.
      */
     template<typename Test, typename ... Elems>
-    struct is_any_of : std::bool_constant<(std::is_same_v<Test, Elems> || ... )> {};
+   struct is_any_of : std::bool_constant<(std::is_same_v<Test, Elems> || ...)> {};
 
     template<typename Test, typename ... Rest>
     constexpr bool is_any_of_v = is_any_of<Test, Rest ...>::value;
