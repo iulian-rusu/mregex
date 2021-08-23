@@ -152,15 +152,15 @@ namespace meta::ast
             if (mb.consume_limit == 0)
                 return res;
 
-            match_bounds updated_mp = mb;
+            match_bounds updated_mb = mb;
             std::size_t const str_length = input.length();
-            while (updated_mp.from < str_length)
+            while (updated_mb.from < str_length)
             {
-                auto inner_match = Inner::match(input, updated_mp, ctx);
-                if (!inner_match || inner_match.consumed == 0 || inner_match.consumed > updated_mp.consume_limit)
+                auto inner_match = Inner::match(input, updated_mb, ctx);
+                if (!inner_match || inner_match.consumed == 0 || inner_match.consumed > updated_mb.consume_limit)
                     break;
                 res += inner_match;
-                updated_mp = updated_mp.advance(inner_match.consumed);
+                updated_mb = updated_mb.advance(inner_match.consumed);
             }
             return res;
         }
@@ -199,8 +199,8 @@ namespace meta::ast
         {
             if (auto exactly_n_match = exact_repetition<A, Inner>::match(input, mb, ctx))
             {
-                match_bounds updated_mp = mb.advance(exactly_n_match.consumed);
-                auto rest_match = consume_rest(input, updated_mp, ctx);
+                match_bounds updated_mb = mb.advance(exactly_n_match.consumed);
+                auto rest_match = consume_rest(input, updated_mb, ctx);
                 return exactly_n_match + rest_match;
             }
             return {0, false};
@@ -218,16 +218,16 @@ namespace meta::ast
         requires (!is_trivially_matchable_v<Inner>)
         {
             match_result res{0, true};
-            match_bounds updated_mp = mb;
+            match_bounds updated_mb = mb;
             std::size_t matched_so_far = 0;
             while (matched_so_far < R)
             {
-                auto inner_match = Inner::match(input, updated_mp, ctx);
-                if (!inner_match || inner_match.consumed > updated_mp.consume_limit)
+                auto inner_match = Inner::match(input, updated_mb, ctx);
+                if (!inner_match || inner_match.consumed > updated_mb.consume_limit)
                     break;
                 res += inner_match;
                 ++matched_so_far;
-                updated_mp = updated_mp.advance(inner_match.consumed);
+                updated_mb = updated_mb.advance(inner_match.consumed);
             }
 
             return res;
@@ -246,7 +246,7 @@ namespace meta::ast
         }
     };
 
-    // The right length of the interval is infinity
+    // The right end of the interval is infinity
     template<std::size_t N, typename Inner>
     struct repetition<symbol::quantifier_value<N>, symbol::quantifier_inf, Inner>
     {
@@ -258,8 +258,8 @@ namespace meta::ast
         {
             if (auto exactly_n_match = exact_repetition<N, Inner>::match(input, mb, ctx))
             {
-                match_bounds updated_mp = mb.advance(exactly_n_match.consumed);
-                auto star_match = star<Inner>::match(input, updated_mp, ctx);
+                match_bounds updated_mb = mb.advance(exactly_n_match.consumed);
+                auto star_match = star<Inner>::match(input, updated_mb, ctx);
                 return exactly_n_match + star_match;
             }
             return {0, false};
@@ -278,16 +278,16 @@ namespace meta::ast
         requires (!is_trivially_matchable_v<Inner>)
         {
             match_result res{0, false};
-            match_bounds updated_mp = mb;
+            match_bounds updated_mb = mb;
             std::size_t matched_so_far = 0;
             while (matched_so_far < N)
             {
-                auto inner_match = Inner::match(input, updated_mp, ctx);
-                if (!inner_match || inner_match.consumed > updated_mp.consume_limit)
+                auto inner_match = Inner::match(input, updated_mb, ctx);
+                if (!inner_match || inner_match.consumed > updated_mb.consume_limit)
                     break;
                 res += inner_match;
                 ++matched_so_far;
-                updated_mp = updated_mp.advance(inner_match.consumed);
+                updated_mb = updated_mb.advance(inner_match.consumed);
             }
 
             if (matched_so_far != N)

@@ -27,11 +27,7 @@ The library currently supports the following features:
     * `.` - wildcard character
     * `^`, `$` - anchors
     * `[abc]`, `[^abc]`, `[a-z0-9]` - sets
-
-Some features planned for the future:
-* `++`, `?+`, `*+` - possessive quantifiers
-* `{3, 5}` - range quantifier
-
+    
 ## Usage
 Below is an example of extracting data from a URL-string.
 Notice that the generated regular expression is a type and not an object, since the library maps every
@@ -59,7 +55,7 @@ on regex matching results. For example, we can generate functions with a differe
 return type based on some format pattern (`double` or `std::string`).
 ```cpp
 template<meta::static_string const input>
-constexpr auto parse()
+auto parse()
 {
     using test_number = meta::regex<R"([1-9]\d*(\.\d*)?(e(\+|-)?\d+(\.\d*)?)?)">;
     
