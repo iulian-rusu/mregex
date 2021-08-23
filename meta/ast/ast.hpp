@@ -32,7 +32,7 @@ namespace meta::ast
                 if (auto rest_match = sequence<Rest ...>::match(input, mb.advance(first_match.consumed), ctx))
                     return first_match + rest_match;
 
-                if (first_match.consumed == 0 || consume_limit == 0)
+                if (consume_limit == 0 || first_match.consumed == 0)
                     return {0, false};
 
                 consume_limit = first_match.consumed - 1;
@@ -153,8 +153,7 @@ namespace meta::ast
                 return res;
 
             match_bounds updated_mb = mb;
-            std::size_t const str_length = input.length();
-            while (updated_mb.from < str_length)
+            while (updated_mb.consume_limit > 0)
             {
                 auto inner_match = Inner::match(input, updated_mb, ctx);
                 if (!inner_match || inner_match.consumed == 0 || inner_match.consumed > updated_mb.consume_limit)
@@ -176,9 +175,6 @@ namespace meta::ast
             return {mb.consume_limit, true};
         }
     };
-
-    template<typename A, typename B, typename Inner>
-    struct repetition;
 
     template<std::size_t A, typename Inner>
     using exact_repetition = repetition<symbol::quantifier_value<A>, symbol::quantifier_value<A>, Inner>;

@@ -49,42 +49,6 @@ std::cout << "Path:\t" << match_res.group<6>() << '\n';
 std::cout << "Query:\t" << match_res.group<7>() << "\n";
 ```
 
-Searching and matching can also be done in `constexpr` if the input is known at
-compile-time. Using `if constexpr` we can conditionally compile code based
-on regex matching results. For example, we can generate functions with a different
-return type based on some format pattern (`double` or `std::string`).
-```cpp
-template<meta::static_string const input>
-auto parse()
-{
-    using test_number = meta::regex<R"([1-9]\d*(\.\d*)?(e(\+|-)?\d+(\.\d*)?)?)">;
-    
-    constexpr std::string_view url = static_cast<std::string_view>(input);
-    if constexpr (test_number::match(url))
-    {
-        return std::stod(std::string(sv));
-    }
-    else
-    {
-        return std::string(sv);
-    }
-}
-```
-
-To avoid long and complex regular expressions, it is possible to combine two separate
-`meta::regex` types into a union. The union behaves like an efficient alternation 
-of all inner regular expressions.
-```cpp
-using phone_regex = meta::regex<R"(\d{3}-\d{3}-\d{3})">;
-using email_regex = meta::regex<R"(([^@\s]+)@([^@\s]+))">;
-using contact_regex = meta::make_union<email_regex, phone_regex>;
-```
-It is also possible to directly create a union, without intermediate `meta::regex`
-types.
-```cpp
-using contact_regex = meta::regex_union<R"(\d{3}-\d{3}-\d{3})", R"(([^@\s]+)@([^@\s]+))">;
-```
-
 The library supports searching for multiple matches in a string. In this case,
 the `meta::regex::find_all` method returns a generator that will evaluate
 on-demand all matches in the string. We can iterate through the generator

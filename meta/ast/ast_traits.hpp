@@ -7,7 +7,7 @@ namespace meta::ast
 {
     /**
      * Type trait to identify nodes that can be trivially matched.
-     * A type T is trivially matchable if it always consumes one character while matching.
+     * A type T is trivially matchable if it always consumes one character when matching.
      * A type T is detected as trivially matchable by checking if it contains a template
      * for a static member function consume_one<A, B>, where A and B can be any generic types.
      */
