@@ -1,6 +1,7 @@
 #ifndef META_MATCH_CONTEXT_BASE_HPP
 #define META_MATCH_CONTEXT_BASE_HPP
 
+#include "match_cache.hpp"
 #include "../utility/tuple_helpers.hpp"
 #include "../regex_flags.hpp"
 
@@ -18,6 +19,7 @@ namespace meta
         };
 
         regex_capture_view_storage<AST::capture_count> captures{};
+        match_cache<256> cache{};
 
         constexpr void clear_captures() noexcept
         {

@@ -152,13 +152,18 @@ namespace meta::ast
             if (mb.consume_limit == 0)
                 return res;
 
+            if (auto cached = check_cache(mb, ctx))
+                return cached;
+
             match_bounds updated_mb = mb;
             while (updated_mb.consume_limit > 0)
             {
                 auto inner_match = Inner::match(input, updated_mb, ctx);
                 if (!inner_match || inner_match.consumed == 0 || inner_match.consumed > updated_mb.consume_limit)
                     break;
+
                 res += inner_match;
+                ctx.cache.push({mb.from, res.consumed});
                 updated_mb = updated_mb.advance(inner_match.consumed);
             }
             return res;
@@ -168,11 +173,33 @@ namespace meta::ast
         static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
         requires is_trivially_matchable_v<Inner>
         {
+            if (auto cached = check_cache(mb, ctx))
+                return cached;
+
             for (auto offset = 0u; offset < mb.consume_limit; ++offset)
+            {
                 if (!Inner::consume_one(input[mb.from + offset], ctx))
                     return {offset, true};
+                ctx.cache.push({mb.from, offset + 1});
+            }
 
             return {mb.consume_limit, true};
+        }
+    private:
+        template<typename MatchContext>
+        static constexpr match_result check_cache(match_bounds mb, MatchContext &ctx)
+        {
+            while (!ctx.cache.empty())
+            {
+                auto cached = ctx.cache.top();
+                if (cached.from != mb.from)
+                    break;
+
+                ctx.cache.pop();
+                if (cached.consumed <= mb.consume_limit)
+                    return {cached.consumed, true};
+            }
+            return {0, false};
         }
     };
 
