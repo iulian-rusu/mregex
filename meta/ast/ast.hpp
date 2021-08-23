@@ -152,8 +152,9 @@ namespace meta::ast
             if (mb.consume_limit == 0)
                 return res;
 
-            if (auto cached = check_cache(mb, ctx))
-                return cached;
+            if constexpr (flags<MatchContext>::cache)
+                if (auto cached = check_cache(mb, ctx))
+                    return cached;
 
             match_bounds updated_mb = mb;
             while (updated_mb.consume_limit > 0)
@@ -163,7 +164,8 @@ namespace meta::ast
                     break;
 
                 res += inner_match;
-                ctx.cache.push({mb.from, res.consumed});
+                if constexpr (flags<MatchContext>::cache)
+                    ctx.cache.push({mb.from, res.consumed});
                 updated_mb = updated_mb.advance(inner_match.consumed);
             }
             return res;
@@ -173,14 +175,16 @@ namespace meta::ast
         static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
         requires is_trivially_matchable_v<Inner>
         {
-            if (auto cached = check_cache(mb, ctx))
-                return cached;
+            if constexpr (flags<MatchContext>::cache)
+                if (auto cached = check_cache(mb, ctx))
+                    return cached;
 
             for (auto offset = 0u; offset < mb.consume_limit; ++offset)
             {
                 if (!Inner::consume_one(input[mb.from + offset], ctx))
                     return {offset, true};
-                ctx.cache.push({mb.from, offset + 1});
+                if constexpr (flags<MatchContext>::cache)
+                    ctx.cache.push({mb.from, offset + 1});
             }
 
             return {mb.consume_limit, true};
@@ -188,6 +192,7 @@ namespace meta::ast
     private:
         template<typename MatchContext>
         static constexpr match_result check_cache(match_bounds mb, MatchContext &ctx)
+        requires flags<MatchContext>::cache
         {
             while (!ctx.cache.empty())
             {

@@ -19,21 +19,40 @@ namespace meta
 
     namespace flag
     {
-        // Enables case-insensitive matching
+        /**
+         * Makes matching case-insensitive.
+         */
         using ignore_case = regex_flag<0x0>;
         using i = regex_flag<0x1>;
 
-        // Makes wildcard '.' match anything, even newline
+        /**
+         * Makes wildcards (.) match newline characters.
+         * Will make matching faster and generate cleaner assembly.
+         */
         using dotall = regex_flag<0x2>;
         using s = regex_flag<0x3>;
 
-        // Makes anchors like '^' and '$' also match newlines
+        /**
+         * Makes anchors ($ and ^) also match beginnings/ends of lines.
+         */
         using multiline = regex_flag<0x4>;
         using m = regex_flag<0x5>;
 
-        // Makes alternation always match the longest substring (custom flag)
+        /**
+         * Makes alternations always consume the most characters possible.
+         * Might make the performance worse but guarantees finding matches that
+         * could otherwise be missed.
+         */
         using greedy_alt = regex_flag<0x6>;
         using a = regex_flag<0x7>;
+
+        /**
+         * Makes star operators (*) cache intermediate matches (up to a fixed limit).
+         * Will result in worse performance for most patterns, unless they
+         * require a lot of backtracking on non-trivial subsequences.
+         */
+        using cache = regex_flag<0x8>;
+        using c = regex_flag<0x9>;
     }
 
     template<typename Flag>
@@ -48,7 +67,7 @@ namespace meta
     template<typename T>
     constexpr bool is_flag_v = is_flag<T>::value;
 
-    // Type trait to check if a flags has been enabled
+    // Metafunction to check if a flags has been enabled
     template<typename Flag, typename ... Flags>
     struct is_flag_enabled : std::bool_constant<is_any_of_v<Flag, Flags ...> || is_any_of_v<alias<Flag>, Flags ...>> {};
 

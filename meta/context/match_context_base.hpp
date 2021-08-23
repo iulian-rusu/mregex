@@ -16,10 +16,11 @@ namespace meta
             static constexpr bool dotall = is_flag_enabled_v<flag::dotall, Flags ...>;
             static constexpr bool multiline = is_flag_enabled_v<flag::multiline, Flags ...>;
             static constexpr bool greedy_alt = is_flag_enabled_v<flag::greedy_alt, Flags ...>;
+            static constexpr bool cache = is_flag_enabled_v<flag::cache, Flags ...>;
         };
 
         regex_capture_view_storage<AST::capture_count> captures{};
-        match_cache<256> cache{};
+        match_cache<flags::cache> cache{};
 
         constexpr void clear_captures() noexcept
         {
