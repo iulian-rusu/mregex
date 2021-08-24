@@ -71,7 +71,6 @@ namespace meta::tests
     static_assert(detail::expected_ast<R"((?>c))",
             atomic
             <
-                0,
                 character<'c'>
             >
     >);
@@ -81,7 +80,6 @@ namespace meta::tests
                 1,
                 atomic
                 <
-                    0,
                     character<'c'>
                 >
             >
@@ -483,7 +481,6 @@ namespace meta::tests
                                             <
                                                 atomic
                                                 <
-                                                    0,
                                                     sequence
                                                     <
                                                         character<'c'>,

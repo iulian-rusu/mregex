@@ -65,7 +65,7 @@ namespace meta::ast
     template<std::size_t>
     struct backref;
 
-    template<std::size_t, typename>
+    template<typename>
     struct atomic;
 
     template<std::size_t, typename>

@@ -1,8 +1,8 @@
 #ifndef META_MATCH_CONTEXT_HPP
 #define META_MATCH_CONTEXT_HPP
 
-#include "match_context_base.hpp"
 #include "atomic_match_context.hpp"
+#include "match_context_base.hpp"
 #include "caching_match_context.hpp"
 #include "../utility/tuple_helpers.hpp"
 
@@ -33,7 +33,7 @@ namespace meta
             constexpr void clear() noexcept
             {
                 base_context::clear_captures();
-                atomic_context::clear_states();
+                atomic_context::clear_atomic_state();
                 caching_context::clear_cache();
             }
         };

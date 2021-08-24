@@ -1,7 +1,6 @@
 #ifndef META_AST_HPP
 #define META_AST_HPP
 
-#include "atomic_counter.hpp"
 #include "capture_counter.hpp"
 #include "match_bounds.hpp"
 #include "match_result.hpp"
@@ -16,11 +15,10 @@ namespace meta::ast
     struct sequence
     {
         static constexpr std::size_t capture_count = capture_counter<First, Rest ...>::count;
-        static constexpr std::size_t atomic_count = atomic_counter<First, Rest ...>::count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
-        requires (!is_trivially_matchable_v<First>)
+        requires (!is_trivially_matchable_v<First> && !has_atomic_group_v<First>)
         {
             std::size_t consume_limit = mb.consume_limit;
             while (true)
@@ -41,6 +39,33 @@ namespace meta::ast
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        requires (!is_trivially_matchable_v<First> && has_atomic_group_v<First>)
+        {
+            std::size_t consume_limit = mb.consume_limit;
+            bool saved_match_state = ctx.pop_atomic_state();
+            while (true)
+            {
+                auto first_match = First::match(input, {mb.from, consume_limit}, ctx);
+                if (!first_match)
+                    break;
+
+                if (auto rest_match = sequence<Rest ...>::match(input, mb.advance(first_match.consumed), ctx))
+                    return first_match + rest_match;
+
+                if (ctx.atomic_match_state)
+                    break;
+
+                if (consume_limit == 0 || first_match.consumed == 0)
+                    break;
+
+                consume_limit = first_match.consumed - 1;
+            }
+            ctx.atomic_match_state = saved_match_state;
+            return {0, false};
+        }
+
+        template<typename MatchContext>
+        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
         requires (is_trivially_matchable_v<First> && !are_trivially_matchable_v<Rest ...>)
         {
             if (mb.consume_limit == 0)
@@ -57,13 +82,13 @@ namespace meta::ast
         static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
         requires are_trivially_matchable_v<First, Rest ...>
         {
-            if (mb.consume_limit < size)
+            if (mb.consume_limit < sequence_size)
                 return {0, false};
 
-            return expand_trivial_match(input, mb, ctx, std::make_index_sequence<size>{});
+            return expand_trivial_match(input, mb, ctx, std::make_index_sequence<sequence_size>{});
         }
     private:
-        static constexpr std::size_t size = 1 + sizeof ... (Rest);
+        static constexpr std::size_t sequence_size = 1 + sizeof ... (Rest);
 
         template<typename MatchContext, std::size_t Index, std::size_t ... Indices>
         static constexpr match_result expand_trivial_match(
@@ -74,7 +99,7 @@ namespace meta::ast
         ) noexcept
         {
             if (First::consume_one(input[mb.from], ctx) && (Rest::consume_one(input[mb.from + Indices], ctx) && ...))
-                return {size, true};
+                return {sequence_size, true};
 
             return {0, false};
         }
@@ -87,7 +112,6 @@ namespace meta::ast
     struct alternation
     {
         static constexpr std::size_t capture_count = capture_counter<First, Rest ...>::count;
-        static constexpr std::size_t atomic_count = atomic_counter<First, Rest ...>::count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
@@ -121,7 +145,6 @@ namespace meta::ast
     struct disjunction
     {
         static constexpr std::size_t capture_count = max_capture_counter<First, Rest ...>::count;
-        static constexpr std::size_t atomic_count = max_atomic_counter<First, Rest ...>::count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
@@ -142,7 +165,6 @@ namespace meta::ast
     struct star
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
-        static constexpr std::size_t atomic_count = Inner::atomic_count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
@@ -220,7 +242,6 @@ namespace meta::ast
 
         static constexpr std::size_t R = B - A;
         static constexpr std::size_t capture_count = Inner::capture_count;
-        static constexpr std::size_t atomic_count = Inner::atomic_count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
@@ -280,7 +301,6 @@ namespace meta::ast
     struct repetition<symbol::quantifier_value<N>, symbol::quantifier_inf, Inner>
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
-        static constexpr std::size_t atomic_count = Inner::atomic_count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
@@ -300,7 +320,6 @@ namespace meta::ast
     struct repetition<symbol::quantifier_value<N>, symbol::quantifier_value<N>, Inner>
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
-        static constexpr std::size_t atomic_count = Inner::atomic_count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
@@ -345,7 +364,6 @@ namespace meta::ast
     struct repetition<symbol::quantifier_value<0u>, symbol::quantifier_value<0u>, Inner>
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
-        static constexpr std::size_t atomic_count = Inner::atomic_count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &, match_bounds, MatchContext &) noexcept
@@ -361,7 +379,6 @@ namespace meta::ast
     struct terminal
     {
         static constexpr std::size_t capture_count = 0;
-        static constexpr std::size_t atomic_count = 0;
     };
 
     struct epsilon : terminal
@@ -580,25 +597,16 @@ namespace meta::ast
         }
     };
 
-    template<std::size_t ID, typename Inner>
+    template<typename Inner>
     struct atomic
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
-        static constexpr std::size_t atomic_count = 1 + Inner::atomic_count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
         {
-            if (ctx.atomic_match_states[ID]) [[likely]]
-            {
-                auto cached = ctx.atomic_match_cache[ID];
-                cached.matched = cached.consumed <= mb.consume_limit;
-                return cached;
-            }
-
             auto inner_match = Inner::match(input, mb, ctx);
-            ctx.atomic_match_states[ID] = true;
-            ctx.atomic_match_cache[ID] = inner_match;
+            ctx.atomic_match_state = static_cast<bool>(inner_match);
             return inner_match;
         }
 
@@ -606,12 +614,8 @@ namespace meta::ast
         static constexpr bool consume_one(auto const ch, MatchContext &ctx) noexcept
         requires is_trivially_matchable_v<Inner>
         {
-            if (ctx.atomic_match_states[ID]) [[likely]]
-                return static_cast<bool>(ctx.atomic_match_cache[ID]);
-
             auto res = Inner::consume_one(ch, ctx);
-            ctx.atomic_match_states[ID] = true;
-            ctx.atomic_match_cache[ID] = match_result{res, res};
+            ctx.atomic_match_state = res;
             return res;
         }
     };
@@ -620,7 +624,6 @@ namespace meta::ast
     struct capturing
     {
         static constexpr std::size_t capture_count = 1 + Inner::capture_count;
-        static constexpr std::size_t atomic_count = Inner::atomic_count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
@@ -642,7 +645,6 @@ namespace meta::ast
         static_assert(is_trivially_matchable_v<Inner>);
 
         static constexpr std::size_t capture_count = Inner::capture_count;
-        static constexpr std::size_t atomic_count = Inner::atomic_count;
 
         template<typename MatchContext>
         static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept

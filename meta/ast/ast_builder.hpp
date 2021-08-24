@@ -3,7 +3,6 @@
 
 #include "astfwd.hpp"
 #include "capture_counter.hpp"
-#include "atomic_counter.hpp"
 #include "../utility/stack.hpp"
 #include "../symbol.hpp"
 
@@ -165,9 +164,7 @@ namespace meta::ast
     template<typename C, typename First,  typename ... Rest>
     struct update_ast<symbol::make_atomic, C, stack<First, Rest ...>>
     {
-        static constexpr auto ID = atomic_counter<First, Rest ...>::count;
-
-        using type = stack<symbol::captureless_wrapper<atomic<ID, First>>, Rest ...>;
+        using type = stack<symbol::captureless_wrapper<atomic<First>>, Rest ...>;
     };
 
     template<typename C, typename First,  typename ... Rest>

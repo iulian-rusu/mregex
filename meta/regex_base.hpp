@@ -27,7 +27,6 @@ namespace meta
         using with = regex_base<AST, Flags ..., ExtraFlags ...>;
 
         static constexpr std::size_t capture_count = ast_type::capture_count;
-        static constexpr std::size_t atomic_count = ast_type::atomic_count;
 
         constexpr regex_base() noexcept = default;
 
@@ -37,14 +36,14 @@ namespace meta
             match_context ctx{};
             auto res = ast_type::match(input, {0, input.length()}, ctx);
             res.matched = res.matched && (res.consumed == input.length());
-            if (!res.matched)
-            {
-                ctx.clear();
-            }
-            else
+            if (res.matched)
             {
                 std::string_view matched_content{input.cbegin(), input.cbegin() + res.consumed};
                 std::get<0>(ctx.captures) = regex_capture_view<0>{matched_content};
+            }
+            else
+            {
+                ctx.clear_captures();
             }
             return result_type{res.matched, 0, std::move(ctx.captures)};
         }
@@ -56,8 +55,7 @@ namespace meta
             std::size_t const str_length = input.length();
             do
             {
-                auto res = ast_type::match(input, {start_pos, str_length - start_pos}, ctx);
-                if (res)
+                if (auto res = ast_type::match(input, {start_pos, str_length - start_pos}, ctx))
                 {
                     auto start_iter = input.cbegin() + start_pos;
                     std::string_view matched_content{start_iter, start_iter + res.consumed};
@@ -66,12 +64,14 @@ namespace meta
                 }
 
                 if constexpr (ast::has_atomic_group_v<ast_type>)
-                    ctx.clear();
+                    ctx.clear_atomic_state();
+                if constexpr (flags<match_context>::cache)
+                    ctx.clear_cache();
 
                 ++start_pos;
             } while (start_pos <= str_length);
 
-            ctx.clear();
+            ctx.clear_captures();
             return result_type{false, start_pos, std::move(ctx.captures)};
         }
 

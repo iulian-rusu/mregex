@@ -36,8 +36,8 @@ namespace meta::ast
     template<typename T>
     struct has_atomic_group : std::false_type {};
 
-    template<auto ID, typename Inner>
-    struct has_atomic_group<atomic<ID, Inner>> : std::true_type {};
+    template<typename Inner>
+    struct has_atomic_group<atomic<Inner>> : std::true_type {};
 
     template<template<typename> typename Outer, typename ... Inners>
     struct has_atomic_group<Outer<Inners ...>>
