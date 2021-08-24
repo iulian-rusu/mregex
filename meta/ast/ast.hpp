@@ -152,12 +152,19 @@ namespace meta::ast
             if (mb.consume_limit == 0)
                 return res;
 
+            if constexpr (flags<MatchContext>::cache)
+                if (auto cached = check_cache(mb, ctx))
+                    return cached;
+
             match_bounds updated_mb = mb;
             while (updated_mb.consume_limit > 0)
             {
                 auto inner_match = Inner::match(input, updated_mb, ctx);
                 if (!inner_match || inner_match.consumed == 0 || inner_match.consumed > updated_mb.consume_limit)
                     break;
+
+                if constexpr (flags<MatchContext>::cache)
+                    ctx.cache.push({mb.from, res.consumed});
                 res += inner_match;
                 updated_mb = updated_mb.advance(inner_match.consumed);
             }
@@ -168,11 +175,37 @@ namespace meta::ast
         static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
         requires is_trivially_matchable_v<Inner>
         {
+            if constexpr (flags<MatchContext>::cache)
+                if (auto cached = check_cache(mb, ctx))
+                    return cached;
+
             for (auto offset = 0u; offset < mb.consume_limit; ++offset)
+            {
                 if (!Inner::consume_one(input[mb.from + offset], ctx))
                     return {offset, true};
 
+                if constexpr (flags<MatchContext>::cache)
+                    ctx.cache.push({mb.from, offset});
+            }
+
             return {mb.consume_limit, true};
+        }
+    private:
+        template<typename MatchContext>
+        static constexpr match_result check_cache(match_bounds mb, MatchContext &ctx)
+        requires flags<MatchContext>::cache
+        {
+            while (!ctx.cache.empty())
+            {
+                auto cached = ctx.cache.top();
+                if (cached.from != mb.from)
+                    break;
+
+                ctx.cache.pop();
+                if (cached.consumed <= mb.consume_limit)
+                    return {cached.consumed, true};
+            }
+            return {0, false};
         }
     };
 
