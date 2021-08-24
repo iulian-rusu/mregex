@@ -127,6 +127,6 @@ namespace meta::symbol
 
     // Type trait to distinguish AST update symbols from other symbols
     template<typename Symbol>
-    constexpr bool is_ast_update_v = std::is_base_of_v<ast_update, Symbol>;
+    inline constexpr bool is_ast_update_v = std::is_base_of_v<ast_update, Symbol>;
 }
 #endif //META_SYMBOL_HPP

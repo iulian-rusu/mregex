@@ -8,7 +8,7 @@ namespace meta::tests
     namespace detail
     {
         template<static_string const pattern, typename AST>
-        constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast_type, AST>;
+        inline constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast_type, AST>;
     }
 
     //static_assert(std::is_same_v<typename parser<static_string(R"((a(b)(c(d))(x)){5,17})")>::ast_type, void>);

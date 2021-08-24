@@ -69,7 +69,7 @@ namespace meta
     };
 
     template<typename Stack>
-    constexpr bool is_empty_v = std::is_same_v<empty_stack_marker, typename Stack::top>;
+    inline constexpr bool is_empty_v = std::is_same_v<empty_stack_marker, typename Stack::top>;
 
     template<typename Stack>
     using pop = typename Stack::pop;

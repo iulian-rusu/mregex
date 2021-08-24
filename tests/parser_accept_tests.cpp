@@ -6,7 +6,7 @@ namespace meta::tests
     namespace detail
     {
         template<static_string const pattern>
-        static constexpr auto accepted = parser<pattern>::accepted;
+        inline static constexpr auto accepted = parser<pattern>::accepted;
     }
 
     // Test valid inputs

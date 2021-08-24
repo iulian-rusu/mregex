@@ -43,6 +43,6 @@ namespace meta
    struct is_any_of : std::bool_constant<(std::is_same_v<Test, Elems> || ...)> {};
 
     template<typename Test, typename ... Rest>
-    constexpr bool is_any_of_v = is_any_of<Test, Rest ...>::value;
+    inline constexpr bool is_any_of_v = is_any_of<Test, Rest ...>::value;
 }
 #endif //META_META_HELPERS_HPP

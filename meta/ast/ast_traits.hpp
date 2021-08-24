@@ -24,10 +24,10 @@ namespace meta::ast
     };
 
     template<typename T>
-    constexpr bool is_trivially_matchable_v = is_trivially_matchable<T>::value;
+    inline constexpr bool is_trivially_matchable_v = is_trivially_matchable<T>::value;
 
     template<typename ... Elems>
-    constexpr bool are_trivially_matchable_v = (is_trivially_matchable_v<Elems> && ...);
+    inline constexpr bool are_trivially_matchable_v = (is_trivially_matchable_v<Elems> && ...);
 
     /**
      * Helper type trait to find if the tree-like template structure
@@ -58,6 +58,6 @@ namespace meta::ast
     };
 
     template<typename T>
-    constexpr bool has_atomic_group_v = has_atomic_group<T>::value;
+    inline constexpr bool has_atomic_group_v = has_atomic_group<T>::value;
 }
 #endif //META_AST_TRAITS_HPP
