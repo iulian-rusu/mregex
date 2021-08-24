@@ -35,7 +35,7 @@ namespace meta
 
         constexpr void pop() noexcept
         {
-            index = (index == 0) ? 9 : index - 1;
+            index = (index == 0) ? capacity - 1 : index - 1;
             --size;
         }
 
