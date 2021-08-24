@@ -101,7 +101,8 @@ namespace meta::tests
     static_assert(regex<R"((?>ab+)c)">::match("abc"sv));
     static_assert(regex<R"((?>ab|b)+c)">::match("ababc"sv));
     static_assert(regex<R"((?>ab|b)+c)">::match("abbc"sv));
-    static_assert(regex<R"(x(?>ab+)c)">::match("xabc"sv));
+    static_assert(regex<R"(x(?>ab+)c)">::match("xabbbbbc"sv));
+    static_assert(regex<R"(x(?>a)*c)">::match("xaaaaaaac"sv));
     static_assert(regex<R"(x(?>ab+)(?>cd+)(?>ef+)c)">::match("xabbbcdeffffffc"sv));
     static_assert(regex<R"((?>[^ @]+)@([^ @]+))">::match("example@gmail.com"sv));
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("0x1234F"sv));
@@ -203,6 +204,7 @@ namespace meta::tests
     static_assert(regex<R"((abc)+|tu ?(xyz ?)+)">::match("tu xyz  xyz "sv) == false);
     static_assert(regex<R"((?>ab+)b)">::match("abb"sv) == false);
     static_assert(regex<R"(x(?>ab+)c)">::match("xbbc"sv) == false);
+    static_assert(regex<R"(x(?>a)*a)">::match("xaaaaaaa"sv) == false);
     static_assert(regex<R"((?>[^ @]+)@([^ @]+))">::match("example@@gmail.com"sv) == false);
     static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("exa.mp.le@gmail.com"sv) == false);
     static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("example.test@gm.ail.com"sv) == false);
