@@ -11,10 +11,10 @@ namespace meta
         std::size_t consumed{};
     };
 
-    template<bool enable>
+    template<std::size_t N>
     struct match_cache
     {
-        static constexpr std::size_t capacity = 256;
+        static constexpr std::size_t capacity = N;
 
         [[nodiscard]] constexpr bool empty() const noexcept
         {
@@ -38,16 +38,16 @@ namespace meta
             index = (index == 0) ? 9 : index - 1;
             --size;
         }
+
+        constexpr void clear() noexcept
+        {
+            index = 0;
+            size = 0;
+        }
     private:
         std::array<cache_entry, capacity> data{};
         std::size_t index{};
         std::size_t size{};
-    };
-
-    template<>
-    struct match_cache<false>
-    {
-        // Used when the cache flag is not enabled
     };
 }
 #endif //META_MATCH_CACHE_HPP

@@ -163,9 +163,9 @@ namespace meta::ast
                 if (!inner_match || inner_match.consumed == 0 || inner_match.consumed > updated_mb.consume_limit)
                     break;
 
-                res += inner_match;
                 if constexpr (flags<MatchContext>::cache)
                     ctx.cache.push({mb.from, res.consumed});
+                res += inner_match;
                 updated_mb = updated_mb.advance(inner_match.consumed);
             }
             return res;
@@ -183,8 +183,9 @@ namespace meta::ast
             {
                 if (!Inner::consume_one(input[mb.from + offset], ctx))
                     return {offset, true};
+
                 if constexpr (flags<MatchContext>::cache)
-                    ctx.cache.push({mb.from, offset + 1});
+                    ctx.cache.push({mb.from, offset});
             }
 
             return {mb.consume_limit, true};
