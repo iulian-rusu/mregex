@@ -113,6 +113,13 @@ namespace meta
             };
         }
 
+        /**
+         * Overloads for working with string-like inputs directly.
+         * Some overloads have a specialized version for temporary objects
+         * that are not trivially destructible. In this case, the method returns
+         * an owning regex_result type to avoid invalid pointers.
+         */
+
         template<string_like Str>
         [[nodiscard]] static constexpr auto match(Str const &input) noexcept
         {
