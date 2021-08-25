@@ -629,12 +629,9 @@ namespace meta::ast
         static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
         {
             auto inner_match = Inner::match(input, mb, ctx);
-            if (inner_match)
-            {
-                auto start_iter = input.cbegin() + mb.from;
-                std::string_view captured_content{start_iter, start_iter + inner_match.consumed};
-                std::get<ID>(ctx.captures) = regex_capture_view<ID>{captured_content};
-            }
+            auto start_iter = input.cbegin() + mb.from;
+            std::string_view captured_content{start_iter, start_iter + inner_match.consumed};
+            std::get<ID>(ctx.captures) = regex_capture_view<ID>{captured_content};
             return inner_match;
         }
     };

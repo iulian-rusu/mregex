@@ -30,6 +30,12 @@ namespace meta
 
         constexpr regex_base() noexcept = default;
 
+        /**
+         * Matches a given input string agains the regex pattern.
+         *
+         * @param input     A string-like object to be matched
+         * @return          A regex_result_view object
+         */
         template<string_like Str>
         [[nodiscard]] static constexpr auto match(Str const &input) noexcept
         {
@@ -48,6 +54,13 @@ namespace meta
             return result_type{res.matched, 0, std::move(ctx.captures)};
         }
 
+        /**
+         * Searches for the first match of the pattern in the given input string.
+         *
+         * @param input         A string-like object to be searched
+         * @param start_pos     The starting offset of the search inside the input
+         * @return              A regex_result_view object
+         */
         template<string_like Str>
         [[nodiscard]] static constexpr auto find_first(Str const &input, std::size_t start_pos = 0) noexcept
         {
@@ -75,6 +88,13 @@ namespace meta
             return result_type{false, start_pos, std::move(ctx.captures)};
         }
 
+        /**
+         * Finds all matches of the pattern inside the input string.
+         *
+         * @param input         The input string-like object to be searched
+         * @param start_pos     The starting offset of the search inside the input
+         * @return              A generator that lazily evaluates subsequent matches
+         */
         template<string_like Str>
         [[nodiscard]] static constexpr auto find_all(Str &&input, std::size_t start_pos = 0) noexcept
         {
@@ -86,6 +106,25 @@ namespace meta
                     return result;
                 }
             };
+        }
+
+        /**
+         * Overloads for working with rvalues to temporary objects that will deallocate their memory
+         * upon expiring. These methods return owning regex_result objects.
+         */
+
+        template<string_like Str>
+        [[nodiscard]] static constexpr auto match(Str &&input) noexcept
+        requires is_memory_owning_rvalue_v<Str &&>
+        {
+            return match(input).own();
+        }
+
+        template<string_like Str>
+        [[nodiscard]] static constexpr auto find_first(Str &&input, std::size_t start_pos = 0) noexcept
+        requires is_memory_owning_rvalue_v<Str &&>
+        {
+            return find_first(input, start_pos).own();
         }
     };
 }
