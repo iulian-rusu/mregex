@@ -46,11 +46,18 @@ namespace meta
     inline constexpr bool is_any_of_v = is_any_of<Test, Rest ...>::value;
 
     /**
-     * Type trait that checks if a generit type T is an rvalue reference to a memory-allocating
-     * temporary object
+     * Type trait that checks if T is an rvalue reference to a memory-owning object.
+     * That is, a temporary object that holds allocated memory.
      */
+     template<typename T>
+     struct is_memory_owning_rvalue
+     {
+         using raw_t = std::remove_reference_t<T>;
+
+         static constexpr bool value = !std::is_trivially_destructible_v<raw_t> && std::is_rvalue_reference_v<T &&>;
+     };
+
     template<typename T>
-    inline constexpr bool is_memory_owning_rvalue_v =
-            std::is_rvalue_reference_v<T> && !std::is_trivially_destructible_v<std::remove_reference_t<T>>;
+    inline constexpr bool is_memory_owning_rvalue_v = is_memory_owning_rvalue<T>::value;
 }
 #endif //META_META_HELPERS_HPP
