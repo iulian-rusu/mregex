@@ -132,6 +132,7 @@ namespace meta::ast
                 auto rest_match = alternation<Rest ...>::match(begin, end, mb, ctx);
                 if (rest_match && rest_match.consumed > first_match.consumed)
                     return rest_match;
+
                 return first_match;
             }
 
@@ -202,15 +203,15 @@ namespace meta::ast
                 if (auto cached = check_cache(mb, ctx))
                     return cached;
 
-            auto current = mb.from;
-            for (auto offset = 0u; offset < mb.consume_limit; ++offset)
+            std::size_t consumed = 0;
+            for (auto current = mb.from; current != mb.from + mb.consume_limit; ++current)
             {
                 if (!Inner::consume_one(current, ctx))
-                    return {offset, true};
+                    return {consumed, true};
 
-                ++current;
+                ++consumed;
                 if constexpr (flags<Context>::cache)
-                    ctx.cache.push({mb.from, offset});
+                    ctx.cache.push({mb.from, current});
             }
 
             return {mb.consume_limit, true};
@@ -292,13 +293,13 @@ namespace meta::ast
         requires is_trivially_matchable_v<Inner>
         {
             std::size_t const consume_limit = R <= mb.consume_limit ? R : mb.consume_limit;
-            auto current = mb.from;
-            for (auto offset = 0u; offset < consume_limit; ++offset)
+            std::size_t consumed = 0;
+            for (auto current = mb.from; current != mb.from + consume_limit; ++current)
             {
                 if (!Inner::consume_one(current, ctx))
-                    return {offset, true};
+                    return {consumed, true};
 
-                ++current;
+                ++consumed;
             }
 
             return {consume_limit, true};
@@ -361,14 +362,9 @@ namespace meta::ast
             if (N > mb.consume_limit)
                 return {0, false};
 
-            auto current = mb.from;
-            for (auto offset = 0u; offset < N; ++offset)
-            {
+            for (auto current = mb.from; current != mb.from + N; ++current)
                 if (!Inner::consume_one(current, ctx))
                     return {0, false};
-
-                ++current;
-            }
 
             return {N, true};
         }
@@ -590,14 +586,13 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context>
         static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
-            auto const str_to_match = std::get<ID>(ctx.captures).view();
-            auto current = mb.from;
-            for (auto c : str_to_match)
+            auto const captured_str = std::get<ID>(ctx.captures).view();
+            for (auto c : captured_str)
             {
-                if (current == end)
+                if (mb.from == end)
                     return {0, false};
 
-                auto subject = *current;
+                auto subject = *mb.from;
                 if constexpr (flags<Context>::ignore_case)
                 {
                     subject = to_lower(subject);
@@ -606,9 +601,9 @@ namespace meta::ast
                 if (subject != c)
                     return {0, false};
 
-                ++current;
+                ++mb.from;
             }
-            return {str_to_match.length(), true};
+            return {captured_str.length(), true};
         }
     };
 

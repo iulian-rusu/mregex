@@ -36,6 +36,16 @@ namespace meta
         {
             return content.length();
         }
+
+        [[nodiscard]] constexpr auto begin() const noexcept
+        {
+            return content.begin();
+        }
+
+        [[nodiscard]] constexpr auto end() const noexcept
+        {
+            return content.end();
+        }
     };
 
     /**

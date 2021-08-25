@@ -20,6 +20,7 @@ namespace meta
     struct regex_base
     {
         using ast_type = AST;
+        using result_type = regex_result_view<ast_type::capture_count>;
 
         template<typename ... ExtraFlags>
         using with = regex_base<AST, Flags ..., ExtraFlags ...>;
@@ -39,7 +40,6 @@ namespace meta
         [[nodiscard]] static constexpr auto match(Iter begin, Iter end) noexcept
         {
             using match_context = create_match_context<Iter, ast_type, Flags ...>;
-            using result_type = regex_result_view<ast_type::capture_count, Iter>;
 
             match_context ctx{};
             std::size_t length = std::distance(begin, end);
@@ -54,7 +54,7 @@ namespace meta
             {
                 ctx.clear_captures();
             }
-            return result_type{res.matched, begin, std::move(ctx.captures)};
+            return result_type{res.matched, std::move(ctx.captures)};
         }
 
         /**
@@ -68,29 +68,29 @@ namespace meta
         [[nodiscard]] static constexpr auto find_first(Iter begin, Iter end) noexcept
         {
             using match_context = create_match_context<Iter, ast_type, Flags ...>;
-            using result_type = regex_result_view<ast_type::capture_count, Iter>;
 
             match_context ctx{};
             std::size_t length = std::distance(begin, end);
-            auto current = begin;
-            while (current != end)
+            for (auto current = begin;; ++current)
             {
                 if (auto res = ast_type::match(begin, end, {current, length}, ctx))
                 {
                     std::string_view matched_content{current, current + res.consumed};
                     std::get<0>(ctx.captures) = regex_capture_view<0>{matched_content};
-                    return result_type{true, current, std::move(ctx.captures)};
+                    return result_type{true, std::move(ctx.captures)};
                 }
+
+                if (current == end)
+                    break;
 
                 if constexpr (ast::has_atomic_group_v<ast_type>)
                     ctx.clear_atomic_state();
                 if constexpr (flags<match_context>::cache)
                     ctx.clear_cache();
-                ++current;
                 --length;
             }
             ctx.clear_captures();
-            return result_type{false, current, std::move(ctx.captures)};
+            return result_type{false, std::move(ctx.captures)};
         }
 
         /**
@@ -103,12 +103,11 @@ namespace meta
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto find_all(Iter begin, Iter end) noexcept
         {
+            std::size_t length = std::distance(begin, end);
             return generator
             {
                 [=]() mutable {
-                    auto const result = find_first(begin, end);
-                    begin = result.end();
-                    return result;
+                    return find_next_and_update(begin, end, length);
                 }
             };
         }
@@ -151,14 +150,54 @@ namespace meta
         {
             auto begin = input.begin();
             auto end = input.end();
+            auto current = begin;
+            std::size_t length = std::distance(begin, end);
             return generator
             {
-                [=, input = make_universal_capture(std::forward<Str>(input))]() mutable {
-                    auto const result = find_first(begin, end);
-                    begin = result.end();
-                    return result;
+                [=, capture = make_universal_capture(std::forward<Str>(input))]() mutable {
+                    return find_next_and_update(begin, end, current, length);
                 }
             };
+        }
+    private:
+        /**
+         * Finds the first match in the input sequence and updates the begin
+         * iterator to point to the end of the matched subsequence.
+         *
+         * @param begin     An iterator pointing to the start of the sequence
+         * @param end       An iterator pointing to the end of the sequence
+         * @param current   An iterator pointing to the current position
+         * @param length    The length of the input sequence
+         * @return          A generator that lazily evaluates subsequent matches
+         */
+        template<std::forward_iterator Iter>
+        static constexpr auto find_next_and_update(Iter begin, Iter end, Iter &current, std::size_t &length) noexcept
+        {
+            using match_context = create_match_context<Iter, ast_type, Flags ...>;
+
+            match_context ctx{};
+            for (;; ++current)
+            {
+                if (auto res = ast_type::match(begin, end, {current, length}, ctx))
+                {
+                    auto match_end = current + res.consumed;
+                    std::string_view matched_content{current, match_end};
+                    std::get<0>(ctx.captures) = regex_capture_view<0>{matched_content};
+                    current = match_end;
+                    return result_type{true, std::move(ctx.captures)};
+                }
+
+                if (current == end)
+                    break;
+
+                if constexpr (ast::has_atomic_group_v<ast_type>)
+                    ctx.clear_atomic_state();
+                if constexpr (flags<match_context>::cache)
+                    ctx.clear_cache();
+                --length;
+            }
+            ctx.clear_captures();
+            return result_type{false, std::move(ctx.captures)};
         }
     };
 }

@@ -27,6 +27,11 @@ namespace meta::tests
     static_assert(non_empty_regex::find_first("0"sv));
     static_assert(non_empty_regex::find_first("abcd0123@#$%"sv));
 
+    static_assert(regex<"^abc">::find_first("abcdefg"sv));
+    static_assert(regex<"abc$">::find_first(".......abc"sv));
+    static_assert(regex<"^">::find_first("abcdefg"sv));
+    static_assert(regex<"$">::find_first(".......abc"sv));
+
     static_assert(uri_regex::find_first("https:// google.com"sv) == false);
     static_assert(uri_regex::find_first(""sv) == false);
     static_assert(uri_regex::find_first("     google.com       "sv) == false);
@@ -38,5 +43,10 @@ namespace meta::tests
     static_assert(email_regex::find_first("... "sv) == false);
 
     static_assert(non_empty_regex::find_first(""sv) == false);
+
+    static_assert(regex<"^abc">::find_first(" abcdefg"sv) == false);
+    static_assert(regex<"abc$">::find_first(".......abc "sv) == false);
+    static_assert(regex<" ^">::find_first(""sv) == false);
+    static_assert(regex<"$ ">::find_first(""sv) == false);
 }
 #endif //META_RUN_REGEX_TESTS
