@@ -3,6 +3,7 @@
 
 #include <iosfwd>
 #include <tuple>
+#include <concepts>
 #include "regex_capture.hpp"
 #include "utility/tuple_helpers.hpp"
 
@@ -14,7 +15,7 @@ namespace meta
      * @tparam N        The number of capturing groups
      * @tparam Storage  The storage type used to hold the captures
      */
-    template<std::size_t N, typename Storage>
+    template<std::size_t N, std::forward_iterator Iter, typename Storage>
     class basic_regex_result;
 
     /**
@@ -22,26 +23,26 @@ namespace meta
      * If the orginal input string expires before this result object,
      * the behavior is undefined.
      */
-    template<std::size_t N>
-    using regex_result_view = basic_regex_result<N, regex_capture_view_storage<N>>;
+    template<std::size_t N, std::forward_iterator Iter>
+    using regex_result_view = basic_regex_result<N, Iter, regex_capture_view_storage<N>>;
 
     /**
      * Result that holds ownership of captured content.
      */
-    template<std::size_t N>
-    using regex_result = basic_regex_result<N, regex_capture_storage<N>>;
+    template<std::size_t N, std::forward_iterator Iter>
+    using regex_result = basic_regex_result<N, Iter, regex_capture_storage<N>>;
 
-    template<std::size_t N, typename Storage>
+    template<std::size_t N, std::forward_iterator Iter, typename Storage>
     class basic_regex_result
     {
         bool matched{};
-        std::size_t match_offset{};
+        Iter match_begin{};
         Storage captures;
     public:
         template<typename S>
-        constexpr basic_regex_result(bool m, std::size_t offset, S &&s)
+        constexpr basic_regex_result(bool m, Iter offset, S &&s)
         noexcept(std::is_nothrow_move_constructible_v<Storage>)
-            : matched{m}, match_offset{offset}, captures{std::forward<S>(s)}
+        : matched{m}, match_begin{offset}, captures{std::forward<S>(s)}
         {}
 
         constexpr explicit operator bool() const noexcept
@@ -59,14 +60,14 @@ namespace meta
             return std::get<0>(captures).length();
         }
 
-        [[nodiscard]] constexpr std::size_t begin() const noexcept
+        [[nodiscard]] constexpr Iter begin() const noexcept
         {
-            return match_offset;
+            return match_begin;
         }
 
-        [[nodiscard]] constexpr std::size_t end() const noexcept
+        [[nodiscard]] constexpr Iter end() const noexcept
         {
-            return match_offset + length();
+            return match_begin + length();
         }
 
         /**
@@ -75,13 +76,13 @@ namespace meta
          *
          * @return  A new regex_result object that holds ownership of captures
          */
-        [[nodiscard]] regex_result<N> own() const
+        [[nodiscard]] regex_result<N, Iter> own() const
         requires std::is_same_v<Storage, regex_capture_view_storage<N>>
         {
             auto owning_captures = tuple_transform(captures, [&](auto const &capture) {
                 return regex_capture{capture};
             });
-            return {matched, match_offset, std::move(owning_captures)};
+            return {matched, match_begin, std::move(owning_captures)};
         }
 
         template<std::size_t ID>
@@ -102,26 +103,23 @@ namespace meta
             return std::get<ID + 1>(captures).get();
         }
     };
-
-    template<typename Storage>
-    basic_regex_result(bool, Storage &&) -> basic_regex_result<std::tuple_size_v<Storage> - 1, std::decay_t<Storage>>;
 }
 
-template<std::size_t N, typename Storage>
-std::ostream &operator<<(std::ostream &os, meta::basic_regex_result<N, Storage> const & result)
+template<std::size_t N, std::forward_iterator Iter,  typename Storage>
+std::ostream &operator<<(std::ostream &os, meta::basic_regex_result<N, Iter, Storage> const & result)
 {
     return os << result.template group<0>();
 }
 
 namespace std
 {
-    template <std::size_t N, typename Storage>
-    struct tuple_size<meta::basic_regex_result<N, Storage>> : std::integral_constant<std::size_t, N> {};
+    template <std::size_t N, std::forward_iterator Iter,  typename Storage>
+    struct tuple_size<meta::basic_regex_result<N, Iter, Storage>> : std::integral_constant<std::size_t, N> {};
 
-    template <std::size_t ID, std::size_t N, typename Storage>
-    struct tuple_element<ID, meta::basic_regex_result<N, Storage>>
+    template <std::size_t ID, std::forward_iterator Iter,  std::size_t N, typename Storage>
+    struct tuple_element<ID, meta::basic_regex_result<N, Iter, Storage>>
     {
-        using type = decltype(std::declval<meta::basic_regex_result<N, Storage>>().template get<ID>());
+        using type = decltype(std::declval<meta::basic_regex_result<N, Iter, Storage>>().template get<ID>());
     };
 }
 #endif //META_REGEX_RESULT_HPP

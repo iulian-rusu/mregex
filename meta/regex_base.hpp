@@ -20,8 +20,6 @@ namespace meta
     struct regex_base
     {
         using ast_type = AST;
-        using result_type = regex_result_view<ast_type::capture_count>;
-        using match_context = create_match_context<ast_type, Flags ...>;
 
         template<typename ... ExtraFlags>
         using with = regex_base<AST, Flags ..., ExtraFlags ...>;
@@ -31,100 +29,129 @@ namespace meta
         constexpr regex_base() noexcept = default;
 
         /**
-         * Matches a given input string agains the regex pattern.
+         * Matches a given input sequence agains the regex pattern.
          *
-         * @param input     A string-like object to be matched
-         * @return          A regex_result_view object
+         * @param begin An iterator pointing to the start of the sequence
+         * @param end   An iterator pointing to the end of the sequence
+         * @return      A regex_result_view object
          */
-        template<string_like Str>
-        [[nodiscard]] static constexpr auto match(Str const &input) noexcept
+        template<std::forward_iterator Iter>
+        [[nodiscard]] static constexpr auto match(Iter begin, Iter end) noexcept
         {
+            using match_context = create_match_context<Iter, ast_type, Flags ...>;
+            using result_type = regex_result_view<ast_type::capture_count, Iter>;
+
             match_context ctx{};
-            auto res = ast_type::match(input, {0, input.length()}, ctx);
-            res.matched = res.matched && (res.consumed == input.length());
+            std::size_t length = std::distance(begin, end);
+            auto res = ast_type::match(begin, end, {begin, length}, ctx);
+            res.matched = res.matched && (res.consumed == length);
             if (res.matched)
             {
-                std::string_view matched_content{input.cbegin(), input.cbegin() + res.consumed};
+                std::string_view matched_content{begin, end};
                 std::get<0>(ctx.captures) = regex_capture_view<0>{matched_content};
             }
             else
             {
                 ctx.clear_captures();
             }
-            return result_type{res.matched, 0, std::move(ctx.captures)};
+            return result_type{res.matched, begin, std::move(ctx.captures)};
         }
 
         /**
-         * Searches for the first match of the pattern in the given input string.
+         * Searches for the first match of the pattern in the given input sequence.
          *
-         * @param input         A string-like object to be searched
-         * @param start_pos     The starting offset of the search inside the input
-         * @return              A regex_result_view object
+         * @param begin An iterator pointing to the start of the sequence
+         * @param end   An iterator pointing to the end of the sequence
+         * @return      A regex_result_view object
          */
-        template<string_like Str>
-        [[nodiscard]] static constexpr auto find_first(Str const &input, std::size_t start_pos = 0) noexcept
+        template<std::forward_iterator Iter>
+        [[nodiscard]] static constexpr auto find_first(Iter begin, Iter end) noexcept
         {
+            using match_context = create_match_context<Iter, ast_type, Flags ...>;
+            using result_type = regex_result_view<ast_type::capture_count, Iter>;
+
             match_context ctx{};
-            std::size_t const str_length = input.length();
-            do
+            std::size_t length = std::distance(begin, end);
+            auto current = begin;
+            while (current != end)
             {
-                if (auto res = ast_type::match(input, {start_pos, str_length - start_pos}, ctx))
+                if (auto res = ast_type::match(begin, end, {current, length}, ctx))
                 {
-                    auto start_iter = input.cbegin() + start_pos;
-                    std::string_view matched_content{start_iter, start_iter + res.consumed};
+                    std::string_view matched_content{current, current + res.consumed};
                     std::get<0>(ctx.captures) = regex_capture_view<0>{matched_content};
-                    return result_type{true, start_pos, std::move(ctx.captures)};
+                    return result_type{true, current, std::move(ctx.captures)};
                 }
 
                 if constexpr (ast::has_atomic_group_v<ast_type>)
                     ctx.clear_atomic_state();
                 if constexpr (flags<match_context>::cache)
                     ctx.clear_cache();
-
-                ++start_pos;
-            } while (start_pos <= str_length);
-
+                ++current;
+                --length;
+            }
             ctx.clear_captures();
-            return result_type{false, start_pos, std::move(ctx.captures)};
+            return result_type{false, current, std::move(ctx.captures)};
         }
 
         /**
-         * Finds all matches of the pattern inside the input string.
+         * Finds all matches of the pattern inside the input sequence.
          *
-         * @param input         The input string-like object to be searched
-         * @param start_pos     The starting offset of the search inside the input
-         * @return              A generator that lazily evaluates subsequent matches
+         * @param begin An iterator pointing to the start of the sequence
+         * @param end   An iterator pointing to the end of the sequence
+         * @return      A generator that lazily evaluates subsequent matches
          */
-        template<string_like Str>
-        [[nodiscard]] static constexpr auto find_all(Str &&input, std::size_t start_pos = 0) noexcept
+        template<std::forward_iterator Iter>
+        [[nodiscard]] static constexpr auto find_all(Iter begin, Iter end) noexcept
         {
             return generator
             {
-                [input = make_universal_capture(std::forward<Str>(input)), pos = start_pos]() mutable {
-                    auto const result = find_first(input.get(), pos);
-                    pos = result.end();
+                [=]() mutable {
+                    auto const result = find_first(begin, end);
+                    begin = result.end();
                     return result;
                 }
             };
         }
 
-        /**
-         * Overloads for working with rvalues to temporary objects that will deallocate their memory
-         * upon expiring. These methods return owning regex_result objects.
-         */
+        template<string_like Str>
+        [[nodiscard]] static constexpr auto match(Str const &input) noexcept
+        {
+            return match(input.begin(), input.end());
+        }
 
         template<string_like Str>
         [[nodiscard]] static constexpr auto match(Str &&input) noexcept
         requires is_memory_owning_rvalue_v<Str &&>
         {
-            return match(input).own();
+            return match(input.begin(), input.end()).own();
         }
 
         template<string_like Str>
-        [[nodiscard]] static constexpr auto find_first(Str &&input, std::size_t start_pos = 0) noexcept
+        [[nodiscard]] static constexpr auto find_first(Str const &input) noexcept
+        {
+            return find_first(input.begin(), input.end());
+        }
+
+        template<string_like Str>
+        [[nodiscard]] static constexpr auto find_first(Str &&input) noexcept
         requires is_memory_owning_rvalue_v<Str &&>
         {
-            return find_first(input, start_pos).own();
+            return find_first(input.begin(), input.end()).own();
+        }
+
+        template<string_like Str>
+        [[nodiscard]] static constexpr auto find_all(Str &&input) noexcept
+        {
+            auto begin = input.begin();
+            auto end = input.end();
+            return generator
+            {
+                [=, input = make_universal_capture(std::forward<Str>(input))]() mutable {
+                    auto const result = find_first(begin, end);
+                    begin = result.end();
+                    return result;
+                }
+            };
         }
     };
 }

@@ -2,18 +2,22 @@
 #define META_MATCH_CACHE_HPP
 
 #include <array>
+#include <concepts>
 
 namespace meta
 {
+    template<std::forward_iterator Iter>
     struct cache_entry
     {
-        std::size_t from{};
+        Iter from{};
         std::size_t consumed{};
     };
 
-    template<std::size_t N>
+    template<std::forward_iterator Iter, std::size_t N>
     struct match_cache
     {
+        using value_type = cache_entry<Iter>;
+
         static constexpr std::size_t capacity = N;
 
         [[nodiscard]] constexpr bool empty() const noexcept
@@ -21,12 +25,12 @@ namespace meta
             return size == 0;
         }
 
-        [[nodiscard]] constexpr cache_entry top() const noexcept
+        [[nodiscard]] constexpr value_type top() const noexcept
         {
             return data[index];
         }
 
-        constexpr void push(cache_entry entry) noexcept
+        constexpr void push(value_type entry) noexcept
         {
             index = (index < capacity - 1) * (index + 1);
             ++size;
@@ -45,7 +49,7 @@ namespace meta
             size = 0;
         }
     private:
-        std::array<cache_entry, capacity> data{};
+        std::array<value_type, capacity> data{};
         std::size_t index{};
         std::size_t size{};
     };
