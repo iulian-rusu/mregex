@@ -15,9 +15,9 @@ namespace meta
     {
         { s[index] } -> std::convertible_to<char32_t>;
         { s.length() } -> std::same_as<std::size_t>;
-        s.cbegin();
-        s.cend();
-        { std::remove_reference_t<T>{s.cbegin(), s.cbegin() + index} } -> std::convertible_to<std::string_view>;
+        { s.begin() } -> std::forward_iterator;
+        { s.end() } -> std::forward_iterator;
+        { std::remove_reference_t<T>{s.begin(), s.end() + index} } -> std::convertible_to<std::string_view>;
     };
 
     /**

@@ -9,12 +9,13 @@ namespace meta
      * Extra match context used to cache intermediate results
      * during regex matching.
      *
+     * @tparam Iter The forward iterator type used to acces the input sequence
      * @tparam N    The maximum capacity of the fixed-size cache
      */
-    template<std::size_t N, bool = true>
+    template<std::forward_iterator Iter, std::size_t N, bool = true>
     struct caching_match_context
     {
-        match_cache<N> cache{};
+        match_cache<Iter, N> cache{};
 
         constexpr void clear_cache() noexcept
         {
@@ -25,8 +26,8 @@ namespace meta
     /**
      * Empty base class used if the Abstract Syntax Tree does not contain atomic groups.
      */
-    template<std::size_t N>
-    struct caching_match_context<N, false>
+    template<std::forward_iterator Iter, std::size_t N>
+    struct caching_match_context<Iter, N, false>
     {
         constexpr void clear_cache() const noexcept {}
     };

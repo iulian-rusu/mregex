@@ -16,18 +16,18 @@ namespace meta::ast
     {
         static constexpr std::size_t capture_count = capture_counter<First, Rest ...>::count;
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         requires (!is_trivially_matchable_v<First> && !has_atomic_group_v<First>)
         {
             std::size_t consume_limit = mb.consume_limit;
             while (true)
             {
-                auto first_match = First::match(input, {mb.from, consume_limit}, ctx);
+                auto first_match = First::match(begin, end, {mb.from, consume_limit}, ctx);
                 if (!first_match)
                     return {0, false};
 
-                if (auto rest_match = sequence<Rest ...>::match(input, mb.advance(first_match.consumed), ctx))
+                if (auto rest_match = sequence<Rest ...>::match(begin, end, mb.advance(first_match.consumed), ctx))
                     return first_match + rest_match;
 
                 if (consume_limit == 0 || first_match.consumed == 0)
@@ -37,19 +37,19 @@ namespace meta::ast
             }
         }
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         requires (!is_trivially_matchable_v<First> && has_atomic_group_v<First>)
         {
             std::size_t consume_limit = mb.consume_limit;
             bool saved_match_state = ctx.pop_atomic_state();
             while (true)
             {
-                auto first_match = First::match(input, {mb.from, consume_limit}, ctx);
+                auto first_match = First::match(begin, end, {mb.from, consume_limit}, ctx);
                 if (!first_match)
                     break;
 
-                if (auto rest_match = sequence<Rest ...>::match(input, mb.advance(first_match.consumed), ctx))
+                if (auto rest_match = sequence<Rest ...>::match(begin, end, mb.advance(first_match.consumed), ctx))
                     return first_match + rest_match;
 
                 if (ctx.atomic_match_state)
@@ -64,41 +64,42 @@ namespace meta::ast
             return {0, false};
         }
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         requires (is_trivially_matchable_v<First> && !are_trivially_matchable_v<Rest ...>)
         {
             if (mb.consume_limit == 0)
                 return {0, false};
 
-            if (First::consume_one(input[mb.from], ctx))
-                if (auto rest_match = sequence<Rest ...>::match(input, mb.advance(1), ctx))
+            if (First::consume_one(mb.from, ctx))
+                if (auto rest_match = sequence<Rest ...>::match(begin, end, mb.advance(1), ctx))
                     return {rest_match.consumed + 1, true};
                 
             return {0, false};
         }
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         requires are_trivially_matchable_v<First, Rest ...>
         {
             if (mb.consume_limit < sequence_size)
                 return {0, false};
 
-            return expand_trivial_match(input, mb, ctx, std::make_index_sequence<sequence_size>{});
+            return expand_trivial_match(begin, end, mb, ctx, std::make_index_sequence<sequence_size>{});
         }
     private:
         static constexpr std::size_t sequence_size = 1 + sizeof ... (Rest);
 
-        template<typename MatchContext, std::size_t Index, std::size_t ... Indices>
+        template<std::forward_iterator Iter, typename Context, std::size_t Index, std::size_t ... Indices>
         static constexpr match_result expand_trivial_match(
-                auto const &input,
-                match_bounds mb,
-                MatchContext &ctx,
+                Iter begin,
+                Iter end,
+                match_bounds<Iter> mb,
+                Context &ctx,
                 std::index_sequence<Index, Indices ...> &&
         ) noexcept
         {
-            if (First::consume_one(input[mb.from], ctx) && (Rest::consume_one(input[mb.from + Indices], ctx) && ...))
+            if (First::consume_one(mb.from, ctx) && (Rest::consume_one(mb.from + Indices, ctx) && ...))
                 return {sequence_size, true};
 
             return {0, false};
@@ -113,28 +114,28 @@ namespace meta::ast
     {
         static constexpr std::size_t capture_count = capture_counter<First, Rest ...>::count;
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
-        requires (!flags<MatchContext>::greedy_alt)
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
+        requires (!flags<Context>::greedy_alt)
         {
-            auto first_match = First::match(input, mb, ctx);
-            return first_match ?: alternation<Rest ...>::match(input, mb, ctx);
+            auto first_match = First::match(begin, end, mb, ctx);
+            return first_match ?: alternation<Rest ...>::match(begin, end, mb, ctx);
         }
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
-        requires flags<MatchContext>::greedy_alt
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
+        requires flags<Context>::greedy_alt
         {
-            auto first_match = First::match(input, mb, ctx);
+            auto first_match = First::match(begin, end, mb, ctx);
             if (first_match)
             {
-                auto rest_match = alternation<Rest ...>::match(input, mb, ctx);
+                auto rest_match = alternation<Rest ...>::match(begin, end, mb, ctx);
                 if (rest_match && rest_match.consumed > first_match.consumed)
                     return rest_match;
                 return first_match;
             }
 
-            return alternation<Rest ...>::match(input, mb, ctx);
+            return alternation<Rest ...>::match(begin, end, mb, ctx);
         }
     };
 
@@ -146,15 +147,15 @@ namespace meta::ast
     {
         static constexpr std::size_t capture_count = max_capture_counter<First, Rest ...>::count;
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
-            auto first_match = First::match(input, mb, ctx);
+            auto first_match = First::match(begin, end, mb, ctx);
             if (first_match && first_match.consumed == mb.consume_limit)
                 return first_match;
 
             ctx.clear();
-            return disjunction<Rest ...>::match(input, mb, ctx);
+            return disjunction<Rest ...>::match(begin, end, mb, ctx);
         }
     };
 
@@ -166,26 +167,26 @@ namespace meta::ast
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         requires (!is_trivially_matchable_v<Inner>)
         {
             match_result res{0, true};
             if (mb.consume_limit == 0)
                 return res;
 
-            if constexpr (flags<MatchContext>::cache)
+            if constexpr (flags<Context>::cache)
                 if (auto cached = check_cache(mb, ctx))
                     return cached;
 
             match_bounds updated_mb = mb;
             while (updated_mb.consume_limit > 0)
             {
-                auto inner_match = Inner::match(input, updated_mb, ctx);
+                auto inner_match = Inner::match(begin, end, updated_mb, ctx);
                 if (!inner_match || inner_match.consumed == 0 || inner_match.consumed > updated_mb.consume_limit)
                     break;
 
-                if constexpr (flags<MatchContext>::cache)
+                if constexpr (flags<Context>::cache)
                     ctx.cache.push({mb.from, res.consumed});
                 res += inner_match;
                 updated_mb = updated_mb.advance(inner_match.consumed);
@@ -193,29 +194,31 @@ namespace meta::ast
             return res;
         }
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         requires is_trivially_matchable_v<Inner>
         {
-            if constexpr (flags<MatchContext>::cache)
+            if constexpr (flags<Context>::cache)
                 if (auto cached = check_cache(mb, ctx))
                     return cached;
 
+            auto current = mb.from;
             for (auto offset = 0u; offset < mb.consume_limit; ++offset)
             {
-                if (!Inner::consume_one(input[mb.from + offset], ctx))
+                if (!Inner::consume_one(current, ctx))
                     return {offset, true};
 
-                if constexpr (flags<MatchContext>::cache)
+                ++current;
+                if constexpr (flags<Context>::cache)
                     ctx.cache.push({mb.from, offset});
             }
 
             return {mb.consume_limit, true};
         }
     private:
-        template<typename MatchContext>
-        static constexpr match_result check_cache(match_bounds mb, MatchContext &ctx)
-        requires flags<MatchContext>::cache
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result check_cache(match_bounds<Iter> mb, Context &ctx)
+        requires flags<Context>::cache
         {
             while (!ctx.cache.empty())
             {
@@ -243,28 +246,28 @@ namespace meta::ast
         static constexpr std::size_t R = B - A;
         static constexpr std::size_t capture_count = Inner::capture_count;
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         requires (A > 0u)
         {
-            if (auto exactly_n_match = exact_repetition<A, Inner>::match(input, mb, ctx))
+            if (auto exactly_n_match = exact_repetition<A, Inner>::match(begin, end, mb, ctx))
             {
                 match_bounds updated_mb = mb.advance(exactly_n_match.consumed);
-                auto rest_match = consume_rest(input, updated_mb, ctx);
+                auto rest_match = consume_rest(begin, end, updated_mb, ctx);
                 return exactly_n_match + rest_match;
             }
             return {0, false};
         }
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         requires (A == 0u)
         {
-            return consume_rest(input, mb, ctx);
+            return consume_rest(begin, end, mb, ctx);
         }
 
-        template<typename MatchContext>
-        static constexpr match_result consume_rest(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result consume_rest(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         requires (!is_trivially_matchable_v<Inner>)
         {
             match_result res{0, true};
@@ -272,9 +275,10 @@ namespace meta::ast
             std::size_t matched_so_far = 0;
             while (matched_so_far < R)
             {
-                auto inner_match = Inner::match(input, updated_mb, ctx);
+                auto inner_match = Inner::match(begin, end, updated_mb, ctx);
                 if (!inner_match || inner_match.consumed > updated_mb.consume_limit)
                     break;
+
                 res += inner_match;
                 ++matched_so_far;
                 updated_mb = updated_mb.advance(inner_match.consumed);
@@ -283,14 +287,19 @@ namespace meta::ast
             return res;
         }
 
-        template<typename MatchContext>
-        static constexpr match_result consume_rest(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result consume_rest(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         requires is_trivially_matchable_v<Inner>
         {
             std::size_t const consume_limit = R <= mb.consume_limit ? R : mb.consume_limit;
+            auto current = mb.from;
             for (auto offset = 0u; offset < consume_limit; ++offset)
-                if (!Inner::consume_one(input[mb.from + offset], ctx))
+            {
+                if (!Inner::consume_one(current, ctx))
                     return {offset, true};
+
+                ++current;
+            }
 
             return {consume_limit, true};
         }
@@ -302,13 +311,13 @@ namespace meta::ast
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
-            if (auto exactly_n_match = exact_repetition<N, Inner>::match(input, mb, ctx))
+            if (auto exactly_n_match = exact_repetition<N, Inner>::match(begin, end, mb, ctx))
             {
                 match_bounds updated_mb = mb.advance(exactly_n_match.consumed);
-                auto star_match = star<Inner>::match(input, updated_mb, ctx);
+                auto star_match = star<Inner>::match(begin, end, updated_mb, ctx);
                 return exactly_n_match + star_match;
             }
             return {0, false};
@@ -321,8 +330,8 @@ namespace meta::ast
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         requires (!is_trivially_matchable_v<Inner>)
         {
             match_result res{0, false};
@@ -330,9 +339,10 @@ namespace meta::ast
             std::size_t matched_so_far = 0;
             while (matched_so_far < N)
             {
-                auto inner_match = Inner::match(input, updated_mb, ctx);
+                auto inner_match = Inner::match(begin, end, updated_mb, ctx);
                 if (!inner_match || inner_match.consumed > updated_mb.consume_limit)
                     break;
+
                 res += inner_match;
                 ++matched_so_far;
                 updated_mb = updated_mb.advance(inner_match.consumed);
@@ -344,16 +354,21 @@ namespace meta::ast
             return res;
         }
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         requires is_trivially_matchable_v<Inner>
         {
             if (N > mb.consume_limit)
                 return {0, false};
 
+            auto current = mb.from;
             for (auto offset = 0u; offset < N; ++offset)
-                if (!Inner::consume_one(input[mb.from + offset], ctx))
+            {
+                if (!Inner::consume_one(current, ctx))
                     return {0, false};
+
+                ++current;
+            }
 
             return {N, true};
         }
@@ -365,8 +380,8 @@ namespace meta::ast
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &, match_bounds, MatchContext &) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             return {0, true};
         }
@@ -383,8 +398,8 @@ namespace meta::ast
 
     struct epsilon : terminal
     {
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &, match_bounds, MatchContext &) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             return {0, true};
         }
@@ -392,14 +407,14 @@ namespace meta::ast
 
     struct nothing : terminal
     {
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &, match_bounds, MatchContext &) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             return {0, false};
         }
 
-        template<typename MatchContext>
-        static constexpr bool consume_one(auto const, MatchContext &) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr bool consume_one(Iter, Context &) noexcept
         {
             return false;
         }
@@ -410,33 +425,33 @@ namespace meta::ast
     {
         static_assert(is_trivially_matchable_v<First> && (is_trivially_matchable_v<Rest> && ...));
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             if (mb.consume_limit == 0)
                 return {0, false};
 
-            bool const res = consume_one(input[mb.from], ctx);
+            bool const res = consume_one(mb.from, ctx);
             return {res, res};
         }
 
-        template<typename MatchContext>
-        static constexpr bool consume_one(auto const ch, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr bool consume_one(Iter current, Context &ctx) noexcept
         {
-            return First::consume_one(ch, ctx) || (Rest::consume_one(ch, ctx) || ...);
+            return First::consume_one(current, ctx) || (Rest::consume_one(current, ctx) || ...);
         }
     };
 
     struct beginning : terminal
     {
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
-            auto res = mb.from == 0u;
+            bool res = mb.from == begin;
             bool consume = false;
-            if constexpr (flags<MatchContext>::multiline)
+            if constexpr (flags<Context>::multiline)
             {
-                consume = mb.from < input.length() && input[mb.from] == '\n';
+                consume = mb.from != end && *mb.from == '\n';
                 res |= consume;
             }
 
@@ -449,14 +464,14 @@ namespace meta::ast
 
     struct ending : terminal
     {
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
-            auto res = mb.from == input.length();
+            bool res = mb.from == end;
             bool consume = false;
-            if constexpr (flags<MatchContext>::multiline)
+            if constexpr (flags<Context>::multiline)
             {
-                consume = mb.from < input.length() && input[mb.from] == '\n';
+                consume = mb.from != end && *mb.from == '\n';
                 res |= consume;
             }
 
@@ -470,41 +485,42 @@ namespace meta::ast
     template<auto C>
     struct character : terminal
     {
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             if (mb.consume_limit == 0)
                 return {0, false};
 
-            bool const res = consume_one(input[mb.from], ctx);
+            bool const res = consume_one(mb.from, ctx);
             return {res, res};
         }
 
-        template<typename MatchContext>
-        static constexpr bool consume_one(auto const ch, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr bool consume_one(Iter current, Context &ctx) noexcept
         {
-            bool res = C == ch;
-            if constexpr (flags<MatchContext>::ignore_case)
-                res |= toggle_case_v<C> == ch;
+            bool res = C == *current;
+            if constexpr (flags<Context>::ignore_case)
+                res |= toggle_case_v<C> == *current;
             return res;
         }
     };
 
     struct whitespace : terminal
     {
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             if (mb.consume_limit == 0)
                 return {0, false};
 
-            bool const res = consume_one(input[mb.from]);
+            bool const res = consume_one(mb.from);
             return {res, res};
         }
 
-        template<typename MatchContext>
-        static constexpr bool consume_one(auto const ch, MatchContext &) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr bool consume_one(Iter current, Context &) noexcept
         {
+            auto ch = *current;
             return ch == ' ' || ch == '\t' ||
                    ch == '\n' || ch == '\r' ||
                    ch == '\f' || ch == '\x0B';
@@ -513,22 +529,23 @@ namespace meta::ast
 
     struct wildcard : terminal
     {
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             if (mb.consume_limit == 0)
                 return {0, false};
 
-            bool const res = consume_one(input[mb.from], ctx);
+            bool const res = consume_one(mb.from, ctx);
             return {res, res};
         }
 
-        template<typename MatchContext>
-        static constexpr bool consume_one(auto const ch, MatchContext &) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr bool consume_one(Iter current, Context &) noexcept
         {
-            if constexpr (flags<MatchContext>::dotall)
+            if constexpr (flags<Context>::dotall)
                 return true;
 
+            auto ch = *current;
             return  ch != '\n' && ch != '\r';
         }
     };
@@ -538,21 +555,22 @@ namespace meta::ast
     {
         static_assert(A < B, "invalid range bounds");
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             if (mb.consume_limit == 0)
                 return {0, false};
 
-            bool const res = consume_one(input[mb.from], ctx);
+            bool const res = consume_one(mb.from, ctx);
             return {res, res};
         }
 
-        template<typename MatchContext>
-        static constexpr bool consume_one(auto const ch, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr bool consume_one(Iter current, Context &ctx) noexcept
         {
+            auto ch = *current;
             bool res = A <= ch && ch <= B;
-            if constexpr (flags<MatchContext>::ignore_case)
+            if constexpr (flags<Context>::ignore_case)
             {
                 auto tmp = to_lower(ch);
                 res |= A <= tmp && tmp <= B;
@@ -569,31 +587,28 @@ namespace meta::ast
     template<std::size_t ID>
     struct backref : terminal
     {
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             auto const str_to_match = std::get<ID>(ctx.captures).view();
-            std::size_t const length_to_match = str_to_match.length();
-            if (mb.consume_limit < length_to_match)
-                return {0, false};
-
-            std::size_t offset = 0;
-            while (offset < length_to_match)
+            auto current = mb.from;
+            for (auto c : str_to_match)
             {
-                auto subject = input[mb.from + offset];
-                auto to_match = str_to_match[offset];
-                if constexpr (flags<MatchContext>::ignore_case)
-                {
-                    subject = to_lower(subject);
-                    to_match = to_lower(to_match);
-                }
-
-                if (subject != to_match)
+                if (current == end)
                     return {0, false};
 
-                ++offset;
+                auto subject = *current;
+                if constexpr (flags<Context>::ignore_case)
+                {
+                    subject = to_lower(subject);
+                    c = to_lower(c);
+                }
+                if (subject != c)
+                    return {0, false};
+
+                ++current;
             }
-            return {length_to_match, true};
+            return {str_to_match.length(), true};
         }
     };
 
@@ -602,19 +617,19 @@ namespace meta::ast
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
-            auto inner_match = Inner::match(input, mb, ctx);
+            auto inner_match = Inner::match(begin, end, mb, ctx);
             ctx.atomic_match_state = static_cast<bool>(inner_match);
             return inner_match;
         }
 
-        template<typename MatchContext>
-        static constexpr bool consume_one(auto const ch, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr bool consume_one(Iter current, Context &ctx) noexcept
         requires is_trivially_matchable_v<Inner>
         {
-            auto res = Inner::consume_one(ch, ctx);
+            auto res = Inner::consume_one(current, ctx);
             ctx.atomic_match_state = res;
             return res;
         }
@@ -625,12 +640,11 @@ namespace meta::ast
     {
         static constexpr std::size_t capture_count = 1 + Inner::capture_count;
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
-            auto inner_match = Inner::match(input, mb, ctx);
-            auto start_iter = input.cbegin() + mb.from;
-            std::string_view captured_content{start_iter, start_iter + inner_match.consumed};
+            auto inner_match = Inner::match(begin, end, mb, ctx);
+            std::string_view captured_content{mb.from, mb.from + inner_match.consumed};
             std::get<ID>(ctx.captures) = regex_capture_view<ID>{captured_content};
             return inner_match;
         }
@@ -643,20 +657,20 @@ namespace meta::ast
 
         static constexpr std::size_t capture_count = Inner::capture_count;
 
-        template<typename MatchContext>
-        static constexpr match_result match(auto const &input, match_bounds mb, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             if (mb.consume_limit == 0)
                 return {0, false};
 
-            bool const res = !Inner::consume_one(input[mb.from], ctx);
+            bool const res = !Inner::consume_one(mb.from, ctx);
             return {res, res};
         }
 
-        template<typename MatchContext>
-        static constexpr bool consume_one(auto const ch, MatchContext &ctx) noexcept
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr bool consume_one(Iter current, Context &ctx) noexcept
         {
-            return !Inner::consume_one(ch, ctx);
+            return !Inner::consume_one(current, ctx);
         }
     };
 }

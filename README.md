@@ -1,4 +1,4 @@
-# Meta Regular Expressions
+# Meta-Regex
 
 ## Summary
 This is a compile-time implementation of a regular expression library in 
@@ -7,7 +7,7 @@ using template metaprogramming.
 
 ## Features
 The library currently supports the following features:
-* `constexpr` matching
+* `constexpr` matching using `std::forward_iterator` semantics
 * compile-time syntax checking
 * various flags like `ignore_case`, `dotall` and `multiline`
 * structured binding decomposition of `meta::regex_result`

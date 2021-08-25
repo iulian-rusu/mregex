@@ -3,9 +3,6 @@
 
 namespace meta::ast
 {
-    /**
-     * Forward declaration of basic AST node types for type resolution.
-     */
     template<typename, typename ...>
     struct sequence;
 

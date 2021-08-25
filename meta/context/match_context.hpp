@@ -8,7 +8,7 @@
 
 namespace meta
 {
-    template<typename AST, typename ... Flags>
+    template<std::forward_iterator Iter, typename AST, typename ... Flags>
     struct match_context_factory
     {
         static_assert((is_flag_v<Flags> && ...), "invalid flag");
@@ -24,7 +24,7 @@ namespace meta
 
         using base_context = match_context_base<AST>;
         using atomic_context = atomic_match_context<AST>;
-        using caching_context = caching_match_context<256, flag_states::cache>;
+        using caching_context = caching_match_context<Iter, 256, flag_states::cache>;
 
         struct match_context : base_context, atomic_context, caching_context
         {
@@ -39,8 +39,8 @@ namespace meta
         };
     };
 
-    template<typename AST, typename ... Flags>
-    using create_match_context = typename match_context_factory<AST, Flags ...>::match_context;
+    template<std::forward_iterator Iter, typename AST, typename ... Flags>
+    using create_match_context = typename match_context_factory<Iter, AST, Flags ...>::match_context;
 
     template<typename Context>
     using flags = typename Context::flags;
