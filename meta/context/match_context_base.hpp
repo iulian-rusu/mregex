@@ -6,10 +6,10 @@
 
 namespace meta
 {
-    template<typename AST>
+    template<std::forward_iterator Iter, typename AST>
     struct match_context_base
     {
-        regex_capture_view_storage<AST::capture_count> captures{};
+        regex_capture_view_storage<AST::capture_count, Iter> captures{};
 
         constexpr void clear_captures() noexcept
         {

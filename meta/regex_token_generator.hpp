@@ -20,7 +20,7 @@ namespace meta
     {
         using ast_type = typename Context::ast_type;
         using iterator_type = typename Context::iterator_type;
-        using result_type = regex_result_view<ast_type::capture_count>;
+        using result_type = regex_result_view<ast_type::capture_count, iterator_type>;
 
         constexpr regex_token_generator(iterator_type b, iterator_type e, iterator_type c)
             : begin{b}, end{e}, bounds{c, static_cast<std::size_t>(std::distance(c, e))}, active{true}
@@ -36,7 +36,7 @@ namespace meta
                 {
                     auto match_begin = bounds.from;
                     bounds = bounds.advance(res.consumed);
-                    std::get<0>(ctx.captures) = regex_capture_view<0>{match_begin, bounds.from};
+                    std::get<0>(ctx.captures) = regex_capture_view<0, iterator_type>{match_begin, bounds.from};
                     active = bounds.from != end;
                     return result_type{true, std::move(ctx.captures)};
                 }

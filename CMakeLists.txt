@@ -49,5 +49,7 @@ add_executable(
         meta/context/match_cache.hpp
         meta/context/caching_match_context.hpp
         meta/context/atomic_match_context.hpp
-        meta/regex_token_generator.hpp tests/regex_generator_tests.cpp)
+        meta/regex_token_generator.hpp
+        tests/regex_generator_tests.cpp
+)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -O3")

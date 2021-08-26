@@ -15,11 +15,6 @@ namespace meta
     template<bool_testable_generator Gen>
     struct iterable_generator_adapter : protected Gen
     {
-        class iterator;
-
-        using value_type = std::invoke_result_t<Gen>;
-        using iterator_type = iterator;
-
         template<typename Func>
         constexpr explicit iterable_generator_adapter(Func &&func)
         noexcept(std::is_nothrow_move_constructible_v<Gen>)
@@ -29,12 +24,13 @@ namespace meta
         /**
          * Lazy iterator over the generated result.
          */
-        class iterator
+        struct iterator
         {
-            iterable_generator_adapter<Gen> &gen;
-            value_type current_result;
-            bool active;
-        public:
+            using value_type = std::invoke_result_t<Gen>;
+            using reference = value_type const &;
+            using difference_type = std::size_t;
+            using iterator_category = std::forward_iterator_tag;
+
             template<typename Res>
             constexpr explicit iterator(iterable_generator_adapter<Gen> &g, Res &&res, bool a)
             noexcept(std::is_nothrow_move_constructible_v<Res>)
@@ -69,6 +65,10 @@ namespace meta
             {
                 return static_cast<bool>(*this) != static_cast<bool>(rhs);
             }
+        private:
+            iterable_generator_adapter<Gen> &gen;
+            value_type current_result;
+            bool active;
         };
 
         struct iteration_end_marker : std::false_type {};

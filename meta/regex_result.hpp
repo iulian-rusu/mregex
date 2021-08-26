@@ -22,8 +22,8 @@ namespace meta
      * If the orginal input string expires before this result object,
      * the behavior is undefined.
      */
-    template<std::size_t N>
-    using regex_result_view = basic_regex_result<N, regex_capture_view_storage<N>>;
+    template<std::size_t N, std::forward_iterator Iter>
+    using regex_result_view = basic_regex_result<N, regex_capture_view_storage<N, Iter>>;
 
     /**
      * Result that holds ownership of captured content.
@@ -34,13 +34,13 @@ namespace meta
     template<std::size_t N, typename Storage>
     class basic_regex_result
     {
-        bool matched{};
+        bool matched;
         Storage captures;
     public:
         template<typename S>
         constexpr basic_regex_result(bool m, S &&s)
         noexcept(std::is_nothrow_move_constructible_v<Storage>)
-        : matched{m}, captures{std::forward<S>(s)}
+            : matched{m}, captures{std::forward<S>(s)}
         {}
 
         constexpr explicit operator bool() const noexcept
@@ -74,20 +74,20 @@ namespace meta
          *
          * @return  A new regex_result object that holds ownership of captures
          */
-        [[nodiscard]] regex_result<N> own() const
-        requires std::is_same_v<Storage, regex_capture_view_storage<N>>
+        [[nodiscard]] auto own() const
+        requires is_capture_view_v<std::remove_cvref_t<decltype(std::get<0>(captures))>>
         {
             auto owning_captures = tuple_transform(captures, [&](auto const &capture) {
                 return regex_capture{capture};
             });
-            return {matched, std::move(owning_captures)};
+            return regex_result<N>{matched, std::move(owning_captures)};
         }
 
         template<std::size_t ID>
         [[nodiscard]] constexpr decltype(auto) group() const noexcept
         {
             static_assert(ID <= N, "capture group does not exist");
-            return std::get<ID>(captures).view();
+            return std::get<ID>(captures).get();
         }
 
         /**

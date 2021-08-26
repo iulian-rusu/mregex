@@ -20,7 +20,6 @@ namespace meta
     struct regex_base
     {
         using ast_type = AST;
-        using result_type = regex_result_view<ast_type::capture_count>;
 
         template<typename ... ExtraFlags>
         using with = regex_base<AST, Flags ..., ExtraFlags ...>;
@@ -40,20 +39,16 @@ namespace meta
         [[nodiscard]] static constexpr auto match(Iter begin, Iter end) noexcept
         {
             using match_context = create_match_context<Iter, ast_type, Flags ...>;
+            using result_type = regex_result_view<ast_type::capture_count, Iter>;
 
             match_context ctx{};
             std::size_t length = std::distance(begin, end);
             auto res = ast_type::match(begin, end, {begin, length}, ctx);
             res.matched = res.matched && (res.consumed == length);
             if (res.matched)
-            {
-                std::string_view matched_content{begin, end};
-                std::get<0>(ctx.captures) = regex_capture_view<0>{matched_content};
-            }
+                std::get<0>(ctx.captures) = regex_capture_view<0, Iter>{begin, end};
             else
-            {
                 ctx.clear_captures();
-            }
             return result_type{res.matched, std::move(ctx.captures)};
         }
 
@@ -68,6 +63,7 @@ namespace meta
         [[nodiscard]] static constexpr auto find_first(Iter begin, Iter end) noexcept
         {
             using match_context = create_match_context<Iter, ast_type, Flags ...>;
+            using result_type = regex_result_view<ast_type::capture_count, Iter>;
 
             match_context ctx{};
             std::size_t length = std::distance(begin, end);
@@ -75,8 +71,7 @@ namespace meta
             {
                 if (auto res = ast_type::match(begin, end, {current, length}, ctx))
                 {
-                    std::string_view matched_content{current, current + res.consumed};
-                    std::get<0>(ctx.captures) = regex_capture_view<0>{matched_content};
+                    std::get<0>(ctx.captures) = regex_capture_view<0, Iter>{current, current + res.consumed};
                     return result_type{true, std::move(ctx.captures)};
                 }
 

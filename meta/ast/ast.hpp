@@ -586,8 +586,8 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context>
         static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
-            auto const captured_str = std::get<ID>(ctx.captures).view();
-            for (auto c : captured_str)
+            auto const captured = std::get<ID>(ctx.captures);
+            for (auto c : captured)
             {
                 if (mb.from == end)
                     return {0, false};
@@ -603,7 +603,7 @@ namespace meta::ast
 
                 ++mb.from;
             }
-            return {captured_str.length(), true};
+            return {captured.length(), true};
         }
     };
 
@@ -639,7 +639,7 @@ namespace meta::ast
         static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             auto inner_match = Inner::match(begin, end, mb, ctx);
-            std::get<ID>(ctx.captures) = regex_capture_view<ID>{mb.from, mb.from + inner_match.consumed};
+            std::get<ID>(ctx.captures) = regex_capture_view<ID, Iter>{mb.from, mb.from + inner_match.consumed};
             return inner_match;
         }
     };

@@ -22,7 +22,7 @@ namespace meta
             static constexpr bool cache = is_flag_enabled_v<flag::cache, Flags ...>;
         };
 
-        using base_context = match_context_base<AST>;
+        using base_context = match_context_base<Iter, AST>;
         using atomic_context = atomic_match_context<AST>;
         using caching_context = caching_match_context<Iter, 256, flag_states::cache>;
 

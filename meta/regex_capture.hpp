@@ -8,29 +8,71 @@
 namespace meta
 {
     /**
-     * Base class for a regex capture container.
+     * Class that holds a view into the captured content of a regex group.
      *
-     * @tparam Str  A string-like type used to store the captured content
+     * @tparam Iter
      */
-    template<string_like Str>
-    class regex_capture_base
+    template<std::size_t, std::forward_iterator Iter>
+    class regex_capture_view
     {
     protected:
-        Str content;
+        Iter begin_iter;
+        Iter end_iter;
     public:
-        constexpr regex_capture_base()
-        noexcept(std::is_nothrow_default_constructible_v<Str>) = default;
 
-        template<typename S>
-        constexpr explicit regex_capture_base(S &&s)
-        noexcept(std::is_nothrow_move_constructible_v<Str>)
-            : content{std::forward<S>(s)}
+        constexpr regex_capture_view() = default;
+
+        constexpr explicit regex_capture_view(Iter b, Iter e) noexcept
+            : begin_iter{b}, end_iter{e}
         {}
 
-        [[nodiscard]] constexpr std::string_view view() const noexcept
+        constexpr void clear() noexcept
         {
-            return static_cast<std::string_view>(content);
+            begin_iter = Iter{};
+            end_iter = Iter{};
         }
+
+        [[nodiscard]] constexpr std::size_t length() const noexcept
+        {
+            return std::distance(begin_iter, end_iter);
+        }
+
+        [[nodiscard]] constexpr auto begin() const noexcept
+        {
+            return begin_iter;
+        }
+
+        [[nodiscard]] constexpr auto end() const noexcept
+        {
+            return end_iter;
+        }
+
+        [[nodiscard]] constexpr std::string_view get() const noexcept
+        requires std::contiguous_iterator<Iter>
+        {
+            return std::string_view{begin_iter, end_iter};
+        }
+
+        [[nodiscard]] std::string get() const noexcept
+        requires (!std::contiguous_iterator<Iter>)
+        {
+            return std::string{begin_iter, end_iter};
+        }
+    };
+
+    /**
+     * Class that owns a copy of the captured content of a regex group.
+     */
+    template<std::size_t N>
+    class regex_capture
+    {
+        std::string content;
+    public:
+
+        template<std::forward_iterator Iter>
+        explicit regex_capture(regex_capture_view<N, Iter> const &cap)
+            : content{cap.begin(), cap.end()}
+        {}
 
         [[nodiscard]] constexpr std::size_t length() const noexcept
         {
@@ -46,48 +88,6 @@ namespace meta
         {
             return content.end();
         }
-    };
-
-    /**
-     * Class that holds a view on the captured content of a regex group.
-     */
-    template<std::size_t>
-    class regex_capture_view : public regex_capture_base<std::string_view>
-    {
-        using regex_capture_base<std::string_view>::content;
-    public:
-        constexpr regex_capture_view() noexcept = default;
-
-        constexpr explicit regex_capture_view(std::string_view s) noexcept
-            : regex_capture_base<std::string_view>{s}
-        {}
-
-        template<std::forward_iterator Iter>
-        constexpr regex_capture_view(Iter begin, Iter end) noexcept
-            : regex_capture_base<std::string_view>{std::string_view{begin, end}}
-        {}
-
-        [[nodiscard]] constexpr std::string_view get() const noexcept
-        {
-            return content;
-        }
-
-        constexpr void clear() noexcept
-        {
-            content = "";
-        }
-    };
-
-    /**
-     * Class that owns a copy of the captured content of a regex group.
-     */
-    template<std::size_t N>
-    class regex_capture : public regex_capture_base<std::string>
-    {
-    public:
-        explicit regex_capture(regex_capture_view<N> const &cap)
-            : regex_capture_base<std::string>{cap.view()}
-        {}
 
         [[nodiscard]] auto &get() & noexcept
         {
@@ -108,17 +108,17 @@ namespace meta
     /**
      * Defines a std::tuple with N + 1 elements of type regex_capture_view.
      */
-    template<typename>
+    template<typename, typename>
     struct alloc_capture_view_storage;
 
-    template<std::size_t ... Indices>
-    struct alloc_capture_view_storage<std::index_sequence<Indices ...>>
+    template<std::forward_iterator Iter, std::size_t ... Indices>
+    struct alloc_capture_view_storage<std::index_sequence<Indices ...>, Iter>
     {
-        using type = std::tuple<regex_capture_view<Indices> ...>;
+        using type = std::tuple<regex_capture_view<Indices, Iter> ...>;
     };
 
-    template<std::size_t N>
-    using regex_capture_view_storage = typename alloc_capture_view_storage<std::make_index_sequence<N + 1>>::type;
+    template<std::size_t N, std::forward_iterator Iter>
+    using regex_capture_view_storage = typename alloc_capture_view_storage<std::make_index_sequence<N + 1>, Iter>::type;
 
     /**
      * Defines a std::tuple with N + 1 elements of type regex_capture.
@@ -134,5 +134,18 @@ namespace meta
 
     template<std::size_t N>
     using regex_capture_storage = typename alloc_capture_storage<std::make_index_sequence<N + 1>>::type;
+
+    /**
+     * Type trait used to check if a given type is an instance of
+     * the regex_capture_view template class.
+     */
+    template<typename T>
+    struct is_capture_view : std::false_type {};
+
+    template<std::size_t N, std::forward_iterator Iter>
+    struct is_capture_view<regex_capture_view<N, Iter>> : std::true_type {};
+
+    template<typename T>
+    inline constexpr bool is_capture_view_v = is_capture_view<T>::value;
 }
 #endif //META_REGEX_CAPTURE_HPP
