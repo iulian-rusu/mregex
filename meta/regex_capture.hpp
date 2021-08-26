@@ -62,6 +62,11 @@ namespace meta
             : regex_capture_base<std::string_view>{s}
         {}
 
+        template<std::forward_iterator Iter>
+        constexpr regex_capture_view(Iter begin, Iter end) noexcept
+            : regex_capture_base<std::string_view>{std::string_view{begin, end}}
+        {}
+
         [[nodiscard]] constexpr std::string_view get() const noexcept
         {
             return content;

@@ -23,17 +23,17 @@ namespace meta
             : value{std::forward<U>(u)}
         {}
 
-        [[nodiscard]] auto &get() & noexcept
+        [[nodiscard]] constexpr auto &get() & noexcept
         {
             return value;
         }
 
-        [[nodiscard]] auto const &get() const & noexcept
+        [[nodiscard]] constexpr auto const &get() const & noexcept
         {
             return value;
         }
 
-        [[nodiscard]] auto get() &&
+        [[nodiscard]] constexpr auto get() &&
         {
             return std::move(value);
         }
@@ -54,7 +54,7 @@ namespace meta
     };
 
     template<typename T>
-    auto make_universal_capture(T &&value)
+    constexpr auto make_universal_capture(T &&value)
     {
         return universal_capture<T>{std::forward<T>(value)};
     }

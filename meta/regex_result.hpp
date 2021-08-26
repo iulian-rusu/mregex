@@ -9,7 +9,7 @@
 namespace meta
 {
     /**
-     * Struct returned by all regex matching/searching functions.
+     * Class returned by all regex matching/searching functions.
      *
      * @tparam N        The number of capturing groups
      * @tparam Storage  The storage type used to hold the captures

@@ -15,10 +15,10 @@ namespace meta::ast
     template<typename T>
     struct is_trivially_matchable
     {
-        using iterator_t = decltype(std::declval<std::string_view>().begin());
+        using iterator_type = decltype(std::declval<std::string_view>().begin());
 
         template<typename Test>
-        static auto sfinae_helper(int) -> decltype(&Test::template consume_one<iterator_t, int>, std::true_type{});
+        static auto sfinae_helper(int) -> decltype(&Test::template consume_one<iterator_type, int>, std::true_type{});
 
         template<typename Test>
         static auto sfinae_helper(...) -> std::false_type;

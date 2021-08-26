@@ -29,7 +29,7 @@ add_executable(
         meta/utility/concepts.hpp
         meta/grammar/backref_rules.hpp
         meta/ast/match_result.hpp
-        meta/generator.hpp
+        meta/iterable_generator_adapter.hpp
         meta/ast/ast_traits.hpp
         meta/context/match_context.hpp
         meta/utility/tuple_helpers.hpp
@@ -49,5 +49,5 @@ add_executable(
         meta/context/match_cache.hpp
         meta/context/caching_match_context.hpp
         meta/context/atomic_match_context.hpp
-)
+        meta/regex_token_generator.hpp tests/regex_generator_tests.cpp)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -O3")

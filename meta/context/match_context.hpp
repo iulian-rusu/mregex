@@ -29,6 +29,8 @@ namespace meta
         struct match_context : base_context, atomic_context, caching_context
         {
             using flags = flag_states;
+            using ast_type = AST;
+            using iterator_type = Iter;
 
             constexpr void clear() noexcept
             {

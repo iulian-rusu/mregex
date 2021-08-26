@@ -1,11 +1,11 @@
 #ifndef META_REGEX_BASE_HPP
 #define META_REGEX_BASE_HPP
 
-#include "generator.hpp"
-#include "ast/ast_traits.hpp"
+#include "iterable_generator_adapter.hpp"
 #include "ast/ast.hpp"
 #include "context/match_context.hpp"
 #include "regex_result.hpp"
+#include "regex_token_generator.hpp"
 #include "utility/universal_capture.hpp"
 
 namespace meta
@@ -80,36 +80,33 @@ namespace meta
                     return result_type{true, std::move(ctx.captures)};
                 }
 
-                if (current == end)
+                if (current != end)
+                {
+                    ctx.clear();
+                    --length;
+                }
+                else
+                {
                     break;
-
-                if constexpr (ast::has_atomic_group_v<ast_type>)
-                    ctx.clear_atomic_state();
-                if constexpr (flags<match_context>::cache)
-                    ctx.clear_cache();
-                --length;
+                }
             }
-            ctx.clear_captures();
             return result_type{false, std::move(ctx.captures)};
         }
 
         /**
-         * Finds all matches of the pattern inside the input sequence.
+         * Finds all non-zero length matches of the pattern inside the input sequence.
          *
          * @param begin An iterator pointing to the start of the sequence
          * @param end   An iterator pointing to the end of the sequence
-         * @return      A generator that lazily evaluates subsequent matches
+         * @return      An iterable generator that lazily evaluates subsequent matches
          */
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto find_all(Iter begin, Iter end) noexcept
         {
-            std::size_t length = std::distance(begin, end);
-            return generator
-            {
-                [=]() mutable {
-                    return find_next_and_update(begin, end, length);
-                }
-            };
+            using match_context = create_match_context<Iter, ast_type, Flags ...>;
+
+            regex_token_generator<match_context> generator{begin, end, begin};
+            return iterable_generator_adapter{generator};
         }
 
         /**
@@ -148,56 +145,16 @@ namespace meta
         template<string_like Str>
         [[nodiscard]] static constexpr auto find_all(Str &&input) noexcept
         {
-            auto begin = input.begin();
-            auto end = input.end();
-            auto current = begin;
-            std::size_t length = std::distance(begin, end);
-            return generator
+            using iterator_type = decltype(input.begin());
+            using match_context = create_match_context<iterator_type, ast_type, Flags ...>;
+
+            regex_token_generator<match_context> generator{input.begin(), input.end(), input.begin()};
+            return iterable_generator_adapter
             {
                 [=, capture = make_universal_capture(std::forward<Str>(input))]() mutable {
-                    return find_next_and_update(begin, end, current, length);
+                    return generator();
                 }
             };
-        }
-    private:
-        /**
-         * Finds the first match in the input sequence and updates the begin
-         * iterator to point to the end of the matched subsequence.
-         *
-         * @param begin     An iterator pointing to the start of the sequence
-         * @param end       An iterator pointing to the end of the sequence
-         * @param current   An iterator pointing to the current position
-         * @param length    The length of the input sequence
-         * @return          A generator that lazily evaluates subsequent matches
-         */
-        template<std::forward_iterator Iter>
-        static constexpr auto find_next_and_update(Iter begin, Iter end, Iter &current, std::size_t &length) noexcept
-        {
-            using match_context = create_match_context<Iter, ast_type, Flags ...>;
-
-            match_context ctx{};
-            for (;; ++current)
-            {
-                if (auto res = ast_type::match(begin, end, {current, length}, ctx))
-                {
-                    auto match_end = current + res.consumed;
-                    std::string_view matched_content{current, match_end};
-                    std::get<0>(ctx.captures) = regex_capture_view<0>{matched_content};
-                    current = match_end;
-                    return result_type{true, std::move(ctx.captures)};
-                }
-
-                if (current == end)
-                    break;
-
-                if constexpr (ast::has_atomic_group_v<ast_type>)
-                    ctx.clear_atomic_state();
-                if constexpr (flags<match_context>::cache)
-                    ctx.clear_cache();
-                --length;
-            }
-            ctx.clear_captures();
-            return result_type{false, std::move(ctx.captures)};
         }
     };
 }

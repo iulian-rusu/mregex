@@ -6,8 +6,7 @@
 namespace meta::ast
 {
     /**
-     * Lightweight struct used to transmit matching information to AST nodes.
-     * It is separated from meta::match_context for flexibility purposes.
+     * Lightweight struct that determines the matching window for AST nodes.
      */
     template<std::forward_iterator Iter>
     struct match_bounds

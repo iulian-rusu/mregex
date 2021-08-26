@@ -21,11 +21,11 @@ namespace meta
     };
 
     /**
-     * Concept used to constrain a type used as a value iterable_producer for meta::generator.
-     * The return type must be explicitly convertible to bool to signal iteration ending.
+     * Concept used to constrain a type that generates values that can be explicitly
+     * converted to booleans.
      */
     template<typename T>
-    concept iterable_producer = requires(T p)
+    concept bool_testable_generator = requires(T p)
     {
         static_cast<bool>(p());
     };

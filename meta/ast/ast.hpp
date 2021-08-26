@@ -509,7 +509,7 @@ namespace meta::ast
             if (mb.consume_limit == 0)
                 return {0, false};
 
-            bool const res = consume_one(mb.from);
+            bool const res = consume_one(mb.from, ctx);
             return {res, res};
         }
 
@@ -639,8 +639,7 @@ namespace meta::ast
         static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             auto inner_match = Inner::match(begin, end, mb, ctx);
-            std::string_view captured_content{mb.from, mb.from + inner_match.consumed};
-            std::get<ID>(ctx.captures) = regex_capture_view<ID>{captured_content};
+            std::get<ID>(ctx.captures) = regex_capture_view<ID>{mb.from, mb.from + inner_match.consumed};
             return inner_match;
         }
     };

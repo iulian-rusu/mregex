@@ -1,24 +1,29 @@
-#ifndef META_GENERATOR_HPP
-#define META_GENERATOR_HPP
+#ifndef META_ITERABLE_GENERATOR_ADAPTER_HPP
+#define META_ITERABLE_GENERATOR_ADAPTER_HPP
 
 #include "utility/concepts.hpp"
 
 namespace meta
 {
     /**
-     * Generator that produces result based on a specified generating function.
+     * Adapter that allows iterating through the results returned by a generator.
+     * The generator is required to return a boolean-convertible value to signal
+     * iteration ending.
      *
-     * @tparam Prod   The type of callable used to produce the desired data
+     * @tparam Gen   The type of callable used to produce the desired data
      */
-    template<iterable_producer Prod>
-    struct generator : Prod
+    template<bool_testable_generator Gen>
+    struct iterable_generator_adapter : protected Gen
     {
-        using value_type = std::invoke_result_t<Prod>;
-        
+        class iterator;
+
+        using value_type = std::invoke_result_t<Gen>;
+        using iterator_type = iterator;
+
         template<typename Func>
-        constexpr explicit generator(Func &&func)
-        noexcept(std::is_nothrow_move_constructible_v<Prod>)
-            : Prod{std::forward<Func>(func)}
+        constexpr explicit iterable_generator_adapter(Func &&func)
+        noexcept(std::is_nothrow_move_constructible_v<Gen>)
+            : Gen{std::forward<Func>(func)}
         {}
 
         /**
@@ -26,12 +31,12 @@ namespace meta
          */
         class iterator
         {
-            generator<Prod> &gen;
+            iterable_generator_adapter<Gen> &gen;
             value_type current_result;
             bool active;
         public:
             template<typename Res>
-            constexpr explicit iterator(generator<Prod> &g, Res &&res, bool a)
+            constexpr explicit iterator(iterable_generator_adapter<Gen> &g, Res &&res, bool a)
             noexcept(std::is_nothrow_move_constructible_v<Res>)
                 : gen{g}, current_result{std::forward<Res>(res)}, active{a}
             {}
@@ -41,12 +46,12 @@ namespace meta
                 return active;
             }
 
-            value_type &operator*() noexcept
+            constexpr value_type &operator*() noexcept
             {
                 return current_result;
             }
 
-            iterator &operator++() noexcept
+            constexpr iterator &operator++() noexcept
             {
                 current_result = std::move(gen());
                 active = static_cast<bool>(current_result);
@@ -54,13 +59,13 @@ namespace meta
             }
 
             template<typename Iter>
-            bool operator==(Iter const &rhs) const noexcept
+            constexpr bool operator==(Iter const &rhs) const noexcept
             {
                 return static_cast<bool>(*this) == static_cast<bool>(rhs);
             }
 
             template<typename Iter>
-            bool operator!=(Iter const &rhs) const noexcept
+            constexpr bool operator!=(Iter const &rhs) const noexcept
             {
                 return static_cast<bool>(*this) != static_cast<bool>(rhs);
             }
@@ -68,20 +73,20 @@ namespace meta
 
         struct iteration_end_marker : std::false_type {};
 
-        auto begin() noexcept
+        constexpr auto begin() noexcept
         {
             auto initial_result = (*this)();
             auto const initial_state = static_cast<bool>(initial_result);
             return iterator{*this, std::move(initial_result), initial_state};
         }
 
-        auto end() const noexcept
+        constexpr auto end() const noexcept
         {
             return iteration_end_marker{};
         }
     };
 
-    template<iterable_producer Func>
-    generator(Func &&) -> generator<std::decay_t<Func>>;
+    template<bool_testable_generator G>
+    iterable_generator_adapter(G &&) -> iterable_generator_adapter<std::decay_t<G>>;
 }
-#endif //META_GENERATOR_HPP
+#endif //META_ITERABLE_GENERATOR_ADAPTER_HPP
