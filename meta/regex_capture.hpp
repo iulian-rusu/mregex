@@ -10,16 +10,14 @@ namespace meta
     /**
      * Class that holds a view into the captured content of a regex group.
      *
-     * @tparam Iter
+     * @tparam Iter The forward iterator type used to acces the input sequence
      */
     template<std::size_t, std::forward_iterator Iter>
     class regex_capture_view
     {
-    protected:
         Iter begin_iter;
         Iter end_iter;
     public:
-
         constexpr regex_capture_view() = default;
 
         constexpr explicit regex_capture_view(Iter b, Iter e) noexcept
@@ -68,23 +66,22 @@ namespace meta
     {
         std::string content;
     public:
-
         template<std::forward_iterator Iter>
         explicit regex_capture(regex_capture_view<N, Iter> const &cap)
             : content{cap.begin(), cap.end()}
         {}
 
-        [[nodiscard]] constexpr std::size_t length() const noexcept
+        [[nodiscard]] std::size_t length() const noexcept
         {
             return content.length();
         }
 
-        [[nodiscard]] constexpr auto begin() const noexcept
+        [[nodiscard]] auto begin() const noexcept
         {
             return content.begin();
         }
 
-        [[nodiscard]] constexpr auto end() const noexcept
+        [[nodiscard]] auto end() const noexcept
         {
             return content.end();
         }
