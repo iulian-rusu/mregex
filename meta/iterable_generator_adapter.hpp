@@ -21,13 +21,14 @@ namespace meta
             : Gen{std::forward<Func>(func)}
         {}
 
+        struct iteration_end_marker {};
+
         /**
          * Lazy iterator over the generated result.
          */
         struct iterator
         {
             using value_type = std::invoke_result_t<Gen>;
-            using reference = value_type const &;
             using difference_type = std::size_t;
             using iterator_category = std::forward_iterator_tag;
 
@@ -54,24 +55,21 @@ namespace meta
                 return *this;
             }
 
-            template<typename Iter>
-            constexpr bool operator==(Iter const &rhs) const noexcept
+            constexpr bool operator==(iteration_end_marker const &rhs) const noexcept
             {
-                return static_cast<bool>(*this) == static_cast<bool>(rhs);
+                return !active;
             }
 
-            template<typename Iter>
-            constexpr bool operator!=(Iter const &rhs) const noexcept
+            constexpr bool operator!=(iteration_end_marker const &rhs) const noexcept
             {
-                return static_cast<bool>(*this) != static_cast<bool>(rhs);
+                return active;
             }
+
         private:
             iterable_generator_adapter<Gen> &gen;
             value_type current_result;
             bool active;
         };
-
-        struct iteration_end_marker : std::false_type {};
 
         constexpr auto begin() noexcept
         {

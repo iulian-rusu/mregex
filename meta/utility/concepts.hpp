@@ -19,6 +19,21 @@ namespace meta
         { s.end() } -> std::forward_iterator;
     };
 
+    template<typename T>
+    concept capture_like = requires(T c)
+    {
+        { c.length() } -> std::convertible_to<std::size_t>;
+        { c.begin() } -> std::forward_iterator;
+        { c.end() } -> std::forward_iterator;
+        { c.get() } -> string_like;
+    };
+
+    template<typename T>
+    concept capture_storage = requires(T s)
+    {
+        { std::get<0>(s) } -> capture_like;
+    };
+
     /**
      * Concept used to constrain a type that generates values that can be explicitly
      * converted to booleans.

@@ -48,6 +48,7 @@ namespace meta
             index = 0;
             size = 0;
         }
+
     private:
         std::array<value_type, capacity> data{};
         std::size_t index{};

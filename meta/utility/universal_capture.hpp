@@ -16,6 +16,7 @@ namespace meta
         using value_type = std::remove_reference_t<T>;
 
         value_type value;
+
     public:
         template <typename U>
         constexpr explicit value_wrapper(U &&u)

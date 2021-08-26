@@ -34,7 +34,8 @@ Notice that the generated regular expression is a type and not an object, since 
 input regex pattern to a C++ type at compile-time. Invalid regular expression syntax will result
 in a compilation error.
 
-The input can be any object that satisfies the `meta::string_like` concept.
+The input can be any object that satisfies the `meta::string_like` concept, or a pair of iterators that
+satisfy `std::forward_iterator`.
 ```cpp
 using url_regex = meta::regex<R"((\w+):\/\/(?:(?:(\w+)?(?::(\w+))?@)?([\w.]+)(?::(\d+))?)?(?:(\/[-/\w]+)?\?([\w=&]+))?)">;
 

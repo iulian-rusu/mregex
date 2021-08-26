@@ -87,6 +87,7 @@ namespace meta::ast
 
             return expand_trivial_match(begin, end, mb, ctx, std::make_index_sequence<sequence_size>{});
         }
+
     private:
         static constexpr std::size_t sequence_size = 1 + sizeof ... (Rest);
 
@@ -216,6 +217,7 @@ namespace meta::ast
 
             return {mb.consume_limit, true};
         }
+
     private:
         template<std::forward_iterator Iter, typename Context>
         static constexpr match_result check_cache(match_bounds<Iter> mb, Context &ctx)

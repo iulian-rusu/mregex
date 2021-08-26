@@ -14,7 +14,7 @@ namespace meta
      * @tparam N        The number of capturing groups
      * @tparam Storage  The storage type used to hold the captures
      */
-    template<std::size_t N, typename Storage>
+    template<std::size_t N, capture_storage Storage>
     class basic_regex_result;
 
     /**
@@ -31,11 +31,12 @@ namespace meta
     template<std::size_t N>
     using regex_result = basic_regex_result<N, regex_capture_storage<N>>;
 
-    template<std::size_t N, typename Storage>
+    template<std::size_t N, capture_storage Storage>
     class basic_regex_result
     {
         bool matched;
         Storage captures;
+
     public:
         template<typename S>
         constexpr basic_regex_result(bool m, S &&s)

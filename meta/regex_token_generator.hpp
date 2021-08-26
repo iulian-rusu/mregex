@@ -53,6 +53,7 @@ namespace meta
             }
             return result_type{false, std::move(ctx.captures)};
         }
+
     private:
         iterator_type begin;
         iterator_type end;

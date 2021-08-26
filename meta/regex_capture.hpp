@@ -17,6 +17,7 @@ namespace meta
     {
         Iter begin_iter;
         Iter end_iter;
+
     public:
         constexpr regex_capture_view() = default;
 
@@ -45,13 +46,13 @@ namespace meta
             return end_iter;
         }
 
-        [[nodiscard]] constexpr std::string_view get() const noexcept
+        [[nodiscard]] constexpr auto get() const noexcept
         requires std::contiguous_iterator<Iter>
         {
             return std::string_view{begin_iter, end_iter};
         }
 
-        [[nodiscard]] std::string get() const noexcept
+        [[nodiscard]] auto get() const noexcept
         requires (!std::contiguous_iterator<Iter>)
         {
             return std::string{begin_iter, end_iter};
@@ -65,6 +66,7 @@ namespace meta
     class regex_capture
     {
         std::string content;
+
     public:
         template<std::forward_iterator Iter>
         explicit regex_capture(regex_capture_view<N, Iter> const &cap)
@@ -103,6 +105,19 @@ namespace meta
     };
 
     /**
+     * Type trait used to check if a given type is an instance of
+     * the regex_capture_view template class.
+     */
+    template<typename T>
+    struct is_capture_view : std::false_type {};
+
+    template<std::size_t N, std::forward_iterator Iter>
+    struct is_capture_view<regex_capture_view<N, Iter>> : std::true_type {};
+
+    template<typename T>
+    inline constexpr bool is_capture_view_v = is_capture_view<T>::value;
+
+    /**
      * Defines a std::tuple with N + 1 elements of type regex_capture_view.
      */
     template<typename, typename>
@@ -131,18 +146,5 @@ namespace meta
 
     template<std::size_t N>
     using regex_capture_storage = typename alloc_capture_storage<std::make_index_sequence<N + 1>>::type;
-
-    /**
-     * Type trait used to check if a given type is an instance of
-     * the regex_capture_view template class.
-     */
-    template<typename T>
-    struct is_capture_view : std::false_type {};
-
-    template<std::size_t N, std::forward_iterator Iter>
-    struct is_capture_view<regex_capture_view<N, Iter>> : std::true_type {};
-
-    template<typename T>
-    inline constexpr bool is_capture_view_v = is_capture_view<T>::value;
 }
 #endif //META_REGEX_CAPTURE_HPP
