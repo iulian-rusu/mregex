@@ -27,8 +27,7 @@ namespace meta
 
         constexpr void clear() noexcept
         {
-            begin_iter = Iter{};
-            end_iter = Iter{};
+            end_iter = begin_iter;
         }
 
         [[nodiscard]] constexpr std::size_t length() const noexcept

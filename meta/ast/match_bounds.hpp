@@ -6,12 +6,12 @@
 namespace meta::ast
 {
     /**
-     * Lightweight struct that determines the matching window for AST nodes.
+     * Data structure that determines the matching window bounds for AST nodes.
      */
     template<std::forward_iterator Iter>
     struct match_bounds
     {
-        Iter from{};
+        Iter current_iter{};
         std::size_t consume_limit{};
 
         /**
@@ -20,13 +20,13 @@ namespace meta::ast
          * input ranges.
          */
         constexpr match_bounds(Iter it, std::integral auto limit) noexcept
-                : from{it}, consume_limit{static_cast<size_t>(limit)}
+                : current_iter{it}, consume_limit{static_cast<size_t>(limit)}
         {}
 
         [[nodiscard]] constexpr match_bounds advance(std::size_t count) const noexcept
         {
             auto updated_consume_limit = consume_limit >= count ? consume_limit - count : 0;
-            return match_bounds{from + count, updated_consume_limit};
+            return match_bounds{current_iter + count, updated_consume_limit};
         }
     };
 

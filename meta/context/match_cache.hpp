@@ -9,7 +9,7 @@ namespace meta
     template<std::forward_iterator Iter>
     struct cache_entry
     {
-        Iter from{};
+        Iter begin_iter{};
         std::size_t consumed{};
     };
 

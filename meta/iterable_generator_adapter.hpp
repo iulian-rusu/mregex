@@ -15,10 +15,10 @@ namespace meta
     template<bool_testable_generator Gen>
     struct iterable_generator_adapter : protected Gen
     {
-        template<typename Func>
-        constexpr explicit iterable_generator_adapter(Func &&func)
+        template<typename F>
+        constexpr explicit iterable_generator_adapter(F &&f)
         noexcept(std::is_nothrow_move_constructible_v<Gen>)
-                : Gen{std::forward<Func>(func)}
+                : Gen{std::forward<F>(f)}
         {}
 
         struct iteration_end_marker {};
@@ -33,9 +33,9 @@ namespace meta
             using iterator_category = std::forward_iterator_tag;
 
             template<typename Res>
-            constexpr explicit iterator(iterable_generator_adapter<Gen> &g, Res &&res, bool a)
+            constexpr explicit iterator(iterable_generator_adapter<Gen> &gen, Res &&res, bool a)
             noexcept(std::is_nothrow_move_constructible_v<Res>)
-                    : gen{g}, current_result{std::forward<Res>(res)}, active{a}
+                    : generator{gen}, current_result{std::forward<Res>(res)}, active{a}
             {}
 
             constexpr explicit operator bool() const noexcept
@@ -50,7 +50,7 @@ namespace meta
 
             constexpr iterator &operator++() noexcept
             {
-                current_result = std::move(gen());
+                current_result = std::move(generator());
                 active = static_cast<bool>(current_result);
                 return *this;
             }
@@ -66,7 +66,7 @@ namespace meta
             }
 
         private:
-            iterable_generator_adapter<Gen> &gen;
+            iterable_generator_adapter<Gen> &generator;
             value_type current_result;
             bool active;
         };

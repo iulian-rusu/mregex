@@ -23,7 +23,7 @@ namespace meta
         using result_type = regex_result_view<ast_type::capture_count, iterator_type>;
 
         constexpr regex_token_generator(iterator_type start, iterator_type stop, iterator_type current)
-                : begin{start}, end{stop}, bounds{current, std::distance(current, stop)}, active{true}
+                : begin_iter{start}, end_iter{stop}, bounds{current, std::distance(current, stop)}, active{true}
         {}
 
         [[nodiscard]] constexpr result_type operator()() noexcept
@@ -31,17 +31,17 @@ namespace meta
             Context ctx{};
             while (active)
             {
-                auto res = ast_type::match(begin, end, bounds, ctx);
+                auto res = ast_type::match(begin_iter, end_iter, bounds, ctx);
                 if (res && res.consumed > 0)
                 {
-                    auto match_begin = bounds.from;
+                    auto match_begin = bounds.current_iter;
                     bounds = bounds.advance(res.consumed);
-                    std::get<0>(ctx.captures) = regex_capture_view<0, iterator_type>{match_begin, bounds.from};
-                    active = bounds.from != end;
+                    std::get<0>(ctx.captures) = regex_capture_view<0, iterator_type>{match_begin, bounds.current_iter};
+                    active = bounds.current_iter != end_iter;
                     return result_type{true, std::move(ctx.captures)};
                 }
 
-                if (bounds.from != end)
+                if (bounds.current_iter != end_iter)
                 {
                     bounds = bounds.advance(1);
                     ctx.clear();
@@ -55,8 +55,8 @@ namespace meta
         }
 
     private:
-        iterator_type begin;
-        iterator_type end;
+        iterator_type begin_iter;
+        iterator_type end_iter;
         ast::match_bounds<iterator_type> bounds;
         bool active;
     };

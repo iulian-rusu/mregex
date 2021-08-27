@@ -23,7 +23,7 @@ namespace meta::ast
             std::size_t consume_limit = mb.consume_limit;
             while (true)
             {
-                auto first_match = First::match(begin, end, {mb.from, consume_limit}, ctx);
+                auto first_match = First::match(begin, end, {mb.current_iter, consume_limit}, ctx);
                 if (!first_match)
                     return {0, false};
 
@@ -45,7 +45,7 @@ namespace meta::ast
             bool saved_match_state = ctx.pop_atomic_state();
             while (true)
             {
-                auto first_match = First::match(begin, end, {mb.from, consume_limit}, ctx);
+                auto first_match = First::match(begin, end, {mb.current_iter, consume_limit}, ctx);
                 if (!first_match)
                     break;
 
@@ -71,7 +71,7 @@ namespace meta::ast
             if (mb.consume_limit == 0)
                 return {0, false};
 
-            if (First::consume_one(mb.from, ctx))
+            if (First::consume_one(mb.current_iter, ctx))
                 if (auto rest_match = sequence<Rest ...>::match(begin, end, mb.advance(1), ctx))
                     return {rest_match.consumed + 1, true};
                 
@@ -100,7 +100,7 @@ namespace meta::ast
                 std::index_sequence<Index, Indices ...> &&
         ) noexcept
         {
-            if (First::consume_one(mb.from, ctx) && (Rest::consume_one(mb.from + Indices, ctx) && ...))
+            if (First::consume_one(mb.current_iter, ctx) && (Rest::consume_one(mb.current_iter + Indices, ctx) && ...))
                 return {sequence_size, true};
 
             return {0, false};
@@ -189,7 +189,7 @@ namespace meta::ast
                     break;
 
                 if constexpr (flags<Context>::cache)
-                    ctx.cache.push({mb.from, res.consumed});
+                    ctx.cache.push({mb.current_iter, res.consumed});
                 res += inner_match;
                 updated_mb = updated_mb.advance(inner_match.consumed);
             }
@@ -205,14 +205,14 @@ namespace meta::ast
                     return cached;
 
             std::size_t consumed = 0;
-            for (auto current = mb.from; current != mb.from + mb.consume_limit; ++current)
+            for (auto current = mb.current_iter; current != mb.current_iter + mb.consume_limit; ++current)
             {
                 if (!Inner::consume_one(current, ctx))
                     return {consumed, true};
 
                 ++consumed;
                 if constexpr (flags<Context>::cache)
-                    ctx.cache.push({mb.from, current});
+                    ctx.cache.push({mb.current_iter, current});
             }
 
             return {mb.consume_limit, true};
@@ -226,7 +226,7 @@ namespace meta::ast
             while (!ctx.cache.empty())
             {
                 auto cached = ctx.cache.top();
-                if (cached.from != mb.from)
+                if (cached.begin_iter != mb.current_iter)
                     break;
 
                 ctx.cache.pop();
@@ -296,7 +296,7 @@ namespace meta::ast
         {
             std::size_t const consume_limit = R <= mb.consume_limit ? R : mb.consume_limit;
             std::size_t consumed = 0;
-            for (auto current = mb.from; current != mb.from + consume_limit; ++current)
+            for (auto current = mb.current_iter; current != mb.current_iter + consume_limit; ++current)
             {
                 if (!Inner::consume_one(current, ctx))
                     return {consumed, true};
@@ -364,7 +364,7 @@ namespace meta::ast
             if (N > mb.consume_limit)
                 return {0, false};
 
-            for (auto current = mb.from; current != mb.from + N; ++current)
+            for (auto current = mb.current_iter; current != mb.current_iter + N; ++current)
                 if (!Inner::consume_one(current, ctx))
                     return {0, false};
 
@@ -429,7 +429,7 @@ namespace meta::ast
             if (mb.consume_limit == 0)
                 return {0, false};
 
-            bool const res = consume_one(mb.from, ctx);
+            bool const res = consume_one(mb.current_iter, ctx);
             return {res, res};
         }
 
@@ -445,11 +445,11 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context>
         static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
-            bool res = mb.from == begin;
+            bool res = mb.current_iter == begin;
             bool consume = false;
             if constexpr (flags<Context>::multiline)
             {
-                consume = mb.from != end && *mb.from == '\n';
+                consume = mb.current_iter != end && *mb.current_iter == '\n';
                 res |= consume;
             }
 
@@ -465,11 +465,11 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context>
         static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
-            bool res = mb.from == end;
+            bool res = mb.current_iter == end;
             bool consume = false;
             if constexpr (flags<Context>::multiline)
             {
-                consume = mb.from != end && *mb.from == '\n';
+                consume = mb.current_iter != end && *mb.current_iter == '\n';
                 res |= consume;
             }
 
@@ -489,7 +489,7 @@ namespace meta::ast
             if (mb.consume_limit == 0)
                 return {0, false};
 
-            bool const res = consume_one(mb.from, ctx);
+            bool const res = consume_one(mb.current_iter, ctx);
             return {res, res};
         }
 
@@ -511,7 +511,7 @@ namespace meta::ast
             if (mb.consume_limit == 0)
                 return {0, false};
 
-            bool const res = consume_one(mb.from, ctx);
+            bool const res = consume_one(mb.current_iter, ctx);
             return {res, res};
         }
 
@@ -533,7 +533,7 @@ namespace meta::ast
             if (mb.consume_limit == 0)
                 return {0, false};
 
-            bool const res = consume_one(mb.from, ctx);
+            bool const res = consume_one(mb.current_iter, ctx);
             return {res, res};
         }
 
@@ -559,7 +559,7 @@ namespace meta::ast
             if (mb.consume_limit == 0)
                 return {0, false};
 
-            bool const res = consume_one(mb.from, ctx);
+            bool const res = consume_one(mb.current_iter, ctx);
             return {res, res};
         }
 
@@ -591,10 +591,10 @@ namespace meta::ast
             auto const captured = std::get<ID>(ctx.captures);
             for (auto c : captured)
             {
-                if (mb.from == end)
+                if (mb.current_iter == end)
                     return {0, false};
 
-                auto subject = *mb.from;
+                auto subject = *mb.current_iter;
                 if constexpr (flags<Context>::ignore_case)
                 {
                     subject = to_lower(subject);
@@ -603,7 +603,7 @@ namespace meta::ast
                 if (subject != c)
                     return {0, false};
 
-                ++mb.from;
+                ++mb.current_iter;
             }
             return {captured.length(), true};
         }
@@ -641,7 +641,8 @@ namespace meta::ast
         static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             auto inner_match = Inner::match(begin, end, mb, ctx);
-            std::get<ID>(ctx.captures) = regex_capture_view<ID, Iter>{mb.from, mb.from + inner_match.consumed};
+            auto match_end = mb.current_iter + inner_match.consumed;
+            std::get<ID>(ctx.captures) = regex_capture_view<ID, Iter>{mb.current_iter, match_end};
             return inner_match;
         }
     };
@@ -659,7 +660,7 @@ namespace meta::ast
             if (mb.consume_limit == 0)
                 return {0, false};
 
-            bool const res = !Inner::consume_one(mb.from, ctx);
+            bool const res = !Inner::consume_one(mb.current_iter, ctx);
             return {res, res};
         }
 
