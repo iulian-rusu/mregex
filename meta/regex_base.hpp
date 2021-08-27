@@ -30,6 +30,8 @@ namespace meta
 
         /**
          * Matches a given input sequence agains the regex pattern.
+         * The supplied iterator pair must form a valid range, otherwise
+         * the behavior is undefined.
          *
          * @param begin An iterator pointing to the start of the sequence
          * @param end   An iterator pointing to the end of the sequence
@@ -54,20 +56,23 @@ namespace meta
 
         /**
          * Searches for the first match of the pattern in the given input sequence.
+         * The supplied iterator pair must form a valid range, otherwise
+         * the behavior is undefined.
          *
          * @param begin An iterator pointing to the start of the sequence
          * @param end   An iterator pointing to the end of the sequence
+         * @param from  The iterator to start searching from
          * @return      A regex_result_view object
          */
         template<std::forward_iterator Iter>
-        [[nodiscard]] static constexpr auto find_first(Iter begin, Iter end) noexcept
+        [[nodiscard]] static constexpr auto find_first(Iter begin, Iter end, Iter from) noexcept
         {
             using match_context = create_match_context<Iter, ast_type, Flags ...>;
             using result_type = regex_result_view<ast_type::capture_count, Iter>;
 
             match_context ctx{};
-            std::size_t length = std::distance(begin, end);
-            for (auto current = begin;; ++current)
+            std::size_t length = std::distance(from, end);
+            for (auto current = from;; ++current)
             {
                 if (auto res = ast_type::match(begin, end, {current, length}, ctx))
                 {
@@ -90,6 +95,8 @@ namespace meta
 
         /**
          * Finds all non-zero length matches of the pattern inside the input sequence.
+         * The supplied iterator pair must form a valid range, otherwise
+         * the behavior is undefined.
          *
          * @param begin An iterator pointing to the start of the sequence
          * @param end   An iterator pointing to the end of the sequence
@@ -111,34 +118,34 @@ namespace meta
          * an owning regex_result type to avoid invalid pointers.
          */
 
-        template<string_like Str>
-        [[nodiscard]] static constexpr auto match(Str const &input) noexcept
+        template<string_like S>
+        [[nodiscard]] static constexpr auto match(S const &input) noexcept
         {
             return match(input.begin(), input.end());
         }
 
-        template<string_like Str>
-        [[nodiscard]] static constexpr auto match(Str &&input) noexcept
-        requires is_memory_owning_rvalue_v<Str &&>
+        template<string_like S>
+        [[nodiscard]] static constexpr auto match(S &&input) noexcept
+        requires is_memory_owning_rvalue_v<S &&>
         {
             return match(input.begin(), input.end()).own();
         }
 
-        template<string_like Str>
-        [[nodiscard]] static constexpr auto find_first(Str const &input) noexcept
+        template<string_like S>
+        [[nodiscard]] static constexpr auto find_first(S const &input) noexcept
         {
-            return find_first(input.begin(), input.end());
+            return find_first(input.begin(), input.end(), input.begin());
         }
 
-        template<string_like Str>
-        [[nodiscard]] static constexpr auto find_first(Str &&input) noexcept
-        requires is_memory_owning_rvalue_v<Str &&>
+        template<string_like S>
+        [[nodiscard]] static constexpr auto find_first(S &&input) noexcept
+        requires is_memory_owning_rvalue_v<S &&>
         {
-            return find_first(input.begin(), input.end()).own();
+            return find_first(input.begin(), input.end(), input.begin()).own();
         }
 
-        template<string_like Str>
-        [[nodiscard]] static constexpr auto find_all(Str &&input) noexcept
+        template<string_like S>
+        [[nodiscard]] static constexpr auto find_all(S &&input) noexcept
         {
             using iterator_type = decltype(input.begin());
             using match_context = create_match_context<iterator_type, ast_type, Flags ...>;
@@ -146,7 +153,7 @@ namespace meta
             regex_token_generator<match_context> generator{input.begin(), input.end(), input.begin()};
             return iterable_generator_adapter
             {
-                [=, capture = make_universal_capture(std::forward<Str>(input))]() mutable {
+                [=, capture = make_universal_capture(std::forward<S>(input))]() mutable {
                     return generator();
                 }
             };

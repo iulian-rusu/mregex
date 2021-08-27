@@ -41,7 +41,7 @@ namespace meta
         template<typename S>
         constexpr basic_regex_result(bool m, S &&s)
         noexcept(std::is_nothrow_move_constructible_v<Storage>)
-            : matched{m}, captures{std::forward<S>(s)}
+                : matched{m}, captures{std::forward<S>(s)}
         {}
 
         constexpr explicit operator bool() const noexcept

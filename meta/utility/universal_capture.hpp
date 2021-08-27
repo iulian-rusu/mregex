@@ -18,10 +18,10 @@ namespace meta
         value_type value;
 
     public:
-        template <typename U>
+        template<typename U>
         constexpr explicit value_wrapper(U &&u)
         noexcept(std::is_nothrow_move_constructible_v<value_type>)
-            : value{std::forward<U>(u)}
+                : value{std::forward<U>(u)}
         {}
 
         [[nodiscard]] constexpr auto &get() & noexcept

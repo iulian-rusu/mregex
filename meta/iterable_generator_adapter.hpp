@@ -18,7 +18,7 @@ namespace meta
         template<typename Func>
         constexpr explicit iterable_generator_adapter(Func &&func)
         noexcept(std::is_nothrow_move_constructible_v<Gen>)
-            : Gen{std::forward<Func>(func)}
+                : Gen{std::forward<Func>(func)}
         {}
 
         struct iteration_end_marker {};
@@ -35,7 +35,7 @@ namespace meta
             template<typename Res>
             constexpr explicit iterator(iterable_generator_adapter<Gen> &g, Res &&res, bool a)
             noexcept(std::is_nothrow_move_constructible_v<Res>)
-                : gen{g}, current_result{std::forward<Res>(res)}, active{a}
+                    : gen{g}, current_result{std::forward<Res>(res)}, active{a}
             {}
 
             constexpr explicit operator bool() const noexcept

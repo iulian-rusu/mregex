@@ -22,8 +22,8 @@ namespace meta
         using iterator_type = typename Context::iterator_type;
         using result_type = regex_result_view<ast_type::capture_count, iterator_type>;
 
-        constexpr regex_token_generator(iterator_type b, iterator_type e, iterator_type c)
-            : begin{b}, end{e}, bounds{c, static_cast<std::size_t>(std::distance(c, e))}, active{true}
+        constexpr regex_token_generator(iterator_type start, iterator_type stop, iterator_type current)
+                : begin{start}, end{stop}, bounds{current, std::distance(current, stop)}, active{true}
         {}
 
         [[nodiscard]] constexpr result_type operator()() noexcept
