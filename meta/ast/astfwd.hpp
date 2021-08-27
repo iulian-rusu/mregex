@@ -3,13 +3,13 @@
 
 namespace meta::ast
 {
-    template<typename, typename ...>
+    template<typename, typename...>
     struct sequence;
 
-    template<typename, typename ...>
+    template<typename, typename...>
     struct alternation;
 
-    template<typename, typename ...>
+    template<typename, typename...>
     struct disjunction;
 
     template<typename>
@@ -24,7 +24,7 @@ namespace meta::ast
 
     struct nothing;
 
-    template<typename, typename ...>
+    template<typename, typename...>
     struct set;
 
     struct beginning;

@@ -29,7 +29,7 @@ namespace meta::ast
     template<typename T>
     inline constexpr bool is_trivially_matchable_v = is_trivially_matchable<T>::value;
 
-    template<typename ... Elems>
+    template<typename... Elems>
     inline constexpr bool are_trivially_matchable_v = (is_trivially_matchable_v<Elems> && ...);
 
     /**
@@ -42,13 +42,13 @@ namespace meta::ast
     template<typename Inner>
     struct has_atomic_group<atomic<Inner>> : std::true_type {};
 
-    template<template<typename> typename Outer, typename ... Inners>
+    template<template<typename> typename Outer, typename... Inners>
     struct has_atomic_group<Outer<Inners ...>>
     {
         static constexpr bool value = (has_atomic_group<Inners>::value || ...);
     };
 
-    template<template<auto, typename ...> typename Outer, auto I, typename ... Inners>
+    template<template<auto, typename...> typename Outer, auto I, typename... Inners>
     struct has_atomic_group<Outer<I, Inners ...>>
     {
         static constexpr bool value = (has_atomic_group<Inners>::value || ...);

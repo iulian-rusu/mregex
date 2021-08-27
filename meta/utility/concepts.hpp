@@ -25,7 +25,7 @@ namespace meta
         { c.length() } -> std::convertible_to<std::size_t>;
         { c.begin() } -> std::forward_iterator;
         { c.end() } -> std::forward_iterator;
-        { c.get() } -> string_like;
+        { c.content() } -> string_like;
     };
 
     template<typename T>

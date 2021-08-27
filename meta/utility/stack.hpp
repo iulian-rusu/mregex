@@ -11,7 +11,7 @@ namespace meta
      *
      * @tparam Elems    Inner variadic pack of types - the elemets on the stack
      */
-    template<typename ... Elems>
+    template<typename... Elems>
     struct stack;
 
     /**
@@ -19,32 +19,32 @@ namespace meta
      */
     namespace impl
     {
-        template<typename First, typename ... Rest>
+        template<typename First, typename... Rest>
         struct pop_helper
         {
             using type = stack<Rest ...>;
         };
 
-        template<typename ... Elems>
+        template<typename... Elems>
         using pop = typename pop_helper<Elems ...>::type;
 
-        template<typename First, typename ... Rest>
+        template<typename First, typename... Rest>
         struct push_helper
         {
             using type = stack<First, Rest ...>;
         };
 
-        template<typename ... First , typename ... Rest>
+        template<typename... First , typename... Rest>
         struct push_helper<stack<First ...>, Rest ...>
         {
             using type = stack<First ..., Rest ...>;
         };
 
-        template<typename First, typename ... Rest>
+        template<typename First, typename... Rest>
         using push = typename push_helper<First, Rest ...>::type;
     }
 
-    template<typename ... Elems>
+    template<typename... Elems>
     struct stack
     {
         template<typename E>

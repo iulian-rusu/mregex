@@ -13,7 +13,7 @@ namespace meta
      *
      * @tparam pattern  The input to be parsed
      */
-    template<auto const pattern>
+    template<auto pattern>
     struct parser
     {
         // Helper metafunction used to obtain input symbols for the parser
@@ -79,7 +79,7 @@ namespace meta
         };
 
         // Advance and also push the rest of the rules on the stack
-        template<std::size_t I, typename AST, typename ... Rules, typename ... Rest>
+        template<std::size_t I, typename AST, typename... Rules, typename... Rest>
         struct transition<I, stack<grammar::advance, Rules ...>, AST, stack<Rest ...>>
         {
             using type = typename parse<I + 1, AST, stack<Rules ..., Rest ...>>::type;
@@ -106,7 +106,7 @@ namespace meta
         static constexpr bool accepted = typename parse_result::first{};
     };
 
-    template<auto const pattern>
+    template<auto pattern>
     using ast_of = typename parser<pattern>::ast_type;
 }
 #endif //META_PARSER_HPP

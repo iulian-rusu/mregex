@@ -84,22 +84,32 @@ namespace meta
             return regex_result<N>{matched, std::move(owning_captures)};
         }
 
+        /**
+         * Returns the captured group with the specified number.
+         * The return type depends on the iterator category used to access
+         * the input sequence. If the iterator satisfies std::contiguous_iterator,
+         * the method returns a std::string_view of the captured content, otherwise it returns
+         * a std::string.
+         *
+         * @tparam ID   The number of the requested capture group
+         * @return      A string-like object containing the captured content
+         */
         template<std::size_t ID>
         [[nodiscard]] constexpr decltype(auto) group() const noexcept
         {
             static_assert(ID <= N, "capture group does not exist");
-            return std::get<ID>(captures).get();
+            return std::get<ID>(captures).content();
         }
 
         /**
-         * Method used for structured binding decomposition.
-         * Prefer the group() method for extracting groups.
+         * Tuple-like interface for structured binding decomposition.
+         * Prefer the group() method for extracting captures.
          */
         template<std::size_t ID>
         constexpr decltype(auto) get() const noexcept
         {
             static_assert(ID < N, "tuple element index out of bounds");
-            return std::get<ID + 1>(captures).get();
+            return std::get<ID + 1>(captures).content();
         }
     };
 }

@@ -22,7 +22,7 @@ namespace meta
         constexpr regex_capture_view() = default;
 
         constexpr explicit regex_capture_view(Iter b, Iter e) noexcept
-            : begin_iter{b}, end_iter{e}
+        : begin_iter{b}, end_iter{e}
         {}
 
         constexpr void clear() noexcept
@@ -46,13 +46,14 @@ namespace meta
             return end_iter;
         }
 
-        [[nodiscard]] constexpr auto get() const noexcept
+        [[nodiscard]] constexpr auto content() const noexcept
         requires std::contiguous_iterator<Iter>
         {
+            // Views can only be constructed from contiguous memory
             return std::string_view{begin_iter, end_iter};
         }
 
-        [[nodiscard]] auto get() const noexcept
+        [[nodiscard]] auto content() const
         requires (!std::contiguous_iterator<Iter>)
         {
             return std::string{begin_iter, end_iter};
@@ -65,42 +66,42 @@ namespace meta
     template<std::size_t N>
     class regex_capture
     {
-        std::string content;
+        std::string captured;
 
     public:
         template<std::forward_iterator Iter>
-        explicit regex_capture(regex_capture_view<N, Iter> const &cap)
-            : content{cap.begin(), cap.end()}
+        explicit regex_capture(regex_capture_view<N, Iter> const &capture_view)
+        : captured{capture_view.begin(), capture_view.end()}
         {}
 
         [[nodiscard]] std::size_t length() const noexcept
         {
-            return content.length();
+            return captured.length();
         }
 
         [[nodiscard]] auto begin() const noexcept
         {
-            return content.begin();
+            return captured.begin();
         }
 
         [[nodiscard]] auto end() const noexcept
         {
-            return content.end();
+            return captured.end();
         }
 
-        [[nodiscard]] auto &get() & noexcept
+        [[nodiscard]] auto &content() & noexcept
         {
-            return content;
+            return captured;
         }
 
-        [[nodiscard]] auto const &get() const & noexcept
+        [[nodiscard]] auto const &content() const & noexcept
         {
-            return content;
+            return captured;
         }
 
-        [[nodiscard]] auto get() &&
+        [[nodiscard]] auto content() &&
         {
-            return std::move(content);
+            return std::move(captured);
         }
     };
 
@@ -123,7 +124,7 @@ namespace meta
     template<typename, typename>
     struct alloc_capture_view_storage;
 
-    template<std::forward_iterator Iter, std::size_t ... Indices>
+    template<std::forward_iterator Iter, std::size_t... Indices>
     struct alloc_capture_view_storage<std::index_sequence<Indices ...>, Iter>
     {
         using type = std::tuple<regex_capture_view<Indices, Iter> ...>;
@@ -138,7 +139,7 @@ namespace meta
     template<typename>
     struct alloc_capture_storage;
 
-    template<std::size_t ... Indices>
+    template<std::size_t... Indices>
     struct alloc_capture_storage<std::index_sequence<Indices ...>>
     {
         using type = std::tuple<regex_capture<Indices> ...>;

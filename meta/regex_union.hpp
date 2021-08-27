@@ -12,7 +12,7 @@ namespace meta
      * @tparam first    The first pattern in the union
      * @tparam rest     The remaining union patterns
      */
-    template<static_string const first, static_string const ... rest>
+    template<static_string first, static_string... rest>
     struct regex_union : regex_base<ast::disjunction<ast_of<first>, ast_of<rest> ...>>
     {
         static_assert(
@@ -21,7 +21,7 @@ namespace meta
         );
     };
 
-    template<typename R, typename ... Rs>
+    template<typename R, typename... Rs>
     using make_union = regex_base<ast::disjunction<typename R::ast_type, typename Rs::ast_type ...>>;
 }
 #endif //META_REGEX_UNION_HPP

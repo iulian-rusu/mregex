@@ -5,7 +5,7 @@ namespace meta::tests
 {
     namespace detail
     {
-        template<typename First, typename ... Rest>
+        template<typename First, typename... Rest>
         struct push_all
         {
             using type = typename push_all<Rest ...>::type::template push<First>;
@@ -17,7 +17,7 @@ namespace meta::tests
             using type = stack<First>;
         };
 
-        template<typename First, typename ... Rest>
+        template<typename First, typename... Rest>
         using push_all_t = typename push_all<First, Rest ...>::type;
     }
 

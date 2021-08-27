@@ -11,7 +11,7 @@
 
 namespace meta::ast
 {
-    template<typename First, typename ... Rest>
+    template<typename First, typename... Rest>
     struct sequence
     {
         static constexpr std::size_t capture_count = capture_counter<First, Rest ...>::count;
@@ -89,9 +89,9 @@ namespace meta::ast
         }
 
     private:
-        static constexpr std::size_t sequence_size = 1 + sizeof ... (Rest);
+        static constexpr std::size_t sequence_size = 1 + sizeof... (Rest);
 
-        template<std::forward_iterator Iter, typename Context, std::size_t Index, std::size_t ... Indices>
+        template<std::forward_iterator Iter, typename Context, std::size_t Index, std::size_t... Indices>
         static constexpr match_result expand_trivial_match(
                 Iter begin,
                 Iter end,
@@ -110,7 +110,7 @@ namespace meta::ast
     template<typename First>
     struct sequence<First> : First {};
 
-    template<typename First, typename ... Rest>
+    template<typename First, typename... Rest>
     struct alternation
     {
         static constexpr std::size_t capture_count = capture_counter<First, Rest ...>::count;
@@ -144,7 +144,7 @@ namespace meta::ast
     template<typename First>
     struct alternation<First> : First {};
 
-    template<typename First, typename ... Rest>
+    template<typename First, typename... Rest>
     struct disjunction
     {
         static constexpr std::size_t capture_count = max_capture_counter<First, Rest ...>::count;
@@ -418,7 +418,7 @@ namespace meta::ast
         }
     };
 
-    template<typename First, typename ... Rest>
+    template<typename First, typename... Rest>
     struct set : terminal
     {
         static_assert(is_trivially_matchable_v<First> && (is_trivially_matchable_v<Rest> && ...));

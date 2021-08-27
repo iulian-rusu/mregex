@@ -16,12 +16,12 @@ namespace meta
      * @tparam AST      The Abstract Syntax Tree of the regex object
      * @tparam Flags    Optional flags for matching
      */
-    template<typename AST, typename ... Flags>
+    template<typename AST, typename... Flags>
     struct regex_base
     {
         using ast_type = AST;
 
-        template<typename ... ExtraFlags>
+        template<typename... ExtraFlags>
         using with = regex_base<AST, Flags ..., ExtraFlags ...>;
 
         static constexpr std::size_t capture_count = ast_type::capture_count;

@@ -7,7 +7,7 @@ namespace meta::tests
 
     namespace detail
     {
-        template<static_string const pattern, typename AST>
+        template<static_string pattern, typename AST>
         inline constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast_type, AST>;
     }
 

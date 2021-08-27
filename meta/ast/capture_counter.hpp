@@ -9,7 +9,7 @@ namespace meta::ast
      * @tparam First    The first AST node
      * @tparam Rest     The rest of AST nodes
      */
-    template<typename First, typename ... Rest>
+    template<typename First, typename... Rest>
     struct capture_counter
     {
         static constexpr std::size_t count = First::capture_count + capture_counter<Rest ...>::count;
@@ -27,7 +27,7 @@ namespace meta::ast
      * @tparam First    The first AST node
      * @tparam Rest     The rest of AST nodes
      */
-    template<typename First, typename ... Rest>
+    template<typename First, typename... Rest>
     struct max_capture_counter
     {
         static constexpr std::size_t first_count = First::capture_count;

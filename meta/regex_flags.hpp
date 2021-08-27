@@ -68,10 +68,10 @@ namespace meta
     inline constexpr bool is_flag_v = is_flag<T>::value;
 
     // Metafunction to check if a flags has been enabled
-    template<typename Flag, typename ... Flags>
+    template<typename Flag, typename... Flags>
     struct is_flag_enabled : std::bool_constant<is_any_of_v<Flag, Flags ...> || is_any_of_v<alias<Flag>, Flags ...>> {};
 
-    template<typename Flag, typename ... Flags>
+    template<typename Flag, typename... Flags>
     inline constexpr bool is_flag_enabled_v = is_flag_enabled<Flag, Flags ...>::value;
 }
 #endif //META_REGEX_FLAGS_HPP
