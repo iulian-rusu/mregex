@@ -51,8 +51,8 @@ std::cout << "Query:\t" << match_res.group<7>() << "\n";
 ```
 
 The library supports searching for multiple matches in a string. In this case,
-the `meta::regex::find_all` method returns a bool_testable_generator that will evaluate
-on-demand all matches in the string. We can iterate through the bool_testable_generator
+the `meta::regex::find_all` method returns a generator that will evaluate
+on-demand all matches in the string. We can iterate through the generator
 just like any standard container.
 ```cpp
 using word_regex = meta::regex<R"([-a-z']+)", meta::flag::i>;
