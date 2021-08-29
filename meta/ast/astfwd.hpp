@@ -1,6 +1,8 @@
 #ifndef META_ASTFWD_HPP
 #define META_ASTFWD_HPP
 
+#include "../symbol.hpp"
+
 namespace meta::ast
 {
     template<typename, typename...>

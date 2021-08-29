@@ -32,6 +32,7 @@ namespace meta::tests
     static_assert(is_trivially_matchable_v<alternation<wildcard>>);
     static_assert(is_trivially_matchable_v<disjunction<wildcard>>);
     static_assert(is_trivially_matchable_v<atomic<wildcard>>);
+    static_assert(is_trivially_matchable_v<alternation<whitespace, character<'a'>, character<'b'>>>);
     static_assert(is_trivially_matchable_v<epsilon> == false);
     static_assert(is_trivially_matchable_v<beginning> == false);
     static_assert(is_trivially_matchable_v<backref<1>> == false);
@@ -39,5 +40,6 @@ namespace meta::tests
     static_assert(is_trivially_matchable_v<alternation<wildcard, beginning>> == false);
     static_assert(is_trivially_matchable_v<capturing<1, wildcard>> == false);
     static_assert(is_trivially_matchable_v<star<character<'a'>>> == false);
+    static_assert(is_trivially_matchable_v<alternation<star<whitespace>, character<'a'>, character<'b'>>> == false);
 }
 #endif //META_RUN_TRAITS_TESTS

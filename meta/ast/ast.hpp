@@ -74,7 +74,7 @@ namespace meta::ast
             if (First::consume_one(mb.current_iter, ctx))
                 if (auto rest_match = sequence<Rest ...>::match(begin, end, mb.advance(1), ctx))
                     return {rest_match.consumed + 1, true};
-                
+
             return {0, false};
         }
 
@@ -84,7 +84,6 @@ namespace meta::ast
         {
             if (mb.consume_limit < sequence_size)
                 return {0, false};
-
             return expand_trivial_match(begin, end, mb, ctx, std::make_index_sequence<sequence_size>{});
         }
 
@@ -102,7 +101,6 @@ namespace meta::ast
         {
             if (First::consume_one(mb.current_iter, ctx) && (Rest::consume_one(mb.current_iter + Indices, ctx) && ...))
                 return {sequence_size, true};
-
             return {0, false};
         }
     };
@@ -110,8 +108,9 @@ namespace meta::ast
     template<typename First>
     struct sequence<First> : First {};
 
-    template<typename First, typename... Rest>
-    struct alternation
+
+    template<bool, typename First, typename... Rest>
+    struct alternation_base
     {
         static constexpr std::size_t capture_count = capture_counter<First, Rest ...>::count;
 
@@ -128,18 +127,18 @@ namespace meta::ast
         requires flags<Context>::greedy_alt
         {
             auto first_match = First::match(begin, end, mb, ctx);
-            if (first_match)
-            {
-                auto rest_match = alternation<Rest ...>::match(begin, end, mb, ctx);
-                if (rest_match && rest_match.consumed > first_match.consumed)
-                    return rest_match;
-
+            auto rest_match = alternation<Rest ...>::match(begin, end, mb, ctx);
+            if (first_match && first_match.consumed >= rest_match.consumed)
                 return first_match;
-            }
-
-            return alternation<Rest ...>::match(begin, end, mb, ctx);
+            return rest_match;
         }
     };
+
+    template<typename First, typename... Rest>
+    struct alternation_base<true, First, Rest ...> : set<First, Rest ...> {};
+
+    template<typename First, typename... Rest>
+    struct alternation : alternation_base<are_trivially_matchable_v<First, Rest ...>, First, Rest ...> {};
 
     template<typename First>
     struct alternation<First> : First {};
@@ -155,7 +154,6 @@ namespace meta::ast
             auto first_match = First::match(begin, end, mb, ctx);
             if (first_match && first_match.consumed == mb.consume_limit)
                 return first_match;
-
             ctx.clear();
             return disjunction<Rest ...>::match(begin, end, mb, ctx);
         }
@@ -187,7 +185,6 @@ namespace meta::ast
                 auto inner_match = Inner::match(begin, end, updated_mb, ctx);
                 if (!inner_match || inner_match.consumed == 0 || inner_match.consumed > updated_mb.consume_limit)
                     break;
-
                 if constexpr (flags<Context>::cache)
                     ctx.cache.push({mb.current_iter, res.consumed});
                 res += inner_match;
@@ -209,12 +206,10 @@ namespace meta::ast
             {
                 if (!Inner::consume_one(current, ctx))
                     return {consumed, true};
-
                 ++consumed;
                 if constexpr (flags<Context>::cache)
                     ctx.cache.push({mb.current_iter, current});
             }
-
             return {mb.consume_limit, true};
         }
 
@@ -228,10 +223,9 @@ namespace meta::ast
                 auto cached = ctx.cache.top();
                 if (cached.begin_iter != mb.current_iter)
                     break;
-
-                ctx.cache.pop();
                 if (cached.consumed <= mb.consume_limit)
                     return {cached.consumed, true};
+                ctx.cache.pop();
             }
             return {0, false};
         }
@@ -281,12 +275,10 @@ namespace meta::ast
                 auto inner_match = Inner::match(begin, end, updated_mb, ctx);
                 if (!inner_match || inner_match.consumed > updated_mb.consume_limit)
                     break;
-
                 res += inner_match;
                 ++matched_so_far;
                 updated_mb = updated_mb.advance(inner_match.consumed);
             }
-
             return res;
         }
 
@@ -300,10 +292,8 @@ namespace meta::ast
             {
                 if (!Inner::consume_one(current, ctx))
                     return {consumed, true};
-
                 ++consumed;
             }
-
             return {consume_limit, true};
         }
     };
@@ -345,7 +335,6 @@ namespace meta::ast
                 auto inner_match = Inner::match(begin, end, updated_mb, ctx);
                 if (!inner_match || inner_match.consumed > updated_mb.consume_limit)
                     break;
-
                 res += inner_match;
                 ++matched_so_far;
                 updated_mb = updated_mb.advance(inner_match.consumed);
@@ -589,6 +578,10 @@ namespace meta::ast
         static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             auto const captured = std::get<ID>(ctx.captures);
+            auto const length = captured.length();
+            if (length > mb.consume_limit)
+                return {0, false};
+
             for (auto c : captured)
             {
                 if (mb.current_iter == end)
@@ -605,7 +598,7 @@ namespace meta::ast
 
                 ++mb.current_iter;
             }
-            return {captured.length(), true};
+            return {length, true};
         }
     };
 
