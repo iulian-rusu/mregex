@@ -19,7 +19,7 @@ namespace meta
      */
     namespace impl
     {
-        template<typename First, typename... Rest>
+        template<typename, typename... Rest>
         struct pop_helper
         {
             using type = stack<Rest ...>;
@@ -50,7 +50,7 @@ namespace meta
         template<typename E>
         using push = impl::push<E, Elems ...>;
 
-        using pop = impl::template pop<Elems ...>;
+        using pop = impl::pop<Elems ...>;
 
         using top = first_t<Elems ...>;
     };
@@ -70,6 +70,9 @@ namespace meta
 
     template<typename Stack>
     inline constexpr bool is_empty_v = std::is_same_v<empty_stack_marker, typename Stack::top>;
+
+    template<typename Stack, typename E>
+    using push = typename Stack::template push<E>;
 
     template<typename Stack>
     using pop = typename Stack::pop;

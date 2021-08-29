@@ -93,8 +93,8 @@ namespace meta::ast
 
         template<std::forward_iterator Iter, typename Context, std::size_t Index, std::size_t... Indices>
         static constexpr match_result expand_trivial_match(
-                Iter begin,
-                Iter end,
+                Iter,
+                Iter,
                 match_bounds<Iter> mb,
                 Context &ctx,
                 std::index_sequence<Index, Indices ...> &&
@@ -197,7 +197,7 @@ namespace meta::ast
         }
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
+        static constexpr match_result match(Iter, Iter, match_bounds<Iter> mb, Context &ctx) noexcept
         requires is_trivially_matchable_v<Inner>
         {
             if constexpr (flags<Context>::cache)
@@ -291,7 +291,7 @@ namespace meta::ast
         }
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr match_result consume_rest(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
+        static constexpr match_result consume_rest(Iter, Iter, match_bounds<Iter> mb, Context &ctx) noexcept
         requires is_trivially_matchable_v<Inner>
         {
             std::size_t const consume_limit = R <= mb.consume_limit ? R : mb.consume_limit;
@@ -358,7 +358,7 @@ namespace meta::ast
         }
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
+        static constexpr match_result match(Iter, Iter, match_bounds<Iter> mb, Context &ctx) noexcept
         requires is_trivially_matchable_v<Inner>
         {
             if (N > mb.consume_limit)
@@ -379,7 +379,7 @@ namespace meta::ast
         static constexpr std::size_t capture_count = Inner::capture_count;
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
+        static constexpr match_result match(Iter, Iter, match_bounds<Iter>, Context &ctx) noexcept
         {
             return {0, true};
         }
@@ -397,7 +397,7 @@ namespace meta::ast
     struct epsilon : terminal
     {
         template<std::forward_iterator Iter, typename Context>
-        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
+        static constexpr match_result match(Iter, Iter, match_bounds<Iter>, Context &ctx) noexcept
         {
             return {0, true};
         }
@@ -406,7 +406,7 @@ namespace meta::ast
     struct nothing : terminal
     {
         template<std::forward_iterator Iter, typename Context>
-        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
+        static constexpr match_result match(Iter, Iter, match_bounds<Iter>, Context &ctx) noexcept
         {
             return {0, false};
         }
@@ -424,7 +424,7 @@ namespace meta::ast
         static_assert(is_trivially_matchable_v<First> && (is_trivially_matchable_v<Rest> && ...));
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
+        static constexpr match_result match(Iter, Iter, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             if (mb.consume_limit == 0)
                 return {0, false};
@@ -463,7 +463,7 @@ namespace meta::ast
     struct ending : terminal
     {
         template<std::forward_iterator Iter, typename Context>
-        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
+        static constexpr match_result match(Iter, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             bool res = mb.current_iter == end;
             bool consume = false;
@@ -484,7 +484,7 @@ namespace meta::ast
     struct character : terminal
     {
         template<std::forward_iterator Iter, typename Context>
-        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
+        static constexpr match_result match(Iter, Iter, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             if (mb.consume_limit == 0)
                 return {0, false};
@@ -506,7 +506,7 @@ namespace meta::ast
     struct whitespace : terminal
     {
         template<std::forward_iterator Iter, typename Context>
-        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
+        static constexpr match_result match(Iter, Iter, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             if (mb.consume_limit == 0)
                 return {0, false};
@@ -528,7 +528,7 @@ namespace meta::ast
     struct wildcard : terminal
     {
         template<std::forward_iterator Iter, typename Context>
-        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
+        static constexpr match_result match(Iter, Iter, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             if (mb.consume_limit == 0)
                 return {0, false};
@@ -554,7 +554,7 @@ namespace meta::ast
         static_assert(A < B, "invalid range bounds");
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
+        static constexpr match_result match(Iter, Iter, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             if (mb.consume_limit == 0)
                 return {0, false};
@@ -655,7 +655,7 @@ namespace meta::ast
         static constexpr std::size_t capture_count = Inner::capture_count;
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
+        static constexpr match_result match(Iter, Iter, match_bounds<Iter> mb, Context &ctx) noexcept
         {
             if (mb.consume_limit == 0)
                 return {0, false};

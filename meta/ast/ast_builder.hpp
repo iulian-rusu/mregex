@@ -18,76 +18,79 @@ namespace meta::ast
     template<typename S, typename C, typename AST>
     struct update_ast;
 
+    template<typename S, typename C, typename AST>
+    using update_ast_t = typename update_ast<S, C, AST>::type;
+
     template<typename C, typename Stack>
     struct update_ast<symbol::make_char, C, Stack>
     {
-        using type = typename Stack::template push<C>;
+        using type = push<Stack, C>;
     };
 
     template<auto A, typename C, typename Stack>
     struct update_ast<symbol::push_char<A>, C, Stack>
     {
-        using type = typename Stack::template push<character<A>>;
+        using type = push<Stack, character<A>>;
     };
 
     template<typename C, typename Stack>
     struct update_ast<symbol::make_alpha, C, Stack>
     {
-        using type = typename Stack::template push<alpha>;
+        using type = push<Stack, alpha>;
     };
 
     template<typename C, typename Stack>
     struct update_ast<symbol::make_digit, C, Stack>
     {
-        using type = typename Stack::template push<digit>;
+        using type = push<Stack, digit>;
     };
 
     template<typename C, typename Stack>
     struct update_ast<symbol::make_word, C, Stack>
     {
-        using type = typename Stack::template push<word>;
+        using type = push<Stack, word>;
     };
 
     template<typename C, typename Stack>
     struct update_ast<symbol::make_whitespace, C, Stack>
     {
-        using type = typename Stack::template push<whitespace>;
+        using type = push<Stack, whitespace>;
     };
 
     template<typename C, typename Stack>
     struct update_ast<symbol::make_lower, C, Stack>
     {
-        using type = typename Stack::template push<lower>;
+        using type = push<Stack, lower>;
     };
 
     template<typename C, typename Stack>
     struct update_ast<symbol::make_upper, C, Stack>
     {
-        using type = typename Stack::template push<upper>;
+        using type = push<Stack, upper>;
     };
 
     template<typename C, typename Stack>
     struct update_ast<symbol::make_hexa, C, Stack>
     {
-        using type = typename Stack::template push<hexa>;
+        using type = push<Stack, hexa>;
     };
 
     template<typename C, typename Stack>
     struct update_ast<symbol::make_wildcard, C, Stack>
     {
-        using type = typename Stack::template push<wildcard>;
+        using type = push<Stack, wildcard>;
     };
 
     template<typename C, typename Stack>
     struct update_ast<symbol::make_beginning, C, Stack>
     {
-        using type = typename Stack::template push<beginning>;
+        using type = push<Stack, beginning>;
     };
 
     template<typename C, typename Stack>
     struct update_ast<symbol::make_ending, C, Stack>
     {
-        using type = typename Stack::template push<ending>;
+        using type = push<Stack, ending>;
     };
 
     template<typename C, typename First, typename... Rest>
