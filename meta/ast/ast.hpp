@@ -429,7 +429,7 @@ namespace meta::ast
         }
     };
 
-    struct beginning : terminal
+    struct beginline : terminal
     {
         template<std::forward_iterator Iter, typename Context>
         static constexpr match_result match(Iter begin, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
@@ -449,7 +449,7 @@ namespace meta::ast
         }
     };
 
-    struct ending : terminal
+    struct endline : terminal
     {
         template<std::forward_iterator Iter, typename Context>
         static constexpr match_result match(Iter, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
@@ -466,6 +466,15 @@ namespace meta::ast
                 return {0, false};
 
             return {consume, res};
+        }
+    };
+
+    struct endsequence : terminal
+    {
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr match_result match(Iter, Iter end, match_bounds<Iter> mb, Context &ctx) noexcept
+        {
+            return {0, mb.current_iter == end};
         }
     };
 

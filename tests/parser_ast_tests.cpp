@@ -18,7 +18,7 @@ namespace meta::tests
     static_assert(detail::expected_ast<R"(^ab))",
             sequence
             <
-                beginning,
+                beginline,
                 character<'a'>,
                 character<'b'>
             >
@@ -28,16 +28,16 @@ namespace meta::tests
             <
                 character<'a'>,
                 character<'b'>,
-                ending
+                endline
             >
     >);
     static_assert(detail::expected_ast<R"(^ab$))",
             sequence
             <
-                beginning,
+                beginline,
                 character<'a'>,
                 character<'b'>,
-                ending
+                endline
             >
     >);
     static_assert(detail::expected_ast<R"(\n))", character<'\n'>>);

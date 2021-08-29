@@ -82,15 +82,15 @@ namespace meta::ast
     };
 
     template<typename C, typename Stack>
-    struct update_ast<symbol::make_beginning, C, Stack>
+    struct update_ast<symbol::make_beginline, C, Stack>
     {
-        using type = push<Stack, beginning>;
+        using type = push<Stack, beginline>;
     };
 
     template<typename C, typename Stack>
-    struct update_ast<symbol::make_ending, C, Stack>
+    struct update_ast<symbol::make_endline, C, Stack>
     {
-        using type = push<Stack, ending>;
+        using type = push<Stack, endline>;
     };
 
     template<typename C, typename First, typename... Rest>

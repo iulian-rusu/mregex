@@ -130,7 +130,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_beginning,
+                    symbol::make_beginline,
                     symbol::seq,
                     symbol::alt
                 >;
@@ -143,7 +143,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_ending,
+                    symbol::make_endline,
                     symbol::seq,
                     symbol::alt
                 >;
@@ -260,7 +260,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_beginning,
+                    symbol::make_beginline,
                     symbol::seq,
                     symbol::alt
                 >;
@@ -424,7 +424,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_beginning,
+                    symbol::make_beginline,
                     symbol::seq,
                     symbol::alt
                 >;
@@ -718,7 +718,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_beginning,
+                    symbol::make_beginline,
                     symbol::seq
                 >;
     };
@@ -730,7 +730,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_ending,
+                    symbol::make_endline,
                     symbol::seq
                 >;
     };
@@ -852,7 +852,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_beginning,
+                    symbol::make_beginline,
                     symbol::make_sequence,
                     symbol::seq
                 >;
@@ -865,7 +865,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_ending,
+                    symbol::make_endline,
                     symbol::make_sequence,
                     symbol::seq
                 >;

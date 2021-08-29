@@ -3,6 +3,7 @@
 
 #include "iterable_generator_adapter.hpp"
 #include "ast/ast.hpp"
+#include "ast/exact_matcher.hpp"
 #include "context/match_context.hpp"
 #include "regex_result.hpp"
 #include "regex_token_generator.hpp"
@@ -44,9 +45,8 @@ namespace meta
             using result_type = regex_result_view<ast_type::capture_count, Iter>;
 
             match_context ctx{};
-            std::size_t length = std::distance(begin, end);
-            auto res = ast_type::match(begin, end, {begin, length}, ctx);
-            res.matched = res.matched && (res.consumed == length);
+            ast::match_bounds mb{begin, std::distance(begin, end)};
+            auto res = ast::exact_matcher<ast_type>::match(begin, end, mb, ctx);
             if (res.matched)
                 std::get<0>(ctx.captures) = regex_capture_view<0, Iter>{begin, end};
             else

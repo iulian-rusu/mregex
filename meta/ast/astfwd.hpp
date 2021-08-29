@@ -29,9 +29,11 @@ namespace meta::ast
     template<typename, typename...>
     struct set;
 
-    struct beginning;
+    struct beginline;
 
-    struct ending;
+    struct endline;
+
+    struct endsequence;
 
     template<auto>
     struct character;

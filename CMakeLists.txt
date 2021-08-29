@@ -51,5 +51,5 @@ add_executable(
         meta/context/atomic_match_context.hpp
         meta/regex_token_generator.hpp
         tests/regex_generator_tests.cpp
-)
+        meta/ast/exact_matcher.hpp)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -O3 -fconcepts-diagnostics-depth=3")

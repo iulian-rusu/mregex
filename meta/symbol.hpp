@@ -100,9 +100,9 @@ namespace meta::symbol
 
     struct make_wildcard : ast_update {};
 
-    struct make_beginning : ast_update {};
+    struct make_beginline : ast_update {};
 
-    struct make_ending : ast_update {};
+    struct make_endline : ast_update {};
 
     struct make_negated : ast_update {};
 

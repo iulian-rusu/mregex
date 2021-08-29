@@ -107,6 +107,7 @@ namespace meta::tests
     static_assert(regex<R"((?>[^ @]+)@([^ @]+))">::match("example@gmail.com"sv));
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("0x1234F"sv));
     static_assert(regex<R"(.+)">::match("this regex will match any input"sv));
+    static_assert(regex<R"((x{2,})\1+)">::match("xxxxxxxxx"sv));
     static_assert(regex<R"([0-Z]+)", flag::i>::match("1234abczABCZ"sv));
     static_assert(regex<R"([A-Z]+)", flag::ignore_case>::match("aBcDeFiOyZ"sv));
     static_assert(regex<R"(hello|salut|bonjour)">::with<flag::ignore_case>::match("SaLuT"sv));
@@ -192,7 +193,7 @@ namespace meta::tests
     static_assert(regex<R"(a?b?c?)">::match("abbc"sv) == false);
     static_assert(regex<R"(a+b+c+)">::match("ab"sv) == false);
     static_assert(regex<R"((x|y|z)+)">::match("xyzxzyxyzxyzyxyqxxxzxxzyxyzx"sv) == false);
-    static_assert(regex<R"(a|ab)">::match("ab"sv) == false);
+    static_assert(regex<R"((?:a|ab)xd)">::match("abxd"sv) == false);
     static_assert(regex<R"((a|ab)+x)">::match("aaaababx"sv) == false);
     static_assert(regex<R"((abc)+)">::match("abcabcbc"sv) == false);
     static_assert(regex<R"((a+|b+)x\1)">::match("aaaxbbb"sv) == false);
@@ -215,6 +216,7 @@ namespace meta::tests
     static_assert(regex<R"(a.+)">::match("this regex will match any input"sv) == false);
     static_assert(regex<R"(.+)">::match("\nexcept new lines"sv) == false);
     static_assert(regex<R"(a?   b? c?)">::match("abc"sv) == false);
+    static_assert(regex<R"((x{2,})\1+)">::match("xxxxxxxxxxx"sv) == false);
     static_assert(regex<R"(0x(\h+)h?)", flag::i>::match("0X012323EJH"sv) == false);
     static_assert(regex<R"([^a-z]+)">::with<flag::ignore_case>::match("AABBBDBDBDBBSABBDBDBABBA"sv) == false);
     static_assert(regex<R"(^abcd$)", flag::m>::match("\nabcd\n\n"sv) == false);

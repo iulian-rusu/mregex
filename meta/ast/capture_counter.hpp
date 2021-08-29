@@ -12,13 +12,7 @@ namespace meta::ast
     template<typename First, typename... Rest>
     struct capture_counter
     {
-        static constexpr std::size_t count = First::capture_count + capture_counter<Rest ...>::count;
-    };
-
-    template<typename First>
-    struct capture_counter<First>
-    {
-        static constexpr std::size_t count = First::capture_count;
+        static constexpr std::size_t count = First::capture_count + (Rest::capture_count + ... + 0);
     };
 
     /**
