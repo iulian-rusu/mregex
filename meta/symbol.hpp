@@ -108,8 +108,6 @@ namespace meta::symbol
 
     struct make_captureless : ast_update{};
 
-    struct make_atomic : ast_update{};
-
     struct make_capturing : ast_update {};
 
     struct make_set : ast_update {};

@@ -38,21 +38,8 @@ namespace meta
         using multiline = regex_flag<0x4>;
         using m = regex_flag<0x5>;
 
-        /**
-         * Makes alternations always consume the most characters possible.
-         * Might make the performance worse but guarantees finding matches that
-         * could otherwise be missed.
-         */
-        using greedy_alt = regex_flag<0x6>;
-        using a = regex_flag<0x7>;
-
-        /**
-         * Makes star operators (*) cache intermediate matches (up to a fixed limit).
-         * Will result in worse performance for most patterns, unless they
-         * require a lot of backtracking on non-trivial subsequences.
-         */
-        using cache = regex_flag<0x8>;
-        using c = regex_flag<0x9>;
+        using ungreedy = regex_flag<0x6>;
+        using U = regex_flag<0x7>;
     }
 
     template<typename Flag>

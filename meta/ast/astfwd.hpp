@@ -33,8 +33,6 @@ namespace meta::ast
 
     struct endline;
 
-    struct endsequence;
-
     template<auto>
     struct character;
 

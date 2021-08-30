@@ -11,7 +11,7 @@ namespace meta::tests
         inline constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast_type, AST>;
     }
 
-    //static_assert(std::is_same_v<typename parser<static_string(R"((a(b)(c(d))(x)){5,17})")>::ast_type, void>);
+    //static_assert(std::is_same_v<typename parser<static_string(R"(\w*(?:$))")>::ast_type, void>);
 
     static_assert(detail::expected_ast<R"()", epsilon>);
     static_assert(detail::expected_ast<R"(a))", character<'a'>>);
@@ -66,22 +66,6 @@ namespace meta::tests
             <
                 1,
                 character<'c'>
-            >
-    >);
-    static_assert(detail::expected_ast<R"((?>c))",
-            atomic
-            <
-                character<'c'>
-            >
-    >);
-    static_assert(detail::expected_ast<R"(((?>c)))",
-            capturing
-            <
-                1,
-                atomic
-                <
-                    character<'c'>
-                >
             >
     >);
     static_assert(detail::expected_ast<R"((?:c))", character<'c'>>);
@@ -450,7 +434,7 @@ namespace meta::tests
                 character<'x'>
             >
     >);
-    static_assert(detail::expected_ast<R"(xyz?(.(?:a(?:b(?>c(d))?)*)?)*zyx?)",
+    static_assert(detail::expected_ast<R"(xyz?(.(?:a(?:b(c(d))?)*)?)*zyx?)",
             sequence
             <
                 character<'x'>,
@@ -479,14 +463,15 @@ namespace meta::tests
                                             character<'b'>,
                                             optional
                                             <
-                                                atomic
+                                                capturing
                                                 <
+                                                    2,
                                                     sequence
                                                     <
                                                         character<'c'>,
                                                         capturing
                                                         <
-                                                            2,
+                                                            3,
                                                             character<'d'>
                                                         >
                                                     >

@@ -165,12 +165,6 @@ namespace meta::ast
     };
 
     template<typename C, typename First,  typename... Rest>
-    struct update_ast<symbol::make_atomic, C, stack<First, Rest ...>>
-    {
-        using type = stack<symbol::captureless_wrapper<atomic<First>>, Rest ...>;
-    };
-
-    template<typename C, typename First,  typename... Rest>
     struct update_ast<symbol::make_capturing, C, stack<First, Rest ...>>
     {
         static constexpr auto ID = capture_counter<First, Rest ...>::count + 1;

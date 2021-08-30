@@ -295,18 +295,6 @@ namespace meta::grammar
                 >;
     };
 
-    template<>
-    struct rule<symbol::capture_mod, ast::character<'>'>>
-    {
-        using type =
-                stack
-                <
-                    advance,
-                    symbol::capture_begin_no_mod,
-                    symbol::make_atomic
-                >;
-    };
-
     template<auto C>
     struct rule<symbol::capture_mod, ast::character<C>>
     {
@@ -427,6 +415,19 @@ namespace meta::grammar
                     symbol::make_beginline,
                     symbol::seq,
                     symbol::alt
+                >;
+    };
+
+    template<>
+    struct rule<symbol::capture_begin_no_mod, ast::character<'$'>>
+    {
+        using type =
+                stack
+                <
+                advance,
+                symbol::make_endline,
+                symbol::seq,
+                symbol::alt
                 >;
     };
 
