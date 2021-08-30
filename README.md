@@ -19,7 +19,6 @@ The library currently supports the following features:
     * `{3,6}`, `{5,}` - range quantifiers
     * `(expr)` - capturing subexpressions
     * `(?:expr)` - non-capturing subexpressions
-    * `(?>expr)` - atomic subexpressions
     * `\12` - backreferences
     * `|` - alternation of two subexpressions
     * `\?`, `\\`, `\n` - escaped characters

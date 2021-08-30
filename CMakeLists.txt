@@ -25,7 +25,6 @@ add_executable(
         meta/ast/capture_indexer.hpp
         meta/ast/ast_builder.hpp
         meta/utility/meta_helpers.hpp
-        meta/ast/capture_counter.hpp
         meta/utility/concepts.hpp
         meta/grammar/backref_rules.hpp
         meta/ast/match_result.hpp
@@ -46,5 +45,13 @@ add_executable(
         meta/regex_capture.hpp
         meta/regex_token_generator.hpp
         tests/regex_generator_tests.cpp
-        meta/continuation.hpp meta/ast/star_strategy.hpp)
+        meta/continuation.hpp
+        meta/ast/terminals.hpp
+        meta/ast/sequence.hpp
+        meta/ast/alternation.hpp
+        meta/ast/disjunction.hpp
+        meta/ast/star.hpp
+        meta/ast/repetition.hpp
+        meta/ast/capturing.hpp
+)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -O3 -fconcepts-diagnostics-depth=3")

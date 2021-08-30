@@ -11,14 +11,14 @@ namespace meta::tests
         inline constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast_type, AST>;
     }
 
-    //static_assert(std::is_same_v<typename parser<static_string(R"(\w*(?:$))")>::ast_type, void>);
+    //static_assert(std::is_same_v<typename parser<static_string(R"([^\n])")>::ast_type, void>);
 
     static_assert(detail::expected_ast<R"()", epsilon>);
     static_assert(detail::expected_ast<R"(a))", character<'a'>>);
     static_assert(detail::expected_ast<R"(^ab))",
             sequence
             <
-                beginline,
+                beginning,
                 character<'a'>,
                 character<'b'>
             >
@@ -28,16 +28,16 @@ namespace meta::tests
             <
                 character<'a'>,
                 character<'b'>,
-                endline
+                ending
             >
     >);
     static_assert(detail::expected_ast<R"(^ab$))",
             sequence
             <
-                beginline,
+                beginning,
                 character<'a'>,
                 character<'b'>,
-                endline
+                ending
             >
     >);
     static_assert(detail::expected_ast<R"(\n))", character<'\n'>>);

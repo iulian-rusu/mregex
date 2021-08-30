@@ -1,8 +1,6 @@
 #ifndef META_ASTFWD_HPP
 #define META_ASTFWD_HPP
 
-#include "../symbol.hpp"
-
 namespace meta::ast
 {
     template<typename, typename...>
@@ -29,9 +27,9 @@ namespace meta::ast
     template<typename, typename...>
     struct set;
 
-    struct beginline;
+    struct beginning;
 
-    struct endline;
+    struct ending;
 
     template<auto>
     struct character;
@@ -65,12 +63,9 @@ namespace meta::ast
     struct backref;
 
     template<typename>
-    struct atomic;
+    struct negated;
 
     template<std::size_t, typename>
     struct capturing;
-
-    template<typename>
-    struct negated;
 }
 #endif //META_ASTFWD_HPP

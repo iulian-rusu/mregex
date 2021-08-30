@@ -21,7 +21,7 @@ namespace meta
         using continuation_type = continuations<iterator_type>;
         using result_type = regex_result_view<ast_type::capture_count, iterator_type>;
 
-        constexpr regex_token_generator(iterator_type start, iterator_type stop, iterator_type current)
+        constexpr regex_token_generator(iterator_type const start, iterator_type const stop, iterator_type current)
                 : begin_iter{start}, end_iter{stop}, current_iter{current}, active{true}
         {}
 
@@ -54,8 +54,8 @@ namespace meta
         }
 
     private:
-        iterator_type begin_iter;
-        iterator_type end_iter;
+        iterator_type const begin_iter;
+        iterator_type const end_iter;
         iterator_type current_iter;
         bool active;
     };

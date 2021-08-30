@@ -2,7 +2,7 @@
 #define META_AST_BUILDER_HPP
 
 #include "astfwd.hpp"
-#include "capture_counter.hpp"
+#include "ast_traits.hpp"
 #include "../utility/stack.hpp"
 #include "../symbol.hpp"
 
@@ -82,15 +82,15 @@ namespace meta::ast
     };
 
     template<typename C, typename Stack>
-    struct update_ast<symbol::make_beginline, C, Stack>
+    struct update_ast<symbol::make_beginning, C, Stack>
     {
-        using type = push<Stack, beginline>;
+        using type = push<Stack, beginning>;
     };
 
     template<typename C, typename Stack>
-    struct update_ast<symbol::make_endline, C, Stack>
+    struct update_ast<symbol::make_ending, C, Stack>
     {
-        using type = push<Stack, endline>;
+        using type = push<Stack, ending>;
     };
 
     template<typename C, typename First, typename... Rest>
@@ -167,7 +167,7 @@ namespace meta::ast
     template<typename C, typename First,  typename... Rest>
     struct update_ast<symbol::make_capturing, C, stack<First, Rest ...>>
     {
-        static constexpr auto ID = capture_counter<First, Rest ...>::count + 1;
+        static constexpr auto ID = capture_count_v<First, Rest ...> + 1;
 
         using type = stack<capturing<ID, First>, Rest ...>;
     };

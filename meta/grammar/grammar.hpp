@@ -130,7 +130,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_beginline,
+                    symbol::make_beginning,
                     symbol::seq,
                     symbol::alt
                 >;
@@ -143,7 +143,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_endline,
+                    symbol::make_ending,
                     symbol::seq,
                     symbol::alt
                 >;
@@ -260,7 +260,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_beginline,
+                    symbol::make_beginning,
                     symbol::seq,
                     symbol::alt
                 >;
@@ -412,7 +412,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_beginline,
+                    symbol::make_beginning,
                     symbol::seq,
                     symbol::alt
                 >;
@@ -425,7 +425,7 @@ namespace meta::grammar
                 stack
                 <
                 advance,
-                symbol::make_endline,
+                symbol::make_ending,
                 symbol::seq,
                 symbol::alt
                 >;
@@ -719,7 +719,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_beginline,
+                    symbol::make_beginning,
                     symbol::seq
                 >;
     };
@@ -731,7 +731,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_endline,
+                    symbol::make_ending,
                     symbol::seq
                 >;
     };
@@ -853,7 +853,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_beginline,
+                    symbol::make_beginning,
                     symbol::make_sequence,
                     symbol::seq
                 >;
@@ -866,7 +866,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_endline,
+                    symbol::make_ending,
                     symbol::make_sequence,
                     symbol::seq
                 >;
@@ -1062,7 +1062,7 @@ namespace meta::grammar
     template<auto C>
     struct rule<symbol::set_esc, ast::character<C>>
     {
-        using type = char_class_rule_t<C>;
+        using type = esc_rule_t<C>;
     };
 
     template<auto C>

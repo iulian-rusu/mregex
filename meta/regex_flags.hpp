@@ -38,6 +38,9 @@ namespace meta
         using multiline = regex_flag<0x4>;
         using m = regex_flag<0x5>;
 
+        /**
+         * Makes the Kleene star operator (*) consume as few elements as possible.
+         */
         using ungreedy = regex_flag<0x6>;
         using U = regex_flag<0x7>;
     }

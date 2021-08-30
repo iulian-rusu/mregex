@@ -39,7 +39,7 @@ namespace meta
          * @return      A regex_result_view object
          */
         template<std::forward_iterator Iter>
-        [[nodiscard]] static constexpr auto match(Iter begin, Iter end) noexcept
+        [[nodiscard]] static constexpr auto match(Iter const begin, Iter const end) noexcept
         {
             using match_context = create_regex_context<Iter, ast_type, Flags ...>;
             using result_type = regex_result_view<ast_type::capture_count, Iter>;
@@ -64,13 +64,13 @@ namespace meta
          * @return      A regex_result_view object
          */
         template<std::forward_iterator Iter>
-        [[nodiscard]] static constexpr auto find_first(Iter begin, Iter end, Iter from) noexcept
+        [[nodiscard]] static constexpr auto find_first(Iter const begin, Iter const end, Iter const from) noexcept
         {
             using match_context = create_regex_context<Iter, ast_type, Flags ...>;
             using result_type = regex_result_view<ast_type::capture_count, Iter>;
 
             match_context ctx{};
-            for (auto current = from;; ++current)
+            for (std::forward_iterator auto current = from;; ++current)
             {
                 if (auto res = ast_type::match(begin, end, current, ctx, continuations<Iter>::empty))
                 {
@@ -96,7 +96,7 @@ namespace meta
          * @return      An iterable generator that lazily evaluates subsequent matches
          */
         template<std::forward_iterator Iter>
-        [[nodiscard]] static constexpr auto find_all(Iter begin, Iter end) noexcept
+        [[nodiscard]] static constexpr auto find_all(Iter const begin, Iter const end) noexcept
         {
             using match_context = create_regex_context<Iter, ast_type, Flags ...>;
 
@@ -127,7 +127,7 @@ namespace meta
         template<string_like S>
         [[nodiscard]] static constexpr auto find_first(S const &input) noexcept
         {
-            return find_first(input.begin(), input.end(), input.begin());
+            return find_first(input.begin(), input.cend(), input.begin());
         }
 
         template<string_like S>

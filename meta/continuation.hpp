@@ -8,16 +8,16 @@ namespace meta
     /**
      * Struct containing static lambda expressions used as continuations for regex matching.
      * Calling a continuation is equivalent to evaluating the rest of the regex from
-     * the calling point forward.
+     * the calling point onwards.
      */
     template<std::forward_iterator Iter>
     struct continuations
     {
-        static constexpr auto empty = [](Iter it) -> ast::match_result<Iter> {
+        static constexpr auto empty = [](Iter it) noexcept -> ast::match_result<Iter> {
             return {it, true};
         };
 
-        static constexpr auto equals = [](Iter target) {
+        static constexpr auto equals = [](Iter target) noexcept {
             return [=](Iter it) -> ast::match_result<Iter> {
                 return {it, it == target};
             };

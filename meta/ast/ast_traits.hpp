@@ -1,6 +1,7 @@
 #ifndef META_AST_TRAITS_HPP
 #define META_AST_TRAITS_HPP
 
+#include <string_view>
 #include "astfwd.hpp"
 
 namespace meta::ast
@@ -20,7 +21,7 @@ namespace meta::ast
         template<typename Test>
         static auto sfinae_helper(int) -> decltype(&Test::template consume_one<iterator_type, int>, std::true_type{});
 
-        template<typename Test>
+        template<typename>
         static auto sfinae_helper(...) -> std::false_type;
 
         static constexpr bool value = decltype(sfinae_helper<T>(int{}))::value;
@@ -33,34 +34,41 @@ namespace meta::ast
     inline constexpr bool are_trivially_matchable_v = (is_trivially_matchable_v<Elems> && ...);
 
     /**
-     * Helper type trait to find if the tree-like template structure
-     * contains at least one atomic group.
+     * Metafunction used to count the number of capturing groups in the regex AST.
+     *
+     * @tparam First    The first AST node
+     * @tparam Rest     The rest of AST nodes
      */
-    template<typename T>
-    struct has_atomic_group : std::false_type {};
-
-    template<typename Inner>
-    struct has_atomic_group<atomic<Inner>> : std::true_type {};
-
-    template<template<typename> typename Outer, typename... Inners>
-    struct has_atomic_group<Outer<Inners ...>>
+    template<typename First, typename... Rest>
+    struct capture_count
     {
-        static constexpr bool value = (has_atomic_group<Inners>::value || ...);
+        static constexpr std::size_t value = First::capture_count + (Rest::capture_count + ... + 0);
     };
 
-    template<template<auto, typename...> typename Outer, auto I, typename... Inners>
-    struct has_atomic_group<Outer<I, Inners ...>>
+    template<typename First, typename... Rest>
+    inline constexpr std::size_t capture_count_v = capture_count<First, Rest ...>::value;
+
+    /**
+     * Metafunction used to get the maximum number of capturing groups in any AST node.
+     *
+     * @tparam First    The first AST node
+     * @tparam Rest     The rest of AST nodes
+     */
+    template<typename First, typename... Rest>
+    struct max_capture_count
     {
-        static constexpr bool value = (has_atomic_group<Inners>::value || ...);
+        static constexpr std::size_t first_count = First::capture_count;
+        static constexpr std::size_t rest_count = max_capture_count<Rest ...>::value;
+        static constexpr std::size_t value = first_count > rest_count ? first_count : rest_count;
     };
 
-    template<typename A, typename B, typename Inner>
-    struct has_atomic_group<repetition<A, B, Inner>>
+    template<typename First>
+    struct max_capture_count<First>
     {
-        static constexpr bool value = has_atomic_group<Inner>::value;
+        static constexpr std::size_t value = First::capture_count;
     };
 
-    template<typename T>
-    inline constexpr bool has_atomic_group_v = has_atomic_group<T>::value;
+    template<typename First, typename... Rest>
+    inline constexpr std::size_t max_capture_count_v = max_capture_count<First, Rest ...>::value;
 }
 #endif //META_AST_TRAITS_HPP

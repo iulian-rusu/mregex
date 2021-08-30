@@ -2,6 +2,7 @@
 #define META_REGEX_CONTEXT_HPP
 
 #include "regex_flags.hpp"
+#include "regex_capture.hpp"
 #include "utility/tuple_helpers.hpp"
 
 namespace meta
