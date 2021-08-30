@@ -7,7 +7,6 @@ namespace meta::tests
     using namespace std::string_view_literals;
 
     // Test matching inputs
-    static_assert(regex<R"((a*(x|axx))e)">::match("aaaxxe"sv));
     static_assert(regex<R"()">::match(""sv));
     static_assert(regex<R"(a)">::match("a"sv));
     static_assert(regex<R"(\a)">::match("b"sv));
@@ -124,6 +123,9 @@ namespace meta::tests
     static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("0x1234F"sv));
     static_assert(regex<R"(.+)">::match("this regex will match any input"sv));
     static_assert(regex<R"((x{2,})\1+)">::match("xxxxxxxxx"sv));
+    static_assert(regex<R"((a*(x|axx))e)">::match("aaaxxe"sv));
+    static_assert(regex<R"((a|ab|abc){3,}bc)">::match("aabaabcabcabaaabc"sv));
+    static_assert(regex<R"((a|ab|abc){3,10}bc)">::match("aabaabcabcabaaabc"sv));
     static_assert(regex<R"([0-Z]+)", flag::i>::match("1234abczABCZ"sv));
     static_assert(regex<R"([A-Z]+)", flag::ignore_case>::match("aBcDeFiOyZ"sv));
     static_assert(regex<R"(hello|salut|bonjour)">::with<flag::ignore_case>::match("SaLuT"sv));

@@ -25,9 +25,10 @@ namespace meta::ast
         -> match_result<Iter>
         requires (A > 0u)
         {
-            if (auto exact_match = exact_repetition<A, Inner>::match(begin, end, it, ctx, continuations<Iter>::empty))
-                return consume_rest(begin, end, exact_match.end, ctx, cont);
-            return {it, false};
+            auto continuation = [=, &ctx, &cont](Iter new_it) {
+                return consume_rest(begin, end, new_it, ctx, cont);
+            };
+           return exact_repetition<A, Inner>::match(begin, end, it, ctx, continuation);
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
@@ -43,15 +44,12 @@ namespace meta::ast
         -> match_result<Iter>
         requires (!is_trivially_matchable_v<Inner>)
         {
-            std::size_t matched_so_far = 0;
-            while (matched_so_far < R)
-            {
-                auto inner_match = Inner::match(begin, end, it, ctx, continuations<Iter>::empty);
-                if (!inner_match)
-                    break;
-                it = inner_match.end;
-                ++matched_so_far;
-            }
+            using next_repetition = repetition<symbol::quantifier_value<0>, symbol::quantifier_value<R - 1>, Inner>;
+            auto continuation = [=, &ctx, &cont](Iter new_it) {
+                return next_repetition::match(begin, end, new_it, ctx, cont);
+            };
+            if (auto inner_match = Inner::match(begin, end, it, ctx, continuation))
+                return inner_match;
             return cont(it);
         }
 
@@ -81,9 +79,10 @@ namespace meta::ast
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            if (auto exact_match = exact_repetition<N, Inner>::match(begin, end, it, ctx, continuations<Iter>::empty))
-                return star<Inner>::match(begin, end, exact_match.end, ctx, cont);
-            return {it, false};
+            auto continuation = [=, &ctx, &cont](Iter new_it) {
+                return star<Inner>::match(begin, end, new_it, ctx, cont);
+            };
+            return exact_repetition<N, Inner>::match(begin, end, it, ctx, continuation);
         }
     };
 
