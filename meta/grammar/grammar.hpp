@@ -20,14 +20,14 @@ namespace meta::grammar
 
     // Specialized rules for specific inputs
     template<>
-    struct rule<symbol::start, ast::character<'['>>
+    struct rule<symbol::begin, ast::character<'['>>
     {
         using type =
                 stack
                 <
                     advance,
                     symbol::make_set,
-                    symbol::set_begin,
+                    symbol::set_begin_or_neg,
                     symbol::expect<']'>,
                     symbol::mod,
                     symbol::seq,
@@ -36,13 +36,13 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::start, ast::character<'('>>
+    struct rule<symbol::begin, ast::character<'('>>
     {
         using type =
                 stack
                 <
                     advance,
-                    symbol::capture_begin,
+                    symbol::group_begin_or_mod,
                     symbol::expect<')'>,
                     symbol::mod,
                     symbol::seq,
@@ -51,31 +51,31 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::start, ast::character<')'>>
+    struct rule<symbol::begin, ast::character<')'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::start, ast::character<'*'>>
+    struct rule<symbol::begin, ast::character<'*'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::start, ast::character<'+'>>
+    struct rule<symbol::begin, ast::character<'+'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::start, ast::character<'?'>>
+    struct rule<symbol::begin, ast::character<'?'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::start, ast::character<'\\'>>
+    struct rule<symbol::begin, ast::character<'\\'>>
     {
         using type =
                 stack
@@ -89,13 +89,13 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::start, ast::character<'|'>>
+    struct rule<symbol::begin, ast::character<'|'>>
     {
         using type = reject;
     };
 
     template<auto C>
-    struct rule<symbol::start, ast::character<C>>
+    struct rule<symbol::begin, ast::character<C>>
     {
         using type =
                 stack
@@ -109,7 +109,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::start, ast::character<'.'>>
+    struct rule<symbol::begin, ast::character<'.'>>
     {
         using type =
                 stack
@@ -123,7 +123,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::start, ast::character<'^'>>
+    struct rule<symbol::begin, ast::character<'^'>>
     {
         using type =
                 stack
@@ -136,7 +136,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::start, ast::character<'$'>>
+    struct rule<symbol::begin, ast::character<'$'>>
     {
         using type =
                 stack
@@ -149,20 +149,20 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::start, symbol::epsilon>
+    struct rule<symbol::begin, symbol::epsilon>
     {
         using type = ignore;
     };
 
     template<>
-    struct rule<symbol::capture_begin, ast::character<'['>>
+    struct rule<symbol::group_begin_or_mod, ast::character<'['>>
     {
         using type =
                 stack
                 <
                     advance,
                     symbol::make_set,
-                    symbol::set_begin,
+                    symbol::set_begin_or_neg,
                     symbol::expect<']'>,
                     symbol::mod,
                     symbol::seq,
@@ -172,13 +172,13 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::capture_begin, ast::character<'('>>
+    struct rule<symbol::group_begin_or_mod, ast::character<'('>>
     {
         using type =
                 stack
                 <
                     advance,
-                    symbol::capture_begin,
+                    symbol::group_begin_or_mod,
                     symbol::expect<')'>,
                     symbol::mod,
                     symbol::seq,
@@ -188,25 +188,25 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::capture_begin, ast::character<')'>>
+    struct rule<symbol::group_begin_or_mod, ast::character<')'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::capture_begin, ast::character<'*'>>
+    struct rule<symbol::group_begin_or_mod, ast::character<'*'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::capture_begin, ast::character<'+'>>
+    struct rule<symbol::group_begin_or_mod, ast::character<'+'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::capture_begin, ast::character<'\\'>>
+    struct rule<symbol::group_begin_or_mod, ast::character<'\\'>>
     {
         using type =
                 stack
@@ -221,13 +221,13 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::capture_begin, ast::character<'|'>>
+    struct rule<symbol::group_begin_or_mod, ast::character<'|'>>
     {
         using type = reject;
     };
 
     template<auto C>
-    struct rule<symbol::capture_begin, ast::character<C>>
+    struct rule<symbol::group_begin_or_mod, ast::character<C>>
     {
         using type =
                 stack
@@ -242,7 +242,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::capture_begin, ast::character<'.'>>
+    struct rule<symbol::group_begin_or_mod, ast::character<'.'>>
     {
         using type =
                 stack
@@ -257,7 +257,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::capture_begin, ast::character<'^'>>
+    struct rule<symbol::group_begin_or_mod, ast::character<'^'>>
     {
         using type =
                 stack
@@ -271,7 +271,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::capture_begin, ast::character<'$'>>
+    struct rule<symbol::group_begin_or_mod, ast::character<'$'>>
     {
         using type =
                 stack
@@ -285,72 +285,72 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::capture_begin, symbol::epsilon>
+    struct rule<symbol::group_begin_or_mod, symbol::epsilon>
     {
         using type = ignore;
     };
 
     template<>
-    struct rule<symbol::capture_begin, ast::character<'?'>>
+    struct rule<symbol::group_begin_or_mod, ast::character<'?'>>
     {
         using type =
                 stack
                 <
                     advance,
-                    symbol::capture_mod
+                    symbol::group_mod
                 >;
     };
 
     template<>
-    struct rule<symbol::capture_mod, ast::character<':'>>
+    struct rule<symbol::group_mod, ast::character<':'>>
     {
         using type =
                 stack
                 <
                     advance,
-                    symbol::capture_begin_no_mod
+                    symbol::group_begin
                 >;
     };
 
     template<>
-    struct rule<symbol::capture_mod, ast::character<'='>>
+    struct rule<symbol::group_mod, ast::character<'='>>
     {
         using type =
                 stack
                 <
                     advance,
-                    symbol::capture_begin_no_mod,
+                    symbol::group_begin,
                     symbol::make_positive_lookahead
                 >;
     };
 
     template<>
-    struct rule<symbol::capture_mod, ast::character<'!'>>
+    struct rule<symbol::group_mod, ast::character<'!'>>
     {
         using type =
                 stack
                 <
                     advance,
-                    symbol::capture_begin_no_mod,
+                    symbol::group_begin,
                     symbol::make_negative_lookahead
                 >;
     };
 
     template<auto C>
-    struct rule<symbol::capture_mod, ast::character<C>>
+    struct rule<symbol::group_mod, ast::character<C>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::capture_begin_no_mod, ast::character<'['>>
+    struct rule<symbol::group_begin, ast::character<'['>>
     {
         using type =
                 stack
                 <
                     advance,
                     symbol::make_set,
-                    symbol::set_begin,
+                    symbol::set_begin_or_neg,
                     symbol::expect<']'>,
                     symbol::mod,
                     symbol::seq,
@@ -359,13 +359,13 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::capture_begin_no_mod, ast::character<'('>>
+    struct rule<symbol::group_begin, ast::character<'('>>
     {
         using type =
                 stack
                 <
                     advance,
-                    symbol::capture_begin,
+                    symbol::group_begin_or_mod,
                     symbol::expect<')'>,
                     symbol::mod,
                     symbol::seq,
@@ -374,31 +374,31 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::capture_begin_no_mod, ast::character<')'>>
+    struct rule<symbol::group_begin, ast::character<')'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::capture_begin_no_mod, ast::character<'?'>>
+    struct rule<symbol::group_begin, ast::character<'?'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::capture_begin_no_mod, ast::character<'*'>>
+    struct rule<symbol::group_begin, ast::character<'*'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::capture_begin_no_mod, ast::character<'+'>>
+    struct rule<symbol::group_begin, ast::character<'+'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::capture_begin_no_mod, ast::character<'\\'>>
+    struct rule<symbol::group_begin, ast::character<'\\'>>
     {
         using type =
                 stack
@@ -412,13 +412,13 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::capture_begin_no_mod, ast::character<'|'>>
+    struct rule<symbol::group_begin, ast::character<'|'>>
     {
         using type = reject;
     };
 
     template<auto C>
-    struct rule<symbol::capture_begin_no_mod, ast::character<C>>
+    struct rule<symbol::group_begin, ast::character<C>>
     {
         using type =
                 stack
@@ -432,7 +432,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::capture_begin_no_mod, ast::character<'.'>>
+    struct rule<symbol::group_begin, ast::character<'.'>>
     {
         using type =
                 stack
@@ -446,7 +446,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::capture_begin_no_mod, ast::character<'^'>>
+    struct rule<symbol::group_begin, ast::character<'^'>>
     {
         using type =
                 stack
@@ -459,7 +459,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::capture_begin_no_mod, ast::character<'$'>>
+    struct rule<symbol::group_begin, ast::character<'$'>>
     {
         using type =
                 stack
@@ -472,7 +472,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::capture_begin_no_mod, symbol::epsilon>
+    struct rule<symbol::group_begin, symbol::epsilon>
     {
         using type = ignore;
     };
@@ -490,7 +490,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::seq0,
+                    symbol::alt_seq,
                     symbol::make_alternation,
                     symbol::alt
                 >;
@@ -654,14 +654,14 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::seq0, ast::character<'['>>
+    struct rule<symbol::alt_seq, ast::character<'['>>
     {
         using type =
                 stack
                 <
                     advance,
                     symbol::make_set,
-                    symbol::set_begin,
+                    symbol::set_begin_or_neg,
                     symbol::expect<']'>,
                     symbol::mod,
                     symbol::seq
@@ -669,13 +669,13 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::seq0, ast::character<'('>>
+    struct rule<symbol::alt_seq, ast::character<'('>>
     {
         using type =
                 stack
                 <
                     advance,
-                    symbol::capture_begin,
+                    symbol::group_begin_or_mod,
                     symbol::expect<')'>,
                     symbol::mod,
                     symbol::seq
@@ -683,31 +683,31 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::seq0, ast::character<')'>>
+    struct rule<symbol::alt_seq, ast::character<')'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::seq0, ast::character<'*'>>
+    struct rule<symbol::alt_seq, ast::character<'*'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::seq0, ast::character<'+'>>
+    struct rule<symbol::alt_seq, ast::character<'+'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::seq0, ast::character<'?'>>
+    struct rule<symbol::alt_seq, ast::character<'?'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::seq0, ast::character<'\\'>>
+    struct rule<symbol::alt_seq, ast::character<'\\'>>
     {
         using type =
                 stack
@@ -720,13 +720,13 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::seq0, ast::character<'|'>>
+    struct rule<symbol::alt_seq, ast::character<'|'>>
     {
         using type = reject;
     };
 
     template<auto C>
-    struct rule<symbol::seq0, ast::character<C>>
+    struct rule<symbol::alt_seq, ast::character<C>>
     {
         using type =
                 stack
@@ -739,7 +739,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::seq0, ast::character<'.'>>
+    struct rule<symbol::alt_seq, ast::character<'.'>>
     {
         using type =
                 stack
@@ -752,7 +752,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::seq0, ast::character<'^'>>
+    struct rule<symbol::alt_seq, ast::character<'^'>>
     {
         using type =
                 stack
@@ -764,7 +764,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::seq0, ast::character<'$'>>
+    struct rule<symbol::alt_seq, ast::character<'$'>>
     {
         using type =
                 stack
@@ -776,7 +776,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::seq0, symbol::epsilon>
+    struct rule<symbol::alt_seq, symbol::epsilon>
     {
         using type = reject;
     };
@@ -789,7 +789,7 @@ namespace meta::grammar
                 <
                     advance,
                     symbol::make_set,
-                    symbol::set_begin,
+                    symbol::set_begin_or_neg,
                     symbol::expect<']'>,
                     symbol::mod,
                     symbol::make_sequence,
@@ -804,7 +804,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::capture_begin,
+                    symbol::group_begin_or_mod,
                     symbol::expect<')'>,
                     symbol::mod,
                     symbol::make_sequence,
@@ -918,15 +918,52 @@ namespace meta::grammar
 
     // Rules for parsing sets
     template<>
-    struct rule<symbol::set_begin, ast::character<'^'>>
+    struct rule<symbol::set_begin_or_neg, ast::character<'^'>>
     {
         using type =
                 stack
                 <
                     advance,
-                    symbol::set_begin_no_neg,
+                    symbol::set_begin,
                     symbol::make_negated
                 >;
+    };
+
+    template<>
+    struct rule<symbol::set_begin_or_neg, ast::character<'\\'>>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::set_esc,
+                    symbol::make_set_from_stack,
+                    symbol::set_seq
+                >;
+    };
+
+    template<>
+    struct rule<symbol::set_begin_or_neg, ast::character<']'>>
+    {
+        using type = ignore;
+    };
+
+    template<auto C>
+    struct rule<symbol::set_begin_or_neg, ast::character<C>>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::make_set_from_current_char,
+                    symbol::set_seq
+                >;
+    };
+
+    template<>
+    struct rule<symbol::set_begin, ast::character<']'>>
+    {
+        using type = ignore;
     };
 
     template<>
@@ -942,45 +979,8 @@ namespace meta::grammar
                 >;
     };
 
-    template<>
-    struct rule<symbol::set_begin, ast::character<']'>>
-    {
-        using type = ignore;
-    };
-
     template<auto C>
     struct rule<symbol::set_begin, ast::character<C>>
-    {
-        using type =
-                stack
-                <
-                    advance,
-                    symbol::make_set_from_current_char,
-                    symbol::set_seq
-                >;
-    };
-
-    template<>
-    struct rule<symbol::set_begin_no_neg, ast::character<']'>>
-    {
-        using type = ignore;
-    };
-
-    template<>
-    struct rule<symbol::set_begin_no_neg, ast::character<'\\'>>
-    {
-        using type =
-                stack
-                <
-                    advance,
-                    symbol::set_esc,
-                    symbol::make_set_from_stack,
-                    symbol::set_seq
-                >;
-    };
-
-    template<auto C>
-    struct rule<symbol::set_begin_no_neg, ast::character<C>>
     {
         using type =
                 stack
@@ -1017,7 +1017,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::set_range_start,
+                    symbol::set_range_begin,
                     symbol::set_seq
                 >;
     };
@@ -1035,25 +1035,25 @@ namespace meta::grammar
     };
 
     template<auto C>
-    struct rule<symbol::set_range_start, ast::character<C>>
+    struct rule<symbol::set_range_begin, ast::character<C>>
     {
         using type =
                 stack
                 <
                     advance,
                     symbol::make_range,
-                    symbol::set_seq0
+                    symbol::set_range_seq
                 >;
     };
 
     template<>
-    struct rule<symbol::set_range_start, ast::character<']'>>
+    struct rule<symbol::set_range_begin, ast::character<']'>>
     {
         using type = reject;
     };
 
     template<>
-    struct rule<symbol::set_range_start, ast::character<'\\'>>
+    struct rule<symbol::set_range_begin, ast::character<'\\'>>
     {
         using type =
                 stack
@@ -1062,12 +1062,12 @@ namespace meta::grammar
                     symbol::set_range_esc,
                     symbol::make_set_from_stack,
                     symbol::make_range_from_stack,
-                    symbol::set_seq0
+                    symbol::set_range_seq
                 >;
     };
 
     template<>
-    struct rule<symbol::set_seq0, ast::character<'\\'>>
+    struct rule<symbol::set_range_seq, ast::character<'\\'>>
     {
         using type =
                 stack
@@ -1080,13 +1080,13 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::set_seq0, ast::character<']'>>
+    struct rule<symbol::set_range_seq, ast::character<']'>>
     {
         using type = ignore;
     };
 
     template<auto C>
-    struct rule<symbol::set_seq0, ast::character<C>>
+    struct rule<symbol::set_range_seq, ast::character<C>>
     {
         using type =
                 stack

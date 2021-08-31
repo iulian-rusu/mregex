@@ -12,7 +12,7 @@ The library currently supports the following features:
 * various flags like `ignore_case`, `dotall` and `multiline`
 * structured binding decomposition of `meta::regex_result`
 * standard regex syntax:
-    * `*` - Kleene start quantifier
+    * `*` - Kleene begin quantifier
     * `+` - plus quantifier
     * `?` - optional quantifier
     * `{5}` - exact quantifier

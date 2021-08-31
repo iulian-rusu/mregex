@@ -105,7 +105,7 @@ namespace meta
             using type = pair<std::true_type, AST>;
         };
 
-        using parse_result = parse_t<0, stack<>, stack<symbol::start>>;
+        using parse_result = parse_t<0, stack<>, stack<symbol::begin>>;
         using ast_stack = typename parse_result::second;
         using ast_type =
                 std::conditional_t

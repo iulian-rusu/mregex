@@ -6,41 +6,41 @@ namespace meta::symbol
     // Non-terminal symbols
     struct epsilon {};
 
-    struct start {};
-
-    struct alt {};
+    struct begin {};
 
     struct esc {};
 
     struct mod {};
 
-    struct seq0 {};
-
     struct seq {};
 
-    // Symbols for parsing capturing groups
-    struct capture_begin {};
+    struct alt {};
 
-    struct capture_begin_no_mod {};
+    struct alt_seq {};
 
-    struct capture_mod {};
+    // Symbols for parsing groups
+    struct group_begin_or_mod {};
+
+    struct group_mod {};
+
+    struct group_begin {};
 
     // Symbol that requires a specific character to appear
     template<auto>
     struct expect {};
 
     // Symbols for parsing sets
-    struct set_begin {};
+    struct set_begin_or_neg {};
 
-    struct set_begin_no_neg {};
+    struct set_begin {};
 
     struct set_seq {};
 
-    struct set_seq0 {};
-
     struct set_esc {};
 
-    struct set_range_start {};
+    struct set_range_begin {};
+
+    struct set_range_seq {};
 
     struct set_range_esc {};
 

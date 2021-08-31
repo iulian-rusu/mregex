@@ -45,6 +45,7 @@ namespace meta::tests
     static_assert(regex<R"((a*)+)">::match("aaaaaa"sv));
     static_assert(regex<R"((a+)*)">::match("aaaaaa"sv));
     static_assert(regex<R"((a*)*)">::match("aaaaaa"sv));
+    static_assert(regex<R"((a*aa)?aa)">::match("aaaaa"sv));
     static_assert(regex<R"((a+)+)">::match("aaaaaa"sv));
     static_assert(regex<R"((a*)+)">::match(""sv));
     static_assert(regex<R"((a+)*)">::match(""sv));

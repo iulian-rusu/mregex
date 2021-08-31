@@ -27,7 +27,7 @@ namespace meta::ast
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
                 return consume_rest(begin, end, new_it, ctx, cont);
             };
-           return exact_repetition<A, Inner>::match(begin, end, it, ctx, continuation);
+            return exact_repetition<A, Inner>::match(begin, end, it, ctx, continuation);
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
