@@ -18,8 +18,8 @@ namespace meta::ast
         -> match_result<Iter>
         requires (!is_trivially_matchable_v<First>)
         {
-            auto continuation = [=, &ctx, &cont](Iter next_it) {
-                return sequence<Rest ...>::match(begin, end, next_it, ctx, cont);
+            auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
+                return sequence<Rest ...>::match(begin, end, new_it, ctx, cont);
             };
             return First::match(begin, end, it, ctx, continuation);
         }
@@ -38,28 +38,26 @@ namespace meta::ast
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         requires are_trivially_matchable_v<First, Rest ...>
         {
             std::size_t const remaining_length = std::distance(it, end);
             if (remaining_length < sequence_size)
                 return {it, false};
-            return expand_trivial_match(begin, end, it, ctx, cont, std::make_index_sequence<sequence_size>{});
+            return expand_trivial_match(it, ctx, cont, std::make_index_sequence<sequence_size>{});
         }
 
     private:
         static constexpr std::size_t sequence_size = 1 + sizeof... (Rest);
 
         template<std::forward_iterator Iter, typename Context, typename Continuation, std::size_t Index, std::size_t... Indices>
-        static constexpr match_result<Iter> expand_trivial_match(
-                Iter,
-                Iter,
+        static constexpr auto expand_trivial_match(
                 Iter it,
                 Context &ctx,
                 Continuation &&cont,
                 std::index_sequence<Index, Indices ...> &&
-        ) noexcept
+        ) noexcept -> match_result<Iter>
         {
             if (First::consume_one(it, ctx) && (Rest::consume_one(it + Indices, ctx) && ...))
                 return cont(it + sequence_size);

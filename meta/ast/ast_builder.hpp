@@ -76,6 +76,12 @@ namespace meta::ast
     };
 
     template<typename C, typename Stack>
+    struct update_ast<symbol::make_linebreak, C, Stack>
+    {
+        using type = push<Stack, linebreak>;
+    };
+
+    template<typename C, typename Stack>
     struct update_ast<symbol::make_wildcard, C, Stack>
     {
         using type = push<Stack, wildcard>;
@@ -91,6 +97,18 @@ namespace meta::ast
     struct update_ast<symbol::make_ending, C, Stack>
     {
         using type = push<Stack, ending>;
+    };
+
+    template<typename C, typename First, typename... Rest>
+    struct update_ast<symbol::make_positive_lookahead, C, stack<First, Rest ...>>
+    {
+        using type = stack<positive_lookahead<First>, Rest ...>;
+    };
+
+    template<typename C, typename First, typename... Rest>
+    struct update_ast<symbol::make_negative_lookahead, C, stack<First, Rest ...>>
+    {
+        using type = stack<negative_lookahead<First>, Rest ...>;
     };
 
     template<typename C, typename First, typename... Rest>
@@ -157,26 +175,12 @@ namespace meta::ast
         using type = stack<alternation<Second ..., First>, Rest ...>;
     };
 
-    // Temporarily wrap AST node into symbol::captureless_wrapper to avoid making a capturing group later
-    template<typename C, typename First,  typename... Rest>
-    struct update_ast<symbol::make_captureless, C, stack<First, Rest ...>>
-    {
-        using type = stack<symbol::captureless_wrapper<First>, Rest ...>;
-    };
-
     template<typename C, typename First,  typename... Rest>
     struct update_ast<symbol::make_capturing, C, stack<First, Rest ...>>
     {
         static constexpr auto ID = capture_count_v<First, Rest ...> + 1;
 
         using type = stack<capturing<ID, First>, Rest ...>;
-    };
-
-    // Captureless mode has higher priority than the default capturing mode for groups
-    template<typename C, typename First,  typename... Rest>
-    struct update_ast<symbol::make_capturing, C, stack<symbol::captureless_wrapper<First>, Rest ...>>
-    {
-        using type = stack<First, Rest ...>;
     };
 
     template<std::size_t ID, typename C, typename... Elems>

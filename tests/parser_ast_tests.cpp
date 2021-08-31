@@ -11,7 +11,7 @@ namespace meta::tests
         inline constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast_type, AST>;
     }
 
-    //static_assert(std::is_same_v<typename parser<static_string(R"([^\n])")>::ast_type, void>);
+    //static_assert(std::is_same_v<typename parser<static_string(R"(x(?!ab)+x)")>::ast_type, void>);
 
     static_assert(detail::expected_ast<R"()", epsilon>);
     static_assert(detail::expected_ast<R"(a))", character<'a'>>);
@@ -40,16 +40,76 @@ namespace meta::tests
                 ending
             >
     >);
+    static_assert(detail::expected_ast<R"(x(?=ab)x)",
+            sequence
+            <
+                character<'x'>,
+                positive_lookahead
+                <
+                    sequence
+                    <
+                        character<'a'>,
+                        character<'b'>
+                    >
+                >,
+                character<'x'>
+            >
+    >);
+    static_assert(detail::expected_ast<R"(x(?!ab){2}x)",
+            sequence
+            <
+                character<'x'>,
+                exact_repetition
+                <
+                    2,
+                    negative_lookahead
+                    <
+                        sequence
+                        <
+                            character<'a'>,
+                            character<'b'>
+                        >
+                    >
+                >,
+                character<'x'>
+            >
+    >);
+    static_assert(detail::expected_ast<R"(x(?=a(?!c*d?)b)x)",
+            sequence
+            <
+                character<'x'>,
+                positive_lookahead
+                <
+                    sequence
+                    <
+                        character<'a'>,
+                        negative_lookahead
+                        <
+                            sequence
+                            <
+                                star
+                                <
+                                    character<'c'>
+                                >,
+                                optional
+                                <
+                                    character<'d'>
+                                >
+                            >
+                        >,
+                        character<'b'>
+                    >
+                >,
+                character<'x'>
+            >
+    >);
     static_assert(detail::expected_ast<R"(\n))", character<'\n'>>);
     static_assert(detail::expected_ast<R"(\r))", character<'\r'>>);
     static_assert(detail::expected_ast<R"(\t))", character<'\t'>>);
+    static_assert(detail::expected_ast<R"(\R))", linebreak>);
+    static_assert(detail::expected_ast<R"(\N))", negated<linebreak>>);
     static_assert(detail::expected_ast<R"(\a))", alpha>);
-    static_assert(detail::expected_ast<R"(\D))",
-            negated
-            <
-                digit
-            >
-    >);
+    static_assert(detail::expected_ast<R"(\D))",negated<digit>>);
     static_assert(detail::expected_ast<R"(a.?b)",
             sequence
             <

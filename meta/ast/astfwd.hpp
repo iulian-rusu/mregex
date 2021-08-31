@@ -59,6 +59,8 @@ namespace meta::ast
 
     using hexa = set<digit, range<'a', 'f'>, range<'A', 'F'>>;
 
+    using linebreak = set<character<'\n'>, character<'\r'>>;
+
     template<std::size_t>
     struct backref;
 
@@ -67,5 +69,11 @@ namespace meta::ast
 
     template<std::size_t, typename>
     struct capturing;
+
+    template<typename>
+    struct positive_lookahead;
+
+    template<typename>
+    struct negative_lookahead;
 }
 #endif //META_ASTFWD_HPP

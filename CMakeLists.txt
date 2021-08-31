@@ -45,7 +45,7 @@ add_executable(
         meta/regex_capture.hpp
         meta/regex_token_generator.hpp
         tests/regex_generator_tests.cpp
-        meta/continuation.hpp
+        meta/utility/continuations.hpp
         meta/ast/terminals.hpp
         meta/ast/sequence.hpp
         meta/ast/alternation.hpp
@@ -53,5 +53,6 @@ add_executable(
         meta/ast/star.hpp
         meta/ast/repetition.hpp
         meta/ast/capturing.hpp
+        meta/ast/lookarounds.hpp
 )
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -O3 -fconcepts-diagnostics-depth=3")

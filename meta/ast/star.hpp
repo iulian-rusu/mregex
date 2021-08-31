@@ -10,10 +10,8 @@ namespace meta::ast
     namespace impl
     {
         /**
-         * Namespace with different strategies for implementing star cycles.
-         * Currently greedy and lazy matching is supported.
+         * The greedy strategy consumes as much as it can before calling its continuation.
          */
-
         template<typename Inner>
         struct greedy_match_strategy
         {
@@ -22,7 +20,7 @@ namespace meta::ast
             -> match_result<Iter>
             requires (!is_trivially_matchable_v<Inner> || !std::bidirectional_iterator<Iter>)
             {
-                auto continuation = [=, &ctx, &cont](Iter new_it) -> match_result<Iter> {
+                auto continuation = [=, &ctx, &cont](Iter new_it) noexcept -> match_result<Iter> {
                     if (new_it == it)
                         return {new_it, false};
                     return greedy_match_strategy<Inner>::match(begin, end, new_it, ctx, cont);
@@ -37,7 +35,7 @@ namespace meta::ast
             -> match_result<Iter>
             requires (is_trivially_matchable_v<Inner> && std::bidirectional_iterator<Iter>)
             {
-                std::forward_iterator auto start = it;
+                Iter const start = it;
                 for (; it != end; ++it)
                 {
                     if (!Inner::consume_one(it, ctx))
@@ -52,6 +50,9 @@ namespace meta::ast
             }
         };
 
+        /**
+         * The lazy strategy tries to consume as little as possible.
+         */
         template<typename Inner>
         struct lazy_match_strategy
         {
@@ -60,13 +61,14 @@ namespace meta::ast
             -> match_result<Iter>
             requires (!is_trivially_matchable_v<Inner>)
             {
-                auto continuation = [=, &ctx, &cont](Iter new_it) -> match_result<Iter> {
+                if (auto rest_match = cont(it))
+                    return rest_match;
+
+                auto continuation = [=, &ctx, &cont](Iter new_it) noexcept -> match_result<Iter> {
                     if (new_it == it)
                         return {new_it, false};
                     return lazy_match_strategy<Inner>::match(begin, end, new_it, ctx, cont);
                 };
-                if (auto rest_match = cont(it))
-                    return rest_match;
                 return Inner::match(begin, end, it, ctx, continuation);
             }
 

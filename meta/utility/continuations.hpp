@@ -1,7 +1,7 @@
-#ifndef META_CONTINUATION_HPP
-#define META_CONTINUATION_HPP
+#ifndef META_CONTINUATIONS_HPP
+#define META_CONTINUATIONS_HPP
 
-#include "ast/match_result.hpp"
+#include "../ast/match_result.hpp"
 
 namespace meta
 {
@@ -13,7 +13,7 @@ namespace meta
     template<std::forward_iterator Iter>
     struct continuations
     {
-        static constexpr auto empty = [](Iter it) noexcept -> ast::match_result<Iter> {
+        static constexpr auto epsilon = [](Iter it) noexcept -> ast::match_result<Iter> {
             return {it, true};
         };
 
@@ -24,4 +24,4 @@ namespace meta
         };
     };
 }
-#endif //META_CONTINUATION_HPP
+#endif //META_CONTINUATIONS_HPP

@@ -29,10 +29,6 @@ namespace meta::symbol
     template<auto>
     struct expect {};
 
-    // Wrapper for marking a non-capturing group
-    template<typename>
-    struct captureless_wrapper {};
-
     // Symbols for parsing sets
     struct set_begin {};
 
@@ -98,15 +94,19 @@ namespace meta::symbol
 
     struct make_hexa : ast_update {};
 
+    struct make_linebreak : ast_update {};
+
     struct make_wildcard : ast_update {};
 
     struct make_beginning : ast_update {};
 
     struct make_ending : ast_update {};
 
-    struct make_negated : ast_update {};
+    struct make_positive_lookahead : ast_update {};
 
-    struct make_captureless : ast_update{};
+    struct make_negative_lookahead : ast_update {};
+
+    struct make_negated : ast_update {};
 
     struct make_capturing : ast_update {};
 

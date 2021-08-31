@@ -44,7 +44,6 @@ namespace meta::grammar
                     advance,
                     symbol::capture_begin,
                     symbol::expect<')'>,
-                    symbol::make_capturing,
                     symbol::mod,
                     symbol::seq,
                     symbol::alt
@@ -167,7 +166,8 @@ namespace meta::grammar
                     symbol::expect<']'>,
                     symbol::mod,
                     symbol::seq,
-                    symbol::alt
+                    symbol::alt,
+                    symbol::make_capturing
                 >;
     };
 
@@ -180,10 +180,10 @@ namespace meta::grammar
                     advance,
                     symbol::capture_begin,
                     symbol::expect<')'>,
-                    symbol::make_capturing,
                     symbol::mod,
                     symbol::seq,
-                    symbol::alt
+                    symbol::alt,
+                    symbol::make_capturing
                 >;
     };
 
@@ -215,7 +215,8 @@ namespace meta::grammar
                     symbol::esc,
                     symbol::mod,
                     symbol::seq,
-                    symbol::alt
+                    symbol::alt,
+                    symbol::make_capturing
                 >;
     };
 
@@ -235,7 +236,8 @@ namespace meta::grammar
                     symbol::make_char,
                     symbol::mod,
                     symbol::seq,
-                    symbol::alt
+                    symbol::alt,
+                    symbol::make_capturing
                 >;
     };
 
@@ -249,7 +251,8 @@ namespace meta::grammar
                     symbol::make_wildcard,
                     symbol::mod,
                     symbol::seq,
-                    symbol::alt
+                    symbol::alt,
+                    symbol::make_capturing
                 >;
     };
 
@@ -262,7 +265,22 @@ namespace meta::grammar
                     advance,
                     symbol::make_beginning,
                     symbol::seq,
-                    symbol::alt
+                    symbol::alt,
+                    symbol::make_capturing
+                >;
+    };
+
+    template<>
+    struct rule<symbol::capture_begin, ast::character<'$'>>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::make_ending,
+                    symbol::seq,
+                    symbol::alt,
+                    symbol::make_capturing
                 >;
     };
 
@@ -290,8 +308,31 @@ namespace meta::grammar
                 stack
                 <
                     advance,
+                    symbol::capture_begin_no_mod
+                >;
+    };
+
+    template<>
+    struct rule<symbol::capture_mod, ast::character<'='>>
+    {
+        using type =
+                stack
+                <
+                    advance,
                     symbol::capture_begin_no_mod,
-                    symbol::make_captureless
+                    symbol::make_positive_lookahead
+                >;
+    };
+
+    template<>
+    struct rule<symbol::capture_mod, ast::character<'!'>>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::capture_begin_no_mod,
+                    symbol::make_negative_lookahead
                 >;
     };
 
@@ -326,7 +367,6 @@ namespace meta::grammar
                     advance,
                     symbol::capture_begin,
                     symbol::expect<')'>,
-                    symbol::make_capturing,
                     symbol::mod,
                     symbol::seq,
                     symbol::alt
@@ -424,10 +464,10 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                advance,
-                symbol::make_ending,
-                symbol::seq,
-                symbol::alt
+                    advance,
+                    symbol::make_ending,
+                    symbol::seq,
+                    symbol::alt
                 >;
     };
 
@@ -637,7 +677,6 @@ namespace meta::grammar
                     advance,
                     symbol::capture_begin,
                     symbol::expect<')'>,
-                    symbol::make_capturing,
                     symbol::mod,
                     symbol::seq
                 >;
@@ -767,7 +806,6 @@ namespace meta::grammar
                     advance,
                     symbol::capture_begin,
                     symbol::expect<')'>,
-                    symbol::make_capturing,
                     symbol::mod,
                     symbol::make_sequence,
                     symbol::seq

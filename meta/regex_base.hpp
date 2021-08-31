@@ -4,7 +4,7 @@
 #include "iterable_generator_adapter.hpp"
 #include "ast/ast.hpp"
 #include "regex_context.hpp"
-#include "continuation.hpp"
+#include "utility/continuations.hpp"
 #include "regex_result.hpp"
 #include "regex_token_generator.hpp"
 #include "utility/universal_capture.hpp"
@@ -70,9 +70,9 @@ namespace meta
             using result_type = regex_result_view<ast_type::capture_count, Iter>;
 
             match_context ctx{};
-            for (std::forward_iterator auto current = from;; ++current)
+            for (Iter current = from;; ++current)
             {
-                if (auto res = ast_type::match(begin, end, current, ctx, continuations<Iter>::empty))
+                if (auto res = ast_type::match(begin, end, current, ctx, continuations<Iter>::epsilon))
                 {
                     std::get<0>(ctx.captures) = regex_capture_view<0, Iter>{current, res.end};
                     return result_type{true, std::move(ctx.captures)};

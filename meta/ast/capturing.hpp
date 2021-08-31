@@ -17,11 +17,10 @@ namespace meta::ast
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            auto continuation = [&](Iter new_it) {
+            auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
                 std::get<ID>(ctx.captures) = regex_capture_view<ID, Iter>{it, new_it};
                 return cont(new_it);
             };
-
             return Inner::match(begin, end, it, ctx, continuation);
         }
     };

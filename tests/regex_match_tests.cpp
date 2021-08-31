@@ -12,6 +12,8 @@ namespace meta::tests
     static_assert(regex<R"(\a)">::match("b"sv));
     static_assert(regex<R"(\n)">::match("\n"sv));
     static_assert(regex<R"(\N)">::match("N"sv));
+    static_assert(regex<R"(\R)">::match("\r"sv));
+    static_assert(regex<R"(\R)">::match("\n"sv));
     static_assert(regex<R"(\a+)">::match("aBcDefghijklmnopqrstuvqXyZ"sv));
     static_assert(regex<R"(^a)">::match("a"sv));
     static_assert(regex<R"(a$)">::match("a"sv));
@@ -150,6 +152,9 @@ namespace meta::tests
     static_assert(regex<R"(^abcd$)", flag::multiline>::match("\nabcd\n"sv));
     static_assert(regex<R"(^abcd$)">::with<flag::multiline>::match("abcd\n"sv));
     static_assert(regex<R"(^abcd$)">::with<flag::multiline>::match("\nabcd"sv));
+    static_assert(regex<R"(a(?=b)\w)">::match("ab"sv));
+    static_assert(regex<R"(.(?!b).{2})">::match("xxx"sv));
+    static_assert(regex<R"(a(?=(\w))\w\1)">::match("abb"sv));
 
     // Test non-matching inputs
     static_assert(regex<R"()">::match("t"sv) == false);
@@ -157,6 +162,7 @@ namespace meta::tests
     static_assert(regex<R"(\a)">::match("1"sv) == false);
     static_assert(regex<R"(\n)">::match("n"sv) == false);
     static_assert(regex<R"(\N)">::match("\r"sv) == false);
+    static_assert(regex<R"(\N)">::match("\n"sv) == false);
     static_assert(regex<R"(^a)">::match(" a"sv) == false);
     static_assert(regex<R"(a$)">::match("a "sv) == false);
     static_assert(regex<R"(^abcd$)">::match(" abcd"sv) == false);
@@ -247,5 +253,8 @@ namespace meta::tests
     static_assert(regex<R"(a|ab|abc)">::match("aba"sv) == false);
     static_assert(regex<R"((a|ab)+x)">::match("aaaabcabx"sv) == false);
     static_assert(regex<R"((a|ab|abc)+x)">::match("x"sv) == false);
+    static_assert(regex<R"(a(?=b))">::match("ab"sv) == false);
+    static_assert(regex<R"(.(?!b).{2})">::match("xbx"sv) == false);
+    static_assert(regex<R"(a(?!b)|cb)">::match("ab"sv) == false);
 }
 #endif //META_RUN_REGEX_TESTS

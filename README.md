@@ -19,6 +19,7 @@ The library currently supports the following features:
     * `{3,6}`, `{5,}` - range quantifiers
     * `(expr)` - capturing subexpressions
     * `(?:expr)` - non-capturing subexpressions
+    * `(?=expr)`, `(?!expr)` - lookaheads
     * `\12` - backreferences
     * `|` - alternation of two subexpressions
     * `\?`, `\\`, `\n` - escaped characters
@@ -54,9 +55,8 @@ the `meta::regex::find_all` method returns a generator that will evaluate
 on-demand all matches in the string. We can iterate through the generator
 just like any standard container.
 ```cpp
-using word_regex = meta::regex<R"([-a-z']+)", meta::flag::i>;
-
-constexpr std::string_view words = "Let's iterate over these words!";
+using word_regex = meta::regex<R"(\w+(?=\W))">;
+std::string words = "Find all word-sequences in this string!";
 for (auto &&res : word_regex::find_all(words))
 {
     std::cout << res << '\n';

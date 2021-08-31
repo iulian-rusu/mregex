@@ -30,7 +30,7 @@ namespace meta
             Context ctx{};
             while (active)
             {
-                auto res = ast_type::match(begin_iter, end_iter, current_iter, ctx, continuation_type::empty);
+                auto res = ast_type::match(begin_iter, end_iter, current_iter, ctx, continuation_type::epsilon);
                 if (res && res.end != current_iter)
                 {
                     auto match_begin = current_iter;

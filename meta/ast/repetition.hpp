@@ -4,7 +4,6 @@
 #include "astfwd.hpp"
 #include "ast_traits.hpp"
 #include "match_result.hpp"
-#include "../continuation.hpp"
 
 namespace meta::ast
 {
@@ -25,7 +24,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires (A > 0u)
         {
-            auto continuation = [=, &ctx, &cont](Iter new_it) {
+            auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
                 return consume_rest(begin, end, new_it, ctx, cont);
             };
            return exact_repetition<A, Inner>::match(begin, end, it, ctx, continuation);
@@ -45,7 +44,7 @@ namespace meta::ast
         requires (!is_trivially_matchable_v<Inner>)
         {
             using next_repetition = repetition<symbol::quantifier_value<0>, symbol::quantifier_value<R - 1>, Inner>;
-            auto continuation = [=, &ctx, &cont](Iter new_it) {
+            auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
                 return next_repetition::match(begin, end, new_it, ctx, cont);
             };
             if (auto inner_match = Inner::match(begin, end, it, ctx, continuation))
@@ -79,7 +78,7 @@ namespace meta::ast
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            auto continuation = [=, &ctx, &cont](Iter new_it) {
+            auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
                 return star<Inner>::match(begin, end, new_it, ctx, cont);
             };
             return exact_repetition<N, Inner>::match(begin, end, it, ctx, continuation);
@@ -97,7 +96,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires (!is_trivially_matchable_v<Inner>)
         {
-            auto continuation = [=, &ctx, &cont](Iter new_it) {
+            auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
                 return exact_repetition<N - 1, Inner>::match(begin, end, new_it, ctx, cont);
             };
             return Inner::match(begin, end, it, ctx, continuation);
