@@ -53,6 +53,6 @@ add_executable(
         meta/ast/star.hpp
         meta/ast/repetition.hpp
         meta/ast/capturing.hpp
-        meta/ast/lookarounds.hpp
+        meta/ast/lookaheads.hpp
 )
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -O3 -fconcepts-diagnostics-depth=3")

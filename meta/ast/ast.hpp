@@ -8,6 +8,6 @@
 #include "star.hpp"
 #include "repetition.hpp"
 #include "capturing.hpp"
-#include "lookarounds.hpp"
+#include "lookaheads.hpp"
 
 #endif //META_AST_HPP
