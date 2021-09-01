@@ -16,8 +16,8 @@ int main()
     std::cout << "Query:\t" << match_res.group<7>() << "\n\n";
 
     // Lazy iteration over a collection of result
-    using word_regex = meta::regex<R"([-a-z']+)", meta::flag::i>;
-    std::string words = "Let's iterate over these words!";
+    using word_regex = meta::regex<R"(\w+(?=\W))", meta::flag::ungreedy>;
+    std::string words = "Find all word-sequences in this string!";
     for (auto &&res : word_regex::find_all(words))
     {
         std::cout << res << '\n';

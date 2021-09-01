@@ -4,49 +4,50 @@
 namespace meta::symbol
 {
     // Non-terminal symbols
-    struct epsilon {};
-
-    struct start {};
-
-    struct alt {};
+    struct begin {};
 
     struct esc {};
 
     struct mod {};
 
-    struct seq0 {};
-
     struct seq {};
 
-    // Symbols for parsing capturing groups
-    struct capture_begin {};
+    struct alt {};
 
-    struct capture_begin_no_mod {};
+    struct alt_seq {};
 
-    struct capture_mod {};
+    // Symbols for parsing groups
+    struct group_begin_or_mod {};
 
-    // Symbol that requires a specific character to appear
-    template<auto>
-    struct expect {};
+    struct group_mod {};
 
-    // Wrapper for marking a non-capturing group
-    template<typename>
-    struct captureless_wrapper {};
+    struct group_begin {};
 
     // Symbols for parsing sets
-    struct set_begin {};
+    struct set_begin_or_neg {};
 
-    struct set_begin_no_neg {};
+    struct set_begin {};
 
     struct set_seq {};
 
-    struct set_seq0 {};
-
     struct set_esc {};
 
-    struct set_range_start {};
+    struct set_range_begin {};
+
+    struct set_range_seq {};
 
     struct set_range_esc {};
+
+    // Symbol that represents a concrete character
+    template<auto>
+    struct character {};
+
+    // Symbol that represents an empty string
+    struct epsilon {};
+
+    // Symbol that represents a requirement for a character to appear
+    template<auto>
+    struct expect {};
 
     // Symbol for parsing a backreference ID
     template<std::size_t>
@@ -98,17 +99,19 @@ namespace meta::symbol
 
     struct make_hexa : ast_update {};
 
+    struct make_linebreak : ast_update {};
+
     struct make_wildcard : ast_update {};
 
-    struct make_beginline : ast_update {};
+    struct make_beginning : ast_update {};
 
-    struct make_endline : ast_update {};
+    struct make_ending : ast_update {};
+
+    struct make_positive_lookahead : ast_update {};
+
+    struct make_negative_lookahead : ast_update {};
 
     struct make_negated : ast_update {};
-
-    struct make_captureless : ast_update{};
-
-    struct make_atomic : ast_update{};
 
     struct make_capturing : ast_update {};
 

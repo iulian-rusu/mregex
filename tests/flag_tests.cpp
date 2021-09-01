@@ -9,7 +9,7 @@ namespace meta::tests
     static_assert(std::is_same_v<alias<flag::m>, flag::multiline>);
     static_assert(std::is_same_v<alias<flag::dotall>, flag::s>);
     static_assert(std::is_same_v<alias<flag::s>, flag::dotall>);
-    static_assert(std::is_same_v<alias<flag::greedy_alt>, flag::a>);
-    static_assert(std::is_same_v<alias<flag::a>, flag::greedy_alt>);
+    static_assert(std::is_same_v<alias<flag::ungreedy>, flag::U>);
+    static_assert(std::is_same_v<alias<flag::U>, flag::ungreedy>);
 }
 #endif //META_RUN_FLAG_TESTS

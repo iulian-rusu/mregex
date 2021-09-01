@@ -1,8 +1,6 @@
 #ifndef META_ASTFWD_HPP
 #define META_ASTFWD_HPP
 
-#include "../symbol.hpp"
-
 namespace meta::ast
 {
     template<typename, typename...>
@@ -29,14 +27,12 @@ namespace meta::ast
     template<typename, typename...>
     struct set;
 
-    struct beginline;
+    struct beginning;
 
-    struct endline;
-
-    struct endsequence;
+    struct ending;
 
     template<auto>
-    struct character;
+    struct literal;
 
     struct whitespace;
 
@@ -59,20 +55,25 @@ namespace meta::ast
 
     using alpha = range<'A', 'z'>;
 
-    using word = set<alpha, digit, ast::character<'_'>>;
+    using word = set<alpha, digit, ast::literal<'_'>>;
 
     using hexa = set<digit, range<'a', 'f'>, range<'A', 'F'>>;
+
+    using linebreak = set<literal<'\n'>, literal<'\r'>>;
 
     template<std::size_t>
     struct backref;
 
     template<typename>
-    struct atomic;
+    struct negated;
 
     template<std::size_t, typename>
     struct capturing;
 
     template<typename>
-    struct negated;
+    struct positive_lookahead;
+
+    template<typename>
+    struct negative_lookahead;
 }
 #endif //META_ASTFWD_HPP

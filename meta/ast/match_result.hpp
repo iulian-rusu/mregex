@@ -1,14 +1,17 @@
 #ifndef META_MATCH_RESULT_HPP
 #define META_MATCH_RESULT_HPP
 
+#include <concepts>
+
 namespace meta::ast
 {
     /**
      * Data structure returned by all matching functions of AST nodes.
      */
+    template<std::forward_iterator Iter>
     struct match_result
     {
-        std::size_t consumed{};
+        Iter end{};
         bool matched{};
 
         constexpr explicit operator bool() const noexcept
@@ -23,12 +26,12 @@ namespace meta::ast
 
         constexpr match_result operator+(match_result const &other) const noexcept
         {
-            return match_result{consumed + other.consumed, matched || other.matched};
+            return match_result{other.end, matched || other.matched};
         }
 
         constexpr match_result &operator+=(match_result const &other) noexcept
         {
-            consumed += other.consumed;
+            end = other.end;
             matched = matched || other.matched;
             return *this;
         }

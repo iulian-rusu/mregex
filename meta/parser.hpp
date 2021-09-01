@@ -11,16 +11,16 @@ namespace meta
     /**
      * Compile-time parser using the LL(1) algorithm.
      *
-     * @tparam pattern  The input to be parsed
+     * @tparam pattern  The input string to be parsed
      */
-    template<auto pattern>
+    template<static_string pattern>
     struct parser
     {
         // Helper metafunction used to obtain input symbols for the parser
         template<std::size_t I, bool = I < pattern.length()>
         struct character_at
         {
-            using type = ast::character<pattern[I]>;
+            using type = symbol::character<pattern[I]>;
         };
 
         template<std::size_t I>
@@ -105,7 +105,7 @@ namespace meta
             using type = pair<std::true_type, AST>;
         };
 
-        using parse_result = parse_t<0, stack<>, stack<symbol::start>>;
+        using parse_result = parse_t<0, stack<>, stack<symbol::begin>>;
         using ast_stack = typename parse_result::second;
         using ast_type =
                 std::conditional_t
@@ -118,7 +118,7 @@ namespace meta
         static constexpr bool accepted = typename parse_result::first{};
     };
 
-    template<auto pattern>
+    template<static_string pattern>
     using ast_of = typename parser<pattern>::ast_type;
 }
 #endif //META_PARSER_HPP

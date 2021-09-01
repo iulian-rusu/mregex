@@ -23,10 +23,11 @@ namespace meta::tests
     static_assert(detail::token_count<regex<"a">>("aaaaa") == 5);
     static_assert(detail::token_count<regex<"a">>("b") == 0);
     static_assert(detail::token_count<regex<"a*">>("") == 0);
-    static_assert(detail::token_count<regex<"a*">>("aaaa aaa aa a aa aaa aaaa") == 7);
+    static_assert(detail::token_count<regex<R"(a*(?:$|\s))">>("aaaa aaa aa a aa aaa aaaa") == 7);
     static_assert(detail::token_count<regex<"a*">>("") == 0);
     static_assert(detail::token_count<regex<"a+">>("") == 0);
     static_assert(detail::token_count<regex<"a+">>("bbb ccc ddd") == 0);
+    static_assert(detail::token_count<regex<"a+", flag::ungreedy>>("a aa aaa") == 6);
     static_assert(detail::token_count<regex<"a+">>("a aa aaa") == 3);
     static_assert(detail::token_count<regex<"abc">>("a") == 0);
     static_assert(detail::token_count<regex<"abc">>("abcd abcd") == 2);

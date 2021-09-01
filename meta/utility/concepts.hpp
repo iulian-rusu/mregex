@@ -19,6 +19,9 @@ namespace meta
         { s.end() } -> std::forward_iterator;
     };
 
+    /**
+     * Concept used to constrain a type that saves capturing group matches.
+     */
     template<typename T>
     concept capture_like = requires(T c)
     {
@@ -28,6 +31,9 @@ namespace meta
         { c.content() } -> string_like;
     };
 
+    /**
+     * Concept used to constrain a type that stores multiple regex captures.
+     */
     template<typename T>
     concept capture_storage = requires(T s)
     {

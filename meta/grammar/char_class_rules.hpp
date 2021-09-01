@@ -178,6 +178,29 @@ namespace meta::grammar
                 >;
     };
 
+    template<>
+    struct char_class_rule<'R'>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::make_linebreak
+                >;
+    };
+
+    template<>
+    struct char_class_rule<'N'>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::make_linebreak,
+                    symbol::make_negated
+                >;
+    };
+
     template<auto C>
     using char_class_rule_t = typename char_class_rule<C>::type;
 }

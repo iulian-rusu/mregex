@@ -25,31 +25,34 @@ add_executable(
         meta/ast/capture_indexer.hpp
         meta/ast/ast_builder.hpp
         meta/utility/meta_helpers.hpp
-        meta/ast/capture_counter.hpp
         meta/utility/concepts.hpp
         meta/grammar/backref_rules.hpp
         meta/ast/match_result.hpp
         meta/iterable_generator_adapter.hpp
         meta/ast/ast_traits.hpp
-        meta/context/match_context.hpp
+        meta/regex_context.hpp
         meta/utility/tuple_helpers.hpp
         meta/regex_flags.hpp
         meta/ast/astfwd.hpp
         meta/utility/char_traits.hpp
-        meta/ast/match_bounds.hpp
         meta/grammar/quantifier_rules.hpp
         tests/flag_tests.cpp
         meta/regex_union.hpp
         meta/regex_base.hpp
         tests/regex_union_tests.cpp
-        meta/context/match_context_base.hpp
         meta/grammar/grammar_actions.hpp
         meta/utility/universal_capture.hpp
         meta/regex_capture.hpp
-        meta/context/match_cache.hpp
-        meta/context/caching_match_context.hpp
-        meta/context/atomic_match_context.hpp
         meta/regex_token_generator.hpp
         tests/regex_generator_tests.cpp
-        meta/ast/exact_matcher.hpp)
+        meta/utility/continuations.hpp
+        meta/ast/terminals.hpp
+        meta/ast/sequence.hpp
+        meta/ast/alternation.hpp
+        meta/ast/disjunction.hpp
+        meta/ast/star.hpp
+        meta/ast/repetition.hpp
+        meta/ast/capturing.hpp
+        meta/ast/lookaheads.hpp
+)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -O3 -fconcepts-diagnostics-depth=3")
