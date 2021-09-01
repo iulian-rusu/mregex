@@ -32,7 +32,7 @@ namespace meta::ast
     struct ending;
 
     template<auto>
-    struct character;
+    struct literal;
 
     struct whitespace;
 
@@ -55,11 +55,11 @@ namespace meta::ast
 
     using alpha = range<'A', 'z'>;
 
-    using word = set<alpha, digit, ast::character<'_'>>;
+    using word = set<alpha, digit, ast::literal<'_'>>;
 
     using hexa = set<digit, range<'a', 'f'>, range<'A', 'F'>>;
 
-    using linebreak = set<character<'\n'>, character<'\r'>>;
+    using linebreak = set<literal<'\n'>, literal<'\r'>>;
 
     template<std::size_t>
     struct backref;

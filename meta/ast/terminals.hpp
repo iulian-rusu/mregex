@@ -98,7 +98,7 @@ namespace meta::ast
     };
 
     template<auto C>
-    struct character : terminal
+    struct literal : terminal
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
@@ -205,7 +205,7 @@ namespace meta::ast
     };
 
     template<auto A>
-    struct range<A, A> : character<A> {};
+    struct range<A, A> : literal<A> {};
 
     template<std::size_t ID>
     struct backref : terminal

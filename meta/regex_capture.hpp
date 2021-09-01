@@ -98,7 +98,7 @@ namespace meta
             return captured;
         }
 
-        [[nodiscard]] auto content() &&
+        [[nodiscard]] auto content() && noexcept
         {
             return std::move(captured);
         }
@@ -146,5 +146,12 @@ namespace meta
 
     template<std::size_t N>
     using regex_capture_storage = typename alloc_capture_storage<std::make_index_sequence<N + 1>>::type;
+
+    /**
+     * Type trait that checks if the given capture storage type may throw
+     * exceptions when accessing contents.
+     */
+    template<capture_storage Storage>
+    inline constexpr bool is_nothrow_content_v = noexcept(std::get<0>(std::declval<Storage>()).content());
 }
 #endif //META_REGEX_CAPTURE_HPP

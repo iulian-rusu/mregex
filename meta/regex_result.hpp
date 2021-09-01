@@ -95,7 +95,7 @@ namespace meta
          * @return      A string-like object containing the captured content
          */
         template<std::size_t ID>
-        [[nodiscard]] constexpr decltype(auto) group() const noexcept
+        [[nodiscard]] constexpr decltype(auto) group() const noexcept(is_nothrow_content_v<Storage>)
         {
             static_assert(ID <= N, "capture group does not exist");
             return std::get<ID>(captures).content();
@@ -106,7 +106,7 @@ namespace meta
          * Prefer the group() method for extracting captures.
          */
         template<std::size_t ID>
-        constexpr decltype(auto) get() const noexcept
+        constexpr decltype(auto) get() const noexcept(is_nothrow_content_v<Storage>)
         {
             static_assert(ID < N, "tuple element index out of bounds");
             return std::get<ID + 1>(captures).content();

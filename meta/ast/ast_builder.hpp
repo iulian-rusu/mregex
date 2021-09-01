@@ -21,16 +21,16 @@ namespace meta::ast
     template<typename S, typename C, typename AST>
     using update_ast_t = typename update_ast<S, C, AST>::type;
 
-    template<typename C, typename Stack>
-    struct update_ast<symbol::make_char, C, Stack>
+    template<auto C, typename Stack>
+    struct update_ast<symbol::make_char, symbol::character<C>, Stack>
     {
-        using type = push<Stack, C>;
+        using type = push<Stack, literal<C>>;
     };
 
     template<auto A, typename C, typename Stack>
     struct update_ast<symbol::push_char<A>, C, Stack>
     {
-        using type = push<Stack, character<A>>;
+        using type = push<Stack, literal<A>>;
     };
 
     template<typename C, typename Stack>
@@ -202,22 +202,22 @@ namespace meta::ast
         using type = stack<nothing, Elems ...>;
     };
 
-    template<typename C, typename... Elems>
-    struct update_ast<symbol::make_set_from_current_char, C, stack<Elems ...>>
+    template<auto C, typename... Elems>
+    struct update_ast<symbol::make_set_from_current_char, symbol::character<C>, stack<Elems ...>>
     {
-        using type = stack<set<C>, Elems ...>;
+        using type = stack<set<literal<C>>, Elems ...>;
     };
 
-    template<typename C, typename... First, typename... Rest>
-    struct update_ast<symbol::make_set_from_current_char, C, stack<set<First ...>, Rest ...>>
+    template<auto C, typename... First, typename... Rest>
+    struct update_ast<symbol::make_set_from_current_char, symbol::character<C>, stack<set<First ...>, Rest ...>>
     {
-        using type = stack<set<C, First ...>, Rest ...>;
+        using type = stack<set<literal<C>, First ...>, Rest ...>;
     };
 
-    template<typename C, typename... Rest>
-    struct update_ast<symbol::make_set_from_current_char, C, stack<nothing, Rest ...>>
+    template<auto C, typename... Rest>
+    struct update_ast<symbol::make_set_from_current_char, symbol::character<C>, stack<nothing, Rest ...>>
     {
-        using type = stack<set<C>, Rest ...>;
+        using type = stack<set<literal<C>>, Rest ...>;
     };
 
     template<typename C, typename First, typename... Rest>
@@ -245,13 +245,13 @@ namespace meta::ast
     };
 
     template<auto B, auto A, typename... Second, typename... Rest>
-    struct update_ast<symbol::make_range, character<B>, stack<set<character<A>, Second ...>, Rest ...>>
+    struct update_ast<symbol::make_range, symbol::character<B>, stack<set<literal<A>, Second ...>, Rest ...>>
     {
         using type = stack<set<range<A, B>, Second ...>, Rest ...>;
     };
 
     template<typename C, auto B, auto A, typename... Second, typename... Rest>
-    struct update_ast<symbol::make_range_from_stack, C, stack<set<character<B>, character<A>, Second ...>, Rest ...>>
+    struct update_ast<symbol::make_range_from_stack, C, stack<set<literal<B>, literal<A>, Second ...>, Rest ...>>
     {
         using type = stack<set<range<A, B>, Second ...>, Rest ...>;
     };

@@ -4,8 +4,6 @@
 namespace meta::symbol
 {
     // Non-terminal symbols
-    struct epsilon {};
-
     struct begin {};
 
     struct esc {};
@@ -25,10 +23,6 @@ namespace meta::symbol
 
     struct group_begin {};
 
-    // Symbol that requires a specific character to appear
-    template<auto>
-    struct expect {};
-
     // Symbols for parsing sets
     struct set_begin_or_neg {};
 
@@ -43,6 +37,17 @@ namespace meta::symbol
     struct set_range_seq {};
 
     struct set_range_esc {};
+
+    // Symbol that represents a concrete character
+    template<auto>
+    struct character {};
+
+    // Symbol that represents an empty string
+    struct epsilon {};
+
+    // Symbol that represents a requirement for a character to appear
+    template<auto>
+    struct expect {};
 
     // Symbol for parsing a backreference ID
     template<std::size_t>

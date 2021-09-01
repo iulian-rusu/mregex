@@ -23,22 +23,22 @@ namespace meta::tests
 
     static_assert(is_trivially_matchable_v<nothing>);
     static_assert(is_trivially_matchable_v<negated<nothing>>);
-    static_assert(is_trivially_matchable_v<character<'a'>>);
+    static_assert(is_trivially_matchable_v<literal<'a'>>);
     static_assert(is_trivially_matchable_v<whitespace>);
     static_assert(is_trivially_matchable_v<wildcard>);
     static_assert(is_trivially_matchable_v<range<'a', 'z'>>);
-    static_assert(is_trivially_matchable_v<set<wildcard, character<'b'>, whitespace>>);
+    static_assert(is_trivially_matchable_v<set<wildcard, literal<'b'>, whitespace>>);
     static_assert(is_trivially_matchable_v<sequence<wildcard>>);
     static_assert(is_trivially_matchable_v<alternation<wildcard>>);
     static_assert(is_trivially_matchable_v<disjunction<wildcard>>);
-    static_assert(is_trivially_matchable_v<alternation<whitespace, character<'a'>, character<'b'>>>);
+    static_assert(is_trivially_matchable_v<alternation<whitespace, literal<'a'>, literal<'b'>>>);
     static_assert(is_trivially_matchable_v<epsilon> == false);
     static_assert(is_trivially_matchable_v<beginning> == false);
     static_assert(is_trivially_matchable_v<backref<1>> == false);
     static_assert(is_trivially_matchable_v<sequence<wildcard, whitespace>> == false);
     static_assert(is_trivially_matchable_v<alternation<wildcard, beginning>> == false);
     static_assert(is_trivially_matchable_v<capturing<1, wildcard>> == false);
-    static_assert(is_trivially_matchable_v<star<character<'a'>>> == false);
-    static_assert(is_trivially_matchable_v<alternation<star<whitespace>, character<'a'>, character<'b'>>> == false);
+    static_assert(is_trivially_matchable_v<star<literal<'a'>>> == false);
+    static_assert(is_trivially_matchable_v<alternation<star<whitespace>, literal<'a'>, literal<'b'>>> == false);
 }
 #endif //META_RUN_TRAITS_TESTS
