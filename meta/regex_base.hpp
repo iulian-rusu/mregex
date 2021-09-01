@@ -20,17 +20,20 @@ namespace meta
     template<typename AST, typename... Flags>
     struct regex_base
     {
-        using ast_type = AST;
-
+        /**
+         * Metafunction used to add flags to the current regex type.
+         */
         template<typename... ExtraFlags>
         using with = regex_base<AST, Flags ..., ExtraFlags ...>;
+
+        using ast_type = AST;
 
         static constexpr std::size_t capture_count = ast_type::capture_count;
 
         constexpr regex_base() noexcept = default;
 
         /**
-         * Matches a given input sequence agains the regex pattern.
+         * Matches a given input sequence against the regex pattern.
          * The supplied iterator pair must form a valid range, otherwise
          * the behavior is undefined.
          *
@@ -41,10 +44,10 @@ namespace meta
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto match(Iter const begin, Iter const end) noexcept
         {
-            using match_context = create_regex_context<Iter, ast_type, Flags ...>;
+            using context_type = regex_context<Iter, ast_type, Flags ...>;
             using result_type = regex_result_view<ast_type::capture_count, Iter>;
 
-            match_context ctx{};
+            context_type ctx{};
             auto res = ast_type::match(begin, end, begin, ctx, continuations<Iter>::equals(end));
             if (res.matched)
                 std::get<0>(ctx.captures) = regex_capture_view<0, Iter>{begin, end};
@@ -66,10 +69,10 @@ namespace meta
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto find_first(Iter const begin, Iter const end, Iter const from) noexcept
         {
-            using match_context = create_regex_context<Iter, ast_type, Flags ...>;
+            using context_type = regex_context<Iter, ast_type, Flags ...>;
             using result_type = regex_result_view<ast_type::capture_count, Iter>;
 
-            match_context ctx{};
+            context_type ctx{};
             for (Iter current = from;; ++current)
             {
                 if (auto res = ast_type::match(begin, end, current, ctx, continuations<Iter>::epsilon))
@@ -98,9 +101,9 @@ namespace meta
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto find_all(Iter const begin, Iter const end) noexcept
         {
-            using match_context = create_regex_context<Iter, ast_type, Flags ...>;
+            using context_type = regex_context<Iter, ast_type, Flags ...>;
 
-            regex_token_generator<match_context> generator{begin, end, begin};
+            regex_token_generator<context_type> generator{begin, end, begin};
             return iterable_generator_adapter{generator};
         }
 
@@ -141,9 +144,9 @@ namespace meta
         [[nodiscard]] static constexpr auto find_all(S &&input) noexcept
         {
             using iterator_type = decltype(input.begin());
-            using match_context = create_regex_context<iterator_type, ast_type, Flags ...>;
+            using context_type = regex_context<iterator_type, ast_type, Flags ...>;
 
-            regex_token_generator<match_context> generator{input.begin(), input.end(), input.begin()};
+            regex_token_generator<context_type> generator{input.begin(), input.end(), input.begin()};
             return iterable_generator_adapter
             {
                 [=, capture = make_universal_capture(std::forward<S>(input))]() mutable {

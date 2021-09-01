@@ -21,7 +21,7 @@ namespace meta
         );
     };
 
-    template<typename R, typename... Rs>
-    using make_union = regex_base<ast::disjunction<typename R::ast_type, typename Rs::ast_type ...>>;
+    template<typename First, typename... Rest>
+    using make_union = regex_base<ast::disjunction<typename First::ast_type, typename Rest::ast_type ...>>;
 }
 #endif //META_REGEX_UNION_HPP
