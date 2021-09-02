@@ -101,7 +101,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_char,
+                    symbol::make_literal,
                     symbol::mod,
                     symbol::seq,
                     symbol::alt
@@ -233,7 +233,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_char,
+                    symbol::make_literal,
                     symbol::mod,
                     symbol::seq,
                     symbol::alt,
@@ -424,7 +424,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_char,
+                    symbol::make_literal,
                     symbol::mod,
                     symbol::seq,
                     symbol::alt
@@ -732,7 +732,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_char,
+                    symbol::make_literal,
                     symbol::mod,
                     symbol::seq
                 >;
@@ -863,7 +863,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_char,
+                    symbol::make_literal,
                     symbol::mod,
                     symbol::make_sequence,
                     symbol::seq
@@ -1110,7 +1110,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_char
+                    symbol::make_literal
                 >;
     };
 

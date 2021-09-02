@@ -21,7 +21,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    symbol::push_char<C>,
+                    symbol::push_literal<C>,
                     symbol::mod,
                     symbol::make_sequence,
                     symbol::seq,

@@ -12,41 +12,35 @@ namespace meta
      * @tparam ID   The unique identifier of the flag
      */
     template<std::size_t ID>
-    struct regex_flag : std::integral_constant<std::size_t, ID>
-    {
-        static constexpr std::size_t alias_value = ID ^ 1u;
-    };
+    struct regex_flag : std::integral_constant<std::size_t, ID> {};
 
     namespace flag
     {
         /**
          * Makes matching case-insensitive.
          */
-        using ignore_case = regex_flag<0x0>;
-        using i = regex_flag<0x1>;
+        using icase = regex_flag<0x0>;
+        using i = icase;
 
         /**
          * Makes wildcards (.) match newline characters.
          * Will make matching faster and generate cleaner assembly.
          */
-        using dotall = regex_flag<0x2>;
-        using s = regex_flag<0x3>;
+        using dotall = regex_flag<0x1>;
+        using s = dotall;
 
         /**
          * Makes anchors ($ and ^) also match beginnings/ends of lines.
          */
-        using multiline = regex_flag<0x4>;
-        using m = regex_flag<0x5>;
+        using multiline = regex_flag<0x2>;
+        using m = multiline;
 
         /**
          * Makes the Kleene star operator (*) consume as few elements as possible.
          */
-        using ungreedy = regex_flag<0x6>;
-        using U = regex_flag<0x7>;
+        using ungreedy = regex_flag<0x3>;
+        using U = ungreedy;
     }
-
-    template<typename Flag>
-    using alias = regex_flag<Flag::alias_value>;
 
     template<typename T>
     struct is_flag : std::false_type {};
@@ -59,7 +53,7 @@ namespace meta
 
     // Metafunction to check if a flags has been enabled
     template<typename Flag, typename... Flags>
-    struct is_flag_enabled : std::bool_constant<is_any_of_v<Flag, Flags ...> || is_any_of_v<alias<Flag>, Flags ...>> {};
+    struct is_flag_enabled : std::bool_constant<is_any_of_v<Flag, Flags ...>> {};
 
     template<typename Flag, typename... Flags>
     inline constexpr bool is_flag_enabled_v = is_flag_enabled<Flag, Flags ...>::value;

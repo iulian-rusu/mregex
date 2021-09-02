@@ -9,7 +9,7 @@ using template metaprogramming.
 The library currently supports the following features:
 * `constexpr` matching using `std::forward_iterator` semantics
 * compile-time syntax checking
-* various flags like `ignore_case`, `dotall` and `multiline`
+* various flags like `icase`, `dotall` and `multiline`
 * structured binding decomposition of `meta::regex_result`
 * standard regex syntax:
     * `*` - Kleene begin quantifier

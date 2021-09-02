@@ -115,7 +115,7 @@ namespace meta
 }
 
 template<std::size_t N, typename Storage>
-std::ostream &operator<<(std::ostream &os, meta::basic_regex_result<N, Storage> const & result)
+std::ostream &operator<<(std::ostream &os, meta::basic_regex_result<N, Storage> const &result)
 {
     return os << result.template group<0>();
 }

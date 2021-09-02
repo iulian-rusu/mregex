@@ -22,13 +22,13 @@ namespace meta::ast
     using update_ast_t = typename update_ast<S, C, AST>::type;
 
     template<auto C, typename Stack>
-    struct update_ast<symbol::make_char, symbol::character<C>, Stack>
+    struct update_ast<symbol::make_literal, symbol::character<C>, Stack>
     {
         using type = push<Stack, literal<C>>;
     };
 
     template<auto A, typename C, typename Stack>
-    struct update_ast<symbol::push_char<A>, C, Stack>
+    struct update_ast<symbol::push_literal<A>, C, Stack>
     {
         using type = push<Stack, literal<A>>;
     };

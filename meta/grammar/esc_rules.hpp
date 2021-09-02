@@ -30,7 +30,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::push_char<'\0'>
+                    symbol::push_literal<'\0'>
                 >;
     };
 
@@ -41,7 +41,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::push_char<'\n'>
+                    symbol::push_literal<'\n'>
                 >;
     };
 
@@ -52,7 +52,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::push_char<'\r'>
+                    symbol::push_literal<'\r'>
                 >;
     };
 
@@ -63,7 +63,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::push_char<'\t'>
+                    symbol::push_literal<'\t'>
                 >;
     };
 

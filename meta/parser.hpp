@@ -18,19 +18,19 @@ namespace meta
     {
         // Helper metafunction used to obtain input symbols for the parser
         template<std::size_t I, bool = I < pattern.length()>
-        struct character_at
+        struct get_character
         {
             using type = symbol::character<pattern[I]>;
         };
 
         template<std::size_t I>
-        struct character_at<I, false>
+        struct get_character<I, false>
         {
             using type = symbol::epsilon;
         };
 
         template<std::size_t I>
-        using character_at_t = typename character_at<I>::type;
+        using get_character_t = typename get_character<I>::type;
 
         // Metafunction that models the transition of the parser automaton
         template<std::size_t, typename, typename, typename>
@@ -44,7 +44,7 @@ namespace meta
         struct parse
         {
             using next_stack = pop<Stack>;
-            using current_char = character_at_t<I>;
+            using current_char = get_character_t<I>;
             using current_rule = grammar::rule_t<top<Stack>, current_char>;
 
             using type = transition_t<I, current_rule, AST, next_stack>;
@@ -57,7 +57,7 @@ namespace meta
         struct parse<I, AST, Stack, true>
         {
             using next_stack = pop<Stack>;
-            using prev_char = character_at_t<I - 1>;
+            using prev_char = get_character_t<I - 1>;
             using next_ast = ast::update_ast_t<top<Stack>, prev_char, AST>;
 
             using type = parse_t<I, next_ast, next_stack>;

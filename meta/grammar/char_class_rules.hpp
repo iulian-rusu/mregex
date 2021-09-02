@@ -14,7 +14,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_char
+                    symbol::make_literal
                 >;
     };
 

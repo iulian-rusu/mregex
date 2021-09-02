@@ -67,10 +67,10 @@ namespace meta::symbol
     // Tag for symbols that require AST updates
     struct ast_update {};
 
-    struct make_char : ast_update {};
+    struct make_literal : ast_update {};
 
     template<auto>
-    struct push_char : ast_update {};
+    struct push_literal : ast_update {};
 
     struct make_sequence : ast_update {};
 

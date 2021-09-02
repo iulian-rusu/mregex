@@ -130,9 +130,9 @@ namespace meta::tests
     static_assert(regex<R"((a|ab|abc){3,}bc)">::match("aabaabcabcabaaabc"sv));
     static_assert(regex<R"((a|ab|abc){3,10}bc)">::match("aabaabcabcabaaabc"sv));
     static_assert(regex<R"([0-Z]+)", flag::i>::match("1234abczABCZ"sv));
-    static_assert(regex<R"([A-Z]+)", flag::ignore_case>::match("aBcDeFiOyZ"sv));
-    static_assert(regex<R"(hello|salut|bonjour)">::with<flag::ignore_case>::match("SaLuT"sv));
-    static_assert(regex<R"(0(x)(\h+)(h)?)">::with<flag::ignore_case>::match("0X0h"sv));
+    static_assert(regex<R"([A-Z]+)", flag::icase>::match("aBcDeFiOyZ"sv));
+    static_assert(regex<R"(hello|salut|bonjour)">::with<flag::icase>::match("SaLuT"sv));
+    static_assert(regex<R"(0(x)(\h+)(h)?)">::with<flag::icase>::match("0X0h"sv));
     static_assert(regex<R"(.+)", flag::s>::match("\neven new lines!"sv));
     static_assert(regex<R"(.+)">::with<flag::dotall>::match("this regex will match any input"sv));
     static_assert(regex<R"((a|ab|abc)+x)">::match("abx"sv));
@@ -237,7 +237,7 @@ namespace meta::tests
     static_assert(regex<R"(a?   b? c?)">::match("abc"sv) == false);
     static_assert(regex<R"((x{2,})\1+)">::match("xxxxxxxxxxx"sv) == false);
     static_assert(regex<R"(0x(\h+)h?)", flag::i>::match("0X012323EJH"sv) == false);
-    static_assert(regex<R"([^a-z]+)">::with<flag::ignore_case>::match("AABBBDBDBDBBSABBDBDBABBA"sv) == false);
+    static_assert(regex<R"([^a-z]+)">::with<flag::icase>::match("AABBBDBDBDBBSABBDBDBABBA"sv) == false);
     static_assert(regex<R"(^abcd$)", flag::m>::match("\nabcd\n\n"sv) == false);
     static_assert(regex<R"(^abcd$.+$)">::with<flag::m>::match("\n\nabcd\n"sv) == false);
     static_assert(regex<R"((a|ab|abc)+x)", flag::multiline>::match("aaaabcbabx"sv) == false);

@@ -119,6 +119,8 @@ namespace meta
 
     /**
      * Defines a std::tuple with N + 1 elements of type regex_capture_view.
+     * Tuple is used because captures may need to be of different types in the
+     * future.
      */
     template<typename, typename>
     struct alloc_capture_view_storage;
