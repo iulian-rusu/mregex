@@ -1,0 +1,25 @@
+language: cpp
+dist: focal
+os: linux
+jobs:
+  include:
+    - compiler: gcc
+      env:
+        - CXX_COMPILER=g++-10
+      addons:
+        apt:
+          packages: [ 'g++-10' ]
+
+before_install:
+  - sudo apt-get update
+  - sudo apt install cmake
+  - cmake --version
+
+install:
+  - export CXX=${CXX_COMPILER}
+  - $CXX --version
+
+script:
+  - mkdir build && cd build
+  - cmake -S.. .
+  - make
