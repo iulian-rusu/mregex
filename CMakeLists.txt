@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 project(meta)
 
-set(CMAKE_CXX_STANDARD 20)
-
 add_executable(
         meta
         main.cpp
@@ -55,4 +53,9 @@ add_executable(
         meta/ast/capturing.hpp
         meta/ast/lookaheads.hpp
 )
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -O3 -fconcepts-diagnostics-depth=3")
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -O3")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fconcepts-diagnostics-depth=3")
+endif()
