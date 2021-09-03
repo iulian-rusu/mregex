@@ -9,7 +9,7 @@ namespace meta::tests
         constexpr std::size_t token_count(std::string_view sv)
         {
             std::size_t count = 0;
-            for([[maybe_unused]] auto &&r : Regex::find_all(sv))
+            for([[maybe_unused]] auto &&r : Regex::range(sv))
                 ++count;
             return count;
         }

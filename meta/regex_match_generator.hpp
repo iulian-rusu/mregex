@@ -1,5 +1,5 @@
-#ifndef META_REGEX_TOKEN_GENERATOR_HPP
-#define META_REGEX_TOKEN_GENERATOR_HPP
+#ifndef META_REGEX_MATCH_GENERATOR_HPP
+#define META_REGEX_MATCH_GENERATOR_HPP
 
 #include <iterator>
 #include "regex_context.hpp"
@@ -9,19 +9,19 @@ namespace meta
 {
     /**
      * A functor that searches through the range given by an iterator pair and
-     * yields all non-empty tokens that match a regex.
+     * yields all non-empty matches of the regex.
      *
      * @tparam Context  The matching context formed from the AST of the regular expression
      */
     template<typename Context>
-    struct regex_token_generator
+    struct regex_match_generator
     {
         using ast_type = typename Context::ast_type;
         using iterator_type = typename Context::iterator_type;
         using continuation_type = continuations<iterator_type>;
         using result_type = regex_result_view<ast_type::capture_count, iterator_type>;
 
-        constexpr regex_token_generator(iterator_type const start, iterator_type const stop, iterator_type current)
+        constexpr regex_match_generator(iterator_type const start, iterator_type const stop, iterator_type current)
                 : begin_iter{start}, end_iter{stop}, current_iter{current}, active{true}
         {}
 
@@ -60,4 +60,4 @@ namespace meta
         bool active;
     };
 }
-#endif //META_REGEX_TOKEN_GENERATOR_HPP
+#endif //META_REGEX_MATCH_GENERATOR_HPP

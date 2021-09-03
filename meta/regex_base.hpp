@@ -1,12 +1,12 @@
 #ifndef META_REGEX_BASE_HPP
 #define META_REGEX_BASE_HPP
 
-#include "iterable_generator_adapter.hpp"
+#include "range_adapter.hpp"
 #include "ast/ast.hpp"
 #include "regex_context.hpp"
 #include "utility/continuations.hpp"
 #include "regex_result.hpp"
-#include "regex_token_generator.hpp"
+#include "regex_match_generator.hpp"
 #include "utility/universal_capture.hpp"
 
 namespace meta
@@ -67,7 +67,7 @@ namespace meta
          * @return      A regex_result_view object
          */
         template<std::forward_iterator Iter>
-        [[nodiscard]] static constexpr auto find_first(Iter const begin, Iter const end, Iter const from) noexcept
+        [[nodiscard]] static constexpr auto search(Iter const begin, Iter const end, Iter const from) noexcept
         {
             using context_type = regex_context<Iter, ast_type, Flags ...>;
             using result_type = regex_result_view<ast_type::capture_count, Iter>;
@@ -90,64 +90,63 @@ namespace meta
         }
 
         /**
-         * Finds all non-zero length matches of the pattern inside the input sequence.
-         * The supplied iterator pair must form a valid range, otherwise
-         * the behavior is undefined.
+         * Creates a range which contains all non-zero length matches of the
+         * pattern inside the input sequence. The supplied iterator pair must
+         * form a valid range, otherwise the behavior is undefined.
          *
          * @param begin An iterator pointing to the start of the sequence
          * @param end   An iterator pointing to the end of the sequence
          * @return      An iterable generator that lazily evaluates subsequent matches
          */
         template<std::forward_iterator Iter>
-        [[nodiscard]] static constexpr auto find_all(Iter const begin, Iter const end) noexcept
+        [[nodiscard]] static constexpr auto range(Iter const begin, Iter const end) noexcept
         {
             using context_type = regex_context<Iter, ast_type, Flags ...>;
 
-            regex_token_generator<context_type> generator{begin, end, begin};
-            return iterable_generator_adapter{generator};
+            return range_adapter{regex_match_generator<context_type>{begin, end, begin}};
         }
 
         /**
-         * Overloads for working with string-like inputs directly.
+         * Overloads for working with string-like ranges directly.
          * Some overloads have a specialized version for temporary objects
          * that are not trivially destructible. In this case, the method returns
          * an owning regex_result type to avoid invalid pointers.
          */
 
-        template<string_like S>
+        template<string_range S>
         [[nodiscard]] static constexpr auto match(S const &input) noexcept
         {
             return match(input.begin(), input.end());
         }
 
-        template<string_like S>
+        template<string_range S>
         [[nodiscard]] static constexpr auto match(S &&input) noexcept
         requires is_memory_owning_rvalue_v<S &&>
         {
             return match(input.begin(), input.end()).own();
         }
 
-        template<string_like S>
-        [[nodiscard]] static constexpr auto find_first(S const &input) noexcept
+        template<string_range S>
+        [[nodiscard]] static constexpr auto search(S const &input) noexcept
         {
-            return find_first(input.begin(), input.cend(), input.begin());
+            return search(input.begin(), input.cend(), input.begin());
         }
 
-        template<string_like S>
-        [[nodiscard]] static constexpr auto find_first(S &&input) noexcept
+        template<string_range S>
+        [[nodiscard]] static constexpr auto search(S &&input) noexcept
         requires is_memory_owning_rvalue_v<S &&>
         {
-            return find_first(input.begin(), input.end(), input.begin()).own();
+            return search(input.begin(), input.end(), input.begin()).own();
         }
 
-        template<string_like S>
-        [[nodiscard]] static constexpr auto find_all(S &&input) noexcept
+        template<string_range S>
+        [[nodiscard]] static constexpr auto range(S &&input) noexcept
         {
             using iterator_type = decltype(input.begin());
             using context_type = regex_context<iterator_type, ast_type, Flags ...>;
 
-            regex_token_generator<context_type> generator{input.begin(), input.end(), input.begin()};
-            return iterable_generator_adapter
+            regex_match_generator<context_type> generator{input.begin(), input.end(), input.begin()};
+            return range_adapter
             {
                 [=, capture = make_universal_capture(std::forward<S>(input))]() mutable {
                     return generator();

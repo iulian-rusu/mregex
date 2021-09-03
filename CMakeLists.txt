@@ -26,7 +26,7 @@ add_executable(
         meta/utility/concepts.hpp
         meta/grammar/backref_rules.hpp
         meta/ast/match_result.hpp
-        meta/iterable_generator_adapter.hpp
+        meta/range_adapter.hpp
         meta/ast/ast_traits.hpp
         meta/regex_context.hpp
         meta/utility/tuple_helpers.hpp
@@ -41,7 +41,7 @@ add_executable(
         meta/grammar/grammar_actions.hpp
         meta/utility/universal_capture.hpp
         meta/regex_capture.hpp
-        meta/regex_token_generator.hpp
+        meta/regex_match_generator.hpp
         tests/regex_generator_tests.cpp
         meta/utility/continuations.hpp
         meta/ast/terminals.hpp

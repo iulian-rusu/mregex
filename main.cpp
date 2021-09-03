@@ -18,7 +18,7 @@ int main()
     // Lazy iteration over a collection of result
     using word_regex = meta::regex<R"(\w+(?=\W))", meta::flag::ungreedy>;
     std::string words = "Find all word-like sequences in this string!";
-    for (auto &&res : word_regex::find_all(words))
+    for (auto &&res : word_regex::range(words))
         std::cout << res << '\n';
     std::cout << '\n';
 
@@ -26,7 +26,7 @@ int main()
     auto const get_date_info = []() {
         using date_regex = meta::regex<R"((\d{1,2})/(\d{1,2})/(\d{2,4}))">;
         std::string date = "Today is 07/08/2021";
-        return date_regex::find_first(date).own();
+        return date_regex::search(date).own();
     };
     // rvalue-qualified regex_result decomposes into rvalue references to std::string
     auto [day, month, year] = get_date_info();

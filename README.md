@@ -35,7 +35,7 @@ Notice that the generated regular expression is a type and not an object, since 
 valid regex pattern to a C++ type at compile-time. Invalid regular expression syntax will result
 in a compilation error.
 
-The input can be any object that satisfies the `meta::string_like` concept, or a pair of iterators that
+The input can be any object that satisfies the `meta::string_range` concept, or a pair of iterators that
 satisfy `std::forward_iterator`.
 ```cpp
 using date_regex = meta::regex<R"((\d{1,2})/(\d{1,2})/(\d{2,4}))">;
@@ -44,13 +44,13 @@ auto [day, month, year] = date_regex::match(date);
 ```
 
 The library supports searching for multiple matches in a string. In this case,
-the `meta::regex::find_all` method returns a generator that will lazily evaluate
+the `meta::regex::range` method returns a generator that will lazily evaluate
 all matches in the string. We can iterate through the generator
 just like any range.
 ```cpp
 using word_regex = meta::regex<R"(\w+(?=\W))">;
 std::string words = "Find all word-sequences in this string!";
-for (auto &&res : word_regex::find_all(words))
+for (auto &&res : word_regex::range(words))
 {
     std::cout << res << '\n';
 }

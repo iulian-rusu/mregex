@@ -1,5 +1,5 @@
-#ifndef META_ITERABLE_GENERATOR_ADAPTER_HPP
-#define META_ITERABLE_GENERATOR_ADAPTER_HPP
+#ifndef META_RANGE_ADAPTER_HPP
+#define META_RANGE_ADAPTER_HPP
 
 #include "utility/concepts.hpp"
 
@@ -13,15 +13,15 @@ namespace meta
      * @tparam Gen   The type of callable used to produce the desired data
      */
     template<bool_testable_generator Gen>
-    struct iterable_generator_adapter : protected Gen
+    struct range_adapter : protected Gen
     {
         template<typename F>
-        constexpr explicit iterable_generator_adapter(F &&f)
+        constexpr explicit range_adapter(F &&f)
         noexcept(std::is_nothrow_move_constructible_v<Gen>)
                 : Gen{std::forward<F>(f)}
         {}
 
-        struct iteration_end_marker {};
+        struct iteration_end_sentinel {};
 
         /**
          * Lazy iterator over the generated result.
@@ -33,7 +33,7 @@ namespace meta
             using iterator_category = std::forward_iterator_tag;
 
             template<typename Res>
-            constexpr explicit iterator(iterable_generator_adapter<Gen> &gen, Res &&res, bool a)
+            constexpr explicit iterator(range_adapter<Gen> &gen, Res &&res, bool a)
             noexcept(std::is_nothrow_move_constructible_v<Res>)
                     : generator{gen}, current_result{std::forward<Res>(res)}, active{a}
             {}
@@ -55,18 +55,18 @@ namespace meta
                 return *this;
             }
 
-            constexpr bool operator==(iteration_end_marker const &rhs) const noexcept
+            constexpr bool operator==(iteration_end_sentinel) const noexcept
             {
                 return !active;
             }
 
-            constexpr bool operator!=(iteration_end_marker const &rhs) const noexcept
+            constexpr bool operator!=(iteration_end_sentinel) const noexcept
             {
                 return active;
             }
 
         private:
-            iterable_generator_adapter<Gen> &generator;
+            range_adapter<Gen> &generator;
             value_type current_result;
             bool active;
         };
@@ -80,11 +80,11 @@ namespace meta
 
         constexpr auto end() const noexcept
         {
-            return iteration_end_marker{};
+            return iteration_end_sentinel{};
         }
     };
 
     template<bool_testable_generator G>
-    iterable_generator_adapter(G &&) -> iterable_generator_adapter<std::decay_t<G>>;
+    range_adapter(G &&) -> range_adapter<std::decay_t<G>>;
 }
-#endif //META_ITERABLE_GENERATOR_ADAPTER_HPP
+#endif //META_RANGE_ADAPTER_HPP

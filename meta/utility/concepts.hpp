@@ -11,24 +11,20 @@ namespace meta
      * Concept used to constrain the generic type accepted by matching/searching functions.
      */
     template<typename T>
-    concept string_like = requires(T s, std::size_t index)
+    concept string_range = std::ranges::forward_range<T> && requires(T s)
     {
-        { s[index] } -> std::convertible_to<char32_t>;
-        { s.length() } -> std::same_as<std::size_t>;
-        { s.begin() } -> std::forward_iterator;
-        { s.end() } -> std::forward_iterator;
+        { *s.begin() } -> std::convertible_to<char32_t>;
+        { s.length() } -> std::convertible_to<std::size_t>;
     };
 
     /**
      * Concept used to constrain a type that saves capturing group matches.
      */
     template<typename T>
-    concept capture_like = requires(T c)
+    concept capture_range = std::ranges::forward_range<T> && requires(T c)
     {
         { c.length() } -> std::convertible_to<std::size_t>;
-        { c.begin() } -> std::forward_iterator;
-        { c.end() } -> std::forward_iterator;
-        { c.content() } -> string_like;
+        { c.content() } -> string_range;
     };
 
     /**
@@ -37,7 +33,7 @@ namespace meta
     template<typename T>
     concept capture_storage = requires(T s)
     {
-        { std::get<0>(s) } -> capture_like;
+        { std::get<0>(s) } -> capture_range;
     };
 
     /**
