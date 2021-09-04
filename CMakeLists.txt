@@ -26,7 +26,7 @@ add_executable(
         meta/utility/concepts.hpp
         meta/grammar/backref_rules.hpp
         meta/ast/match_result.hpp
-        meta/range_adapter.hpp
+        meta/input_range_adapter.hpp
         meta/ast/ast_traits.hpp
         meta/regex_context.hpp
         meta/utility/tuple_helpers.hpp

@@ -10,40 +10,40 @@ namespace meta
     /**
      * Concept used to constrain the generic type accepted by matching/searching functions.
      */
-    template<typename T>
-    concept string_range = std::ranges::forward_range<T> && requires(T s)
+    template<typename R>
+    concept char_range = std::ranges::forward_range<R> && requires(R range)
     {
-        { *s.begin() } -> std::convertible_to<char32_t>;
-        { s.length() } -> std::convertible_to<std::size_t>;
+        { *range.begin() } -> std::convertible_to<char32_t>;
+        { range.length() } -> std::convertible_to<std::size_t>;
     };
 
     /**
      * Concept used to constrain a type that saves capturing group matches.
      */
-    template<typename T>
-    concept capture_range = std::ranges::forward_range<T> && requires(T c)
+    template<typename R>
+    concept capture_range = std::ranges::forward_range<R> && requires(R range)
     {
-        { c.length() } -> std::convertible_to<std::size_t>;
-        { c.content() } -> string_range;
+        { range.length() } -> std::convertible_to<std::size_t>;
+        { range.content() } -> char_range;
     };
 
     /**
      * Concept used to constrain a type that stores multiple regex captures.
      */
-    template<typename T>
-    concept capture_storage = requires(T s)
+    template<typename S>
+    concept capture_storage = requires(S storage)
     {
-        { std::get<0>(s) } -> capture_range;
+        { std::get<0>(storage) } -> capture_range;
     };
 
     /**
-     * Concept used to constrain a type that generates values that can be explicitly
-     * converted to booleans.
+     * Concept used to constrain a functor type that can be invoked to generate
+     * values explicitly convertible to bool.
      */
-    template<typename T>
-    concept bool_testable_generator = requires(T p)
+    template<typename G>
+    concept bool_testable_generator = requires(G gen)
     {
-        static_cast<bool>(p());
+        static_cast<bool>(gen());
     };
 }
 #endif //META_CONCEPTS_HPP

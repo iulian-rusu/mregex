@@ -1,22 +1,22 @@
-#ifndef META_RANGE_ADAPTER_HPP
-#define META_RANGE_ADAPTER_HPP
+#ifndef META_INPUT_RANGE_ADAPTER_HPP
+#define META_INPUT_RANGE_ADAPTER_HPP
 
 #include "utility/concepts.hpp"
 
 namespace meta
 {
     /**
-     * Adapter that allows iterating through the results returned by a generator.
+     * Adapter that allows iterating through the results returned by a generating function.
      * The generator is required to return a boolean-convertible value to signal
      * iteration ending.
      *
      * @tparam Gen   The type of callable used to produce the desired data
      */
     template<bool_testable_generator Gen>
-    struct range_adapter : protected Gen
+    struct input_range_adapter : protected Gen
     {
         template<typename F>
-        constexpr explicit range_adapter(F &&f)
+        constexpr explicit input_range_adapter(F &&f)
         noexcept(std::is_nothrow_move_constructible_v<Gen>)
                 : Gen{std::forward<F>(f)}
         {}
@@ -30,10 +30,10 @@ namespace meta
         {
             using value_type = std::invoke_result_t<Gen>;
             using difference_type = std::size_t;
-            using iterator_category = std::forward_iterator_tag;
+            using iterator_category = std::input_iterator_tag;
 
             template<typename Res>
-            constexpr explicit iterator(range_adapter<Gen> &gen, Res &&res, bool a)
+            constexpr explicit iterator(input_range_adapter<Gen> &gen, Res &&res, bool a)
             noexcept(std::is_nothrow_move_constructible_v<Res>)
                     : generator{gen}, current_result{std::forward<Res>(res)}, active{a}
             {}
@@ -55,6 +55,14 @@ namespace meta
                 return *this;
             }
 
+            constexpr iterator operator++(int) noexcept
+            {
+                iterator old_iter{generator, std::move(current_result), active};
+                current_result = std::move(generator());
+                active = static_cast<bool>(current_result);
+                return old_iter;
+            }
+
             constexpr bool operator==(iteration_end_sentinel) const noexcept
             {
                 return !active;
@@ -66,11 +74,18 @@ namespace meta
             }
 
         private:
-            range_adapter<Gen> &generator;
+            input_range_adapter<Gen> &generator;
             value_type current_result;
             bool active;
         };
 
+        /**
+         * Returns an input iterator to the current element of the generator.
+         * Calling this multiple times will usually result in different values
+         * since the range provides input iterators only.
+         *
+         * @return  An input iterator pointing to the beginning of the range
+         */
         constexpr auto begin() noexcept
         {
             auto initial_result = (*this)();
@@ -78,6 +93,12 @@ namespace meta
             return iterator{*this, std::move(initial_result), initial_state};
         }
 
+        /**
+         * Returns a sentinel used to verify if the generating functor has reached
+         * its end state.
+         *
+         * @return A special sentinel type used to check the iterator state
+         */
         constexpr auto end() const noexcept
         {
             return iteration_end_sentinel{};
@@ -85,6 +106,6 @@ namespace meta
     };
 
     template<bool_testable_generator G>
-    range_adapter(G &&) -> range_adapter<std::decay_t<G>>;
+    input_range_adapter(G &&) -> input_range_adapter<std::decay_t<G>>;
 }
-#endif //META_RANGE_ADAPTER_HPP
+#endif //META_INPUT_RANGE_ADAPTER_HPP

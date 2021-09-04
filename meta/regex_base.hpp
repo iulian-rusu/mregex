@@ -1,7 +1,7 @@
 #ifndef META_REGEX_BASE_HPP
 #define META_REGEX_BASE_HPP
 
-#include "range_adapter.hpp"
+#include "input_range_adapter.hpp"
 #include "ast/ast.hpp"
 #include "regex_context.hpp"
 #include "utility/continuations.hpp"
@@ -39,7 +39,7 @@ namespace meta
          *
          * @param begin An iterator pointing to the start of the sequence
          * @param end   An iterator pointing to the end of the sequence
-         * @return      A regex_result_view object
+         * @return      An object that holds the results of the match
          */
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto match(Iter const begin, Iter const end) noexcept
@@ -64,7 +64,7 @@ namespace meta
          * @param begin An iterator pointing to the start of the sequence
          * @param end   An iterator pointing to the end of the sequence
          * @param from  The iterator to start searching from
-         * @return      A regex_result_view object
+         * @return      An object that holds the results of the search
          */
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto search(Iter const begin, Iter const end, Iter const from) noexcept
@@ -96,14 +96,14 @@ namespace meta
          *
          * @param begin An iterator pointing to the start of the sequence
          * @param end   An iterator pointing to the end of the sequence
-         * @return      An iterable generator that lazily evaluates subsequent matches
+         * @return      A range whose elements can be accessed with input iterators
          */
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto range(Iter const begin, Iter const end) noexcept
         {
             using context_type = regex_context<Iter, ast_type, Flags ...>;
 
-            return range_adapter{regex_match_generator<context_type>{begin, end, begin}};
+            return input_range_adapter{regex_match_generator<context_type>{begin, end, begin}};
         }
 
         /**
@@ -113,42 +113,42 @@ namespace meta
          * an owning regex_result type to avoid invalid pointers.
          */
 
-        template<string_range S>
-        [[nodiscard]] static constexpr auto match(S const &input) noexcept
+        template<char_range R>
+        [[nodiscard]] static constexpr auto match(R const &input) noexcept
         {
             return match(input.begin(), input.end());
         }
 
-        template<string_range S>
-        [[nodiscard]] static constexpr auto match(S &&input) noexcept
-        requires is_memory_owning_rvalue_v<S &&>
+        template<char_range R>
+        [[nodiscard]] static constexpr auto match(R &&input) noexcept
+        requires is_memory_owning_rvalue_v<R &&>
         {
             return match(input.begin(), input.end()).own();
         }
 
-        template<string_range S>
-        [[nodiscard]] static constexpr auto search(S const &input) noexcept
+        template<char_range R>
+        [[nodiscard]] static constexpr auto search(R const &input) noexcept
         {
             return search(input.begin(), input.cend(), input.begin());
         }
 
-        template<string_range S>
-        [[nodiscard]] static constexpr auto search(S &&input) noexcept
-        requires is_memory_owning_rvalue_v<S &&>
+        template<char_range R>
+        [[nodiscard]] static constexpr auto search(R &&input) noexcept
+        requires is_memory_owning_rvalue_v<R &&>
         {
             return search(input.begin(), input.end(), input.begin()).own();
         }
 
-        template<string_range S>
-        [[nodiscard]] static constexpr auto range(S &&input) noexcept
+        template<char_range R>
+        [[nodiscard]] static constexpr auto range(R &&input) noexcept
         {
             using iterator_type = decltype(input.begin());
             using context_type = regex_context<iterator_type, ast_type, Flags ...>;
 
             regex_match_generator<context_type> generator{input.begin(), input.end(), input.begin()};
-            return range_adapter
+            return input_range_adapter
             {
-                [=, capture = make_universal_capture(std::forward<S>(input))]() mutable {
+                [=, capture = make_universal_capture(std::forward<R>(input))]() mutable {
                     return generator();
                 }
             };
