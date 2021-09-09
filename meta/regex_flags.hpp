@@ -7,7 +7,6 @@ namespace meta
 {
     /**
      * Type used for regex flags.
-     * Every flag must have an alias value which is defined as its ID xor 1.
      *
      * @tparam ID   The unique identifier of the flag
      */
@@ -51,7 +50,6 @@ namespace meta
     template<typename T>
     inline constexpr bool is_flag_v = is_flag<T>::value;
 
-    // Metafunction to check if a flags has been enabled
     template<typename Flag, typename... Flags>
     struct is_flag_enabled : std::bool_constant<is_any_of_v<Flag, Flags ...>> {};
 

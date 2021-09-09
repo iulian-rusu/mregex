@@ -15,8 +15,7 @@ namespace meta::ast
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            auto first_match = First::match(begin, end, it, ctx, cont);
-            if (first_match && first_match.end == end)
+            if (auto first_match = First::match(begin, end, it, ctx, cont))
                 return first_match;
             ctx.clear();
             return disjunction<Rest ...>::match(begin, end, it, ctx, cont);

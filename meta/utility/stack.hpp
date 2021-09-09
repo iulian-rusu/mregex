@@ -6,12 +6,7 @@
 
 namespace meta
 {
-    /**
-     * Compile-time stack implementation.
-     *
-     * @tparam Elems    Inner variadic pack of types - the elemets on the stack
-     */
-    template<typename... Elems>
+    template<typename...>
     struct stack;
 
     /**

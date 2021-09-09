@@ -24,7 +24,7 @@ namespace meta
         struct iteration_end_sentinel {};
 
         /**
-         * Lazy iterator over the generated result.
+         * Lazy iterator over the generated results.
          */
         struct iterator
         {

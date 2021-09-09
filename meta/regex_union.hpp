@@ -7,7 +7,10 @@
 namespace meta
 {
     /**
-     * Interface for creating an efficient alternation of several regex patterns.
+     * Interface for creating a union of several regex patterns.
+     * Unlike an alternation, regexes in a union behave as independent expressions.
+     * That is, their captures are indexed separately and the regex
+     * matching context is cleared after evaluating each sub-option.
      *
      * @tparam first    The first pattern in the union
      * @tparam rest     The remaining union patterns

@@ -23,8 +23,8 @@ namespace meta
     template<typename R>
     concept capture_range = std::ranges::forward_range<R> && requires(R range)
     {
-        { range.length() } -> std::convertible_to<std::size_t>;
         { range.content() } -> char_range;
+        { range.length() } -> std::convertible_to<std::size_t>;
     };
 
     /**

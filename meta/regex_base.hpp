@@ -129,7 +129,7 @@ namespace meta
         template<char_range R>
         [[nodiscard]] static constexpr auto search(R const &input) noexcept
         {
-            return search(input.begin(), input.cend(), input.begin());
+            return search(input.begin(), input.end(), input.begin());
         }
 
         template<char_range R>
