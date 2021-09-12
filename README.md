@@ -1,9 +1,9 @@
-# Meta-Regex
-[![Build Status](https://app.travis-ci.com/iulian-rusu/meta-regex.svg?token=yYkpQVp4y1XUXWqsFXsK&branch=master)](https://app.travis-ci.com/iulian-rusu/meta-regex)
-## Summary
-This is a compile-time implementation of a regular expression library in 
-C++20. It parses a regex pattern and compiles it into a native C++ type 
-using template metaprogramming.
+# mregex - Metaprogramming-Based Regular Expressions
+[![Build Status](https://app.travis-ci.com/iulian-rusu/mregex.svg?token=yYkpQVp4y1XUXWqsFXsK&branch=master)](https://app.travis-ci.com/iulian-rusu/mregex)
+
+This is a compile-time implementation of regular expressions in C++20.
+The library parses a regex pattern and compiles it into a native C++
+type using template metaprogramming.
 
 ## Features
 The library currently supports the following features:
