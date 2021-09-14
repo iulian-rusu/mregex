@@ -7,6 +7,13 @@
 
 namespace meta::grammar
 {
+    /**
+     * Metafunction that handles any escape sequence that
+     * doesn't fall into other escape grammar rules like
+     * backreferences (\123) or ASCII escape sequences (\n, \r).
+     *
+     * @tparam C    The current character in the input pattern
+     */
     template<auto C>
     struct char_class_rule
     {

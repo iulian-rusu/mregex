@@ -12,7 +12,7 @@ namespace meta::grammar
      * Metafunction that decides if the current rule will continue
      * the backreference ID building or will finish it.
      *
-     * @tparam C    The current character in the regex pattern
+     * @tparam C    The current character in the input pattern
      * @tparam ID   The current backreference ID on the stack
      */
     template<auto C, std::size_t ID, bool = is_numeric_v<C>>

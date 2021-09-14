@@ -10,7 +10,7 @@ namespace meta::grammar
      * Metafunction defining a grammar rule based on two parameters.
      *
      * @tparam Symbol  The current symbol on the stack
-     * @tparam Token   The current token from the parsed input
+     * @tparam Token   The current token being parsed
      */
     template<typename Symbol, typename Token>
     struct rule
