@@ -10,15 +10,14 @@ namespace meta::grammar
      * Metafunction defining a grammar rule based on two parameters.
      *
      * @tparam Symbol  The current symbol on the stack
-     * @tparam Char    The current character in the input string
+     * @tparam Token   The current token from the parsed input
      */
-    template<typename Symbol, typename Char>
+    template<typename Symbol, typename Token>
     struct rule
     {
         using type = reject;
     };
 
-    // Specialized rules for specific inputs
     template<>
     struct rule<symbol::begin, symbol::character<'['>>
     {
@@ -1114,8 +1113,8 @@ namespace meta::grammar
                 >;
     };
 
-    template<typename Char>
-    struct rule<symbol::set_range_esc, Char>
+    template<typename Token>
+    struct rule<symbol::set_range_esc, Token>
     {
         using type = reject;
     };
@@ -1145,7 +1144,7 @@ namespace meta::grammar
         using type = accept;
     };
 
-    template<typename Symbol, typename Char>
-    using rule_t = typename rule<Symbol, Char>::type;
+    template<typename Symbol, typename Token>
+    using rule_t = typename rule<Symbol, Token>::type;
 }
 #endif //MREGEX_GRAMMAR_HPP

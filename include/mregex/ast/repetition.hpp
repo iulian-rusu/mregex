@@ -10,7 +10,6 @@ namespace meta::ast
     template<std::size_t A, typename Inner>
     using exact_repetition = repetition<symbol::quantifier_value<A>, symbol::quantifier_value<A>, Inner>;
 
-    // Base case - both interval ends are finite
     template<std::size_t A, std::size_t B, typename Inner>
     struct repetition<symbol::quantifier_value<A>, symbol::quantifier_value<B>, Inner>
     {
@@ -68,7 +67,6 @@ namespace meta::ast
         }
     };
 
-    // The right end of the interval is infinity
     template<std::size_t N, typename Inner>
     struct repetition<symbol::quantifier_value<N>, symbol::quantifier_inf, Inner>
     {
@@ -85,7 +83,6 @@ namespace meta::ast
         }
     };
 
-    // Both ends of the interval are equal - exact repetition
     template<std::size_t N, typename Inner>
     struct repetition<symbol::quantifier_value<N>, symbol::quantifier_value<N>, Inner>
     {
@@ -121,7 +118,6 @@ namespace meta::ast
         }
     };
 
-    // Both ends of the interval are 0 - empty repetition
     template<typename Inner>
     struct repetition<symbol::quantifier_value<0u>, symbol::quantifier_value<0u>, Inner>
     {
@@ -135,7 +131,6 @@ namespace meta::ast
         }
     };
 
-    // Interval from 0 to infinity - equivalent to star operator
     template<typename Inner>
     struct repetition<symbol::quantifier_value<0u>, symbol::quantifier_inf, Inner> : star<Inner> {};
 }

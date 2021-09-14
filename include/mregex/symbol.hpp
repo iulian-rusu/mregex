@@ -40,22 +40,17 @@ namespace meta::symbol
 
     struct set_range_esc {};
 
-    // Symbol that represents a concrete character
     template<auto>
     struct character {};
 
-    // Symbol that represents an empty string
     struct epsilon {};
 
-    // Symbol that represents a requirement for a character to appear
     template<auto>
     struct expect {};
 
-    // Symbol for parsing a backreference ID
     template<std::size_t>
     struct backref_id {};
 
-    // Symbols for parsing a quantifier value
     struct quantifier_begin {};
 
     template<std::size_t>
@@ -66,7 +61,7 @@ namespace meta::symbol
     template<typename, typename>
     struct quantifier_values {};
 
-    // Tag for symbols that require AST updates
+    // Symbols that require the Abstract Syntax Tree to be modified
     struct ast_update {};
 
     struct make_literal : ast_update {};
@@ -130,7 +125,9 @@ namespace meta::symbol
     template<std::size_t>
     struct make_backref : ast_update {};
 
-    // Type trait to distinguish AST update symbols from other symbols
+    /**
+     * Type trait to distinguish AST update symbols from other symbols
+     */
     template<typename Symbol>
     inline constexpr bool is_ast_update_v = std::is_base_of_v<ast_update, Symbol>;
 }

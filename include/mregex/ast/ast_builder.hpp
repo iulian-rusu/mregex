@@ -11,15 +11,15 @@ namespace meta::ast
     /**
      * Metafunction used to build the Abstract Syntax Tree.
      *
-     * @tparam S    The current symbol on the parsing stack
-     * @tparam C    The current character being parsed
-     * @tparam AST  The stack containing current AST nodes being built
+     * @tparam Symbol   The current symbol on the parsing stack
+     * @tparam Token    The current token being parsed
+     * @tparam AST      The stack containing current AST nodes being built
      */
-    template<typename S, typename C, typename AST>
+    template<typename Symbol, typename Token, typename AST>
     struct update_ast;
 
-    template<typename S, typename C, typename AST>
-    using update_ast_t = typename update_ast<S, C, AST>::type;
+    template<typename Symbol, typename Token, typename AST>
+    using update_ast_t = typename update_ast<Symbol, Token, AST>::type;
 
     template<auto C, typename Stack>
     struct update_ast<symbol::make_literal, symbol::character<C>, Stack>
@@ -27,177 +27,177 @@ namespace meta::ast
         using type = push<Stack, literal<C>>;
     };
 
-    template<auto A, typename C, typename Stack>
-    struct update_ast<symbol::push_literal<A>, C, Stack>
+    template<auto A, typename T, typename Stack>
+    struct update_ast<symbol::push_literal<A>, T, Stack>
     {
         using type = push<Stack, literal<A>>;
     };
 
-    template<typename C, typename Stack>
-    struct update_ast<symbol::make_alpha, C, Stack>
+    template<typename T, typename Stack>
+    struct update_ast<symbol::make_alpha, T, Stack>
     {
         using type = push<Stack, alpha>;
     };
 
-    template<typename C, typename Stack>
-    struct update_ast<symbol::make_digit, C, Stack>
+    template<typename T, typename Stack>
+    struct update_ast<symbol::make_digit, T, Stack>
     {
         using type = push<Stack, digit>;
     };
 
-    template<typename C, typename Stack>
-    struct update_ast<symbol::make_word, C, Stack>
+    template<typename T, typename Stack>
+    struct update_ast<symbol::make_word, T, Stack>
     {
         using type = push<Stack, word>;
     };
 
-    template<typename C, typename Stack>
-    struct update_ast<symbol::make_whitespace, C, Stack>
+    template<typename T, typename Stack>
+    struct update_ast<symbol::make_whitespace, T, Stack>
     {
         using type = push<Stack, whitespace>;
     };
 
-    template<typename C, typename Stack>
-    struct update_ast<symbol::make_lower, C, Stack>
+    template<typename T, typename Stack>
+    struct update_ast<symbol::make_lower, T, Stack>
     {
         using type = push<Stack, lower>;
     };
 
-    template<typename C, typename Stack>
-    struct update_ast<symbol::make_upper, C, Stack>
+    template<typename T, typename Stack>
+    struct update_ast<symbol::make_upper, T, Stack>
     {
         using type = push<Stack, upper>;
     };
 
-    template<typename C, typename Stack>
-    struct update_ast<symbol::make_hexa, C, Stack>
+    template<typename T, typename Stack>
+    struct update_ast<symbol::make_hexa, T, Stack>
     {
         using type = push<Stack, hexa>;
     };
 
-    template<typename C, typename Stack>
-    struct update_ast<symbol::make_linebreak, C, Stack>
+    template<typename T, typename Stack>
+    struct update_ast<symbol::make_linebreak, T, Stack>
     {
         using type = push<Stack, linebreak>;
     };
 
-    template<typename C, typename Stack>
-    struct update_ast<symbol::make_wildcard, C, Stack>
+    template<typename T, typename Stack>
+    struct update_ast<symbol::make_wildcard, T, Stack>
     {
         using type = push<Stack, wildcard>;
     };
 
-    template<typename C, typename Stack>
-    struct update_ast<symbol::make_beginning, C, Stack>
+    template<typename T, typename Stack>
+    struct update_ast<symbol::make_beginning, T, Stack>
     {
         using type = push<Stack, beginning>;
     };
 
-    template<typename C, typename Stack>
-    struct update_ast<symbol::make_ending, C, Stack>
+    template<typename T, typename Stack>
+    struct update_ast<symbol::make_ending, T, Stack>
     {
         using type = push<Stack, ending>;
     };
 
-    template<typename C, typename First, typename... Rest>
-    struct update_ast<symbol::make_positive_lookahead, C, stack<First, Rest ...>>
+    template<typename T, typename First, typename... Rest>
+    struct update_ast<symbol::make_positive_lookahead, T, stack<First, Rest ...>>
     {
         using type = stack<positive_lookahead<First>, Rest ...>;
     };
 
-    template<typename C, typename First, typename... Rest>
-    struct update_ast<symbol::make_negative_lookahead, C, stack<First, Rest ...>>
+    template<typename T, typename First, typename... Rest>
+    struct update_ast<symbol::make_negative_lookahead, T, stack<First, Rest ...>>
     {
         using type = stack<negative_lookahead<First>, Rest ...>;
     };
 
-    template<typename C, typename First, typename... Rest>
-    struct update_ast<symbol::make_negated, C, stack<First, Rest ...>>
+    template<typename T, typename First, typename... Rest>
+    struct update_ast<symbol::make_negated, T, stack<First, Rest ...>>
     {
         using type = stack<negated<First>, Rest ...>;
     };
 
-    template<typename C, typename First, typename... Rest>
-    struct update_ast<symbol::make_star, C, stack<First, Rest ...>>
+    template<typename T, typename First, typename... Rest>
+    struct update_ast<symbol::make_star, T, stack<First, Rest ...>>
     {
         using type = stack<star<First>, Rest ...>;
     };
 
-    template<typename C, typename First, typename... Rest>
-    struct update_ast<symbol::make_optional, C, stack<First, Rest ...>>
+    template<typename T, typename First, typename... Rest>
+    struct update_ast<symbol::make_optional, T, stack<First, Rest ...>>
     {
         using type = stack<optional<First>, Rest ...>;
     };
 
-    template<typename C, typename First, typename... Rest>
-    struct update_ast<symbol::make_plus, C, stack<First, Rest ...>>
+    template<typename T, typename First, typename... Rest>
+    struct update_ast<symbol::make_plus, T, stack<First, Rest ...>>
     {
         using type = stack<plus<First>, Rest ...>;
     };
 
     // Combine any two non-sequence symbols into a sequence
-    template<typename C, typename First, typename Second, typename... Rest>
-    struct update_ast<symbol::make_sequence, C, stack<First, Second, Rest ...>>
+    template<typename T, typename First, typename Second, typename... Rest>
+    struct update_ast<symbol::make_sequence, T, stack<First, Second, Rest ...>>
     {
         using type = stack<sequence<Second, First>, Rest ...>;
     };
 
     // Add current symbol to previous sequence
-    template<typename C, typename First, typename... Second, typename... Rest>
-    struct update_ast<symbol::make_sequence, C, stack<First, sequence<Second ...>, Rest ...>>
+    template<typename T, typename First, typename... Second, typename... Rest>
+    struct update_ast<symbol::make_sequence, T, stack<First, sequence<Second ...>, Rest ...>>
     {
         using type = stack<sequence<Second ..., First>, Rest ...>;
     };
 
     // Add previous symbol to current sequence
-    template<typename C, typename Second, typename... First, typename... Rest>
-    struct update_ast<symbol::make_sequence, C, stack<sequence<First ...>, Second, Rest ...>>
+    template<typename T, typename Second, typename... First, typename... Rest>
+    struct update_ast<symbol::make_sequence, T, stack<sequence<First ...>, Second, Rest ...>>
     {
         using type = stack<sequence<Second, First ...>, Rest ...>;
     };
 
     // Concatenate two sequences
-    template<typename C, typename... First, typename... Second, typename... Rest>
-    struct update_ast<symbol::make_sequence, C, stack<sequence<First ...>, sequence<Second ...>, Rest ...>>
+    template<typename T, typename... First, typename... Second, typename... Rest>
+    struct update_ast<symbol::make_sequence, T, stack<sequence<First ...>, sequence<Second ...>, Rest ...>>
     {
         using type = stack<sequence<Second ..., First ...>, Rest ...>;
     };
 
-    template<typename C, typename First, typename Second, typename... Rest>
-    struct update_ast<symbol::make_alternation, C, stack<First, Second, Rest ...>>
+    template<typename T, typename First, typename Second, typename... Rest>
+    struct update_ast<symbol::make_alternation, T, stack<First, Second, Rest ...>>
     {
         using type = stack<alternation<Second, First>, Rest ...>;
     };
 
-    template<typename C, typename First, typename... Second, typename... Rest>
-    struct update_ast<symbol::make_alternation, C, stack<First, alternation<Second ...>, Rest ...>>
+    template<typename T, typename First, typename... Second, typename... Rest>
+    struct update_ast<symbol::make_alternation, T, stack<First, alternation<Second ...>, Rest ...>>
     {
         using type = stack<alternation<Second ..., First>, Rest ...>;
     };
 
-    template<typename C, typename First,  typename... Rest>
-    struct update_ast<symbol::make_capturing, C, stack<First, Rest ...>>
+    template<typename T, typename First,  typename... Rest>
+    struct update_ast<symbol::make_capturing, T, stack<First, Rest ...>>
     {
         static constexpr auto ID = capture_count_v<First, Rest ...> + 1;
 
         using type = stack<capturing<ID, First>, Rest ...>;
     };
 
-    template<std::size_t ID, typename C, typename... Elems>
-    struct update_ast<symbol::make_backref<ID>, C, stack<Elems ...>>
+    template<std::size_t ID, typename T, typename... Elems>
+    struct update_ast<symbol::make_backref<ID>, T, stack<Elems ...>>
     {
         using type = stack<backref<ID>, Elems ...>;
     };
 
-    template<typename A, typename B, typename C, typename First, typename... Rest>
-    struct update_ast<symbol::make_repetition<A, B>, C, stack<First, Rest ...>>
+    template<typename A, typename B, typename T, typename First, typename... Rest>
+    struct update_ast<symbol::make_repetition<A, B>, T, stack<First, Rest ...>>
     {
         using type = stack<repetition<A, B, First>, Rest ...>;
     };
 
     // Set building rules
-    template<typename C, typename... Elems>
-    struct update_ast<symbol::make_set, C, stack<Elems ...>>
+    template<typename T, typename... Elems>
+    struct update_ast<symbol::make_set, T, stack<Elems ...>>
     {
         using type = stack<nothing, Elems ...>;
     };
@@ -220,26 +220,26 @@ namespace meta::ast
         using type = stack<set<literal<C>>, Rest ...>;
     };
 
-    template<typename C, typename First, typename... Rest>
-    struct update_ast<symbol::make_set_from_stack, C, stack<First, Rest ...>>
+    template<typename T, typename First, typename... Rest>
+    struct update_ast<symbol::make_set_from_stack, T, stack<First, Rest ...>>
     {
         using type = stack<set<First>, Rest ...>;
     };
 
-    template<typename C, typename First, typename... Second, typename... Rest>
-    struct update_ast<symbol::make_set_from_stack, C, stack<First, set<Second ...>, Rest ...>>
+    template<typename T, typename First, typename... Second, typename... Rest>
+    struct update_ast<symbol::make_set_from_stack, T, stack<First, set<Second ...>, Rest ...>>
     {
         using type = stack<set<First, Second ...>, Rest ...>;
     };
 
-    template<typename C, typename First, typename... Rest>
-    struct update_ast<symbol::make_set_from_stack, C, stack<First, nothing, Rest ...>>
+    template<typename T, typename First, typename... Rest>
+    struct update_ast<symbol::make_set_from_stack, T, stack<First, nothing, Rest ...>>
     {
         using type = stack<set<First>, Rest ...>;
     };
 
-    template<typename C, typename... First, typename... Second, typename... Rest>
-    struct update_ast<symbol::make_set_from_stack, C, stack<set<First ...>, set<Second ...>, Rest ...>>
+    template<typename T, typename... First, typename... Second, typename... Rest>
+    struct update_ast<symbol::make_set_from_stack, T, stack<set<First ...>, set<Second ...>, Rest ...>>
     {
         using type = stack<set<First ..., Second ...>, Rest ...>;
     };
@@ -250,8 +250,8 @@ namespace meta::ast
         using type = stack<set<range<A, B>, Second ...>, Rest ...>;
     };
 
-    template<typename C, auto B, auto A, typename... Second, typename... Rest>
-    struct update_ast<symbol::make_range_from_stack, C, stack<set<literal<B>, literal<A>, Second ...>, Rest ...>>
+    template<typename T, auto B, auto A, typename... Second, typename... Rest>
+    struct update_ast<symbol::make_range_from_stack, T, stack<set<literal<B>, literal<A>, Second ...>, Rest ...>>
     {
         using type = stack<set<range<A, B>, Second ...>, Rest ...>;
     };

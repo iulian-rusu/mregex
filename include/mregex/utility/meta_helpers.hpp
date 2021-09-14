@@ -5,13 +5,6 @@
 
 namespace meta
 {
-    template<typename First, typename Second>
-    struct pair
-    {
-        using first = First;
-        using second = Second;
-    };
-
     template<typename First, typename...>
     struct first
     {
