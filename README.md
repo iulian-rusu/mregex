@@ -50,7 +50,7 @@ input iterators, all results are discarded and cannot be visited again after the
 iteration.
 ```cpp
 using word_regex = meta::regex<R"(\w+(?=\W))">;
-std::string words = "Find all word-sequences in this string!";
+std::string words = "Find all word-like sequences in this string!";
 for (auto &&res : word_regex::range(words))
 {
     std::cout << res << '\n';
