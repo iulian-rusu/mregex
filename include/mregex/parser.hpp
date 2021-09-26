@@ -39,13 +39,13 @@ namespace meta
         };
 
         /**
-         * Metafunction used to exctract tokens (characters or epsilon) from the input pattern
+         * Metafunction used to exctract tokens (characters or epsilon) from the input pattern.
          */
         template<std::size_t I>
         using token_t = typename lexer<pattern>::template token_t<I>;
 
         /**
-         * Metafunction that models the transition of the parser automaton
+         * Metafunction that models the transition of the parser automaton.
          */
         template<std::size_t, typename, typename, typename>
         struct transition;
@@ -54,7 +54,7 @@ namespace meta
         using transition_t = typename transition<I, Rule, AST, Stack>::type;
 
         /**
-         * Main metafunction used to parse the pattern
+         * Main metafunction used to parse the pattern.
          */
         template<std::size_t I, typename AST, typename Stack, bool = symbol::is_ast_update_v<top<Stack>>>
         struct parse

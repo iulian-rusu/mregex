@@ -23,7 +23,6 @@ namespace meta
 
         /**
          * Makes wildcards (.) match newline characters.
-         * Will make matching faster and generate cleaner assembly.
          */
         using dotall = regex_flag<0x1>;
         using s = dotall;

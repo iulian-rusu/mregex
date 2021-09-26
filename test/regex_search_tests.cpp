@@ -28,6 +28,10 @@ namespace meta::tests
     static_assert(regex<"abc$">::search("... abc"sv));
     static_assert(regex<"^">::search("abcdefg"sv));
     static_assert(regex<"$">::search("... abc"sv));
+    static_assert(regex<"^">::search(""sv));
+    static_assert(regex<"$">::search(""sv));
+    static_assert(regex<"^$">::search(""sv));
+    static_assert(regex<"^$">::search(""sv));
 
     static_assert(uri_regex::search("https:// google.com"sv) == false);
     static_assert(uri_regex::search(""sv) == false);
