@@ -17,25 +17,25 @@ namespace meta
     struct parser
     {
         /**
-         * Data structure returned by the parser.
+         * Data structure returned from parsing.
          *
-         * @tparam B    Boolean that signals if the input pattern was accepted
+         * @tparam A    Tells if the parser accepted the input
          * @tparam AST  The resulting Abstract Syntax Tree
          */
-        template<bool B, typename AST>
-        struct parse_result
+        template<bool A, typename AST>
+        struct parser_result
         {
             using ast_type = AST;
 
-            static constexpr bool accepted = B;
+            static constexpr bool accepted = A;
         };
 
-        template<bool B>
-        struct parse_result<B, empty_stack_marker>
+        template<bool A>
+        struct parser_result<A, empty_stack_marker>
         {
             using ast_type = ast::epsilon;
 
-            static constexpr bool accepted = B;
+            static constexpr bool accepted = A;
         };
 
         /**
@@ -111,14 +111,14 @@ namespace meta
         template<std::size_t I, typename AST, typename Stack>
         struct transition<I, grammar::reject, AST, Stack>
         {
-            using type = parse_result<false, top<AST>>;
+            using type = parser_result<false, top<AST>>;
         };
 
         // Final transition - accept the input pattern
         template<std::size_t I, typename AST, typename Stack>
         struct transition<I, grammar::accept, AST, Stack>
         {
-            using type = parse_result<true, top<AST>>;
+            using type = parser_result<true, top<AST>>;
         };
 
         using result = parse_t<0, stack<>, stack<symbol::begin>>;

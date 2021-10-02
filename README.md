@@ -29,6 +29,20 @@ an iterator compatible with `std::forward_iterator`
     * `^`, `$` - anchors
     * `[abc]`, `[^abc]`, `[a-z0-9]` - sets
     
+## Installation
+
+The project is header-only and does not depend on any third-party libraries. 
+Currently, building is supported on GCC 10 and Clang 12.
+Earlier compiler versions do not fully implement some C++20 features like CNTTP and
+are not tested.
+
+To use the library in your CMake project, update your include directories in
+`CMakeList.txt` with the path to `include`. 
+Also make sure the CMake project is using at least C++20.
+
+If you don't want to use CMake, you don't have to. You can simply add the project's `include`
+directory to your environment's path.
+
 ## Usage
 Below is an example of parsing a date.
 Notice that the generated regular expression is a type and not an object, since the library maps every

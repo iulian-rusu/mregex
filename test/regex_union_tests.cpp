@@ -15,7 +15,7 @@ namespace meta::tests
     static_assert(regex_union<R"((((((a))))))", R"(a(bc)d)", R"(a(bd(de))(fg))">::capture_count == 5);
     static_assert(regex_union<R"()", R"(a(bc)d)", R"(a(bd(de))(fg))", R"(((((?:((a)))))))">::capture_count == 5);
 
-    // Test meta::make_union helper metafunction
+    // Test meta::make_union metafunction
     static_assert(std::is_base_of_v<make_union<regex<R"()">>, regex_union<R"()">>);
     static_assert(std::is_base_of_v<make_union<regex<R"(ab?c+d{3})">>, regex_union<R"(ab?c+d{3})">>);
     static_assert(std::is_base_of_v<make_union<regex<R"(ab+)">, regex<R"(x|z*)">>, regex_union<R"(ab+)", R"(x|z*)">>);
@@ -40,7 +40,7 @@ namespace meta::tests
     static_assert(regex_union<R"(aB+b)", R"(A+)", R"(a?Ab?)">::match("AAAAA"sv));
     static_assert(regex_union<R"(aB+b)", R"(B+)", R"(a?Ab?)">::match("aA"sv));
     static_assert(regex_union<R"(aB+b)", R"(B+)", R"(a?Ab?)">::match("Ab"sv));
-    static_assert(regex_union<R"(aB+b)", R"(A+)", R"(a?Ab?)">::with<flag::i>::match("aaaaaaa"sv));
+    static_assert(regex_union<R"(aB+b)", R"(A+)", R"(a?Ab?)">::with<flag::icase>::match("aaaaaaa"sv));
 
     // Test non-matching inputs
     static_assert(regex_union<R"()">::match("a"sv) == false);
