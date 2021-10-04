@@ -9,7 +9,7 @@ namespace meta
     template<static_string pattern, typename... Flags>
     struct regex : regex_base<ast_of<pattern>, Flags ...>
     {
-        static_assert(parser<pattern>::accepted, "syntax error in regular expression");
+        static constexpr auto error_type = identify_error<error_of<pattern>>::error_type;
     };
 }
 #endif //MREGEX_REGEX_HPP

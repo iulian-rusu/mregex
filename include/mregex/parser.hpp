@@ -5,6 +5,7 @@
 #include <mregex/ast/capture_indexer.hpp>
 #include <mregex/grammar/grammar.hpp>
 #include <mregex/lexer.hpp>
+#include <mregex/parser_result.hpp>
 
 namespace meta
 {
@@ -16,28 +17,6 @@ namespace meta
     template<static_string pattern>
     struct parser
     {
-        /**
-         * Data structure returned from parsing.
-         *
-         * @tparam A    Tells if the parser accepted the input
-         * @tparam AST  The resulting Abstract Syntax Tree
-         */
-        template<bool A, typename AST>
-        struct parser_result
-        {
-            using ast_type = AST;
-
-            static constexpr bool accepted = A;
-        };
-
-        template<bool A>
-        struct parser_result<A, empty_stack_marker>
-        {
-            using ast_type = ast::epsilon;
-
-            static constexpr bool accepted = A;
-        };
-
         /**
          * Metafunction used to exctract tokens (characters or epsilon) from the input pattern.
          */
@@ -111,23 +90,27 @@ namespace meta
         template<std::size_t I, typename AST, typename Stack>
         struct transition<I, grammar::reject, AST, Stack>
         {
-            using type = parser_result<false, top<AST>>;
+            using type = parser_result<top<AST>, syntax_error_at_position<I>>;
         };
 
         // Final transition - accept the input pattern
         template<std::size_t I, typename AST, typename Stack>
         struct transition<I, grammar::accept, AST, Stack>
         {
-            using type = parser_result<true, top<AST>>;
+            using type = parser_result<top<AST>, std::false_type>;
         };
 
         using result = parse_t<0, stack<>, stack<symbol::begin>>;
         using ast_type = ast::preorder_indexing_t<0, typename result::ast_type>;
+        using error_type = typename result::error_type;
 
-        static constexpr bool accepted = result::accepted;
+        static constexpr bool accepted = std::is_same_v<error_type, std::false_type>;
     };
 
     template<static_string pattern>
     using ast_of = typename parser<pattern>::ast_type;
+
+    template<static_string pattern>
+    using error_of = typename parser<pattern>::error_type;
 }
 #endif //MREGEX_PARSER_HPP

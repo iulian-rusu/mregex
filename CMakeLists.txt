@@ -9,6 +9,7 @@ add_executable(
         test/traits_tests.cpp
         test/parser_ast_tests.cpp
         test/parser_accept_tests.cpp
+        test/parser_error_tests.cpp
         test/flag_tests.cpp
         test/regex_match_tests.cpp
         test/regex_search_tests.cpp
