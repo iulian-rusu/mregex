@@ -40,8 +40,11 @@ To use the library in your CMake project, update your include directories in
 `CMakeList.txt` with the path to `include`. 
 Also make sure the CMake project is using at least C++20.
 
-If you don't want to use CMake, you don't have to. You can simply add the project's `include`
-directory to your environment's path.
+If you don't want to use CMake, you can simply add the project's `include`
+directory to the header search path. Assuming you cloned the repository to `/PATH/TO/REPO/`, you can compile the demo like this:
+```
+$ c++ -std=c++20 -O3 -I/PATH/TO/REPO/mregex/include -o demo demo.cpp
+```
 
 ## Usage
 Below is an example of parsing a date.
