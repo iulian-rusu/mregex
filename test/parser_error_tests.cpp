@@ -6,7 +6,7 @@ namespace meta
     namespace detail
     {
         template<static_string pattern, std::size_t I>
-        inline static constexpr auto error_position = std::is_same_v<error_of<pattern>, syntax_error_at_position<I>>;
+        inline static constexpr auto error_position = std::is_same_v<status_of<pattern>, parsing::syntax_error<I>>;
     }
 
     static_assert(detail::error_position<"(", 1>);

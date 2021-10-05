@@ -8,14 +8,14 @@ namespace meta::tests
     namespace detail
     {
         template<static_string pattern, typename AST>
-        inline constexpr bool expected_ast = std::is_same_v<typename parser<pattern>::ast_type, AST>;
+        inline constexpr bool expected_ast = std::is_same_v<ast_of<pattern>, AST>;
     }
 
-    //static_assert(std::is_same_v<typename parser<static_string(R"(x(?!ab)+x)")>::ast_type, void>);
+    //static_assert(std::is_same_v<ast_of<static_string(R"(a)")>, literal<'a'>>);
 
     static_assert(detail::expected_ast<R"()", epsilon>);
-    static_assert(detail::expected_ast<R"(a))", literal<'a'>>);
-    static_assert(detail::expected_ast<R"(^ab))",
+    static_assert(detail::expected_ast<R"(a)", literal<'a'>>);
+    static_assert(detail::expected_ast<R"(^ab)",
             sequence
             <
                 beginning,
@@ -23,7 +23,7 @@ namespace meta::tests
                 literal<'b'>
             >
     >);
-    static_assert(detail::expected_ast<R"(ab$))",
+    static_assert(detail::expected_ast<R"(ab$)",
             sequence
             <
                 literal<'a'>,
@@ -31,7 +31,7 @@ namespace meta::tests
                 ending
             >
     >);
-    static_assert(detail::expected_ast<R"(^ab$))",
+    static_assert(detail::expected_ast<R"(^ab$)",
             sequence
             <
                 beginning,
@@ -103,13 +103,13 @@ namespace meta::tests
                 literal<'x'>
             >
     >);
-    static_assert(detail::expected_ast<R"(\n))", literal<'\n'>>);
-    static_assert(detail::expected_ast<R"(\r))", literal<'\r'>>);
-    static_assert(detail::expected_ast<R"(\t))", literal<'\t'>>);
-    static_assert(detail::expected_ast<R"(\R))", linebreak>);
-    static_assert(detail::expected_ast<R"(\N))", negated<linebreak>>);
-    static_assert(detail::expected_ast<R"(\a))", alpha>);
-    static_assert(detail::expected_ast<R"(\D))",negated<digit>>);
+    static_assert(detail::expected_ast<R"(\n)", literal<'\n'>>);
+    static_assert(detail::expected_ast<R"(\r)", literal<'\r'>>);
+    static_assert(detail::expected_ast<R"(\t)", literal<'\t'>>);
+    static_assert(detail::expected_ast<R"(\R)", linebreak>);
+    static_assert(detail::expected_ast<R"(\N)", negated<linebreak>>);
+    static_assert(detail::expected_ast<R"(\a)", alpha>);
+    static_assert(detail::expected_ast<R"(\D)",negated<digit>>);
     static_assert(detail::expected_ast<R"(a.?b)",
             sequence
             <
@@ -762,7 +762,7 @@ namespace meta::tests
                 literal<'-'>
             >
     >);
-    static_assert(detail::expected_ast<R"([^-aA-Z]))",
+    static_assert(detail::expected_ast<R"([^-aA-Z])",
             negated
             <
                 set

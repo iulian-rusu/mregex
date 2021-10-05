@@ -4,8 +4,9 @@
 #include <mregex/ast/ast_builder.hpp>
 #include <mregex/ast/capture_indexer.hpp>
 #include <mregex/grammar/grammar.hpp>
-#include <mregex/lexer.hpp>
-#include <mregex/parser_result.hpp>
+#include <mregex/parsing/lexer.hpp>
+#include <mregex/parsing/parser_status.hpp>
+#include <mregex/parsing/parser_result.hpp>
 
 namespace meta
 {
@@ -90,27 +91,27 @@ namespace meta
         template<std::size_t I, typename AST, typename Stack>
         struct transition<I, grammar::reject, AST, Stack>
         {
-            using type = parser_result<top<AST>, syntax_error_at_position<I>>;
+            using type = parser_result<ast::nothing, parsing::syntax_error<I>>;
         };
 
-        // Final transition - accept the input pattern
+        // Accept the input pattern
         template<std::size_t I, typename AST, typename Stack>
         struct transition<I, grammar::accept, AST, Stack>
         {
-            using type = parser_result<top<AST>, std::false_type>;
+            using type = parser_result<ast::preorder_indexing_t<0, top<AST>>, parsing::success>;
         };
 
         using result = parse_t<0, stack<>, stack<symbol::begin>>;
-        using ast_type = ast::preorder_indexing_t<0, typename result::ast_type>;
-        using error_type = typename result::error_type;
+        using ast_type = typename result::ast_type;
+        using status_type = typename result::status_type;
 
-        static constexpr bool accepted = std::is_same_v<error_type, std::false_type>;
+        static constexpr bool accepted = std::is_same_v<status_type, parsing::success>;
     };
 
     template<static_string pattern>
     using ast_of = typename parser<pattern>::ast_type;
 
     template<static_string pattern>
-    using error_of = typename parser<pattern>::error_type;
+    using status_of = typename parser<pattern>::status_type;
 }
 #endif //MREGEX_PARSER_HPP

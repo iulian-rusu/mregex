@@ -1,7 +1,7 @@
 #ifndef MREGEX_REGEX_UNION_HPP
 #define MREGEX_REGEX_UNION_HPP
 
-#include <mregex/parser.hpp>
+#include <mregex/parsing/parser.hpp>
 #include <mregex/regex_base.hpp>
 
 namespace meta
@@ -20,7 +20,7 @@ namespace meta
     {
         static_assert(
                 (parser<first>::accepted && (parser<rest>::accepted && ...)),
-                "at least one regular expression in the union contains a syntax error"
+                "error while parsing at least one regular expression in the union"
         );
     };
 
