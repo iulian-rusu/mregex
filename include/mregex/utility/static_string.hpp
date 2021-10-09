@@ -18,7 +18,7 @@ namespace meta
     {
         char buffer[N]{};
 
-        constexpr static_string(char const (&str)[N+1]) noexcept
+        constexpr static_string(char const (&str)[N + 1]) noexcept
         {
             for (std::size_t i = 0; i < N; ++i)
             {
@@ -34,24 +34,19 @@ namespace meta
             }
         }
 
-        constexpr auto length() const noexcept
+        [[nodiscard]] constexpr auto length() const noexcept
         {
             return N;
         }
 
-        constexpr auto begin() noexcept
+        [[nodiscard]] constexpr auto begin() noexcept
         {
             return buffer;
         }
 
-        constexpr auto end() noexcept
+        [[nodiscard]] constexpr auto end() noexcept
         {
             return buffer + N;
-        }
-
-        constexpr auto substr(std::size_t from, std::size_t count) const noexcept
-        {
-            return std::string_view(buffer + from, count);
         }
 
         constexpr explicit operator std::string_view() const noexcept
@@ -65,8 +60,34 @@ namespace meta
         }
     };
 
+    template<>
+    struct static_string<0>
+    {
+        constexpr static_string(char const (&str)[1]) noexcept {}
+
+        [[nodiscard]] constexpr auto length() const noexcept
+        {
+            return 0;
+        }
+
+        [[nodiscard]] constexpr auto begin() noexcept
+        {
+            return nullptr;
+        }
+
+        [[nodiscard]] constexpr auto end() noexcept
+        {
+            return nullptr;
+        }
+
+        constexpr explicit operator std::string_view() const noexcept
+        {
+            return {""};
+        }
+    };
+
     template<std::size_t N>
-    static_string(char const (&)[N]) -> static_string<N-1>;
+    static_string(char const (&)[N]) -> static_string<N - 1>;
 
     template<std::size_t N>
     static_string(static_string<N> const &) -> static_string<N>;
@@ -75,6 +96,6 @@ namespace meta
 template<std::size_t N>
 std::ostream &operator<<(std::ostream &os, meta::static_string<N> const &str)
 {
-    return os << str.substr(0, N);
+    return os << static_cast<std::string_view>(str);
 }
 #endif //MREGEX_STATIC_STRING_HPP

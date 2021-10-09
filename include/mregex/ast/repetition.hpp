@@ -21,7 +21,7 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
-        requires (A > 0u)
+        requires (A > 0)
         {
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
                 return consume_rest(begin, end, new_it, ctx, cont);
@@ -32,7 +32,7 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
-        requires (A == 0u)
+        requires (A == 0)
         {
             return consume_rest(begin, end, it, ctx, cont);
         }
@@ -119,7 +119,7 @@ namespace meta::ast
     };
 
     template<typename Inner>
-    struct repetition<symbol::quantifier_value<0u>, symbol::quantifier_value<0u>, Inner>
+    struct repetition<symbol::quantifier_value<0>, symbol::quantifier_value<0>, Inner>
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
 
@@ -132,6 +132,6 @@ namespace meta::ast
     };
 
     template<typename Inner>
-    struct repetition<symbol::quantifier_value<0u>, symbol::quantifier_inf, Inner> : star<Inner> {};
+    struct repetition<symbol::quantifier_value<0>, symbol::quantifier_inf, Inner> : star<Inner> {};
 }
 #endif //MREGEX_REPETITION_HPP

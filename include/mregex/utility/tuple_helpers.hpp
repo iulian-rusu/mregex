@@ -13,10 +13,10 @@ namespace meta
             return std::tuple{func(std::get<Indices>(tuple)) ...};
         }
 
-        template<typename Tuple, typename Mapper, std::size_t... Indices>
-        constexpr void tuple_for_each(Tuple &&tuple, Mapper &&mapper, std::index_sequence<Indices ...> &&)
+        template<typename Tuple, typename Func, std::size_t... Indices>
+        constexpr void tuple_for_each(Tuple &&tuple, Func &&func, std::index_sequence<Indices ...> &&)
         {
-            (mapper(std::get<Indices>(tuple)), ...);
+            (func(std::get<Indices>(tuple)), ...);
         }
     }
 

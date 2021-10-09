@@ -86,7 +86,7 @@ namespace meta
          *
          * @return  An input iterator pointing to the beginning of the range
          */
-        constexpr auto begin() noexcept
+        [[nodiscard]] constexpr auto begin() noexcept
         {
             auto initial_result = (*this)();
             auto const initial_state = static_cast<bool>(initial_result);
@@ -99,7 +99,7 @@ namespace meta
          *
          * @return A special sentinel type used to check the iterator state
          */
-        constexpr auto end() const noexcept
+        [[nodiscard]] constexpr auto end() const noexcept
         {
             return iteration_end_sentinel{};
         }
