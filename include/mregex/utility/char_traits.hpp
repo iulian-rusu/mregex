@@ -33,7 +33,6 @@ namespace meta
     {
         if ('A' <= c && c <= 'Z')
             return static_cast<decltype(c)>(c ^ 0x20);
-
         return c;
     }
 
@@ -41,7 +40,6 @@ namespace meta
     {
         if ('a' <= c && c <= 'z')
             return static_cast<decltype(c)>(c ^ 0x20);
-
         return c;
     }
 }

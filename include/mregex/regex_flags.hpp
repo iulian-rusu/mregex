@@ -50,9 +50,6 @@ namespace meta
     inline constexpr bool is_flag_v = is_flag<T>::value;
 
     template<typename Flag, typename... Flags>
-    struct is_flag_enabled : std::bool_constant<is_any_of_v<Flag, Flags ...>> {};
-
-    template<typename Flag, typename... Flags>
-    inline constexpr bool is_flag_enabled_v = is_flag_enabled<Flag, Flags ...>::value;
+    inline constexpr bool is_flag_enabled_v = is_any_of_v<Flag, Flags ...>;
 }
 #endif //MREGEX_REGEX_FLAGS_HPP

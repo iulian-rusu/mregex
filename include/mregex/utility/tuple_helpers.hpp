@@ -22,7 +22,7 @@ namespace meta
 
     /**
      * Creates a new tuple by applying a callable object on each element of
-     * another tuple, without modifying it.
+     * another tuple.
      *
      * @param tuple     The original tuple
      * @param func      The callable that generates elements for the new tuple
