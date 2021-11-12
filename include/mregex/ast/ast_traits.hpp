@@ -18,13 +18,7 @@ namespace meta::ast
     {
         using iterator_type = decltype(std::declval<std::string_view>().begin());
 
-        template<typename Test>
-        static auto sfinae_helper(int) -> decltype(&Test::template consume_one<iterator_type, int>, std::true_type{});
-
-        template<typename>
-        static auto sfinae_helper(...) -> std::false_type;
-
-        static constexpr bool value = decltype(sfinae_helper<T>(int{}))::value;
+        static constexpr bool value = requires { &T::template consume_one<iterator_type, int>; };
     };
 
     template<typename T>
