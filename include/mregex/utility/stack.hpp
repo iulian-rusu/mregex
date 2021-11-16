@@ -9,10 +9,7 @@ namespace meta
     template<typename...>
     struct stack;
 
-    /**
-     * Namespace with helper metafunctions for stack manipulation.
-     */
-    namespace impl
+    namespace detail
     {
         template<typename, typename... Rest>
         struct pop_helper
@@ -43,9 +40,9 @@ namespace meta
     struct stack
     {
         template<typename E>
-        using push = impl::push<E, Elems ...>;
+        using push = detail::push<E, Elems ...>;
 
-        using pop = impl::pop<Elems ...>;
+        using pop = detail::pop<Elems ...>;
 
         using top = first_t<Elems ...>;
     };
@@ -56,7 +53,7 @@ namespace meta
     struct stack<>
     {
         template<typename E>
-        using push = impl::push<E>;
+        using push = detail::push<E>;
 
         using pop = stack<>;
 

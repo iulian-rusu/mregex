@@ -124,7 +124,7 @@ namespace meta::ast
         static constexpr std::size_t capture_count = Inner::capture_count;
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter, Iter, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match(Iter, Iter, Iter it, Context &, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
             return cont(it);

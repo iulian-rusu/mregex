@@ -16,7 +16,7 @@ namespace meta::ast
     struct epsilon : terminal
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter, Iter, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match(Iter, Iter, Iter it, Context &, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
             return cont(it);
@@ -26,7 +26,7 @@ namespace meta::ast
     struct nothing : terminal
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter, Iter, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match(Iter, Iter, Iter it, Context &, Continuation &&) noexcept
         -> match_result<Iter>
         {
             return {it, false};
@@ -66,7 +66,7 @@ namespace meta::ast
     struct beginning : terminal
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match(Iter begin, Iter end, Iter it, Context &, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
             if constexpr (flags<Context>::multiline)
@@ -83,7 +83,7 @@ namespace meta::ast
     struct ending : terminal
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match(Iter, Iter end, Iter it, Context &, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
             if constexpr (flags<Context>::multiline)
@@ -113,7 +113,7 @@ namespace meta::ast
         }
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool consume_one(Iter current, Context &ctx) noexcept
+        static constexpr bool consume_one(Iter current, Context &) noexcept
         {
             bool res = C == *current;
             if constexpr (flags<Context>::ignore_case)
@@ -189,7 +189,7 @@ namespace meta::ast
         }
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool consume_one(Iter current, Context &ctx) noexcept
+        static constexpr bool consume_one(Iter current, Context &) noexcept
         {
             auto ch = *current;
             bool res = A <= ch && ch <= B;
@@ -211,7 +211,7 @@ namespace meta::ast
     struct backref : terminal
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
             auto const captured = std::get<ID>(ctx.captures);

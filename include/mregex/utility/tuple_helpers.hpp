@@ -5,16 +5,16 @@
 
 namespace meta
 {
-    namespace impl
+    namespace detail
     {
         template<typename Tuple, typename Func, std::size_t... Indices>
-        constexpr auto tuple_transform(Tuple const &tuple, Func &&func, std::index_sequence<Indices ...> &&)
+        constexpr auto generate_tuple(Tuple const &tuple, Func &&func, std::index_sequence<Indices ...> &&)
         {
             return std::tuple{func(std::get<Indices>(tuple)) ...};
         }
 
         template<typename Tuple, typename Func, std::size_t... Indices>
-        constexpr void tuple_for_each(Tuple &&tuple, Func &&func, std::index_sequence<Indices ...> &&)
+        constexpr void iterate_tuple(Tuple &&tuple, Func &&func, std::index_sequence<Indices ...> &&)
         {
             (func(std::get<Indices>(tuple)), ...);
         }
@@ -29,9 +29,9 @@ namespace meta
      * @return          A new std::tuple with elements returned by mapper
      */
     template<typename Tuple, typename Func>
-    constexpr auto tuple_transform(Tuple const &tuple, Func &&func)
+    constexpr auto generate_tuple(Tuple const &tuple, Func &&func)
     {
-        return impl::tuple_transform(
+        return detail::generate_tuple(
                 tuple,
                 std::forward<Func>(func),
                 std::make_index_sequence<std::tuple_size_v<std::decay_t<Tuple>>>{}
@@ -45,9 +45,9 @@ namespace meta
      * @param func      The function used as a mapper
      */
     template<typename Tuple, typename Func>
-    constexpr void tuple_for_each(Tuple &&tuple, Func &&func)
+    constexpr void iterate_tuple(Tuple &&tuple, Func &&func)
     {
-        impl::tuple_for_each(
+        detail::iterate_tuple(
                 std::forward<Tuple>(tuple),
                 std::forward<Func>(func),
                 std::make_index_sequence<std::tuple_size_v<std::decay_t<Tuple>>>{}

@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.16)
-project(mregex)
+project(mregex VERSION 2.0 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+add_compile_options(-std=c++20 -O3 -Wall -Wextra -Wpedantic -Wuninitialized -Wshadow)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    add_compile_options(-fconcepts-diagnostics-depth=3)
+endif()
 
 include_directories(include)
 add_executable(
@@ -16,9 +22,3 @@ add_executable(
         test/regex_union_tests.cpp
         test/regex_generator_tests.cpp
 )
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -O3")
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fconcepts-diagnostics-depth=3")
-endif()

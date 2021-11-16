@@ -29,9 +29,7 @@ namespace meta
         constexpr static_string(static_string const &other) noexcept
         {
             for (std::size_t i = 0; i < N; ++i)
-            {
                 buffer[i] = other.buffer[i];
-            }
         }
 
         [[nodiscard]] constexpr auto length() const noexcept
@@ -63,19 +61,19 @@ namespace meta
     template<>
     struct static_string<0>
     {
-        constexpr static_string(char const (&str)[1]) noexcept {}
+        constexpr static_string(char const (&)[1]) noexcept {}
 
-        [[nodiscard]] constexpr auto length() const noexcept
+        [[nodiscard]] static constexpr auto length() noexcept
         {
             return 0;
         }
 
-        [[nodiscard]] constexpr auto begin() noexcept
+        [[nodiscard]] static constexpr auto begin() noexcept
         {
             return nullptr;
         }
 
-        [[nodiscard]] constexpr auto end() noexcept
+        [[nodiscard]] static constexpr auto end() noexcept
         {
             return nullptr;
         }

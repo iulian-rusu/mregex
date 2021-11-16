@@ -31,7 +31,7 @@ namespace meta
 
         constexpr void clear() noexcept
         {
-            tuple_for_each(captures, [](auto &capture) {
+            iterate_tuple(captures, [](auto &capture) {
                 capture.clear();
             });
         }

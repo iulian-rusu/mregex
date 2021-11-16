@@ -78,7 +78,7 @@ namespace meta
         [[nodiscard]] auto own() const
         requires is_capture_view_v<std::remove_cvref_t<decltype(std::get<0>(captures))>>
         {
-            auto owning_captures = tuple_transform(captures, [](auto const &capture) {
+            auto owning_captures = generate_tuple(captures, [](auto const &capture) {
                 return regex_capture{capture};
             });
             return regex_result<N>{matched, std::move(owning_captures)};
