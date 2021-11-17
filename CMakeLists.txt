@@ -8,6 +8,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif()
 
 include_directories(include)
+
 add_executable(
         demo
         demo.cpp

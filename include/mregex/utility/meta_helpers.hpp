@@ -5,8 +5,11 @@
 
 namespace meta
 {
-    template<typename First, typename...>
-    struct first
+    template<typename... >
+    struct first;
+
+    template<typename First, typename... Rest>
+    struct first<First, Rest ...>
     {
         using type = First;
     };
@@ -14,8 +17,11 @@ namespace meta
     template<typename... Elems>
     using first_t = typename first<Elems ...>::type;
 
+    template<typename... >
+    struct last;
+
     template<typename First, typename... Rest>
-    struct last
+    struct last<First, Rest ...>
     {
         using type = typename last<Rest ...>::type;
     };
