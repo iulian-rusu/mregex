@@ -26,37 +26,44 @@ namespace meta
 
         /**
          * Metafunction that models the transition of the parser automaton.
+         *
+         * @tparam I        The current position in the input
+         * @tparam Rule     The current grammar rule
+         * @tparam AST      The stack with the current state of the AST
+         * @tparam Symbols  The stack with the current parsing symbols
          */
-        template<std::size_t, typename, typename, typename>
+        template<std::size_t I, typename Rule, typename AST, typename Symbols>
         struct transition;
 
-        template<std::size_t I, typename Rule, typename AST, typename Stack>
-        using transition_t = typename transition<I, Rule, AST, Stack>::type;
+        template<std::size_t I, typename Rule, typename AST, typename Symbols>
+        using transition_t = typename transition<I, Rule, AST, Symbols>::type;
 
         /**
          * Main metafunction used to parse the pattern.
+         *
+         * @tparam I        The current position in the input
+         * @tparam AST      The stack with the current state of the AST
+         * @tparam Symbols  The stack with the current parsing symbols
          */
-        template<std::size_t I, typename AST, typename Stack, bool = symbol::is_ast_update_v<top<Stack>>>
+        template<std::size_t I, typename AST, typename Symbols, bool = symbol::is_ast_update_v<top<Symbols>>>
         struct parse
         {
-            using next_stack = pop<Stack>;
             using current_token = token_t<I>;
-            using current_rule = grammar::rule_t<top<Stack>, current_token>;
+            using current_rule = grammar::rule_t<top<Symbols>, current_token>;
 
-            using type = transition_t<I, current_rule, AST, next_stack>;
+            using type = transition_t<I, current_rule, AST, pop<Symbols>>;
         };
 
-        template<std::size_t I, typename AST, typename Stack>
-        using parse_t = typename parse<I, AST, Stack>::type;
+        template<std::size_t I, typename AST, typename Symbols>
+        using parse_t = typename parse<I, AST, Symbols>::type;
 
-        template<std::size_t I, typename AST, typename Stack>
-        struct parse<I, AST, Stack, true>
+        template<std::size_t I, typename AST, typename Symbols>
+        struct parse<I, AST, Symbols, true>
         {
-            using next_stack = pop<Stack>;
             using prev_token = token_t<I - 1>;
-            using next_ast = ast::update_ast_t<top<Stack>, prev_token, AST>;
+            using next_ast = ast::build_t<top<Symbols>, prev_token, AST>;
 
-            using type = parse_t<I, next_ast, next_stack>;
+            using type = parse_t<I, next_ast, pop<Symbols>>;
         };
 
         // Base case - push the rule on the stack
