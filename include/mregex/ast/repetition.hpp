@@ -93,10 +93,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires (!is_trivially_matchable_v<Inner>)
         {
-            auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
-                return exact_repetition<N - 1, Inner>::match(begin, end, new_it, ctx, cont);
-            };
-            return Inner::match(begin, end, it, ctx, continuation);
+            return non_unrolled_repeat(begin, end, it, ctx, cont);
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
@@ -115,6 +112,22 @@ namespace meta::ast
                     return {it, false};
             }
             return cont(it);
+        }
+
+    private:
+        template<std::forward_iterator Iter, typename Context, typename Continuation>
+        static constexpr auto non_unrolled_repeat(
+                Iter begin, Iter end, Iter it, Context &ctx,
+                Continuation &&cont, std::size_t repeats = N
+        ) noexcept -> match_result<Iter>
+        {
+            if (repeats == 1)
+                return Inner::match(begin, end, it, ctx, cont);
+
+            auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
+                return non_unrolled_repeat(begin, end, new_it, ctx, cont, repeats - 1);
+            };
+            return Inner::match(begin, end, it, ctx, continuation);
         }
     };
 

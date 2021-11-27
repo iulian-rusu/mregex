@@ -46,15 +46,13 @@ namespace meta::ast
             std::size_t const remaining_length = std::distance(it, end);
             if (remaining_length < sequence_size)
                 return {it, false};
-            return expand_trivial_match(it, ctx, cont, std::make_index_sequence<sequence_size>{});
+            return unroll_trivial_match(it, ctx, cont, std::make_index_sequence<sequence_size>{});
         }
 
     private:
         template<std::forward_iterator Iter, typename Context, typename Continuation, std::size_t Index, std::size_t... Indices>
-        static constexpr auto expand_trivial_match(
-                Iter it,
-                Context &ctx,
-                Continuation &&cont,
+        static constexpr auto unroll_trivial_match(
+                Iter it, Context &ctx, Continuation &&cont,
                 std::index_sequence<Index, Indices ...> &&
         ) noexcept -> match_result<Iter>
         {

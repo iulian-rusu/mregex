@@ -146,11 +146,10 @@ namespace meta
             using context_type = regex_context<iterator_type, ast_type, Flags ...>;
 
             regex_match_generator<context_type> generator{input.begin(), input.end(), input.begin()};
-            return input_range_adapter
-            {
-                [=, capture = make_universal_capture(std::forward<R>(input))]() mutable {
-                    return generator();
-                }
+            return input_range_adapter{
+                    [=, capture = make_universal_capture(std::forward<R>(input))]() mutable {
+                        return generator();
+                    }
             };
         }
     };

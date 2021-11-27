@@ -128,6 +128,7 @@ namespace meta::tests
     static_assert(regex<R"((x{2,})\1+)">::match("xxxxxxxxx"sv));
     static_assert(regex<R"((a*(x|axx))e)">::match("aaaxxe"sv));
     static_assert(regex<R"((a|ab|abc){3,}bc)">::match("aabaabcabcabaaabc"sv));
+    static_assert(regex<R"((ab?c?d){3})">::match("abcdacdad"sv));
     static_assert(regex<R"((a|ab|abc){3,10}bc)">::match("aabaabcabcabaaabc"sv));
     static_assert(regex<R"([0-Z]+)", flag::i>::match("1234abczABCZ"sv));
     static_assert(regex<R"([A-Z]+)", flag::icase>::match("aBcDeFiOyZ"sv));
