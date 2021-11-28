@@ -127,7 +127,7 @@ namespace meta::tests
     static_assert(regex<R"(.+)">::match("this regex will match any input"sv));
     static_assert(regex<R"((x{2,})\1+)">::match("xxxxxxxxx"sv));
     static_assert(regex<R"((a*(x|axx))e)">::match("aaaxxe"sv));
-    static_assert(regex<R"((a|ab|abc){3,}bc)">::match("aabaabcabcabaaabc"sv));
+    static_assert(regex<R"((a|ab|abc){3,}bc)", flag::unroll>::match("aabaabcabcabaaabc"sv));
     static_assert(regex<R"((ab?c?d){3})">::match("abcdacdad"sv));
     static_assert(regex<R"((a|ab|abc){3,10}bc)">::match("aabaabcabcabaaabc"sv));
     static_assert(regex<R"([0-Z]+)", flag::i>::match("1234abczABCZ"sv));
@@ -139,7 +139,7 @@ namespace meta::tests
     static_assert(regex<R"((a|ab|abc)+x)">::match("abx"sv));
     static_assert(regex<R"((a|ab|abc)+x)">::match("abcx"sv));
     static_assert(regex<R"((a|ab|abc)+x)">::match("aabcaaabababcx"sv));
-    static_assert(regex<R"((a|ab|abc){3}x)">::match("aabcabx"sv));
+    static_assert(regex<R"((a|ab|abc){3}x)", flag::unroll>::match("aabcabx"sv));
     static_assert(regex<R"(a|ab|abc)">::match("a"sv));
     static_assert(regex<R"(a|ab|abc)">::match("ab"sv));
     static_assert(regex<R"(a|ab|abc)">::match("abc"sv));

@@ -22,6 +22,7 @@ namespace meta
             static constexpr bool dotall = is_flag_enabled_v<flag::dotall, Flags ...>;
             static constexpr bool multiline = is_flag_enabled_v<flag::multiline, Flags ...>;
             static constexpr bool ungreedy = is_flag_enabled_v<flag::ungreedy, Flags ...>;
+            static constexpr bool unroll = is_flag_enabled_v<flag::unroll, Flags ...>;
         };
 
         using ast_type = AST;

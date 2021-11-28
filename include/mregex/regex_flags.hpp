@@ -38,6 +38,12 @@ namespace meta
          */
         using ungreedy = regex_flag<0x3>;
         using U = ungreedy;
+
+        /**
+         * Makes the compiler unroll even non-trivial repetition loops.
+         */
+        using unroll = regex_flag<0x4>;
+        using r = unroll;
     }
 
     template<typename T>

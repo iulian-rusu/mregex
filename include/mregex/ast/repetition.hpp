@@ -93,7 +93,17 @@ namespace meta::ast
         -> match_result<Iter>
         requires (!is_trivially_matchable_v<Inner>)
         {
-            return non_unrolled_repeat(begin, end, it, ctx, cont);
+            if constexpr (flags<Context>::unroll)
+            {
+                auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
+                    return exact_repetition<N - 1, Inner>::match(begin, end, new_it, ctx, cont);
+                };
+                return Inner::match(begin, end, it, ctx, continuation);
+            }
+            else
+            {
+                return non_unrolled_repeat(begin, end, it, ctx, cont);
+            }
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>

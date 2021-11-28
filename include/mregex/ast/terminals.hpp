@@ -167,7 +167,7 @@ namespace meta::ast
                 return true;
 
             auto ch = *current;
-            return  ch != '\n' && ch != '\r';
+            return ch != '\n' && ch != '\r';
         }
     };
 
@@ -220,7 +220,7 @@ namespace meta::ast
             if (length_to_match > remaining_length)
                 return {it, false};
 
-            for (auto c : captured)
+            for (auto c: captured)
             {
                 auto subject = *it;
                 if constexpr (flags<Context>::ignore_case)
@@ -230,7 +230,6 @@ namespace meta::ast
                 }
                 if (subject != c)
                     return {it, false};
-
                 ++it;
             }
             return cont(it);
@@ -248,7 +247,6 @@ namespace meta::ast
         {
             if (it == end)
                 return {it, false};
-
             if (consume_one(it, ctx))
                 return cont(++it);
             return {it, false};
