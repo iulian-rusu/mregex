@@ -43,7 +43,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires (is_trivially_matchable_v<Inner> && std::bidirectional_iterator<Iter>)
         {
-            Iter const start = it;
+            Iter start = it;
             for (; it != end; ++it)
             {
                 if (!Inner::consume_one(it, ctx))

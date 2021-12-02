@@ -13,7 +13,7 @@ namespace meta
      * @tparam Gen   The type of callable used to produce the desired data
      */
     template<bool_testable_generator Gen>
-    struct input_range_adapter : protected Gen
+    struct input_range_adapter : private Gen
     {
         template<typename F>
         constexpr explicit input_range_adapter(F &&f)

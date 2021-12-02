@@ -56,13 +56,9 @@ namespace meta::ast
         -> match_result<Iter>
         requires is_trivially_matchable_v<Inner>
         {
-            std::size_t matched_so_far = 0;
-            for (; it != end && matched_so_far < R; ++it)
-            {
+            for (std::size_t matched = 0; it != end && matched < R; ++matched, ++it)
                 if (!Inner::consume_one(it, ctx))
                     break;
-                ++matched_so_far;
-            }
             return cont(it);
         }
     };
@@ -115,12 +111,9 @@ namespace meta::ast
             if (remaining_length < N)
                 return {it, false};
 
-            std::size_t matched = 0;
-            for (; matched < N; ++matched)
-            {
+            for (std::size_t matched = 0; matched < N; ++matched)
                 if (!Inner::consume_one(it++, ctx))
                     return {it, false};
-            }
             return cont(it);
         }
 
