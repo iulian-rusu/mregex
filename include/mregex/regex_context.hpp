@@ -11,18 +11,16 @@ namespace meta
      * Data structure that holds static information about the regex as well as
      * match-time information like iterator types and captured contents.
      */
-    template<std::forward_iterator Iter, typename AST, typename... Flags>
+    template<std::forward_iterator Iter, typename AST, regex_flags flags>
     struct regex_context
     {
-        static_assert((is_flag_v<Flags> && ...), "invalid flag");
-
-        struct flags
+        struct flags_type
         {
-            static constexpr bool ignore_case = is_flag_enabled_v<flag::icase, Flags ...>;
-            static constexpr bool dotall = is_flag_enabled_v<flag::dotall, Flags ...>;
-            static constexpr bool multiline = is_flag_enabled_v<flag::multiline, Flags ...>;
-            static constexpr bool ungreedy = is_flag_enabled_v<flag::ungreedy, Flags ...>;
-            static constexpr bool unroll = is_flag_enabled_v<flag::unroll, Flags ...>;
+            static constexpr bool ignore_case = flag::icase & flags;
+            static constexpr bool dotall = flag::dotall & flags;
+            static constexpr bool multiline = flag::multiline & flags;
+            static constexpr bool ungreedy = flag::ungreedy & flags;
+            static constexpr bool unroll = flag::unroll & flags;
         };
 
         using ast_type = AST;
@@ -39,6 +37,6 @@ namespace meta
     };
 
     template<typename Context>
-    using flags = typename Context::flags;
+    using flags_of = typename Context::flags_type;
 }
 #endif //MREGEX_REGEX_CONTEXT_HPP

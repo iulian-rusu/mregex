@@ -15,16 +15,16 @@ namespace meta
      * Base for all regex-like types.
      *
      * @tparam AST      The Abstract Syntax Tree of the regex object
-     * @tparam Flags    Optional flags for matching
+     * @tparam flags    Optional flags for matching
      */
-    template<typename AST, typename... Flags>
+    template<typename AST, regex_flags flags = flag::none>
     struct regex_base
     {
         /**
          * Metafunction used to add flags to the current regex type.
          */
-        template<typename... ExtraFlags>
-        using with = regex_base<AST, Flags ..., ExtraFlags ...>;
+        template<regex_flags extra_flags>
+        using with = regex_base<AST, flags | extra_flags>;
 
         using ast_type = AST;
 
@@ -44,7 +44,7 @@ namespace meta
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto match(Iter const begin, Iter const end) noexcept
         {
-            using context_type = regex_context<Iter, ast_type, Flags ...>;
+            using context_type = regex_context<Iter, ast_type, flags>;
             using result_type = regex_result_view<ast_type::capture_count, Iter>;
 
             context_type ctx{};
@@ -69,7 +69,7 @@ namespace meta
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto search(Iter const begin, Iter const end, Iter const from) noexcept
         {
-            using context_type = regex_context<Iter, ast_type, Flags ...>;
+            using context_type = regex_context<Iter, ast_type, flags>;
             using result_type = regex_result_view<ast_type::capture_count, Iter>;
 
             context_type ctx{};
@@ -101,7 +101,7 @@ namespace meta
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto range(Iter const begin, Iter const end) noexcept
         {
-            using context_type = regex_context<Iter, ast_type, Flags ...>;
+            using context_type = regex_context<Iter, ast_type, flags>;
 
             return input_range_adapter{regex_match_generator<context_type>{begin, end, begin}};
         }
@@ -143,7 +143,7 @@ namespace meta
         [[nodiscard]] static constexpr auto range(R &&input) noexcept
         {
             using iterator_type = decltype(input.begin());
-            using context_type = regex_context<iterator_type, ast_type, Flags ...>;
+            using context_type = regex_context<iterator_type, ast_type, flags>;
 
             regex_match_generator<context_type> generator{input.begin(), input.end(), input.begin()};
             return input_range_adapter{

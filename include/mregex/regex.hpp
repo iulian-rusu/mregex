@@ -6,8 +6,8 @@
 
 namespace meta
 {
-    template<static_string pattern, typename... Flags>
-    struct regex : regex_base<ast_of<pattern>, Flags ...>
+    template<static_string pattern, regex_flags flags = flag::none>
+    struct regex : regex_base<ast_of<pattern>, flags>
     {
         static_assert(std::is_same_v<status_of<pattern>, parsing::success>, "error while parsing regular expression");
     };

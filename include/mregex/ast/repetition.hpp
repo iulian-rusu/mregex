@@ -89,7 +89,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires (!is_trivially_matchable_v<Inner>)
         {
-            if constexpr (flags<Context>::unroll)
+            if constexpr (flags_of<Context>::unroll)
             {
                 auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
                     return exact_repetition<N - 1, Inner>::match(begin, end, new_it, ctx, cont);
