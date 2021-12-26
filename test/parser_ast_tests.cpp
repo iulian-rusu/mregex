@@ -5,7 +5,7 @@ namespace meta::tests
 {
     using namespace ast;
 
-    namespace detail
+    namespace
     {
         template<static_string pattern, typename AST>
         inline constexpr bool expected_ast = std::is_same_v<ast_of<pattern>, AST>;
@@ -13,9 +13,9 @@ namespace meta::tests
 
     //static_assert(std::is_same_v<ast_of<static_string(R"(a)")>, literal<'a'>>);
 
-    static_assert(detail::expected_ast<R"()", epsilon>);
-    static_assert(detail::expected_ast<R"(a)", literal<'a'>>);
-    static_assert(detail::expected_ast<R"(^ab)",
+    static_assert(expected_ast<R"()", epsilon>);
+    static_assert(expected_ast<R"(a)", literal<'a'>>);
+    static_assert(expected_ast<R"(^ab)",
             sequence
             <
                 beginning,
@@ -23,7 +23,7 @@ namespace meta::tests
                 literal<'b'>
             >
     >);
-    static_assert(detail::expected_ast<R"(ab$)",
+    static_assert(expected_ast<R"(ab$)",
             sequence
             <
                 literal<'a'>,
@@ -31,7 +31,7 @@ namespace meta::tests
                 ending
             >
     >);
-    static_assert(detail::expected_ast<R"(^ab$)",
+    static_assert(expected_ast<R"(^ab$)",
             sequence
             <
                 beginning,
@@ -40,7 +40,7 @@ namespace meta::tests
                 ending
             >
     >);
-    static_assert(detail::expected_ast<R"(x(?=ab)x)",
+    static_assert(expected_ast<R"(x(?=ab)x)",
             sequence
             <
                 literal<'x'>,
@@ -55,7 +55,7 @@ namespace meta::tests
                 literal<'x'>
             >
     >);
-    static_assert(detail::expected_ast<R"(x(?!ab){2}x)",
+    static_assert(expected_ast<R"(x(?!ab){2}x)",
             sequence
             <
                 literal<'x'>,
@@ -74,7 +74,7 @@ namespace meta::tests
                 literal<'x'>
             >
     >);
-    static_assert(detail::expected_ast<R"(x(?=a(?!c*d?)b)x)",
+    static_assert(expected_ast<R"(x(?=a(?!c*d?)b)x)",
             sequence
             <
                 literal<'x'>,
@@ -103,14 +103,14 @@ namespace meta::tests
                 literal<'x'>
             >
     >);
-    static_assert(detail::expected_ast<R"(\n)", literal<'\n'>>);
-    static_assert(detail::expected_ast<R"(\r)", literal<'\r'>>);
-    static_assert(detail::expected_ast<R"(\t)", literal<'\t'>>);
-    static_assert(detail::expected_ast<R"(\R)", linebreak>);
-    static_assert(detail::expected_ast<R"(\N)", negated<linebreak>>);
-    static_assert(detail::expected_ast<R"(\a)", alpha>);
-    static_assert(detail::expected_ast<R"(\D)",negated<digit>>);
-    static_assert(detail::expected_ast<R"(a.?b)",
+    static_assert(expected_ast<R"(\n)", literal<'\n'>>);
+    static_assert(expected_ast<R"(\r)", literal<'\r'>>);
+    static_assert(expected_ast<R"(\t)", literal<'\t'>>);
+    static_assert(expected_ast<R"(\R)", linebreak>);
+    static_assert(expected_ast<R"(\N)", negated<linebreak>>);
+    static_assert(expected_ast<R"(\a)", alpha>);
+    static_assert(expected_ast<R"(\D)",negated<digit>>);
+    static_assert(expected_ast<R"(a.?b)",
             sequence
             <
                 literal<'a'>,
@@ -121,29 +121,29 @@ namespace meta::tests
                 literal<'b'>
             >
     >);
-    static_assert(detail::expected_ast<R"((c))",
+    static_assert(expected_ast<R"((c))",
             capturing
             <
                 1,
                 literal<'c'>
             >
     >);
-    static_assert(detail::expected_ast<R"((?:c))", literal<'c'>>);
-    static_assert(detail::expected_ast<R"(\1)", backref<1>>);
-    static_assert(detail::expected_ast<R"(\31)", backref<31>>);
-    static_assert(detail::expected_ast<R"(\1+)",
+    static_assert(expected_ast<R"((?:c))", literal<'c'>>);
+    static_assert(expected_ast<R"(\1)", backref<1>>);
+    static_assert(expected_ast<R"(\31)", backref<31>>);
+    static_assert(expected_ast<R"(\1+)",
             plus
             <
                 backref<1>
             >
     >);
-    static_assert(detail::expected_ast<R"(\42?)",
+    static_assert(expected_ast<R"(\42?)",
             optional
             <
                 backref<42>
             >
     >);
-    static_assert(detail::expected_ast<R"((c)\1)",
+    static_assert(expected_ast<R"((c)\1)",
             sequence
             <
                 capturing
@@ -154,7 +154,7 @@ namespace meta::tests
                 backref<1>
             >
     >);
-    static_assert(detail::expected_ast<R"((c)\0)",
+    static_assert(expected_ast<R"((c)\0)",
             sequence
             <
                 capturing
@@ -165,7 +165,7 @@ namespace meta::tests
                 literal<'\0'>
             >
     >);
-    static_assert(detail::expected_ast<R"((c)\12)",
+    static_assert(expected_ast<R"((c)\12)",
             sequence
             <
                 capturing
@@ -176,7 +176,7 @@ namespace meta::tests
                 backref<12>
             >
     >);
-    static_assert(detail::expected_ast<R"((c)\01)",
+    static_assert(expected_ast<R"((c)\01)",
             sequence
             <
                 capturing
@@ -188,7 +188,7 @@ namespace meta::tests
                 literal<'1'>
             >
     >);
-    static_assert(detail::expected_ast<R"((c)\12?x)",
+    static_assert(expected_ast<R"((c)\12?x)",
             sequence
             <
                 capturing
@@ -203,7 +203,7 @@ namespace meta::tests
                 literal<'x'>
             >
     >);
-    static_assert(detail::expected_ast<R"(((c))(e))",
+    static_assert(expected_ast<R"(((c))(e))",
             sequence
             <
                 capturing
@@ -222,7 +222,7 @@ namespace meta::tests
                 >
             >
     >);
-    static_assert(detail::expected_ast<R"(((?:c))(e))",
+    static_assert(expected_ast<R"(((?:c))(e))",
             sequence
             <
                 capturing
@@ -237,25 +237,25 @@ namespace meta::tests
                 >
             >
     >);
-    static_assert(detail::expected_ast<R"(c?)",
+    static_assert(expected_ast<R"(c?)",
             optional
             <
                 literal<'c'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c*)",
+    static_assert(expected_ast<R"(c*)",
             star
             <
                 literal<'c'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c+)",
+    static_assert(expected_ast<R"(c+)",
             plus
             <
                 literal<'c'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c{2})",
+    static_assert(expected_ast<R"(c{2})",
             repetition
             <
                 symbol::quantifier_value<2>,
@@ -263,7 +263,7 @@ namespace meta::tests
                 literal<'c'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c{0})",
+    static_assert(expected_ast<R"(c{0})",
             repetition
             <
                 symbol::quantifier_value<0>,
@@ -271,14 +271,14 @@ namespace meta::tests
                 literal<'c'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c{)",
+    static_assert(expected_ast<R"(c{)",
             sequence
             <
                 literal<'c'>,
                 literal<'{'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c{})",
+    static_assert(expected_ast<R"(c{})",
             sequence
             <
                 literal<'c'>,
@@ -286,7 +286,7 @@ namespace meta::tests
                 literal<'}'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c{*})",
+    static_assert(expected_ast<R"(c{*})",
             sequence
             <
                 literal<'c'>,
@@ -297,7 +297,7 @@ namespace meta::tests
                 literal<'}'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c{22})",
+    static_assert(expected_ast<R"(c{22})",
             repetition
             <
                 symbol::quantifier_value<22>,
@@ -305,7 +305,7 @@ namespace meta::tests
                 literal<'c'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c{22,})",
+    static_assert(expected_ast<R"(c{22,})",
             repetition
             <
                 symbol::quantifier_value<22>,
@@ -313,7 +313,7 @@ namespace meta::tests
                 literal<'c'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c{22,0})", // parsable syntax but will not compile when trying to match
+    static_assert(expected_ast<R"(c{22,0})", // parsable syntax but will not compile when trying to match
             repetition
             <
                 symbol::quantifier_value<22>,
@@ -321,7 +321,7 @@ namespace meta::tests
                 literal<'c'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c{984,7644})",
+    static_assert(expected_ast<R"(c{984,7644})",
             repetition
             <
                 symbol::quantifier_value<984>,
@@ -329,7 +329,7 @@ namespace meta::tests
                 literal<'c'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c{0,22})",
+    static_assert(expected_ast<R"(c{0,22})",
             repetition
             <
                 symbol::quantifier_value<0>,
@@ -337,7 +337,7 @@ namespace meta::tests
                 literal<'c'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c{,22})",
+    static_assert(expected_ast<R"(c{,22})",
             sequence
             <
                 literal<'c'>,
@@ -348,7 +348,7 @@ namespace meta::tests
                 literal<'}'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c\{22})",
+    static_assert(expected_ast<R"(c\{22})",
             sequence
             <
                 literal<'c'>,
@@ -358,7 +358,7 @@ namespace meta::tests
                 literal<'}'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c{012})",
+    static_assert(expected_ast<R"(c{012})",
             repetition
             <
                 symbol::quantifier_value<12>,
@@ -366,7 +366,7 @@ namespace meta::tests
                 literal<'c'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c{x})",
+    static_assert(expected_ast<R"(c{x})",
             sequence
             <
                 literal<'c'>,
@@ -375,7 +375,7 @@ namespace meta::tests
                 literal<'}'>
             >
     >);
-    static_assert(detail::expected_ast<R"(c*{012})",
+    static_assert(expected_ast<R"(c*{012})",
             sequence
             <
                 star
@@ -389,7 +389,7 @@ namespace meta::tests
                 literal<'}'>
             >
     >);
-    static_assert(detail::expected_ast<R"((c*{012}){3})",
+    static_assert(expected_ast<R"((c*{012}){3})",
             repetition
             <
                 symbol::quantifier_value<3>,
@@ -412,7 +412,7 @@ namespace meta::tests
                 >
             >
     >);
-    static_assert(detail::expected_ast<R"(a(b(cd)*){15})",
+    static_assert(expected_ast<R"(a(b(cd)*){15})",
             sequence
             <
                 literal<'a'>,
@@ -443,7 +443,7 @@ namespace meta::tests
                 >
             >
     >);
-    static_assert(detail::expected_ast<R"((\(+)*)",
+    static_assert(expected_ast<R"((\(+)*)",
             star
             <
                 capturing
@@ -456,7 +456,7 @@ namespace meta::tests
                 >
             >
     >);
-    static_assert(detail::expected_ast<R"((\++)*)",
+    static_assert(expected_ast<R"((\++)*)",
             star
             <
                 capturing
@@ -469,7 +469,7 @@ namespace meta::tests
                 >
             >
     >);
-    static_assert(detail::expected_ast<R"((?:\++)*)",
+    static_assert(expected_ast<R"((?:\++)*)",
             star
             <
                 plus
@@ -478,7 +478,7 @@ namespace meta::tests
                 >
             >
     >);
-    static_assert(detail::expected_ast<R"(x(?:abc)*x)",
+    static_assert(expected_ast<R"(x(?:abc)*x)",
             sequence
             <
                 literal<'x'>,
@@ -494,7 +494,7 @@ namespace meta::tests
                 literal<'x'>
             >
     >);
-    static_assert(detail::expected_ast<R"(xyz?(.(?:a(?:b(c(d))?)*)?)*zyx?)",
+    static_assert(expected_ast<R"(xyz?(.(?:a(?:b(c(d))?)*)?)*zyx?)",
             sequence
             <
                 literal<'x'>,
@@ -552,8 +552,8 @@ namespace meta::tests
                 >
             >
     >);
-    static_assert(detail::expected_ast<R"(\\)", literal<'\\'>>);
-    static_assert(detail::expected_ast<R"(\(?x+)",
+    static_assert(expected_ast<R"(\\)", literal<'\\'>>);
+    static_assert(expected_ast<R"(\(?x+)",
             sequence
             <
                 optional
@@ -567,7 +567,7 @@ namespace meta::tests
                 >
             >
     >);
-    static_assert(detail::expected_ast<R"(abc)",
+    static_assert(expected_ast<R"(abc)",
             sequence
             <
                 literal<'a'>,
@@ -575,7 +575,7 @@ namespace meta::tests
                 literal<'c'>
             >
     >);
-    static_assert(detail::expected_ast<R"(a|b|c)",
+    static_assert(expected_ast<R"(a|b|c)",
             alternation
             <
                 literal<'a'>,
@@ -583,7 +583,7 @@ namespace meta::tests
                 literal<'c'>
             >
     >);
-    static_assert(detail::expected_ast<R"(aa|bb|cc)",
+    static_assert(expected_ast<R"(aa|bb|cc)",
             alternation
             <
                 sequence
@@ -604,7 +604,7 @@ namespace meta::tests
             >
     >);
     // alternation<optional<a>, b> simplifies to alternation<a, epsilon, b>
-    static_assert(detail::expected_ast<R"(a?|b|c)",
+    static_assert(expected_ast<R"(a?|b|c)",
             alternation
             <
                 literal<'a'>,
@@ -613,21 +613,21 @@ namespace meta::tests
                 literal<'c'>
             >
     >);
-    static_assert(detail::expected_ast<R"([a])",
+    static_assert(expected_ast<R"([a])",
             set
             <
                 literal<'a'>
             >
     >);
-    static_assert(detail::expected_ast<R"([.])",
+    static_assert(expected_ast<R"([.])",
             set
             <
                 literal<'.'>
             >
     >);
-    static_assert(detail::expected_ast<R"([])", nothing>);
-    static_assert(detail::expected_ast<R"([^])", negated<nothing>>);
-    static_assert(detail::expected_ast<R"([a][b])",
+    static_assert(expected_ast<R"([])", nothing>);
+    static_assert(expected_ast<R"([^])", negated<nothing>>);
+    static_assert(expected_ast<R"([a][b])",
             sequence
             <
                 set
@@ -640,7 +640,7 @@ namespace meta::tests
                 >
             >
     >);
-    static_assert(detail::expected_ast<R"([][b])",
+    static_assert(expected_ast<R"([][b])",
             sequence
             <
                 nothing,
@@ -650,7 +650,7 @@ namespace meta::tests
                 >
             >
     >);
-    static_assert(detail::expected_ast<R"([a]?[b])",
+    static_assert(expected_ast<R"([a]?[b])",
             sequence
             <
                 optional
@@ -666,7 +666,7 @@ namespace meta::tests
                 >
             >
     >);
-    static_assert(detail::expected_ast<R"([a]?[b]?)",
+    static_assert(expected_ast<R"([a]?[b]?)",
             sequence
             <
                 optional
@@ -685,7 +685,7 @@ namespace meta::tests
                 >
             >
     >);
-    static_assert(detail::expected_ast<R"([abc])",
+    static_assert(expected_ast<R"([abc])",
             set
             <
                 literal<'c'>,
@@ -693,13 +693,13 @@ namespace meta::tests
                 literal<'a'>
             >
     >);
-    static_assert(detail::expected_ast<R"([a-z])",
+    static_assert(expected_ast<R"([a-z])",
             set
             <
                 range<'a', 'z'>
             >
     >);
-    static_assert(detail::expected_ast<R"([a\-z])",
+    static_assert(expected_ast<R"([a\-z])",
             set
             <
                 literal<'z'>,
@@ -707,14 +707,14 @@ namespace meta::tests
                 literal<'a'>
             >
     >);
-    static_assert(detail::expected_ast<R"([a-z-])",
+    static_assert(expected_ast<R"([a-z-])",
             set
             <
                 literal<'-'>,
                 range<'a', 'z'>
             >
     >);
-    static_assert(detail::expected_ast<R"([a-z-A])",
+    static_assert(expected_ast<R"([a-z-A])",
             set
             <
                 literal<'A'>,
@@ -722,7 +722,7 @@ namespace meta::tests
                 range<'a', 'z'>
             >
     >);
-    static_assert(detail::expected_ast<R"([a-z0-9A-Z])",
+    static_assert(expected_ast<R"([a-z0-9A-Z])",
             set
             <
                 range<'A', 'Z'>,
@@ -730,14 +730,14 @@ namespace meta::tests
                 range<'a', 'z'>
             >
     >);
-    static_assert(detail::expected_ast<R"([a-[0-\]])",
+    static_assert(expected_ast<R"([a-[0-\]])",
             set
             <
                 range<'0', ']'>,
                 range<'a', '['>
             >
     >);
-    static_assert(detail::expected_ast<R"([^a-[0-\]])",
+    static_assert(expected_ast<R"([^a-[0-\]])",
             negated
             <
                 set
@@ -747,14 +747,14 @@ namespace meta::tests
                 >
             >
     >);
-    static_assert(detail::expected_ast<R"([a-[0-\]])",
+    static_assert(expected_ast<R"([a-[0-\]])",
             set
             <
                 range<'0', ']'>,
                 range<'a', '['>
             >
     >);
-    static_assert(detail::expected_ast<R"([-a-[0-\]])",
+    static_assert(expected_ast<R"([-a-[0-\]])",
             set
             <
                 range<'0', ']'>,
@@ -762,7 +762,7 @@ namespace meta::tests
                 literal<'-'>
             >
     >);
-    static_assert(detail::expected_ast<R"([^-aA-Z])",
+    static_assert(expected_ast<R"([^-aA-Z])",
             negated
             <
                 set
@@ -773,7 +773,7 @@ namespace meta::tests
                 >
             >
     >);
-    static_assert(detail::expected_ast<R"(a[^-a-z\WA-Z])",
+    static_assert(expected_ast<R"(a[^-a-z\WA-Z])",
             sequence
             <
                 literal<'a'>,
@@ -789,7 +789,7 @@ namespace meta::tests
                 >
             >
     >);
-    static_assert(detail::expected_ast<R"(\x\x[^a^[\]b\c]yy)",
+    static_assert(expected_ast<R"(\x\x[^a^[\]b\c]yy)",
             sequence
             <
                 literal<'x'>,
@@ -810,7 +810,7 @@ namespace meta::tests
                 literal<'y'>
             >
     >);
-    static_assert(detail::expected_ast<R"(((tuv)?b+)*|xy)",
+    static_assert(expected_ast<R"(((tuv)?b+)*|xy)",
             alternation
             <
                 star

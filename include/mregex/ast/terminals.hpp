@@ -69,7 +69,7 @@ namespace meta::ast
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            if constexpr (flags<Context>::multiline)
+            if constexpr (flags_of<Context>::multiline)
             {
                 if (it != end && *it == '\n')
                     return cont(++it);
@@ -86,7 +86,7 @@ namespace meta::ast
         static constexpr auto match(Iter, Iter end, Iter it, Context &, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            if constexpr (flags<Context>::multiline)
+            if constexpr (flags_of<Context>::multiline)
             {
                 if (it != end && *it == '\n')
                     return cont(++it);
@@ -116,7 +116,7 @@ namespace meta::ast
         static constexpr bool consume_one(Iter current, Context &) noexcept
         {
             bool res = C == *current;
-            if constexpr (flags<Context>::ignore_case)
+            if constexpr (flags_of<Context>::ignore_case)
                 res |= toggle_case_v<C> == *current;
             return res;
         }
@@ -163,7 +163,7 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context>
         static constexpr bool consume_one(Iter current, Context &) noexcept
         {
-            if constexpr (flags<Context>::dotall)
+            if constexpr (flags_of<Context>::dotall)
                 return true;
 
             auto ch = *current;
@@ -193,7 +193,7 @@ namespace meta::ast
         {
             auto ch = *current;
             bool res = A <= ch && ch <= B;
-            if constexpr (flags<Context>::ignore_case)
+            if constexpr (flags_of<Context>::ignore_case)
             {
                 ch = to_lower(ch);
                 res |= A <= ch && ch <= B;
@@ -223,7 +223,7 @@ namespace meta::ast
             for (auto c: captured)
             {
                 auto subject = *it;
-                if constexpr (flags<Context>::ignore_case)
+                if constexpr (flags_of<Context>::ignore_case)
                 {
                     subject = to_lower(subject);
                     c = to_lower(c);

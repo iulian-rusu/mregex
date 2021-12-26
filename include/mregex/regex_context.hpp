@@ -39,6 +39,6 @@ namespace meta
     };
 
     template<typename Context>
-    using flags = typename Context::flags;
+    using flags_of = typename Context::flags;
 }
 #endif //MREGEX_REGEX_CONTEXT_HPP
