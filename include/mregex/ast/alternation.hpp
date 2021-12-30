@@ -18,6 +18,8 @@ namespace meta::ast
         {
             if (auto first_match = First::match(begin, end, it, ctx, cont))
                 return first_match;
+            if constexpr(capture_count > 0)
+                ctx.clear();
             return alternation<Rest ...>::match(begin, end, it, ctx, cont);
         }
     };

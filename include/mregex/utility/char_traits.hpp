@@ -10,11 +10,6 @@ namespace meta
     inline constexpr bool is_numeric_v = is_numeric<C>::value;
 
     template<auto C>
-    inline constexpr bool is_whitespace_v = C == ' ' || C == '\t' ||
-                                     C == '\n' || C == '\r' ||
-                                     C == '\f' || C == '\x0B';
-
-    template<auto C>
     inline constexpr bool is_lower_v = 'a' <= C && C <= 'z';
 
     template<auto C>

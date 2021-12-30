@@ -15,10 +15,10 @@ namespace meta
     template<bool_testable_generator Gen>
     struct input_range_adapter : private Gen
     {
-        template<typename F>
-        constexpr explicit input_range_adapter(F &&f)
+        template<typename G>
+        constexpr explicit input_range_adapter(G &&g)
         noexcept(std::is_nothrow_move_constructible_v<Gen>)
-                : Gen{std::forward<F>(f)}
+                : Gen{std::forward<G>(g)}
         {}
 
         struct iteration_end_sentinel {};
