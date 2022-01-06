@@ -32,19 +32,16 @@ an iterator compatible with `std::forward_iterator`
 ## Installation
 
 The project is header-only and does not depend on any third-party libraries. 
-Currently, building is supported on GCC 10 and Clang 12.
-Earlier compiler versions do not fully implement some C++20 features like CNTTP and
-are not tested.
+Currently, building is supported on GCC 10 and Clang 12, but any compiler that is C++20 compliant 
+will work.
 
-To use the library in your CMake project, update your include directories in
-`CMakeLists.txt` with the path to `include`. 
-Also make sure the CMake project is using at least C++20.
-
-If you want to use the command line, add the project's `include`
-directory to the header search path. Assuming you cloned the repository to `/PATH/TO/REPO/`, you can compile the demo like this:
+To install the library, simply add the contents of the `include` directory 
+to known system paths:
+```shell
+ln -s mregex/include/* /usr/include
 ```
-$ c++ -std=c++20 -O3 -I/PATH/TO/REPO/mregex/include -o demo demo.cpp
-```
+Alternatively, if you are using a build system like `CMake`, you can update your 
+target's include directories in a similar manner.
 
 ## Usage
 Below is an example of parsing a date.
@@ -73,3 +70,9 @@ for (auto &&res : word_regex::range(words))
     std::cout << res << '\n';
 }
 ```
+
+## Credits
+This project was inspired by other compile-time regex libraries
+like [Boost.Xpressive](https://www.boost.org/doc/libs/1_65_1/doc/html/xpressive.html)
+and especially [CTRE](https://github.com/hanickadot/compile-time-regular-expressions), 
+which served as a reference for the compile-time regex parser.
