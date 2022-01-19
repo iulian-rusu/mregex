@@ -81,10 +81,9 @@ namespace meta
                     return result_type{true, std::move(ctx.captures)};
                 }
 
-                if (current != end)
-                    ctx.clear();
-                else
+                if (current == end)
                     break;
+                ctx.clear();
             }
             return result_type{false, std::move(ctx.captures)};
         }

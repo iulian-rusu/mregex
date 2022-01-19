@@ -11,9 +11,8 @@ The library currently supports the following features:
 an iterator compatible with `std::forward_iterator`
 * compile-time syntax checking
 * various flags like `icase`, `dotall` and `multiline`
-* structured binding decomposition of `meta::regex_result`
 * standard regex syntax:
-    * `*` - Kleene begin quantifier
+    * `*` - Kleene star quantifier
     * `+` - plus quantifier
     * `?` - optional quantifier
     * `{5}` - exact quantifier
