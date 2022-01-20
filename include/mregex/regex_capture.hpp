@@ -123,31 +123,31 @@ namespace meta
      * future.
      */
     template<typename, typename>
-    struct alloc_capture_view_storage;
+    struct regex_capture_view_allocator;
 
     template<std::forward_iterator Iter, std::size_t... Indices>
-    struct alloc_capture_view_storage<std::index_sequence<Indices ...>, Iter>
+    struct regex_capture_view_allocator<std::index_sequence<Indices ...>, Iter>
     {
         using type = std::tuple<regex_capture_view<Indices, Iter> ...>;
     };
 
     template<std::size_t N, std::forward_iterator Iter>
-    using regex_capture_view_storage = typename alloc_capture_view_storage<std::make_index_sequence<N + 1>, Iter>::type;
+    using regex_capture_view_storage = typename regex_capture_view_allocator<std::make_index_sequence<N + 1>, Iter>::type;
 
     /**
      * Defines a std::tuple with N + 1 elements of type regex_capture.
      */
     template<typename>
-    struct alloc_capture_storage;
+    struct regex_capture_allocator;
 
     template<std::size_t... Indices>
-    struct alloc_capture_storage<std::index_sequence<Indices ...>>
+    struct regex_capture_allocator<std::index_sequence<Indices ...>>
     {
         using type = std::tuple<regex_capture<Indices> ...>;
     };
 
     template<std::size_t N>
-    using regex_capture_storage = typename alloc_capture_storage<std::make_index_sequence<N + 1>>::type;
+    using regex_capture_storage = typename regex_capture_allocator<std::make_index_sequence<N + 1>>::type;
 
     /**
      * Type trait that checks if the given capture storage type may throw

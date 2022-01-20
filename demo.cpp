@@ -17,8 +17,7 @@ int main()
 
     // Lazy iteration over all matches
     using word_regex = meta::regex<R"(\w+(?=\W))", meta::flag::ungreedy>;
-    std::string words = "Find all word-like sequences in this string!";
-    for (auto &&res : word_regex::range(words))
+    for (auto &&res : word_regex::range("Find all word-like sequences in this string!"))
         std::cout << res << '\n';
     std::cout << '\n';
 

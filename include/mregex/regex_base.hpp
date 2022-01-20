@@ -112,6 +112,11 @@ namespace meta
          * an owning regex_result type to avoid invalid pointers.
          */
 
+        [[nodiscard]] static constexpr auto match(std::string_view input) noexcept
+        {
+            return match(input.begin(), input.end());
+        }
+
         template<char_range R>
         [[nodiscard]] static constexpr auto match(R const &input) noexcept
         {
@@ -125,6 +130,11 @@ namespace meta
             return match(input.begin(), input.end()).own();
         }
 
+        [[nodiscard]] static constexpr auto search(std::string_view input) noexcept
+        {
+            return search(input.begin(), input.end(), input.begin());
+        }
+
         template<char_range R>
         [[nodiscard]] static constexpr auto search(R const &input) noexcept
         {
@@ -136,6 +146,11 @@ namespace meta
         requires is_memory_owning_rvalue_v<R &&>
         {
             return search(input.begin(), input.end(), input.begin()).own();
+        }
+
+        [[nodiscard]] static constexpr auto range(std::string_view input) noexcept
+        {
+            return range(input.begin(), input.end());
         }
 
         template<char_range R>

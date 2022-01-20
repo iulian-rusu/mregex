@@ -37,12 +37,12 @@ namespace meta
             return N;
         }
 
-        [[nodiscard]] constexpr auto begin() noexcept
+        [[nodiscard]] constexpr auto begin() const noexcept
         {
             return buffer;
         }
 
-        [[nodiscard]] constexpr auto end() noexcept
+        [[nodiscard]] constexpr auto end() const noexcept
         {
             return buffer + N;
         }
