@@ -33,7 +33,7 @@ namespace meta::ast
             if (it == end)
                 return {it, false};
 
-            if (First::consume_one(it, ctx))
+            if (First::match_one(it, ctx))
                 return sequence<Rest ...>::match(begin, end, ++it, ctx, cont);
             return {it, false};
         }
@@ -56,7 +56,7 @@ namespace meta::ast
                 std::index_sequence<Index, Indices ...> &&
         ) noexcept -> match_result<Iter>
         {
-            if (First::consume_one(it, ctx) && (Rest::consume_one(it + Indices, ctx) && ...))
+            if (First::match_one(it, ctx) && (Rest::match_one(it + Indices, ctx) && ...))
                 return cont(it + sequence_size);
             return {it, false};
         }

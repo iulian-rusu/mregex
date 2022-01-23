@@ -33,7 +33,7 @@ namespace meta::ast
         }
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool consume_one(Iter, Context &) noexcept
+        static constexpr bool match_one(Iter, Context &) noexcept
         {
             return false;
         }
@@ -51,15 +51,15 @@ namespace meta::ast
             if (it == end)
                 return {it, false};
 
-            if (consume_one(it, ctx))
+            if (match_one(it, ctx))
                 return cont(++it);
             return {it, false};
         }
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool consume_one(Iter current, Context &ctx) noexcept
+        static constexpr bool match_one(Iter current, Context &ctx) noexcept
         {
-            return First::consume_one(current, ctx) || (Rest::consume_one(current, ctx) || ...);
+            return First::match_one(current, ctx) || (Rest::match_one(current, ctx) || ...);
         }
     };
 
@@ -107,13 +107,13 @@ namespace meta::ast
             if (it == end)
                 return {it, false};
 
-            if (consume_one(it, ctx))
+            if (match_one(it, ctx))
                 return cont(++it);
             return {it, false};
         }
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool consume_one(Iter current, Context &) noexcept
+        static constexpr bool match_one(Iter current, Context &) noexcept
         {
             bool res = C == *current;
             if constexpr (flags_of<Context>::ignore_case)
@@ -131,13 +131,13 @@ namespace meta::ast
             if (it == end)
                 return {it, false};
 
-            if (consume_one(it, ctx))
+            if (match_one(it, ctx))
                 return cont(++it);
             return {it, false};
         }
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool consume_one(Iter current, Context &) noexcept
+        static constexpr bool match_one(Iter current, Context &) noexcept
         {
             auto ch = *current;
             return ch == ' ' || ch == '\t' ||
@@ -155,13 +155,13 @@ namespace meta::ast
             if (it == end)
                 return {it, false};
 
-            if (consume_one(it, ctx))
+            if (match_one(it, ctx))
                 return cont(++it);
             return {it, false};
         }
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool consume_one(Iter current, Context &) noexcept
+        static constexpr bool match_one(Iter current, Context &) noexcept
         {
             if constexpr (flags_of<Context>::dotall)
                 return true;
@@ -183,13 +183,13 @@ namespace meta::ast
             if (it == end)
                 return {it, false};
 
-            if (consume_one(it, ctx))
+            if (match_one(it, ctx))
                 return cont(++it);
             return {it, false};
         }
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool consume_one(Iter current, Context &) noexcept
+        static constexpr bool match_one(Iter current, Context &) noexcept
         {
             auto ch = *current;
             bool res = A <= ch && ch <= B;
@@ -205,7 +205,9 @@ namespace meta::ast
     };
 
     template<auto A>
-    struct range<A, A> : literal<A> {};
+    struct range<A, A> : literal<A>
+    {
+    };
 
     template<std::size_t ID>
     struct backref : terminal
@@ -247,15 +249,15 @@ namespace meta::ast
         {
             if (it == end)
                 return {it, false};
-            if (consume_one(it, ctx))
+            if (match_one(it, ctx))
                 return cont(++it);
             return {it, false};
         }
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool consume_one(Iter current, Context &ctx) noexcept
+        static constexpr bool match_one(Iter current, Context &ctx) noexcept
         {
-            return !Inner::consume_one(current, ctx);
+            return !Inner::match_one(current, ctx);
         }
     };
 }

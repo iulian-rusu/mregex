@@ -10,7 +10,7 @@ namespace meta::ast
      * Type trait to identify nodes that can be trivially matched.
      * A type T is trivially matchable if it always consumes one character when matching.
      * A type T is detected as trivially matchable by checking if it contains a template
-     * for a static member function consume_one<A, B>, where A satisfies std::forward_iterator
+     * for a static member function match_one<A, B>, where A satisfies std::forward_iterator
      * and B can be any generic type.
      */
     template<typename T>
@@ -18,7 +18,7 @@ namespace meta::ast
     {
         using iterator_type = decltype(std::declval<std::string_view>().begin());
 
-        static constexpr bool value = requires { &T::template consume_one<iterator_type, int>; };
+        static constexpr bool value = requires { &T::template match_one<iterator_type, int>; };
     };
 
     template<typename T>

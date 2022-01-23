@@ -46,7 +46,7 @@ namespace meta::ast
             Iter start = it;
             for (; it != end; ++it)
             {
-                if (!Inner::consume_one(it, ctx))
+                if (!Inner::match_one(it, ctx))
                     break;
             }
             for (; it != start; --it)
@@ -82,7 +82,7 @@ namespace meta::ast
             {
                 if (auto rest_match = cont(it))
                     return rest_match;
-                if (!Inner::consume_one(it, ctx))
+                if (!Inner::match_one(it, ctx))
                     break;
             }
             return cont(it);

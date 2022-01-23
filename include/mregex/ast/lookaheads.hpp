@@ -27,7 +27,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires is_trivially_matchable_v<Inner>
         {
-            if (it != end && Inner::consume_one(it, ctx))
+            if (it != end && Inner::match_one(it, ctx))
                 return cont(it);
             return {it, false};
         }
@@ -53,7 +53,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires is_trivially_matchable_v<Inner>
         {
-            if (it != end && Inner::consume_one(it, ctx))
+            if (it != end && Inner::match_one(it, ctx))
                 return {it, false};
             return cont(it);
         }

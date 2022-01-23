@@ -57,7 +57,7 @@ namespace meta::ast
         requires is_trivially_matchable_v<Inner>
         {
             for (std::size_t matched = 0; it != end && matched < R; ++matched, ++it)
-                if (!Inner::consume_one(it, ctx))
+                if (!Inner::match_one(it, ctx))
                     break;
             return cont(it);
         }
@@ -112,7 +112,7 @@ namespace meta::ast
                 return {it, false};
 
             for (std::size_t matched = 0; matched < N; ++matched)
-                if (!Inner::consume_one(it++, ctx))
+                if (!Inner::match_one(it++, ctx))
                     return {it, false};
             return cont(it);
         }

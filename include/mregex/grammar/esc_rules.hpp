@@ -67,6 +67,28 @@ namespace meta::grammar
                 >;
     };
 
+    template<>
+    struct esc_rule<'f', false>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::push_literal<'\f'>
+                >;
+    };
+
+    template<>
+    struct esc_rule<'v', false>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::push_literal<'\v'>
+                >;
+    };
+
     template<auto C>
     struct esc_rule<C, false>
     {

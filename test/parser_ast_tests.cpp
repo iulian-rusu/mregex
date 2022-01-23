@@ -106,10 +106,12 @@ namespace meta::tests
     static_assert(expected_ast<R"(\n)", literal<'\n'>>);
     static_assert(expected_ast<R"(\r)", literal<'\r'>>);
     static_assert(expected_ast<R"(\t)", literal<'\t'>>);
+    static_assert(expected_ast<R"(\f)", literal<'\f'>>);
+    static_assert(expected_ast<R"(\v)", literal<'\v'>>);
     static_assert(expected_ast<R"(\R)", linebreak>);
     static_assert(expected_ast<R"(\N)", negated<linebreak>>);
     static_assert(expected_ast<R"(\a)", alpha>);
-    static_assert(expected_ast<R"(\D)",negated<digit>>);
+    static_assert(expected_ast<R"(\D)", negated<digit>>);
     static_assert(expected_ast<R"(a.?b)",
             sequence
             <
