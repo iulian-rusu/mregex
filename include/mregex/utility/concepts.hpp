@@ -14,7 +14,6 @@ namespace meta
     concept char_range = std::ranges::forward_range<R> && requires(R range)
     {
         { *range.begin() } -> std::convertible_to<char32_t>;
-        { range.length() } -> std::convertible_to<std::size_t>;
     };
 
     /**
