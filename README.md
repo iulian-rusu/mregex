@@ -1,4 +1,4 @@
-# mregex - Metaprogramming-Based Regular Expressions
+# mRegex - Metaprogramming-Based Regular Expressions
 [![Build Status](https://app.travis-ci.com/iulian-rusu/mregex.svg?token=yYkpQVp4y1XUXWqsFXsK&branch=master)](https://app.travis-ci.com/iulian-rusu/mregex)
 
 This is a compile-time implementation of regular expressions in C++20.
@@ -12,10 +12,10 @@ an iterator compatible with `std::forward_iterator`
 * compile-time syntax checking
 * various flags like `icase`, `dotall` and `multiline`
 * standard regex syntax:
-    * `*` - Kleene star quantifier
-    * `+` - plus quantifier
-    * `?` - optional quantifier
-    * `{5}` - exact quantifier
+    * `*` - Kleene star quantifiers
+    * `+` - plus quantifiers
+    * `?` - optional quantifiers
+    * `{5}` - exact quantifiers
     * `{3,6}`, `{5,}` - range quantifiers
     * `(expr)` - capturing subexpressions
     * `(?:expr)` - non-capturing subexpressions
