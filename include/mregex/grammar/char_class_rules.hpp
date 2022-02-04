@@ -8,9 +8,8 @@
 namespace meta::grammar
 {
     /**
-     * Metafunction that handles any escape sequence that
-     * doesn't fall into other escape grammar rules like
-     * backreferences (\123) or ASCII escape sequences (\n, \r).
+     * Metafunction that handles escaped sequences that are
+     * recognized as a regex character class (\d, \w).
      *
      * @tparam C    The current character in the input pattern
      */
@@ -207,8 +206,5 @@ namespace meta::grammar
                     symbol::make_negated
                 >;
     };
-
-    template<auto C>
-    using char_class_rule_t = typename char_class_rule<C>::type;
 }
 #endif //MREGEX_CHAR_CLASS_RULES_HPP

@@ -89,11 +89,12 @@ namespace meta::grammar
                 >;
     };
 
+    /**
+     * If none of the rules from above match, parse the escaped sequence
+     * as a special character class.
+     */
     template<auto C>
-    struct esc_rule<C, false>
-    {
-        using type = char_class_rule_t<C>;
-    };
+    struct esc_rule<C, false> : char_class_rule<C> {};
 
     template<auto C>
     using esc_rule_t = typename esc_rule<C>::type;

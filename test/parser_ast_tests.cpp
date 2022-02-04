@@ -11,8 +11,6 @@ namespace meta::tests
         inline constexpr bool expected_ast = std::is_same_v<ast_of<pattern>, AST>;
     }
 
-    //static_assert(std::is_same_v<ast_of<static_string(R"(a)")>, literal<'a'>>);
-
     static_assert(expected_ast<R"()", epsilon>);
     static_assert(expected_ast<R"(a)", literal<'a'>>);
     static_assert(expected_ast<R"(^ab)",

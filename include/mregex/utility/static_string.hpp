@@ -16,20 +16,16 @@ namespace meta
     template<std::size_t N>
     struct static_string
     {
-        char buffer[N]{};
+        char data[N]{};
 
         constexpr static_string(char const (&str)[N + 1]) noexcept
         {
-            for (std::size_t i = 0; i < N; ++i)
-            {
-                buffer[i] = str[i];
-            }
+            std::copy(str, str + N, data);
         }
 
         constexpr static_string(static_string const &other) noexcept
         {
-            for (std::size_t i = 0; i < N; ++i)
-                buffer[i] = other.buffer[i];
+            std::copy(other.data, other.data + N, data);
         }
 
         [[nodiscard]] constexpr auto length() const noexcept
@@ -39,22 +35,22 @@ namespace meta
 
         [[nodiscard]] constexpr auto begin() const noexcept
         {
-            return buffer;
+            return data;
         }
 
         [[nodiscard]] constexpr auto end() const noexcept
         {
-            return buffer + N;
+            return data + N;
         }
 
         constexpr explicit operator std::string_view() const noexcept
         {
-            return std::string_view(buffer, N);
+            return std::string_view(data, N);
         }
 
         constexpr char operator[](std::size_t i) const noexcept
         {
-            return buffer[i];
+            return data[i];
         }
     };
 
@@ -80,7 +76,7 @@ namespace meta
 
         constexpr explicit operator std::string_view() const noexcept
         {
-            return {""};
+            return "";
         }
     };
 
