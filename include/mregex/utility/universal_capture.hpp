@@ -13,7 +13,6 @@ namespace meta
     class value_wrapper
     {
         using value_type = std::remove_reference_t<T>;
-
         value_type value;
 
     public:

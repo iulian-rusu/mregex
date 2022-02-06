@@ -29,7 +29,8 @@ namespace meta
         struct iterator
         {
             using value_type = std::invoke_result_t<Gen>;
-            using difference_type = std::size_t;
+            using pointer = std::add_pointer_t<value_type>;
+            using reference = std::add_lvalue_reference_t<value_type>;
             using iterator_category = std::input_iterator_tag;
 
             template<typename Res>
@@ -46,6 +47,11 @@ namespace meta
             constexpr value_type &operator*() noexcept
             {
                 return current_result;
+            }
+
+            constexpr value_type *operator->() noexcept
+            {
+                return &current_result;
             }
 
             constexpr iterator &operator++() noexcept

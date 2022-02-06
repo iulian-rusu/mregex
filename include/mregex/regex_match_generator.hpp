@@ -19,8 +19,8 @@ namespace meta
     {
         using ast_type = typename Context::ast_type;
         using iterator_type = typename Context::iterator_type;
-        using continuation_type = continuations<iterator_type>;
         using result_type = regex_result_view<ast_type::capture_count, iterator_type>;
+        using continuation_category = continuations<iterator_type>;
 
         constexpr regex_match_generator(iterator_type const start, iterator_type const stop, iterator_type current)
                 : begin_iter{start}, end_iter{stop}, current_iter{current}, active{true}
@@ -31,7 +31,7 @@ namespace meta
             Context ctx{};
             while (active)
             {
-                auto res = ast_type::match(begin_iter, end_iter, current_iter, ctx, continuation_type::epsilon);
+                auto res = ast_type::match(begin_iter, end_iter, current_iter, ctx, continuation_category::epsilon);
                 if (res && res.end != current_iter)
                 {
                     auto match_begin = current_iter;

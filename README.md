@@ -1,4 +1,4 @@
-# mRegex - Metaprogramming-Based Regular Expressions
+# mregex - Metaprogramming-Based Regular Expressions
 [![Build Status](https://app.travis-ci.com/iulian-rusu/mregex.svg?token=yYkpQVp4y1XUXWqsFXsK&branch=master)](https://app.travis-ci.com/iulian-rusu/mregex)
 
 This is a compile-time implementation of regular expressions in C++20.

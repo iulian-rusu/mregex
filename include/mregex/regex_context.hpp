@@ -16,6 +16,9 @@ namespace meta
     {
         static_assert((is_flag_v<Flags> && ...), "invalid flag");
 
+        using ast_type = AST;
+        using iterator_type = Iter;
+
         struct flags
         {
             static constexpr bool ignore_case = is_flag_enabled_v<flag::icase, Flags ...>;
@@ -24,9 +27,6 @@ namespace meta
             static constexpr bool ungreedy = is_flag_enabled_v<flag::ungreedy, Flags ...>;
             static constexpr bool unroll = is_flag_enabled_v<flag::unroll, Flags ...>;
         };
-
-        using ast_type = AST;
-        using iterator_type = Iter;
 
         regex_capture_view_storage<AST::capture_count, Iter> captures{};
 

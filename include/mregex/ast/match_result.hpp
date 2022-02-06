@@ -23,18 +23,6 @@ namespace meta::ast
         {
             return matched == b;
         }
-
-        constexpr match_result operator+(match_result const &other) const noexcept
-        {
-            return match_result{other.end, matched || other.matched};
-        }
-
-        constexpr match_result &operator+=(match_result const &other) noexcept
-        {
-            end = other.end;
-            matched = matched || other.matched;
-            return *this;
-        }
     };
 }
 #endif //MREGEX_MATCH_RESULT_HPP

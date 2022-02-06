@@ -29,5 +29,5 @@ int main()
     };
     // Results are decomposed into rvalue references to std::string and moved into new variables
     auto [day, month, year] = get_date_info();
-    std::cout << "Day: " << day << "\nMonth: " << month << "\nYear: " << year;
+    std::cout << "Day: " << day << "\nMonth: " << month << "\nYear: " << year << '\n';
 }
