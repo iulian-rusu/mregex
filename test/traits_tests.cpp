@@ -5,11 +5,6 @@ namespace meta::tests
 {
     using namespace ast;
 
-    static_assert(std::is_same_v<int, first_t<int>>);
-    static_assert(std::is_same_v<int, first_t<int, double, char, long, float>>);
-    static_assert(std::is_same_v<float, last_t<int, double, char, long, float>>);
-    static_assert(std::is_same_v<float, last_t<float>>);
-
     static_assert(is_any_of_v<int, int>);
     static_assert(is_any_of_v<int, float, int>);
     static_assert(is_any_of_v<int, int, long int, double>);

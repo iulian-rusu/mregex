@@ -5,7 +5,7 @@
 
 namespace meta::symbol
 {
-    // Non-terminal symbols
+    // Basic symbols
     struct begin {};
 
     struct esc {};
@@ -40,6 +40,7 @@ namespace meta::symbol
 
     struct set_range_esc {};
 
+    // Symbols for tokens
     template<auto>
     struct character {};
 
@@ -48,9 +49,11 @@ namespace meta::symbol
     template<auto>
     struct expect {};
 
+    // Symbol for parsing a backreference ID
     template<std::size_t>
     struct backref_id {};
 
+    // Symbols for parsing quantifiers
     struct quantifier_begin {};
 
     template<std::size_t>
@@ -61,7 +64,7 @@ namespace meta::symbol
     template<typename, typename>
     struct quantifier_values {};
 
-    // Symbols that require the Abstract Syntax Tree to be modified
+    // Symbols that indicate an action which updates the AST structure
     struct ast_update {};
 
     struct make_literal : ast_update {};
