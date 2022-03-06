@@ -16,7 +16,7 @@ namespace meta::ast
     template<typename T>
     struct is_trivially_matchable
     {
-        using iterator_type = decltype(std::declval<std::string_view>().begin());
+        using iterator_type = std::string_view::iterator;
 
         static constexpr bool value = requires { &T::template match_one<iterator_type, int>; };
     };

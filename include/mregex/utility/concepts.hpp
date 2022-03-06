@@ -13,7 +13,7 @@ namespace meta
     template<typename R>
     concept char_range = std::ranges::forward_range<R> && requires(R range)
     {
-        { *range.begin() } -> std::convertible_to<char32_t>;
+        { *std::ranges::begin(range) } -> std::convertible_to<char32_t>;
     };
 
     /**

@@ -15,11 +15,12 @@ namespace meta
     inline constexpr bool is_any_of_v = is_any_of<Test, Elems ...>::value;
 
     /**
-     * Type trait that checks if T is an rvalue reference to a memory-owning object.
-     * That is, a temporary object that holds allocated memory.
+     * Type trait that checks if T is an rvalue reference to an object that is non-trivially destructible.
+     * This usually indicates a temporary object which needs to free memory upon destruction.
+     * Although this does not guarantee that T has dynamically allocated memory, it is a good heuristic.
      */
     template<typename T>
-    struct is_memory_owning_rvalue
+    struct is_expiring_memory_owner
     {
         using raw_type = std::remove_reference_t<T>;
 
@@ -27,6 +28,6 @@ namespace meta
     };
 
     template<typename T>
-    inline constexpr bool is_memory_owning_rvalue_v = is_memory_owning_rvalue<T>::value;
+    inline constexpr bool is_expiring_memory_owner_v = is_expiring_memory_owner<T>::value;
 }
 #endif //MREGEX_MREGEX_HELPERS_HPP

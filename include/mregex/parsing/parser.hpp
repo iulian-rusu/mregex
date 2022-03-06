@@ -48,10 +48,8 @@ namespace meta
         template<std::size_t I, typename AST, typename Symbols, bool = symbol::is_ast_update_v<top<Symbols>>>
         struct parse
         {
-            using current_token = token_t<I>;
-            using current_rule = grammar::rule_t<top<Symbols>, current_token>;
-
-            using type = transition_t<I, current_rule, AST, pop<Symbols>>;
+            using next_symbols = grammar::rule_t<top<Symbols>,  token_t<I>>;
+            using type = transition_t<I, next_symbols, AST, pop<Symbols>>;
         };
 
         template<std::size_t I, typename AST, typename Symbols>
@@ -60,17 +58,15 @@ namespace meta
         template<std::size_t I, typename AST, typename Symbols>
         struct parse<I, AST, Symbols, true>
         {
-            using prev_token = token_t<I - 1>;
-            using next_ast = ast::build_t<top<Symbols>, prev_token, AST>;
-
+            using next_ast = ast::build_t<top<Symbols>, token_t<I - 1>, AST>;
             using type = parse_t<I, next_ast, pop<Symbols>>;
         };
 
-        // Base case - push the rule on the stack
-        template<std::size_t I, typename Rule, typename AST, typename Stack>
+        // Base case - push the symbols on the stack
+        template<std::size_t I, typename Symbols, typename AST, typename Stack>
         struct transition
         {
-            using type = parse_t<I, AST, push<Stack, Rule>>;
+            using type = parse_t<I, AST, push<Stack, Symbols>>;
         };
 
         // Don't push anything
