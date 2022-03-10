@@ -590,17 +590,7 @@ namespace meta::grammar
     template<std::size_t N, auto C>
     struct rule<symbol::quantifier_value<N>, symbol::character<C>>
     {
-        using type =
-                std::conditional_t
-                <
-                    is_numeric_v<C>,
-                    stack
-                    <
-                        advance,
-                        symbol::quantifier_value<10 * N + C - '0'>
-                    >,
-                    reject
-                >;
+        using type = update_quantifier_value_t<symbol::quantifier_value<N>, C>;
     };
 
     template<std::size_t N>
@@ -628,17 +618,7 @@ namespace meta::grammar
     template<typename A, typename B, auto C>
     struct rule<symbol::quantifier_values<A, B>, symbol::character<C>>
     {
-        using type =
-                std::conditional_t
-                <
-                    is_numeric_v<C>,
-                    stack
-                    <
-                        advance,
-                        symbol::quantifier_values<A, update_quantifier_t<B, C>>
-                    >,
-                    reject
-                >;
+        using type = update_quantifier_value_t<symbol::quantifier_values<A, B>, C>;
     };
 
     template<typename A, typename B>

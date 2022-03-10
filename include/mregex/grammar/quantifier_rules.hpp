@@ -59,34 +59,53 @@ namespace meta::grammar
     using begin_quantifier_value_t = typename begin_quantifier_value<C>::type;
 
     /**
-     * Metafunction that updates a given quantifier value which might also be infinite.
-     * Base 10 number parsing is assumed, the absence of a value implies infinity.
+     * Metafunction that defines the rules for updating quantifier values when parsing a new token.
      *
-     * @tparam T    The quantifier value symbol to be updated
+     * @tparam T    The quantifier value symbol being updated
      * @tparam C    The current character being parsed
      */
     template<typename T, auto C, bool = is_numeric_v<C>>
-    struct update_quantifier;
+    struct update_quantifier_value;
 
-    template<auto A, auto C>
-    struct update_quantifier<symbol::quantifier_value<A>, C, true>
+    template<auto N, auto C>
+    struct update_quantifier_value<symbol::quantifier_value<N>, C, true>
     {
-        using type = symbol::quantifier_value<10 * A + C - '0'>;
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::quantifier_value<10 * N + C - '0'>
+                >;
     };
 
-    template<auto C>
-    struct update_quantifier<symbol::quantifier_inf, C, true>
+    template<typename T, auto N, auto C>
+    struct update_quantifier_value<symbol::quantifier_values<T, symbol::quantifier_value<N>>, C, true>
     {
-        using type = symbol::quantifier_value<C - '0'>;
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::quantifier_values<T, symbol::quantifier_value<10 * N + C - '0'>>
+                >;
     };
 
     template<typename T, auto C>
-    struct update_quantifier<T, C, false>
+    struct update_quantifier_value<symbol::quantifier_values<T, symbol::quantifier_inf>, C, true>
     {
-        using type = T;
+        using type =
+                stack
+                <   advance,
+                    symbol::quantifier_values<T, symbol::quantifier_value<C - '0'>>
+                >;
     };
 
     template<typename T, auto C>
-    using update_quantifier_t = typename update_quantifier<T, C>::type;
+    struct update_quantifier_value<T, C, false>
+    {
+        using type = reject;
+    };
+
+    template<typename T, auto C>
+    using update_quantifier_value_t = typename update_quantifier_value<T, C>::type;
 }
 #endif //MREGEX_QUANTIFIER_RULES_HPP

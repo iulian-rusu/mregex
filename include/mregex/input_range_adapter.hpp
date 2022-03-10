@@ -31,6 +31,7 @@ namespace meta
             using value_type = std::invoke_result_t<Gen>;
             using pointer = std::add_pointer_t<value_type>;
             using reference = std::add_lvalue_reference_t<value_type>;
+            using difference_type = std::ptrdiff_t;
             using iterator_category = std::input_iterator_tag;
 
             template<typename Res>
@@ -64,8 +65,7 @@ namespace meta
             constexpr iterator operator++(int) noexcept
             {
                 iterator old_iter{generator, std::move(current_result), active};
-                current_result = std::move(generator());
-                active = static_cast<bool>(current_result);
+                ++(*this);
                 return old_iter;
             }
 
