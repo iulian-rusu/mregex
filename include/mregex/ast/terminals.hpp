@@ -116,7 +116,7 @@ namespace meta::ast
         static constexpr bool match_one(Iter current, Context &) noexcept
         {
             bool res = C == *current;
-            if constexpr (flags_of<Context>::ignore_case)
+            if constexpr (flags_of<Context>::icase)
                 res |= toggle_case_v<C> == *current;
             return res;
         }
@@ -193,7 +193,7 @@ namespace meta::ast
         {
             auto ch = *current;
             bool res = A <= ch && ch <= B;
-            if constexpr (flags_of<Context>::ignore_case)
+            if constexpr (flags_of<Context>::icase)
             {
                 ch = to_lower(ch);
                 res |= A <= ch && ch <= B;
@@ -205,9 +205,7 @@ namespace meta::ast
     };
 
     template<auto A>
-    struct range<A, A> : literal<A>
-    {
-    };
+    struct range<A, A> : literal<A> {};
 
     template<std::size_t ID>
     struct backref : terminal
@@ -225,7 +223,7 @@ namespace meta::ast
             for (auto c: captured)
             {
                 auto subject = *it;
-                if constexpr (flags_of<Context>::ignore_case)
+                if constexpr (flags_of<Context>::icase)
                 {
                     subject = to_lower(subject);
                     c = to_lower(c);

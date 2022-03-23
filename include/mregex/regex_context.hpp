@@ -21,7 +21,7 @@ namespace meta
 
         struct flags
         {
-            static constexpr bool ignore_case = is_flag_enabled_v<flag::icase, Flags ...>;
+            static constexpr bool icase = is_flag_enabled_v<flag::icase, Flags ...>;
             static constexpr bool dotall = is_flag_enabled_v<flag::dotall, Flags ...>;
             static constexpr bool multiline = is_flag_enabled_v<flag::multiline, Flags ...>;
             static constexpr bool ungreedy = is_flag_enabled_v<flag::ungreedy, Flags ...>;

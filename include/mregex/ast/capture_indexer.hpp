@@ -12,28 +12,22 @@ namespace meta::ast
      * behavior of the parsing algorithm and needs to be fixed by this metafunction
      * to comply with indexing standards.
      *
-     * @tparam Offset   The ID of the outer-most capturing group
-     * @tparam Wrapper  The AST node type being traversed
+     * @tparam Offset   The number of capturing groups from the current node to the AST root
+     * @tparam Node     The AST node type being traversed
      */
-    template<auto Offset, typename Wrapper>
+    template<auto Offset, typename Node>
     struct preorder_indexing
     {
-        using type = Wrapper;
+        using type = Node;
     };
 
-    template<auto Offset, typename Wrapper>
-    using preorder_indexing_t = typename preorder_indexing<Offset, Wrapper>::type;
+    template<auto Offset, typename Node>
+    using preorder_indexing_t = typename preorder_indexing<Offset, Node>::type;
 
     template<auto Offset, template<typename...> typename Wrapper, typename... Inner>
     struct preorder_indexing<Offset, Wrapper<Inner ...>>
     {
         using type = Wrapper<preorder_indexing_t<Offset, Inner> ...>;
-    };
-
-    template<auto Offset, auto I, template<auto, typename...> typename Wrapper, typename... Inner>
-    struct preorder_indexing<Offset, Wrapper<I, Inner ...>>
-    {
-        using type = Wrapper<I, preorder_indexing_t<Offset, Inner> ...>;
     };
 
     template<auto Offset, typename A, typename B, typename Inner>
