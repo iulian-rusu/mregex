@@ -120,8 +120,12 @@ namespace meta::ast
     private:
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto non_unrolled_repeat(
-                Iter begin, Iter end, Iter it, Context &ctx,
-                Continuation &&cont, std::size_t repeats = N
+                Iter begin,
+                Iter end,
+                Iter it,
+                Context &ctx,
+                Continuation &&cont,
+                std::size_t repeats = N
         ) noexcept -> match_result<Iter>
         {
             if (repeats == 1)

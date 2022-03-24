@@ -1,7 +1,7 @@
 #ifndef MREGEX_MREGEX_HELPERS_HPP
 #define MREGEX_MREGEX_HELPERS_HPP
 
-#include <mregex/ast/astfwd.hpp>
+#include <type_traits>
 
 namespace meta
 {

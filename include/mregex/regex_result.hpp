@@ -15,7 +15,7 @@ namespace meta
      * @tparam Storage  The storage type used to hold the captures
      */
     template<std::size_t N, capture_storage Storage>
-    class basic_regex_result;
+    struct basic_regex_result;
 
     /**
      * Result that holds views of captured content.
@@ -32,12 +32,8 @@ namespace meta
     using regex_result = basic_regex_result<N, regex_capture_storage<N>>;
 
     template<std::size_t N, capture_storage Storage>
-    class basic_regex_result
+    struct basic_regex_result
     {
-        bool matched;
-        Storage captures;
-
-    public:
         template<typename S>
         constexpr basic_regex_result(bool m, S &&s)
         noexcept(std::is_nothrow_move_constructible_v<Storage>)
@@ -76,7 +72,7 @@ namespace meta
          * @return  A new regex_result object that holds ownership of captures
          */
         [[nodiscard]] auto own() const
-        requires is_capture_view_v<std::remove_cvref_t<decltype(std::get<0>(captures))>>
+        requires is_capture_view_v<std::tuple_element_t<0, Storage>>
         {
             auto owning_captures = generate_tuple(captures, [](auto const &capture) {
                 return regex_capture{capture};
@@ -111,6 +107,10 @@ namespace meta
             static_assert(ID < N, "tuple element index out of bounds");
             return std::get<ID + 1>(captures).content();
         }
+
+    private:
+        bool matched;
+        Storage captures;
     };
 }
 

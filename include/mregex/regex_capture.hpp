@@ -10,15 +10,25 @@ namespace meta
     /**
      * Class that holds a view into the captured content of a regex group.
      *
+     * @tparam ID   The identifier of the capture group
      * @tparam Iter The forward iterator type used to acces the input sequence
      */
-    template<std::size_t, std::forward_iterator Iter>
-    class regex_capture_view
+    template<std::size_t ID, std::forward_iterator Iter>
+    struct regex_capture_view
     {
-        Iter begin_iter;
-        Iter end_iter;
+        /**
+         *  Helper type alias to decide which string type can be constructed from the given
+         *  iterator type. Unfortunatelly, std::string_view is only constructible from
+         *  contiguous iterator categories.
+         */
+        using string_type =
+                std::conditional_t
+                <
+                    std::contiguous_iterator<Iter>,
+                    std::string_view,
+                    std::string
+                >;
 
-    public:
         constexpr regex_capture_view() = default;
 
         constexpr explicit regex_capture_view(Iter start, Iter stop) noexcept
@@ -46,30 +56,30 @@ namespace meta
         }
 
         [[nodiscard]] constexpr auto content() const noexcept
-        requires std::contiguous_iterator<Iter>
         {
-            // Views can only be constructed from contiguous memory
-            return std::string_view{begin_iter, end_iter};
+            return string_type{begin_iter, end_iter};
         }
 
-        [[nodiscard]] auto content() const
-        requires (!std::contiguous_iterator<Iter>)
+        [[nodiscard]] constexpr explicit operator string_type() const noexcept
         {
-            return std::string{begin_iter, end_iter};
+            return content();
         }
+
+    private:
+        Iter begin_iter;
+        Iter end_iter;
     };
 
     /**
      * Class that owns a copy of the captured content of a regex group.
+     *
+     * @tparam ID   The identifier of the capture group
      */
-    template<std::size_t N>
-    class regex_capture
+    template<std::size_t ID>
+    struct regex_capture
     {
-        std::string captured;
-
-    public:
         template<std::forward_iterator Iter>
-        explicit regex_capture(regex_capture_view<N, Iter> const &capture_view)
+        explicit regex_capture(regex_capture_view<ID, Iter> const &capture_view)
                 : captured{capture_view.begin(), capture_view.end()}
         {}
 
@@ -102,6 +112,9 @@ namespace meta
         {
             return std::move(captured);
         }
+
+    private:
+        std::string captured;
     };
 
     /**
@@ -111,16 +124,14 @@ namespace meta
     template<typename T>
     struct is_capture_view : std::false_type {};
 
-    template<std::size_t N, std::forward_iterator Iter>
-    struct is_capture_view<regex_capture_view<N, Iter>> : std::true_type {};
+    template<std::size_t ID, std::forward_iterator Iter>
+    struct is_capture_view<regex_capture_view<ID, Iter>> : std::true_type {};
 
     template<typename T>
     inline constexpr bool is_capture_view_v = is_capture_view<T>::value;
 
     /**
      * Defines a std::tuple with N + 1 elements of type regex_capture_view.
-     * Tuple is used because captures may need to be of different types in the
-     * future.
      */
     template<typename, typename>
     struct regex_capture_view_allocator;
