@@ -34,15 +34,22 @@ namespace meta
             using difference_type = std::ptrdiff_t;
             using iterator_category = std::input_iterator_tag;
 
+            constexpr iterator() noexcept = default;
+
             template<typename Res>
-            constexpr explicit iterator(input_range_adapter<Gen> &gen, Res &&res, bool a)
+            constexpr iterator(input_range_adapter<Gen> *ptr, Res &&res, bool a)
             noexcept(std::is_nothrow_move_constructible_v<Res>)
-                    : generator{gen}, current_result{std::forward<Res>(res)}, active{a}
+                    : gen_ptr{ptr}, current_result{std::forward<Res>(res)}, active{a}
             {}
 
             constexpr explicit operator bool() const noexcept
             {
                 return active;
+            }
+
+            constexpr value_type const &operator*() const noexcept
+            {
+                return current_result;
             }
 
             constexpr value_type &operator*() noexcept
@@ -57,14 +64,14 @@ namespace meta
 
             constexpr iterator &operator++() noexcept
             {
-                current_result = std::move(generator());
+                current_result = std::move((*gen_ptr)());
                 active = static_cast<bool>(current_result);
                 return *this;
             }
 
             constexpr iterator operator++(int) noexcept
             {
-                iterator old_iter{generator, std::move(current_result), active};
+                iterator old_iter{gen_ptr, std::move(current_result), active};
                 ++(*this);
                 return old_iter;
             }
@@ -80,9 +87,9 @@ namespace meta
             }
 
         private:
-            input_range_adapter<Gen> &generator;
-            value_type current_result;
-            bool active;
+            input_range_adapter<Gen> *gen_ptr = nullptr;
+            value_type current_result{};
+            bool active{};
         };
 
         /**
@@ -96,7 +103,7 @@ namespace meta
         {
             auto initial_result = (*this)();
             auto const initial_state = static_cast<bool>(initial_result);
-            return iterator{*this, std::move(initial_result), initial_state};
+            return iterator{this, std::move(initial_result), initial_state};
         }
 
         /**
@@ -112,6 +119,6 @@ namespace meta
     };
 
     template<bool_testable_generator G>
-    input_range_adapter(G &&) -> input_range_adapter<std::decay_t<G>>;
+    input_range_adapter(G && ) -> input_range_adapter<std::decay_t<G>>;
 }
 #endif //MREGEX_INPUT_RANGE_ADAPTER_HPP
