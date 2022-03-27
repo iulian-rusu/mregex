@@ -157,6 +157,9 @@ namespace meta::tests
     static_assert(regex<R"(a(?=b)\w)">::match("ab"sv));
     static_assert(regex<R"(.(?!b).{2})">::match("xxx"sv));
     static_assert(regex<R"(a(?=(\w))\w\1)">::match("abb"sv));
+    static_assert(regex<R"((.)(?:(x)|y)\1)">::match("aya"sv));
+    static_assert(regex<R"((?:(x)x|xy)\1)">::match("xy"sv));
+    static_assert(regex<R"((?:(x)x|xy)\1)">::match("xxx"sv));
 
     // Test non-matching inputs
     static_assert(regex<R"()">::match("t"sv) == false);

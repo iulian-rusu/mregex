@@ -21,7 +21,10 @@ namespace meta::ast
                 std::get<ID>(ctx.captures) = regex_capture_view<ID, Iter>{it, new_it};
                 return cont(new_it);
             };
-            return Inner::match(begin, end, it, ctx, continuation);
+            if (auto inner_match = Inner::match(begin, end, it, ctx, continuation))
+                return inner_match;
+            std::get<ID>(ctx.captures).clear();
+            return {it, false};
         }
     };
 }
