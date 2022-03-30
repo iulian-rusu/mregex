@@ -66,8 +66,8 @@ namespace meta
         }
 
     private:
-        Iter begin_iter;
-        Iter end_iter;
+        Iter begin_iter{};
+        Iter end_iter{};
     };
 
     /**

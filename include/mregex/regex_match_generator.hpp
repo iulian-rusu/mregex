@@ -22,7 +22,7 @@ namespace meta
         using result_type = regex_result_view<ast_type::capture_count, iterator_type>;
         using continuation_category = continuations<iterator_type>;
 
-        constexpr regex_match_generator(iterator_type const start, iterator_type const stop, iterator_type current)
+        constexpr regex_match_generator(iterator_type start, iterator_type stop, iterator_type current)
                 : begin_iter{start}, end_iter{stop}, current_iter{current}, active{true}
         {}
 
@@ -41,14 +41,11 @@ namespace meta
                     return result_type{true, std::move(ctx.captures)};
                 }
 
-                if (current_iter != end_iter)
+                active = current_iter != end_iter;
+                if (active)
                 {
                     ++current_iter;
                     ctx.clear();
-                }
-                else
-                {
-                    active = false;
                 }
             }
             return result_type{false, std::move(ctx.captures)};
