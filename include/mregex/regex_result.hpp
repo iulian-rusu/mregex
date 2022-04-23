@@ -94,7 +94,7 @@ namespace meta
         [[nodiscard]] constexpr decltype(auto) group() const noexcept(is_nothrow_content_v<Storage>)
         {
             static_assert(ID <= N, "capture group does not exist");
-            return std::get<ID>(captures).content();
+            return std::get<ID>(captures);
         }
 
         /**
@@ -105,7 +105,7 @@ namespace meta
         constexpr decltype(auto) get() const noexcept(is_nothrow_content_v<Storage>)
         {
             static_assert(ID < N, "tuple element index out of bounds");
-            return std::get<ID + 1>(captures).content();
+            return std::get<ID + 1>(captures);
         }
 
     private:

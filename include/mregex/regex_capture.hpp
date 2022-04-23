@@ -60,7 +60,12 @@ namespace meta
             return string_type{begin_iter, end_iter};
         }
 
-        [[nodiscard]] constexpr explicit operator string_type() const noexcept
+        constexpr explicit operator bool() const noexcept
+        {
+            return length() > 0;
+        }
+
+        constexpr explicit(false) operator string_type() const noexcept
         {
             return content();
         }
@@ -111,6 +116,16 @@ namespace meta
         [[nodiscard]] auto content() && noexcept
         {
             return std::move(captured);
+        }
+
+        constexpr explicit operator bool() const noexcept
+        {
+            return length() > 0;
+        }
+
+        explicit(false) operator std::string() const noexcept
+        {
+            return content();
         }
 
     private:
@@ -166,5 +181,11 @@ namespace meta
      */
     template<capture_storage Storage>
     inline constexpr bool is_nothrow_content_v = noexcept(std::get<0>(std::declval<Storage>()).content());
+}
+
+template<meta::captured_content Capture>
+std::ostream &operator<<(std::ostream &os, Capture const &cap)
+{
+    return os << cap.content();
 }
 #endif //MREGEX_REGEX_CAPTURE_HPP
