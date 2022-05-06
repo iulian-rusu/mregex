@@ -81,20 +81,23 @@ namespace meta
         }
 
         /**
-         * Returns the captured group with the specified number.
-         * The return type depends on the iterator category used to access
-         * the input sequence. If the iterator satisfies std::contiguous_iterator,
-         * the method returns a std::string_view of the captured content, otherwise it returns
-         * a std::string.
+         * Returns the regex captured group with the specified number.
+         * The method is specialized to move the captures if this object
+         * is an expiring value.
          *
          * @tparam ID   The number of the requested capture group
-         * @return      A string-like object containing the captured content
+         * @return      The regex capture group
          */
         template<std::size_t ID>
-        [[nodiscard]] constexpr decltype(auto) group() const noexcept(is_nothrow_content_v<Storage>)
+        [[nodiscard]] constexpr decltype(auto) group() const &
         {
-            static_assert(ID <= N, "capture group does not exist");
-            return std::get<ID>(captures);
+            return group_impl<ID, false>();
+        }
+
+        template<std::size_t ID>
+        [[nodiscard]] constexpr decltype(auto) group() const &&
+        {
+            return group_impl<ID, true>();
         }
 
         /**
@@ -111,6 +114,16 @@ namespace meta
     private:
         bool matched;
         Storage captures;
+
+        template<std::size_t ID, bool expiring>
+        [[nodiscard]] constexpr decltype(auto) group_impl() const noexcept(is_nothrow_content_v<Storage>)
+        {
+            static_assert(ID <= N, "capture group does not exist");
+            if constexpr (expiring)
+                return std::move(std::get<ID>(captures));
+            else
+                return std::get<ID>(captures);
+        }
     };
 }
 
