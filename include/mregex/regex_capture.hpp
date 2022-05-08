@@ -2,6 +2,7 @@
 #define MREGEX_REGEX_CAPTURE_HPP
 
 #include <string>
+#include <iterator>
 #include <string_view>
 #include <mregex/utility/concepts.hpp>
 
@@ -186,6 +187,7 @@ namespace meta
 template<meta::captured_content Capture>
 std::ostream &operator<<(std::ostream &os, Capture const &cap)
 {
-    return os << cap.content();
+    std::copy(cap.begin(), cap.end(), std::ostream_iterator<char>{os});
+    return os;
 }
 #endif //MREGEX_REGEX_CAPTURE_HPP
