@@ -24,7 +24,7 @@ namespace meta
     {
         using raw_type = std::remove_reference_t<T>;
 
-        static constexpr bool value = !std::is_trivially_destructible_v<raw_type> && std::is_rvalue_reference_v<T &&>;
+        static constexpr bool value = !std::is_trivially_destructible_v<raw_type> && std::is_rvalue_reference_v<T>;
     };
 
     template<typename T>
