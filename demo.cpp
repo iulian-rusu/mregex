@@ -27,7 +27,6 @@ int main()
         std::string date = "Today is 07/08/2021";
         return date_regex::search(date).own();
     };
-    // Results are decomposed into rvalue references to std::string and moved into new variables
     auto [day, month, year] = get_date_info();
     std::cout << "Day: " << day << "\nMonth: " << month << "\nYear: " << year << '\n';
 }

@@ -89,15 +89,30 @@ namespace meta
          * @return      The regex capture group
          */
         template<std::size_t ID>
-        [[nodiscard]] constexpr decltype(auto) group() const &
+        [[nodiscard]] constexpr decltype(auto) group() & noexcept(is_nothrow_content_v<Storage>)
         {
-            return group_impl<ID, false>();
+            assert_valid_group<ID>();
+            return std::get<ID>(captures);
+        }
+
+        /**
+         * More overloads are required because C++ doesn't allow deducing
+         * the value category of `this` inside a method.
+         * @see https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p0847r4.html
+         */
+
+        template<std::size_t ID>
+        [[nodiscard]] constexpr decltype(auto) group() const & noexcept(is_nothrow_content_v<Storage>)
+        {
+            assert_valid_group<ID>();
+            return std::get<ID>(captures);
         }
 
         template<std::size_t ID>
-        [[nodiscard]] constexpr decltype(auto) group() const &&
+        [[nodiscard]] constexpr decltype(auto) group() && noexcept(is_nothrow_content_v<Storage>)
         {
-            return group_impl<ID, true>();
+            assert_valid_group<ID>();
+            return std::move(std::get<ID>(captures));
         }
 
         /**
@@ -105,9 +120,16 @@ namespace meta
          * Prefer the group() method for extracting captures.
          */
         template<std::size_t ID>
-        constexpr decltype(auto) get() const noexcept(is_nothrow_content_v<Storage>)
+        [[nodiscard]] constexpr decltype(auto) get() noexcept(is_nothrow_content_v<Storage>)
         {
-            static_assert(ID < N, "tuple element index out of bounds");
+            assert_valid_group<ID + 1>();
+            return std::get<ID + 1>(captures);
+        }
+
+        template<std::size_t ID>
+        [[nodiscard]] constexpr decltype(auto) get() const noexcept(is_nothrow_content_v<Storage>)
+        {
+            assert_valid_group<ID + 1>();
             return std::get<ID + 1>(captures);
         }
 
@@ -115,14 +137,10 @@ namespace meta
         bool matched;
         Storage captures;
 
-        template<std::size_t ID, bool expiring>
-        [[nodiscard]] constexpr decltype(auto) group_impl() const noexcept(is_nothrow_content_v<Storage>)
+        template<std::size_t ID>
+        void assert_valid_group() const noexcept
         {
             static_assert(ID <= N, "capture group does not exist");
-            if constexpr (expiring)
-                return std::move(std::get<ID>(captures));
-            else
-                return std::get<ID>(captures);
         }
     };
 }
@@ -135,13 +153,13 @@ std::ostream &operator<<(std::ostream &os, meta::basic_regex_result<N, Storage> 
 
 namespace std
 {
-    template <std::size_t N, typename Storage>
-    struct tuple_size<meta::basic_regex_result<N, Storage>> : std::integral_constant<std::size_t, N> {};
+    template <size_t N, typename Storage>
+    struct tuple_size<meta::basic_regex_result<N, Storage>> : integral_constant<size_t, N> {};
 
-    template <std::size_t ID, std::size_t N, typename Storage>
+    template <size_t ID, size_t N, typename Storage>
     struct tuple_element<ID, meta::basic_regex_result<N, Storage>>
     {
-        using type = decltype(std::declval<meta::basic_regex_result<N, Storage>>().template get<ID>());
+        using type = tuple_element_t<ID + 1, Storage>;
     };
 }
 #endif //MREGEX_REGEX_RESULT_HPP
