@@ -9,15 +9,15 @@ namespace meta
     /**
      * Compile-time lexer that extracts tokens from the input pattern.
      *
-     * @tparam pattern  The input string to be tokenized
+     * @tparam Pattern  The input string to be tokenized
      */
-    template<static_string pattern>
+    template<static_string Pattern>
     struct lexer
     {
-        template<std::size_t I, bool = I < pattern.length()>
+        template<std::size_t I, bool = I < Pattern.length()>
         struct token
         {
-            using type = symbol::character<pattern[I]>;
+            using type = symbol::character<Pattern[I]>;
         };
 
         template<std::size_t I>

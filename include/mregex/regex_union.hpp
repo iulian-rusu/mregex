@@ -12,14 +12,14 @@ namespace meta
      * That is, their captures are indexed separately and the regex
      * matching context is cleared after evaluating each sub-option.
      *
-     * @tparam first    The first pattern in the union
-     * @tparam rest     The remaining union patterns
+     * @tparam First    The first pattern in the union
+     * @tparam Rest     The remaining union patterns
      */
-    template<static_string first, static_string... rest>
-    struct regex_union : regex_base<ast::disjunction<ast_of<first>, ast_of<rest> ...>>
+    template<static_string First, static_string... Rest>
+    struct regex_union : regex_base<ast::disjunction<ast_of<First>, ast_of<Rest> ...>>
     {
         static_assert(
-                (parser<first>::accepted && (parser<rest>::accepted && ...)),
+                (parser<First>::accepted && (parser<Rest>::accepted && ...)),
                 "error while parsing at least one regular expression in the union"
         );
     };

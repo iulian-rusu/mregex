@@ -13,16 +13,16 @@ namespace meta
     /**
      * Compile-time parser using the LL(1) algorithm.
      *
-     * @tparam pattern  The input string to be parsed
+     * @tparam Pattern  The input string to be parsed
      */
-    template<static_string pattern>
+    template<static_string Pattern>
     struct parser
     {
         /**
          * Metafunction used to exctract tokens (characters or epsilon) from the input pattern.
          */
         template<std::size_t I>
-        using token_t = typename lexer<pattern>::template token_t<I>;
+        using token_t = typename lexer<Pattern>::template token_t<I>;
 
         /**
          * Metafunction that models the transition of the parser automaton.
@@ -111,10 +111,10 @@ namespace meta
         static constexpr bool accepted = std::is_same_v<status_type, parsing::success>;
     };
 
-    template<static_string pattern>
-    using ast_of = typename parser<pattern>::ast_type;
+    template<static_string Pattern>
+    using ast_of = typename parser<Pattern>::ast_type;
 
-    template<static_string pattern>
-    using status_of = typename parser<pattern>::status_type;
+    template<static_string Pattern>
+    using status_of = typename parser<Pattern>::status_type;
 }
 #endif //MREGEX_PARSER_HPP

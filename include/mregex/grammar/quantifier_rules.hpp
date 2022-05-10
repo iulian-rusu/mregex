@@ -94,7 +94,8 @@ namespace meta::grammar
     {
         using type =
                 stack
-                <   advance,
+                <
+                    advance,
                     symbol::quantifier_values<T, symbol::quantifier_value<C - '0'>>
                 >;
     };

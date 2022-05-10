@@ -5,8 +5,8 @@ namespace meta
 {
     namespace
     {
-        template<static_string pattern, std::size_t I>
-        inline constexpr bool error_position = std::is_same_v<status_of<pattern>, parsing::syntax_error<I>>;
+        template<static_string Pattern, std::size_t I>
+        inline constexpr bool error_position = std::is_same_v<status_of<Pattern>, parsing::syntax_error<I>>;
     }
 
     static_assert(error_position<"(", 1>);

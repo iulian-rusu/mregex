@@ -7,8 +7,8 @@ namespace meta::tests
 
     namespace
     {
-        template<static_string pattern, typename AST>
-        inline constexpr bool expected_ast = std::is_same_v<ast_of<pattern>, AST>;
+        template<static_string Pattern, typename AST>
+        inline constexpr bool expected_ast = std::is_same_v<ast_of<Pattern>, AST>;
     }
 
     static_assert(expected_ast<R"()", epsilon>);
