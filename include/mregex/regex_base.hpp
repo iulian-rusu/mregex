@@ -166,7 +166,7 @@ namespace meta
             auto end = ranges::end(input);
             regex_match_generator<context_type> generator{begin, end, begin};
             return input_range_adapter{
-                    [=, capture = make_universal_capture(std::forward<R>(input))]() mutable {
+                    [=, capture = universal_capture{std::forward<R>(input)}]() mutable {
                         return generator();
                     }
             };

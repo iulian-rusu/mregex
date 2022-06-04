@@ -54,9 +54,6 @@ namespace meta
     };
 
     template<typename T>
-    constexpr auto make_universal_capture(T &&value)
-    {
-        return universal_capture<T>{std::forward<T>(value)};
-    }
+    universal_capture(T &&) -> universal_capture<T>;
 }
 #endif //MREGEX_UNIVERSAL_CAPTURE_HPP

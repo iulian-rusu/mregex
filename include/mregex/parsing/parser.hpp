@@ -19,7 +19,7 @@ namespace meta
     struct parser
     {
         /**
-         * Metafunction used to exctract tokens (characters or epsilon) from the input pattern.
+         * Metafunction used to extract tokens (characters or epsilon) from the input pattern.
          */
         template<std::size_t I>
         using token_t = typename lexer<Pattern>::template token_t<I>;
@@ -30,7 +30,7 @@ namespace meta
          * @tparam I        The current position in the input
          * @tparam Rule     The current grammar rule
          * @tparam AST      The stack with the current state of the AST
-         * @tparam Stack  The stack with the current parsing symbols
+         * @tparam Stack    The stack with the current parsing symbols
          */
         template<std::size_t I, typename Symbols, typename AST, typename Stack>
         struct transition;
