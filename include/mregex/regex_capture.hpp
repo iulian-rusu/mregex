@@ -114,7 +114,7 @@ namespace meta
             return captured;
         }
 
-        [[nodiscard]] auto content() && noexcept
+        [[nodiscard]] auto &&content() && noexcept
         {
             return std::move(captured);
         }

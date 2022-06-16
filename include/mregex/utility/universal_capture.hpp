@@ -30,7 +30,7 @@ namespace meta
             return value;
         }
 
-        [[nodiscard]] constexpr auto get() &&
+        [[nodiscard]] constexpr auto &&get() && noexcept
         {
             return std::move(value);
         }
