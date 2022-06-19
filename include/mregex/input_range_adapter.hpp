@@ -8,27 +8,24 @@ namespace meta
     /**
      * Adapter that allows iterating through the results returned by a generating function.
      * The generator is required to return a boolean-convertible value to signal
-     * iteration ending.
+     * its iteration state. A false value implies the end of the iteration.
      *
      * @tparam Gen   The type of callable used to produce the desired data
      */
     template<bool_testable_generator Gen>
     struct input_range_adapter : private Gen
     {
+        using value_type = std::invoke_result_t<Gen>;
+
         template<typename G>
         constexpr explicit input_range_adapter(G &&g)
-        noexcept(std::is_nothrow_move_constructible_v<Gen>)
-                : Gen{std::forward<G>(g)}
+        noexcept(std::is_nothrow_move_constructible_v<Gen> && std::is_nothrow_move_constructible_v<value_type>)
+                : Gen{std::forward<G>(g)}, current_result{std::move(Gen::operator()())}
         {}
 
-        struct iteration_end_sentinel {};
-
-        /**
-         * Lazy iterator over the generated results.
-         */
         struct iterator
         {
-            using value_type = std::invoke_result_t<Gen>;
+            using value_type = typename input_range_adapter<Gen>::value_type;
             using pointer = std::add_pointer_t<value_type>;
             using reference = std::add_lvalue_reference_t<value_type>;
             using difference_type = std::ptrdiff_t;
@@ -36,60 +33,50 @@ namespace meta
 
             constexpr iterator() noexcept = default;
 
-            template<typename Res>
-            constexpr iterator(input_range_adapter<Gen> *ptr, Res &&res, bool a)
-            noexcept(std::is_nothrow_move_constructible_v<Res>)
-                    : gen_ptr{ptr}, current_result{std::forward<Res>(res)}, active{a}
+            constexpr iterator(input_range_adapter<Gen> *ptr) noexcept
+                : gen_ptr{ptr}
             {}
 
             constexpr explicit operator bool() const noexcept
             {
-                return active;
+                return gen_ptr->active();
             }
 
-            constexpr value_type const &operator*() const noexcept
+            constexpr value_type &operator*() const noexcept
             {
-                return current_result;
+                return gen_ptr->get();
             }
 
-            constexpr value_type &operator*() noexcept
+            constexpr value_type *operator->() const noexcept
             {
-                return current_result;
-            }
-
-            constexpr value_type *operator->() noexcept
-            {
-                return &current_result;
+                return gen_ptr->get();
             }
 
             constexpr iterator &operator++() noexcept
             {
-                current_result = std::move((*gen_ptr)());
-                active = static_cast<bool>(current_result);
+                gen_ptr->next();
                 return *this;
             }
 
             constexpr iterator operator++(int) noexcept
             {
-                iterator old_iter{gen_ptr, std::move(current_result), active};
-                ++(*this);
+                iterator old_iter{gen_ptr};
+                this->operator++();
                 return old_iter;
             }
 
-            constexpr bool operator==(iteration_end_sentinel) const noexcept
+            constexpr bool operator==(iterator) const noexcept
             {
-                return !active;
+                return !gen_ptr->active();
             }
 
-            constexpr bool operator!=(iteration_end_sentinel) const noexcept
+            constexpr bool operator!=(iterator) const noexcept
             {
-                return active;
+                return gen_ptr->active();
             }
 
         private:
             input_range_adapter<Gen> *gen_ptr = nullptr;
-            value_type current_result{};
-            bool active{};
         };
 
         /**
@@ -97,28 +84,55 @@ namespace meta
          * Calling this multiple times will usually result in different values
          * since the range provides input iterators only.
          *
-         * @return  An input iterator pointing to the beginning of the range
+         * @return  An input iterator pointing to the first element of the range
          */
         [[nodiscard]] constexpr auto begin() noexcept
         {
-            auto initial_result = (*this)();
-            auto const initial_state = static_cast<bool>(initial_result);
-            return iterator{this, std::move(initial_result), initial_state};
+            return iterator{this};
         }
 
         /**
-         * Returns a sentinel used to verify if the generating functor has reached
-         * its end state.
+         * Returns a default constructed iterator which does not point to any object.
+         * This iterator is used to invoke operator!= while iterating and should never
+         * be dereferenced or incremented.
          *
-         * @return A special sentinel type used to check the iterator state
+         * @return  An empty end-of-range iterator
          */
-        [[nodiscard]] constexpr auto end() const noexcept
+        [[nodiscard]] constexpr auto end() noexcept
         {
-            return iteration_end_sentinel{};
+            return iterator{};
         }
+
+        [[nodiscard]] constexpr bool active() const noexcept
+        {
+            return current_result == true;
+        }
+
+        [[nodiscard]] constexpr value_type &get() & noexcept
+        {
+            return current_result;
+        }
+
+        [[nodiscard]] constexpr value_type const &get() const & noexcept
+        {
+            return current_result;
+        }
+
+        [[nodiscard]] constexpr value_type &&get() && noexcept
+        {
+            return std::move(current_result);
+        }
+
+        constexpr void next() noexcept
+        {
+            current_result = std::move(this->operator()());
+        }
+
+    private:
+        value_type current_result;
     };
 
     template<bool_testable_generator G>
-    input_range_adapter(G && ) -> input_range_adapter<std::decay_t<G>>;
+    input_range_adapter(G &&) -> input_range_adapter<std::remove_reference_t<G>>;
 }
 #endif //MREGEX_INPUT_RANGE_ADAPTER_HPP

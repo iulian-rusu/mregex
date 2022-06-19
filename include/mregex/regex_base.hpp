@@ -117,53 +117,53 @@ namespace meta
 
         [[nodiscard]] static constexpr auto match(std::string_view input) noexcept
         {
-            return match(ranges::begin(input), ranges::end(input));
+            return match(ranges::cbegin(input), ranges::cend(input));
         }
 
         template<char_range R>
         [[nodiscard]] static constexpr auto match(R const &input) noexcept
         {
-            return match(ranges::begin(input), ranges::end(input));
+            return match(ranges::cbegin(input), ranges::cend(input));
         }
 
         template<char_range R>
         [[nodiscard]] static constexpr auto match(R &&input) noexcept
         requires is_expiring_memory_owner_v<R &&>
         {
-            return match(ranges::begin(input), ranges::end(input)).own();
+            return match(ranges::cbegin(input), ranges::cend(input)).own();
         }
 
         [[nodiscard]] static constexpr auto search(std::string_view input) noexcept
         {
-            return search(ranges::begin(input), ranges::end(input), ranges::begin(input));
+            return search(ranges::cbegin(input), ranges::cend(input), ranges::cbegin(input));
         }
 
         template<char_range R>
         [[nodiscard]] static constexpr auto search(R const &input) noexcept
         {
-            return search(ranges::begin(input), ranges::end(input), ranges::begin(input));
+            return search(ranges::cbegin(input), ranges::cend(input), ranges::cbegin(input));
         }
 
         template<char_range R>
         [[nodiscard]] static constexpr auto search(R &&input) noexcept
         requires is_expiring_memory_owner_v<R &&>
         {
-            return search(ranges::begin(input), ranges::end(input), ranges::begin(input)).own();
+            return search(ranges::cbegin(input), ranges::cend(input), ranges::cbegin(input)).own();
         }
 
         [[nodiscard]] static constexpr auto range(std::string_view input) noexcept
         {
-            return range(ranges::begin(input), ranges::end(input));
+            return range(ranges::cbegin(input), ranges::cend(input));
         }
 
         template<char_range R>
         [[nodiscard]] static constexpr auto range(R &&input) noexcept
         {
-            using iterator_type = decltype(ranges::begin(input));
+            using iterator_type = decltype(ranges::cbegin(input));
             using context_type = regex_context<iterator_type, ast_type, Flags ...>;
 
-            auto begin = ranges::begin(input);
-            auto end = ranges::end(input);
+            auto begin = ranges::cbegin(input);
+            auto end = ranges::cend(input);
             regex_match_generator<context_type> generator{begin, end, begin};
             return input_range_adapter{
                     [=, capture = universal_capture{std::forward<R>(input)}]() mutable {

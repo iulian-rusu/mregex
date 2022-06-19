@@ -34,7 +34,7 @@ namespace meta
         return detail::generate_tuple(
                 tuple,
                 std::forward<Func>(func),
-                std::make_index_sequence<std::tuple_size_v<std::decay_t<Tuple>>>{}
+                std::make_index_sequence<std::tuple_size_v<Tuple>>{}
         );
     }
 
@@ -50,7 +50,7 @@ namespace meta
         detail::iterate_tuple(
                 std::forward<Tuple>(tuple),
                 std::forward<Func>(func),
-                std::make_index_sequence<std::tuple_size_v<std::decay_t<Tuple>>>{}
+                std::make_index_sequence<std::tuple_size_v<std::remove_reference_t<Tuple>>>{}
         );
     }
 }
