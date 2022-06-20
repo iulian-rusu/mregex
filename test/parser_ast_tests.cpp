@@ -560,8 +560,7 @@ namespace meta::tests
                 <
                     literal<'('>
                 >,
-                literal<'x'>,
-                star
+                plus
                 <
                     literal<'x'>
                 >
@@ -833,8 +832,7 @@ namespace meta::tests
                                     >
                                 >
                             >,
-                            literal<'b'>,
-                            star
+                            plus
                             <
                                 literal<'b'>
                             >

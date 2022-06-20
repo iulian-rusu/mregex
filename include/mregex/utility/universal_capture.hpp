@@ -32,7 +32,7 @@ namespace meta
 
         [[nodiscard]] constexpr auto &&get() && noexcept
         {
-            return std::move(value);
+            return value;
         }
 
     private:

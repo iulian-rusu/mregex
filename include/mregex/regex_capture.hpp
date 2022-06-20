@@ -61,6 +61,11 @@ namespace meta
             return string_type{begin_iter, end_iter};
         }
 
+        [[nodiscard]] std::string str() const
+        {
+            return std::string{begin_iter, end_iter};
+        }
+
         constexpr explicit operator bool() const noexcept
         {
             return length() > 0;
@@ -116,7 +121,7 @@ namespace meta
 
         [[nodiscard]] auto &&content() && noexcept
         {
-            return std::move(captured);
+            return captured;
         }
 
         constexpr explicit operator bool() const noexcept

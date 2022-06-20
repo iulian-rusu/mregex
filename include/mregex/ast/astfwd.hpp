@@ -1,6 +1,8 @@
 #ifndef MREGEX_ASTFWD_HPP
 #define MREGEX_ASTFWD_HPP
 
+#include <mregex/symbol.hpp>
+
 namespace meta::ast
 {
     template<typename, typename...>
@@ -45,7 +47,7 @@ namespace meta::ast
     using optional = alternation<T, epsilon>;
 
     template<typename T>
-    using plus = sequence<T, star<T>>;
+    using plus = repetition<symbol::quantifier_value<1>, symbol::quantifier_inf, T>;
 
     using digit = range<'0', '9'>;
 

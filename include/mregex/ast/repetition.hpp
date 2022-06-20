@@ -24,7 +24,7 @@ namespace meta::ast
         requires (A > 0)
         {
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
-                return consume_rest(begin, end, new_it, ctx, cont);
+                return match_rest(begin, end, new_it, ctx, cont);
             };
             return exact_repetition<A, Inner>::match(begin, end, it, ctx, continuation);
         }
@@ -34,11 +34,11 @@ namespace meta::ast
         -> match_result<Iter>
         requires (A == 0)
         {
-            return consume_rest(begin, end, it, ctx, cont);
+            return match_rest(begin, end, it, ctx, cont);
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto consume_rest(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match_rest(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         requires (!is_trivially_matchable_v<Inner>)
         {
@@ -52,7 +52,7 @@ namespace meta::ast
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto consume_rest(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match_rest(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         requires is_trivially_matchable_v<Inner>
         {
@@ -98,7 +98,7 @@ namespace meta::ast
             }
             else
             {
-                return non_unrolled_repeat(begin, end, it, ctx, cont);
+                return non_unrolled_generic_match(begin, end, it, ctx, cont);
             }
         }
 
@@ -110,21 +110,38 @@ namespace meta::ast
             std::size_t const remaining_length = std::distance(it, end);
             if (remaining_length < N)
                 return {it, false};
+            if constexpr (flags_of<Context>::unroll)
+                return unrolled_trivial_match(it, ctx, cont, std::make_index_sequence<N>{});
+            else
+                return non_unrolled_trivial_match(it, ctx, cont);
+        }
 
+    private:
+        template<std::forward_iterator Iter, typename Context, typename Continuation, std::size_t... Indices>
+        static constexpr auto unrolled_trivial_match(
+                Iter it, Context &ctx, Continuation &&cont,
+                std::index_sequence<Indices ...> &&
+        ) noexcept -> match_result<Iter>
+        {
+            if ((Inner::match_one(it + Indices, ctx) && ...))
+                return cont(it + N);
+            return {it, false};
+        }
+
+        template<std::forward_iterator Iter, typename Context, typename Continuation>
+        static constexpr auto non_unrolled_trivial_match(Iter it, Context &ctx, Continuation &&cont) noexcept
+        -> match_result<Iter>
+        {
             for (std::size_t matched = 0; matched < N; ++matched)
                 if (!Inner::match_one(it++, ctx))
                     return {it, false};
             return cont(it);
         }
 
-    private:
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto non_unrolled_repeat(
-                Iter begin,
-                Iter end,
-                Iter it,
-                Context &ctx,
-                Continuation &&cont,
+        static constexpr auto non_unrolled_generic_match(
+                Iter begin, Iter end, Iter it,
+                Context &ctx, Continuation &&cont,
                 std::size_t repeats = N
         ) noexcept -> match_result<Iter>
         {
@@ -132,7 +149,7 @@ namespace meta::ast
                 return Inner::match(begin, end, it, ctx, cont);
 
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
-                return non_unrolled_repeat(begin, end, new_it, ctx, cont, repeats - 1);
+                return non_unrolled_generic_match(begin, end, new_it, ctx, cont, repeats - 1);
             };
             return Inner::match(begin, end, it, ctx, continuation);
         }

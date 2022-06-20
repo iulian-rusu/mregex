@@ -89,7 +89,7 @@ namespace meta
          * @return      The regex capture group
          */
         template<std::size_t ID>
-        [[nodiscard]] constexpr decltype(auto) group() & noexcept(is_nothrow_content_v<Storage>)
+        [[nodiscard]] constexpr auto &group() & noexcept(is_nothrow_content_v<Storage>)
         {
             assert_valid_group<ID>();
             return std::get<ID>(captures);
@@ -102,22 +102,22 @@ namespace meta
          */
 
         template<std::size_t ID>
-        [[nodiscard]] constexpr decltype(auto) group() const & noexcept(is_nothrow_content_v<Storage>)
+        [[nodiscard]] constexpr auto const &group() const & noexcept(is_nothrow_content_v<Storage>)
         {
             assert_valid_group<ID>();
             return std::get<ID>(captures);
         }
 
         template<std::size_t ID>
-        [[nodiscard]] constexpr decltype(auto) group() && noexcept(is_nothrow_content_v<Storage>)
+        [[nodiscard]] constexpr auto &&group() && noexcept(is_nothrow_content_v<Storage>)
         {
             assert_valid_group<ID>();
-            return std::move(std::get<ID>(captures));
+            return std::get<ID>(captures);
         }
 
         /**
          * Tuple-like interface for structured binding decomposition.
-         * Prefer the group() method for extracting captures.
+         * Use the group() method for extracting captures.
          */
         template<std::size_t ID>
         [[nodiscard]] constexpr decltype(auto) get() noexcept(is_nothrow_content_v<Storage>)
@@ -138,7 +138,7 @@ namespace meta
         Storage captures;
 
         template<std::size_t ID>
-        void assert_valid_group() const noexcept
+        constexpr void assert_valid_group() const noexcept
         {
             static_assert(ID <= N, "capture group does not exist");
         }

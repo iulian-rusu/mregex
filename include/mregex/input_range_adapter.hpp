@@ -54,7 +54,7 @@ namespace meta
 
             constexpr iterator &operator++() noexcept
             {
-                gen_ptr->next();
+                gen_ptr->advance();
                 return *this;
             }
 
@@ -105,7 +105,7 @@ namespace meta
 
         [[nodiscard]] constexpr bool active() const noexcept
         {
-            return current_result == true;
+            return static_cast<bool>(current_result);
         }
 
         [[nodiscard]] constexpr value_type &get() & noexcept
@@ -120,10 +120,10 @@ namespace meta
 
         [[nodiscard]] constexpr value_type &&get() && noexcept
         {
-            return std::move(current_result);
+            return current_result;
         }
 
-        constexpr void next() noexcept
+        constexpr void advance() noexcept
         {
             current_result = std::move(this->operator()());
         }
