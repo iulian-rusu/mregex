@@ -181,6 +181,9 @@ namespace meta::ast
     };
 
     template<typename Inner>
+    struct repetition<symbol::quantifier_value<1>, symbol::quantifier_value<1>, Inner> : Inner {};
+
+    template<typename Inner>
     struct repetition<symbol::quantifier_value<0>, symbol::quantifier_inf, Inner> : star<Inner> {};
 }
 #endif //MREGEX_REPETITION_HPP

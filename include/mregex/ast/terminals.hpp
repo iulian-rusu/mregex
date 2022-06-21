@@ -220,7 +220,7 @@ namespace meta::ast
             if (distance_smaller_than(length_to_match, it, end))
                 return {it, false};
 
-            for (auto c: captured)
+            for (auto c : captured)
             {
                 auto subject = *it;
                 if constexpr (flags_of<Context>::icase)
