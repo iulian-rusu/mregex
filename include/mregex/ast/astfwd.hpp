@@ -17,6 +17,9 @@ namespace meta::ast
     template<typename>
     struct star;
 
+    template<typename>
+    struct plus;
+
     template<typename, typename, typename>
     struct repetition;
 
@@ -45,9 +48,6 @@ namespace meta::ast
 
     template<typename T>
     using optional = alternation<T, epsilon>;
-
-    template<typename T>
-    using plus = repetition<symbol::quantifier_value<1>, symbol::quantifier_inf, T>;
 
     using digit = range<'0', '9'>;
 
