@@ -1,6 +1,7 @@
 #ifndef MREGEX_REPETITION_HPP
 #define MREGEX_REPETITION_HPP
 
+#include <mregex/utility/distance.hpp>
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/ast_traits.hpp>
 #include <mregex/ast/match_result.hpp>
@@ -107,8 +108,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires is_trivially_matchable_v<Inner>
         {
-            std::size_t const remaining_length = std::distance(it, end);
-            if (remaining_length < N)
+            if (distance_smaller_than<N>(it, end))
                 return {it, false};
             if constexpr (flags_of<Context>::unroll)
                 return unrolled_trivial_match(it, ctx, cont, std::make_index_sequence<N>{});
@@ -131,6 +131,18 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto non_unrolled_trivial_match(Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
+        requires std::random_access_iterator<Iter>
+        {
+            for (std::size_t offset = 0; offset < N; ++offset)
+                if (!Inner::match_one(it + offset, ctx))
+                    return {it, false};
+            return cont(it + N);
+        }
+
+        template<std::forward_iterator Iter, typename Context, typename Continuation>
+        static constexpr auto non_unrolled_trivial_match(Iter it, Context &ctx, Continuation &&cont) noexcept
+        -> match_result<Iter>
+        requires (!std::random_access_iterator<Iter>)
         {
             for (std::size_t matched = 0; matched < N; ++matched)
                 if (!Inner::match_one(it++, ctx))

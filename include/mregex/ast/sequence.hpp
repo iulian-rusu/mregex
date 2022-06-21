@@ -1,7 +1,9 @@
 #ifndef MREGEX_SEQUENCE_HPP
 #define MREGEX_SEQUENCE_HPP
 
+
 #include <mregex/regex_context.hpp>
+#include <mregex/utility/distance.hpp>
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/ast_traits.hpp>
 #include <mregex/ast/match_result.hpp>
@@ -33,7 +35,7 @@ namespace meta::ast
                 return {it, false};
 
             if (First::match_one(it, ctx))
-                return sequence<Rest ...>::match(begin, end, ++it, ctx, cont);
+                return sequence<Rest ...>::match(begin, end, it + 1, ctx, cont);
             return {it, false};
         }
 
@@ -42,8 +44,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires are_trivially_matchable_v<First, Rest ...>
         {
-            std::size_t const remaining_length = std::distance(it, end);
-            if (remaining_length < size)
+            if (distance_smaller_than<size>(it, end))
                 return {it, false};
             return unrolled_trivial_match(it, ctx, cont, std::make_index_sequence<size>{});
         }

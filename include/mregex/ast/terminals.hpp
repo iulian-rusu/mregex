@@ -2,6 +2,7 @@
 #define MREGEX_TERMINALS_HPP
 
 #include <mregex/regex_context.hpp>
+#include <mregex/utility/distance.hpp>
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/ast_traits.hpp>
 #include <mregex/ast/match_result.hpp>
@@ -52,7 +53,7 @@ namespace meta::ast
                 return {it, false};
 
             if (match_one(it, ctx))
-                return cont(++it);
+                return cont(it + 1);
             return {it, false};
         }
 
@@ -72,7 +73,7 @@ namespace meta::ast
             if constexpr (flags_of<Context>::multiline)
             {
                 if (it != end && *it == '\n')
-                    return cont(++it);
+                    return cont(it + 1);
             }
             if (it == begin)
                 return cont(it);
@@ -89,7 +90,7 @@ namespace meta::ast
             if constexpr (flags_of<Context>::multiline)
             {
                 if (it != end && *it == '\n')
-                    return cont(++it);
+                    return cont(it + 1);
             }
             if (it == end)
                 return cont(it);
@@ -108,7 +109,7 @@ namespace meta::ast
                 return {it, false};
 
             if (match_one(it, ctx))
-                return cont(++it);
+                return cont(it + 1);
             return {it, false};
         }
 
@@ -132,7 +133,7 @@ namespace meta::ast
                 return {it, false};
 
             if (match_one(it, ctx))
-                return cont(++it);
+                return cont(it + 1);
             return {it, false};
         }
 
@@ -156,7 +157,7 @@ namespace meta::ast
                 return {it, false};
 
             if (match_one(it, ctx))
-                return cont(++it);
+                return cont(it + 1);
             return {it, false};
         }
 
@@ -184,7 +185,7 @@ namespace meta::ast
                 return {it, false};
 
             if (match_one(it, ctx))
-                return cont(++it);
+                return cont(it + 1);
             return {it, false};
         }
 
@@ -216,8 +217,7 @@ namespace meta::ast
         {
             auto const captured = std::get<ID>(ctx.captures);
             std::size_t const length_to_match = captured.length();
-            std::size_t const remaining_length = std::distance(it, end);
-            if (length_to_match > remaining_length)
+            if (distance_smaller_than(length_to_match, it, end))
                 return {it, false};
 
             for (auto c: captured)
@@ -248,7 +248,7 @@ namespace meta::ast
             if (it == end)
                 return {it, false};
             if (match_one(it, ctx))
-                return cont(++it);
+                return cont(it + 1);
             return {it, false};
         }
 
