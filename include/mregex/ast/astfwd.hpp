@@ -55,9 +55,9 @@ namespace meta::ast
 
     using upper = range<'A', 'Z'>;
 
-    using alpha = range<'A', 'z'>;
+    using alpha = set<lower, upper>;
 
-    using word = set<alpha, digit, literal<'_'>>;
+    using word = set<lower, upper, digit, literal<'_'>>;
 
     using hexa = set<digit, range<'a', 'f'>, range<'A', 'F'>>;
 

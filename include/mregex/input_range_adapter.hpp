@@ -15,12 +15,13 @@ namespace meta
     template<bool_testable_generator Gen>
     struct input_range_adapter : private Gen
     {
-        using value_type = std::invoke_result_t<Gen>;
+        using result_type = forward_result_t<std::invoke_result_t<Gen>>;
+        using value_type = std::remove_reference_t<result_type>;
 
         template<typename G>
         constexpr explicit input_range_adapter(G &&g)
-        noexcept(std::is_nothrow_move_constructible_v<Gen> && std::is_nothrow_move_constructible_v<value_type>)
-                : Gen{std::forward<G>(g)}, current_result{std::move(Gen::operator()())}
+        noexcept(std::is_nothrow_move_constructible_v<Gen> && std::is_nothrow_move_constructible_v<result_type>)
+                : Gen{std::forward<G>(g)}, current_result{Gen::operator()()}
         {}
 
         struct iterator
@@ -108,28 +109,28 @@ namespace meta
             return static_cast<bool>(current_result);
         }
 
-        [[nodiscard]] constexpr value_type &get() & noexcept
+        [[nodiscard]] constexpr auto &get() & noexcept
         {
             return current_result;
         }
 
-        [[nodiscard]] constexpr value_type const &get() const & noexcept
+        [[nodiscard]] constexpr auto const &get() const & noexcept
         {
             return current_result;
         }
 
-        [[nodiscard]] constexpr value_type &&get() && noexcept
+        [[nodiscard]] constexpr auto &&get() && noexcept
         {
             return current_result;
         }
 
         constexpr void advance() noexcept
         {
-            current_result = std::move(this->operator()());
+            current_result = this->operator()();
         }
 
     private:
-        value_type current_result;
+        result_type current_result;
     };
 
     template<bool_testable_generator G>
