@@ -166,7 +166,7 @@ namespace meta::grammar
                     symbol::mod,
                     symbol::seq,
                     symbol::alt,
-                    symbol::make_capturing
+                    symbol::make_capture
                 >;
     };
 
@@ -182,7 +182,7 @@ namespace meta::grammar
                     symbol::mod,
                     symbol::seq,
                     symbol::alt,
-                    symbol::make_capturing
+                    symbol::make_capture
                 >;
     };
 
@@ -215,7 +215,7 @@ namespace meta::grammar
                     symbol::mod,
                     symbol::seq,
                     symbol::alt,
-                    symbol::make_capturing
+                    symbol::make_capture
                 >;
     };
 
@@ -236,7 +236,7 @@ namespace meta::grammar
                     symbol::mod,
                     symbol::seq,
                     symbol::alt,
-                    symbol::make_capturing
+                    symbol::make_capture
                 >;
     };
 
@@ -251,7 +251,7 @@ namespace meta::grammar
                     symbol::mod,
                     symbol::seq,
                     symbol::alt,
-                    symbol::make_capturing
+                    symbol::make_capture
                 >;
     };
 
@@ -265,7 +265,7 @@ namespace meta::grammar
                     symbol::make_beginning,
                     symbol::seq,
                     symbol::alt,
-                    symbol::make_capturing
+                    symbol::make_capture
                 >;
     };
 
@@ -279,7 +279,7 @@ namespace meta::grammar
                     symbol::make_ending,
                     symbol::seq,
                     symbol::alt,
-                    symbol::make_capturing
+                    symbol::make_capture
                 >;
     };
 

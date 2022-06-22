@@ -37,11 +37,11 @@ namespace meta::ast
     };
 
     template<auto Offset, auto I, typename Inner>
-    struct preorder_indexing<Offset, capturing<I, Inner>>
+    struct preorder_indexing<Offset, capture<I, Inner>>
     {
         static constexpr auto capture_count = Inner::capture_count;
 
-        using type = capturing<I + Offset - capture_count, preorder_indexing_t<Offset + 1, Inner>>;
+        using type = capture<I + Offset - capture_count, preorder_indexing_t<Offset + 1, Inner>>;
     };
 }
 #endif //MREGEX_CAPTURE_INDEXER_HPP

@@ -11,7 +11,7 @@ namespace meta
     /**
      * Class that holds a view into the captured content of a regex group.
      *
-     * @tparam ID   The identifier of the capture group
+     * @tparam ID   The identifier of the capturing group
      * @tparam Iter The forward iterator type used to acces the input sequence
      */
     template<std::size_t ID, std::forward_iterator Iter>
@@ -84,7 +84,7 @@ namespace meta
     /**
      * Class that owns a copy of the captured content of a regex group.
      *
-     * @tparam ID   The identifier of the capture group
+     * @tparam ID   The identifier of the capturing group
      */
     template<std::size_t ID>
     struct regex_capture

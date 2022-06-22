@@ -20,7 +20,7 @@ namespace meta
     {
         static_assert(
                 (parser<First>::accepted && (parser<Rest>::accepted && ...)),
-                "error while parsing at least one regular expression in the union"
+                "syntax error in at least one regular expression"
         );
     };
 

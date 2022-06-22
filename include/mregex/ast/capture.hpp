@@ -1,5 +1,5 @@
-#ifndef MREGEX_CAPTURING_HPP
-#define MREGEX_CAPTURING_HPP
+#ifndef MREGEX_CAPTURE_HPP
+#define MREGEX_CAPTURE_HPP
 
 #include <mregex/regex_context.hpp>
 #include <mregex/ast/astfwd.hpp>
@@ -9,7 +9,7 @@
 namespace meta::ast
 {
     template<std::size_t ID, typename Inner>
-    struct capturing
+    struct capture
     {
         static constexpr std::size_t capture_count = 1 + Inner::capture_count;
 
@@ -28,4 +28,4 @@ namespace meta::ast
         }
     };
 }
-#endif //MREGEX_CAPTURING_HPP
+#endif //MREGEX_CAPTURE_HPP

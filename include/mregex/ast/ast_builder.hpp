@@ -176,11 +176,11 @@ namespace meta::ast
     };
 
     template<typename T, typename First,  typename... Rest>
-    struct build<symbol::make_capturing, T, stack<First, Rest ...>>
+    struct build<symbol::make_capture, T, stack<First, Rest ...>>
     {
         static constexpr auto ID = capture_count_v<First, Rest ...> + 1;
 
-        using type = stack<capturing<ID, First>, Rest ...>;
+        using type = stack<capture<ID, First>, Rest ...>;
     };
 
     template<std::size_t ID, typename T, typename... Elems>

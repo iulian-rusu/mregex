@@ -8,7 +8,7 @@
 #include <mregex/ast/star.hpp>
 #include <mregex/ast/plus.hpp>
 #include <mregex/ast/repetition.hpp>
-#include <mregex/ast/capturing.hpp>
+#include <mregex/ast/capture.hpp>
 #include <mregex/ast/lookaheads.hpp>
 
 #endif //MREGEX_AST_HPP

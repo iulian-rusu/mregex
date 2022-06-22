@@ -85,8 +85,8 @@ namespace meta
          * The method is specialized to move the captures if this object
          * is an expiring value.
          *
-         * @tparam ID   The number of the requested capture group
-         * @return      The regex capture group
+         * @tparam ID   The number of the requested capturing group
+         * @return      The regex capturing group
          */
         template<std::size_t ID>
         [[nodiscard]] constexpr auto &group() & noexcept(is_nothrow_content_v<Storage>)
@@ -140,7 +140,7 @@ namespace meta
         template<std::size_t ID>
         constexpr void assert_valid_group() const noexcept
         {
-            static_assert(ID <= N, "capture group does not exist");
+            static_assert(ID <= N, "capturing group does not exist");
         }
     };
 }

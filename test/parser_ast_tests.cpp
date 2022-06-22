@@ -122,7 +122,7 @@ namespace meta::tests
             >
     >);
     static_assert(expected_ast<R"((c))",
-            capturing
+            capture
             <
                 1,
                 literal<'c'>
@@ -146,7 +146,7 @@ namespace meta::tests
     static_assert(expected_ast<R"((c)\1)",
             sequence
             <
-                capturing
+                capture
                 <
                     1,
                     literal<'c'>
@@ -157,7 +157,7 @@ namespace meta::tests
     static_assert(expected_ast<R"((c)\0)",
             sequence
             <
-                capturing
+                capture
                 <
                     1,
                     literal<'c'>
@@ -168,7 +168,7 @@ namespace meta::tests
     static_assert(expected_ast<R"((c)\12)",
             sequence
             <
-                capturing
+                capture
                 <
                     1,
                     literal<'c'>
@@ -179,7 +179,7 @@ namespace meta::tests
     static_assert(expected_ast<R"((c)\01)",
             sequence
             <
-                capturing
+                capture
                 <
                     1,
                     literal<'c'>
@@ -191,7 +191,7 @@ namespace meta::tests
     static_assert(expected_ast<R"((c)\12?x)",
             sequence
             <
-                capturing
+                capture
                 <
                     1,
                     literal<'c'>
@@ -206,16 +206,16 @@ namespace meta::tests
     static_assert(expected_ast<R"(((c))(e))",
             sequence
             <
-                capturing
+                capture
                 <
                     1,
-                    capturing
+                    capture
                     <
                         2,
                         literal<'c'>
                     >
                 >,
-                capturing
+                capture
                 <
                     3,
                     literal<'e'>
@@ -225,12 +225,12 @@ namespace meta::tests
     static_assert(expected_ast<R"(((?:c))(e))",
             sequence
             <
-                capturing
+                capture
                 <
                     1,
                     literal<'c'>
                 >,
-                capturing
+                capture
                 <
                     2,
                     literal<'e'>
@@ -394,7 +394,7 @@ namespace meta::tests
             <
                 symbol::quantifier_value<3>,
                 symbol::quantifier_value<3>,
-                capturing
+                capture
                 <
                     1,
                     sequence
@@ -420,7 +420,7 @@ namespace meta::tests
                 <
                     symbol::quantifier_value<15>,
                     symbol::quantifier_value<15>,
-                    capturing
+                    capture
                     <
                         1,
                         sequence
@@ -428,7 +428,7 @@ namespace meta::tests
                             literal<'b'>,
                             star
                             <
-                                capturing
+                                capture
                                 <
                                     2,
                                     sequence
@@ -446,7 +446,7 @@ namespace meta::tests
     static_assert(expected_ast<R"((\(+)*)",
             star
             <
-                capturing
+                capture
                 <
                     1,
                     plus
@@ -459,7 +459,7 @@ namespace meta::tests
     static_assert(expected_ast<R"((\++)*)",
             star
             <
-                capturing
+                capture
                 <
                     1,
                     plus
@@ -505,7 +505,7 @@ namespace meta::tests
                 >,
                 star
                 <
-                    capturing
+                    capture
                     <
                         1,
                         sequence
@@ -523,13 +523,13 @@ namespace meta::tests
                                             literal<'b'>,
                                             optional
                                             <
-                                                capturing
+                                                capture
                                                 <
                                                     2,
                                                     sequence
                                                     <
                                                         literal<'c'>,
-                                                        capturing
+                                                        capture
                                                         <
                                                             3,
                                                             literal<'d'>
@@ -814,14 +814,14 @@ namespace meta::tests
             <
                 star
                 <
-                    capturing
+                    capture
                     <
                         1,
                         sequence
                         <
                             optional
                             <
-                                capturing
+                                capture
                                 <
                                     2,
                                     sequence

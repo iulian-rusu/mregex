@@ -113,7 +113,7 @@ namespace meta::symbol
 
     struct make_negated : ast_update {};
 
-    struct make_capturing : ast_update {};
+    struct make_capture : ast_update {};
 
     struct make_set : ast_update {};
 
