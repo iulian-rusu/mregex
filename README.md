@@ -6,27 +6,17 @@ The library parses a regex pattern and compiles it into a native C++
 type using template metaprogramming.
 
 ## Features
-The library currently supports the following features:
+The library offers the following features:
 * `constexpr` matching on any sequence that provides 
 an iterator compatible with `std::forward_iterator`
 * compile-time syntax checking
-* various flags like `icase`, `dotall` and `multiline`
-* standard regex syntax:
-    * `*` - Kleene star quantifiers
-    * `+` - plus quantifiers
-    * `?` - optional quantifiers
-    * `{5}` - exact quantifiers
-    * `{3,6}`, `{5,}` - range quantifiers
-    * `(expr)` - capturing subexpressions
-    * `(?:expr)` - non-capturing subexpressions
-    * `(?=expr)`, `(?!expr)` - lookaheads
-    * `\12` - backreferences
-    * `|` - alternation of two subexpressions
-    * `\?`, `\\`, `\n` - escaped characters
-    * `\w`, `\d`, `\S` - special character classes
-    * `.` - wildcard character
-    * `^`, `$` - anchors
-    * `[abc]`, `[^abc]`, `[a-z0-9]` - sets
+* support for a large portion of the standard regex syntax
+* the ability to modify your regex with flags:
+  * `icase` - ignore case when matching
+  * `dotall` - make `.` match newline characters
+  * `multiline` - make `$` and `^` match beginnings/end of lines
+  * `ungreedy` - make quantifiers match as few characters as possible
+* a flexible API that allows exact matching, searching or iterating over multiple results
     
 ## Installation
 
@@ -35,11 +25,7 @@ Currently, building is supported on GCC 10 and Clang 12, but any compiler that i
 will work.
 
 To install the library, simply add the contents of the `include` directory 
-to known system paths:
-```shell
-ln -s mregex/include/* /usr/include
-```
-Alternatively, if you are using a build system like `CMake`, you can update your 
+to your compiler's include paths. If you are using a build system like `CMake`, update your 
 target's include directories in a similar manner.
 
 ## Usage
@@ -69,6 +55,37 @@ for (auto &&res : word_regex::range(words))
     std::cout << res << '\n';
 }
 ```
+
+## Syntax
+Currently, the following syntax features are supported:
+
+|     **Syntax**      |                                     **Effect**                                     |
+|:-------------------:|:----------------------------------------------------------------------------------:|
+|         `.`         |     match any character except `\n` and `\r`, unless the `dotall` flat is set      |
+|         `^`         | match the beginning of the input (or of the line when the `multiline` flag is set) |
+|         `$`         |    match the end of the input (or of the line when the `multiline` flag is set)    |
+|       `[abc]`       |                           match any character in the set                           |
+|       `[a-z]`       |                          match any character in the range                          |
+|      `[^abc]`       |                       match any character **not** in the set                       |
+|        `\d`         |                             match any digit character                              |
+|        `\l`         |                             match any lowercase letter                             |
+|        `\u`         |                             match any uppercase letter                             |
+|        `\a`         |                                  match any letter                                  |
+|        `\w`         |                 match any word character (letters, digits and `_`)                 |
+|        `\h`         |                          match any hexadecimal character                           |
+|        `\ `         |   remove any special meaning from the next token (ex. `\.` will only match `.`)    |
+|         `*`         |                             match any number of times                              |
+|         `+`         |                                match at least once                                 |
+|         `?`         |                              match one or zero times                               |
+| <code>&#124;</code> |                           match the left or right option                           |
+|        `{N}`        |                              match exactly `N` times                               |
+|       `{N,}`        |                              match at least `N` times                              |
+|       `{N,M}`       |                          match between `N` and `M` times                           |
+|      `(expr)`       |                capture the result of matching the inner expression                 |
+|     `(?:expr)`      |                                non-capturing group                                 |
+|     `(?=expr)`      |                                 positive lookahead                                 |
+|     `(?!expr)`      |                                 negative lookahead                                 |
+|        `\N`         |                  backreference to the capturing group number `N`                   |
 
 ## Credits
 This project was inspired by other compile-time regex libraries
