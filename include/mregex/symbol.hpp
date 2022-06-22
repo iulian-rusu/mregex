@@ -23,6 +23,8 @@ namespace meta::symbol
 
     struct group_mod {};
 
+    struct group_mod_lookbehind {};
+
     struct group_begin {};
 
     // Symbols for parsing sets
@@ -110,6 +112,10 @@ namespace meta::symbol
     struct make_positive_lookahead : ast_update {};
 
     struct make_negative_lookahead : ast_update {};
+
+    struct make_positive_lookbehind : ast_update {};
+
+    struct make_negative_lookbehind : ast_update {};
 
     struct make_negated : ast_update {};
 

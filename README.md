@@ -61,7 +61,7 @@ Currently, the following syntax features are supported:
 
 |     **Syntax**      |                                     **Effect**                                     |
 |:-------------------:|:----------------------------------------------------------------------------------:|
-|         `.`         |     match any character except `\n` and `\r`, unless the `dotall` flat is set      |
+|         `.`         |     match any character except `\n` and `\r`, unless the `dotall` flag is set      |
 |         `^`         | match the beginning of the input (or of the line when the `multiline` flag is set) |
 |         `$`         |    match the end of the input (or of the line when the `multiline` flag is set)    |
 |       `[abc]`       |                           match any character in the set                           |

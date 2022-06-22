@@ -1,7 +1,6 @@
 #ifndef MREGEX_REGEX_MATCH_GENERATOR_HPP
 #define MREGEX_REGEX_MATCH_GENERATOR_HPP
 
-#include <iterator>
 #include <mregex/utility/continuations.hpp>
 #include <mregex/regex_context.hpp>
 #include <mregex/regex_result.hpp>

@@ -312,6 +312,17 @@ namespace meta::grammar
     };
 
     template<>
+    struct rule<symbol::group_mod, symbol::character<'<'>>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::group_mod_lookbehind
+                >;
+    };
+
+    template<>
     struct rule<symbol::group_mod, symbol::character<'='>>
     {
         using type =
@@ -333,6 +344,36 @@ namespace meta::grammar
                     symbol::group_begin,
                     symbol::make_negative_lookahead
                 >;
+    };
+
+    template<>
+    struct rule<symbol::group_mod_lookbehind, symbol::character<'='>>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::group_begin,
+                    symbol::make_positive_lookbehind
+                >;
+    };
+
+    template<>
+    struct rule<symbol::group_mod_lookbehind, symbol::character<'!'>>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::group_begin,
+                    symbol::make_negative_lookbehind
+                >;
+    };
+
+    template<auto C>
+    struct rule<symbol::group_mod_lookbehind, symbol::character<C>>
+    {
+        using type = reject;
     };
 
     template<auto C>

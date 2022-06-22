@@ -53,6 +53,31 @@ namespace meta::tests
                 literal<'x'>
             >
     >);
+    static_assert(expected_ast<R"(.+(?<=a+)a)",
+            sequence
+            <
+                plus<wildcard>,
+                positive_lookbehind
+                <
+                    plus<literal<'a'>>
+                >,
+                literal<'a'>
+            >
+    >);
+    static_assert(expected_ast<R"(.*(?<!a|b))",
+            sequence
+            <
+                star<wildcard>,
+                negative_lookbehind
+                <
+                    alternation
+                    <
+                        literal<'a'>,
+                        literal<'b'>
+                    >
+                >
+            >
+    >);
     static_assert(expected_ast<R"(x(?!ab){2}x)",
             sequence
             <

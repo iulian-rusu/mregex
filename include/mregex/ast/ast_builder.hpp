@@ -112,6 +112,18 @@ namespace meta::ast
     };
 
     template<typename T, typename First, typename... Rest>
+    struct build<symbol::make_positive_lookbehind, T, stack<First, Rest ...>>
+    {
+        using type = stack<positive_lookbehind<First>, Rest ...>;
+    };
+
+    template<typename T, typename First, typename... Rest>
+    struct build<symbol::make_negative_lookbehind, T, stack<First, Rest ...>>
+    {
+        using type = stack<negative_lookbehind<First>, Rest ...>;
+    };
+
+    template<typename T, typename First, typename... Rest>
     struct build<symbol::make_negated, T, stack<First, Rest ...>>
     {
         using type = stack<negated<First>, Rest ...>;

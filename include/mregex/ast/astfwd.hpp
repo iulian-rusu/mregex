@@ -1,8 +1,6 @@
 #ifndef MREGEX_ASTFWD_HPP
 #define MREGEX_ASTFWD_HPP
 
-#include <mregex/symbol.hpp>
-
 namespace meta::ast
 {
     template<typename, typename...>
@@ -77,5 +75,11 @@ namespace meta::ast
 
     template<typename>
     struct negative_lookahead;
+
+    template<typename>
+    struct positive_lookbehind;
+
+    template<typename>
+    struct negative_lookbehind;
 }
 #endif //MREGEX_ASTFWD_HPP
