@@ -196,10 +196,11 @@ namespace meta::ast
             bool res = A <= ch && ch <= B;
             if constexpr (flags_of<Context>::icase)
             {
-                ch = to_lower(ch);
-                res |= A <= ch && ch <= B;
-                ch = to_upper(ch);
-                res |= A <= ch && ch <= B;
+                if (is_alpha(ch))
+                {
+                    ch ^= 0x20;
+                    res |= A <= ch && ch <= B;
+                }
             }
             return res;
         }

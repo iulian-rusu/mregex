@@ -162,7 +162,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct char_class_rule<'h'>
+    struct char_class_rule<'x'>
     {
         using type =
                 stack
@@ -173,7 +173,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct char_class_rule<'H'>
+    struct char_class_rule<'X'>
     {
         using type =
                 stack

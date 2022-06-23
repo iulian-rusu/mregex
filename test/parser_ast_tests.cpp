@@ -813,11 +813,11 @@ namespace meta::tests
                 >
             >
     >);
-    static_assert(expected_ast<R"(\x\x[^a^[\]b\c]yy)",
+    static_assert(expected_ast<R"(\h\X[^a^[\]b\c]yy)",
             sequence
             <
-                literal<'x'>,
-                literal<'x'>,
+                literal<'h'>,
+                negated<hexa>,
                 negated
                 <
                     set

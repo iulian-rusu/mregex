@@ -34,5 +34,10 @@ namespace meta
             return static_cast<decltype(c)>(c ^ 0x20);
         return c;
     }
+
+    constexpr bool is_alpha(auto c) noexcept
+    {
+        return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
+    }
 }
 #endif //MREGEX_CHAR_TRAITS_HPP

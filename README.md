@@ -59,33 +59,34 @@ for (auto &&res : word_regex::range(words))
 ## Syntax
 Currently, the following syntax features are supported:
 
-|     **Syntax**      |                                     **Effect**                                     |
-|:-------------------:|:----------------------------------------------------------------------------------:|
-|         `.`         |     match any character except `\n` and `\r`, unless the `dotall` flag is set      |
-|         `^`         | match the beginning of the input (or of the line when the `multiline` flag is set) |
-|         `$`         |    match the end of the input (or of the line when the `multiline` flag is set)    |
-|       `[abc]`       |                           match any character in the set                           |
-|       `[a-z]`       |                          match any character in the range                          |
-|      `[^abc]`       |                       match any character **not** in the set                       |
-|        `\d`         |                             match any digit character                              |
-|        `\l`         |                             match any lowercase letter                             |
-|        `\u`         |                             match any uppercase letter                             |
-|        `\a`         |                                  match any letter                                  |
-|        `\w`         |                 match any word character (letters, digits and `_`)                 |
-|        `\h`         |                          match any hexadecimal character                           |
-|        `\ `         |   remove any special meaning from the next token (ex. `\.` will only match `.`)    |
-|         `*`         |                             match any number of times                              |
-|         `+`         |                                match at least once                                 |
-|         `?`         |                              match one or zero times                               |
-| <code>&#124;</code> |                           match the left or right option                           |
-|        `{N}`        |                              match exactly `N` times                               |
-|       `{N,}`        |                              match at least `N` times                              |
-|       `{N,M}`       |                          match between `N` and `M` times                           |
-|      `(expr)`       |                capture the result of matching the inner expression                 |
-|     `(?:expr)`      |                                non-capturing group                                 |
-|     `(?=expr)`      |                                 positive lookahead                                 |
-|     `(?!expr)`      |                                 negative lookahead                                 |
-|        `\N`         |                  backreference to the capturing group number `N`                   |
+|      **Syntax**       |                                     **Effect**                                     |
+|:---------------------:|:----------------------------------------------------------------------------------:|
+|          `.`          |     match any character except `\n` and `\r`, unless the `dotall` flag is set      |
+|          `^`          | match the beginning of the input (or of the line when the `multiline` flag is set) |
+|          `$`          |    match the end of the input (or of the line when the `multiline` flag is set)    |
+|        `[abc]`        |                           match any character in the set                           |
+|        `[a-z]`        |                          match any character in the range                          |
+|       `[^abc]`        |                       match any character **not** in the set                       |
+|         `\d`          |                             match any digit character                              |
+|         `\l`          |                             match any lowercase letter                             |
+|         `\u`          |                             match any uppercase letter                             |
+|         `\a`          |                                  match any letter                                  |
+|         `\w`          |                 match any word character (letters, digits and `_`)                 |
+|         `\x`          |                          match any hexadecimal character                           |
+| `\D`, `\W`, `\U` etc. |                match any character **not** in the respective class                 |
+|         `\ `          |   remove any special meaning from the next token (ex. `\.` will only match `.`)    |
+|          `*`          |                             match any number of times                              |
+|          `+`          |                                match at least once                                 |
+|          `?`          |                              match one or zero times                               |
+|  <code>&#124;</code>  |                           match the left or right option                           |
+|         `{N}`         |                              match exactly `N` times                               |
+|        `{N,}`         |                              match at least `N` times                              |
+|        `{N,M}`        |                          match between `N` and `M` times                           |
+|       `(expr)`        |                capture the result of matching the inner expression                 |
+|      `(?:expr)`       |                                non-capturing group                                 |
+|      `(?=expr)`       |                                 positive lookahead                                 |
+|      `(?!expr)`       |                                 negative lookahead                                 |
+|         `\N`          |                  backreference to the capturing group number `N`                   |
 
 ## Credits
 This project was inspired by other compile-time regex libraries

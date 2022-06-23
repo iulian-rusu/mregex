@@ -123,7 +123,7 @@ namespace meta::tests
     static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("abc123_321bca@gmail.com"sv));
     static_assert(regex<R"(\(.+\))">::match("(aaabb)"sv));
     static_assert(regex<R"(\(\.+\))">::match("(...)"sv));
-    static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("0x1234F"sv));
+    static_assert(regex<R"(0(x|X)(\x+)(h|H)?)">::match("0x1234F"sv));
     static_assert(regex<R"(.+)">::match("this regex will match any input"sv));
     static_assert(regex<R"((x{2,})\1+)">::match("xxxxxxxxx"sv));
     static_assert(regex<R"((a*(x|axx))e)">::match("aaaxxe"sv));
@@ -133,7 +133,7 @@ namespace meta::tests
     static_assert(regex<R"([0-Z]+)", flag::i>::match("1234abczABCZ"sv));
     static_assert(regex<R"([A-Z]+)", flag::icase>::match("aBcDeFiOyZ"sv));
     static_assert(regex<R"(hello|salut|bonjour)">::with<flag::icase>::match("SaLuT"sv));
-    static_assert(regex<R"(0(x)(\h+)(h)?)">::with<flag::icase>::match("0X0h"sv));
+    static_assert(regex<R"(0(x)(\x+)(h)?)">::with<flag::icase>::match("0X0h"sv));
     static_assert(regex<R"(.+)", flag::s>::match("\neven new lines!"sv));
     static_assert(regex<R"(.+)">::with<flag::dotall>::match("this regex will match any input"sv));
     static_assert(regex<R"((a|ab|abc)+x)">::match("abx"sv));
@@ -234,13 +234,13 @@ namespace meta::tests
     static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("example.test@gm.ail.com"sv) == false);
     static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("cpp..@regex"sv) == false);
     static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("abc123_321bca.gmail.com"sv) == false);
-    static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("01234F"sv) == false);
-    static_assert(regex<R"(0(x|X)(\h+)(h|H)?)">::match("X0h"sv) == false);
+    static_assert(regex<R"(0(x|X)(\x+)(h|H)?)">::match("01234F"sv) == false);
+    static_assert(regex<R"(0(x|X)(\x+)(h|H)?)">::match("X0h"sv) == false);
     static_assert(regex<R"(a.+)">::match("this regex will match any input"sv) == false);
     static_assert(regex<R"(.+)">::match("\nexcept new lines"sv) == false);
     static_assert(regex<R"(a?   b? c?)">::match("abc"sv) == false);
     static_assert(regex<R"((x{2,})\1+)">::match("xxxxxxxxxxx"sv) == false);
-    static_assert(regex<R"(0x(\h+)h?)", flag::i>::match("0X012323EJH"sv) == false);
+    static_assert(regex<R"(0x(\x+)h?)", flag::i>::match("0X012323EJH"sv) == false);
     static_assert(regex<R"([^a-z]+)">::with<flag::icase>::match("AABBBDBDBDBBSABBDBDBABBA"sv) == false);
     static_assert(regex<R"(^abcd$)", flag::m>::match("\nabcd\n\n"sv) == false);
     static_assert(regex<R"(^abcd$.+$)">::with<flag::m>::match("\n\nabcd\n"sv) == false);
