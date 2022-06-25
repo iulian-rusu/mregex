@@ -157,6 +157,13 @@ namespace meta::tests
     static_assert(regex<R"(a(?=b)\w)">::match("ab"sv));
     static_assert(regex<R"(.(?!b).{2})">::match("xxx"sv));
     static_assert(regex<R"(a(?=(\w))\w\1)">::match("abb"sv));
+    static_assert(regex<R"(..(?<=x)a)">::match("_xa"sv));
+    static_assert(regex<R"(..(?<=xy)a)">::match("xya"sv));
+    static_assert(regex<R"(.{9}(?<=ab{2,4}c{3,5}d)test)">::match("abbbccccdtest"sv));
+    static_assert(regex<R"(.{7}(?<=ab{2,4}c{3,5}d)test)">::match("abbcccdtest"sv));
+    static_assert(regex<R"(.{12}(?<!ab{2,4}c{3,5}d)test)">::match("abbbbbcccccdtest"sv));
+    static_assert(regex<R"(.{10}(?<!ab{2,4}c{3,5}d)test)">::match("abbbbccccctest"sv));
+    static_assert(regex<R"(.*(?<!a(?!t))test)", meta::flag::ungreedy>::match("atest"sv));
     static_assert(regex<R"((.)(?:(x)|y)\1)">::match("aya"sv));
     static_assert(regex<R"((?:(x)x|xy)\1)">::match("xy"sv));
     static_assert(regex<R"((?:(x)x|xy)\1)">::match("xxx"sv));
@@ -261,5 +268,12 @@ namespace meta::tests
     static_assert(regex<R"(a(?=b))">::match("ab"sv) == false);
     static_assert(regex<R"(.(?!b).{2})">::match("xbx"sv) == false);
     static_assert(regex<R"(a(?!b)|cb)">::match("ab"sv) == false);
+    static_assert(regex<R"(..(?<=x)a)">::match("__a"sv) == false);
+    static_assert(regex<R"(..(?<=xy)a)">::match("yxa"sv) == false);
+    static_assert(regex<R"(..(?<=xy)a)">::match("yya"sv) == false);
+    static_assert(regex<R"(.{7}(?<=ab{2,4}c{3,5}d)test)">::match("abccccdtest"sv) == false);
+    static_assert(regex<R"(.{7}(?<=ab{2,4}c{3,5}d)test)">::match("abbcccdtes"sv) == false);
+    static_assert(regex<R"(.{7}(?<!ab{2,4}c{3,5}d)test)">::match("abbcccdtest"sv) == false);
+    static_assert(regex<R"(.{2}(?<!a(?=t))test)">::match("atest"sv) == false);
 }
 #endif //MREGEX_RUN_REGEX_TESTS

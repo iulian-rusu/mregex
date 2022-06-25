@@ -41,4 +41,5 @@ add_executable(
         test/regex_union_tests.cpp
         test/regex_generator_tests.cpp
         test/iterator_api_tests.cpp
+        test/ast_inversion_tests.cpp
 )

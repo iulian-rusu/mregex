@@ -97,16 +97,16 @@ namespace meta::tests
                 literal<'x'>
             >
     >);
-    static_assert(expected_ast<R"(x(?=a(?!c*d?)b)x)",
+    static_assert(expected_ast<R"(x(?<=a(?<!c*d?)b)x)",
             sequence
             <
                 literal<'x'>,
-                positive_lookahead
+                positive_lookbehind
                 <
                     sequence
                     <
                         literal<'a'>,
-                        negative_lookahead
+                        negative_lookbehind
                         <
                             sequence
                             <

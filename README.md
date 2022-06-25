@@ -10,7 +10,13 @@ The library offers the following features:
 * `constexpr` matching on any sequence that provides 
 an iterator compatible with `std::forward_iterator`
 * compile-time syntax checking
-* support for a large portion of the standard regex syntax
+* support for a large portion of the standard regex syntax:
+  * quantifiers (`*`, `?`, `+`, `{N,M}`)
+  * alternations and sets
+  * capturing groups
+  * backreferences
+  * lookaheads
+  * lookbehinds with arbitrary expressions (requires bidirectional iterators)
 * the ability to modify your regex with flags:
   * `icase` - ignore case when matching
   * `dotall` - make `.` match newline characters
@@ -82,11 +88,13 @@ Currently, the following syntax features are supported:
 |         `{N}`         |                              match exactly `N` times                               |
 |        `{N,}`         |                              match at least `N` times                              |
 |        `{N,M}`        |                          match between `N` and `M` times                           |
-|       `(expr)`        |                capture the result of matching the inner expression                 |
-|      `(?:expr)`       |                                non-capturing group                                 |
-|      `(?=expr)`       |                                 positive lookahead                                 |
-|      `(?!expr)`       |                                 negative lookahead                                 |
+|       `(expr)`        |                       capture the result of matching `expr`                        |
+|      `(?:expr)`       |                             make a non-capturing group                             |
 |         `\N`          |                  backreference to the capturing group number `N`                   |
+|      `(?=expr)`       |       (positive lookahead) test if `expr` will match from the current point        |
+|      `(?!expr)`       |            (negative lookahead) test the negation of positive lookahead            |
+|      `(?<=expr)`      |  (positive lookbehind) test if `expr` would have matched before the current point  |
+|      `(?<!expr)`      |           (negative lookbehind) test the negation of positive lookbehind           |
 
 ## Credits
 This project was inspired by other compile-time regex libraries
