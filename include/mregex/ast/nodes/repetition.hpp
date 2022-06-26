@@ -108,7 +108,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires is_trivially_matchable_v<Inner>
         {
-            if (distance_smaller_than<N>(it, end))
+            if (distance_less_than<N>(it, end))
                 return {it, false};
             if constexpr (flags_of<Context>::unroll)
                 return unrolled_trivial_match(it, ctx, cont, std::make_index_sequence<N>{});

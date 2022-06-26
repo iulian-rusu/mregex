@@ -1,5 +1,5 @@
-#ifndef MREGEX_MREGEX_HELPERS_HPP
-#define MREGEX_MREGEX_HELPERS_HPP
+#ifndef MREGEX_META_HELPERS_HPP
+#define MREGEX_META_HELPERS_HPP
 
 #include <type_traits>
 
@@ -44,4 +44,4 @@ namespace meta
     template<typename T>
     using forward_result_t = typename forward_result<T>::type;
 }
-#endif //MREGEX_MREGEX_HELPERS_HPP
+#endif //MREGEX_META_HELPERS_HPP

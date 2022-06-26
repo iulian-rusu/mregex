@@ -18,7 +18,12 @@ namespace meta::ast
         -> match_result<Iter>
         {
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
-                std::get<ID>(ctx.captures) = regex_capture_view<ID, Iter>{it, new_it};
+                using base_iterator_type = typename Context::iterator_type;
+                // Current iterator type might be different if matching inside lookbehind
+                if constexpr (!std::is_same_v<Iter, base_iterator_type>)
+                    std::get<ID>(ctx.captures) = regex_capture_view<ID, base_iterator_type>{new_it.base(), it.base()};
+                else
+                    std::get<ID>(ctx.captures) = regex_capture_view<ID, Iter>{it, new_it};
                 return cont(new_it);
             };
             if (auto inner_match = Inner::match(begin, end, it, ctx, continuation))

@@ -2,6 +2,7 @@
 #define MREGEX_INPUT_RANGE_ADAPTER_HPP
 
 #include <mregex/utility/concepts.hpp>
+#include <mregex/utility/meta_helpers.hpp>
 
 namespace meta
 {
@@ -20,7 +21,7 @@ namespace meta
 
         template<typename G>
         constexpr explicit input_range_adapter(G &&g)
-        noexcept(std::is_nothrow_move_constructible_v<Gen> && std::is_nothrow_move_constructible_v<result_type>)
+        noexcept(std::is_nothrow_move_constructible_v<Gen> && noexcept(Gen::operator()()))
                 : Gen{std::forward<G>(g)}, current_result{Gen::operator()()}
         {}
 

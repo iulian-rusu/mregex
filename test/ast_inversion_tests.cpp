@@ -27,8 +27,8 @@ namespace meta::tests
             sequence<literal<'c'>, literal<'b'>, literal<'a'>>
     >);
     static_assert(expect_inversion<
-            sequence<literal<'a'>, literal<'b'>, literal<'c'>, hexa>,
-            sequence<hexa, literal<'c'>, literal<'b'>, literal<'a'>>
+            sequence<literal<'a'>, literal<'b'>, literal<'c'>, literal<'d'>>,
+            sequence<literal<'d'>, literal<'c'>, literal<'b'>, literal<'a'>>
     >);
     static_assert(expect_inversion<
             sequence<literal<'a'>, literal<'b'>, sequence<epsilon, literal<'c'>>>,
@@ -51,7 +51,7 @@ namespace meta::tests
                     sequence
                     <
                         literal<'a'>,
-                        negative_lookahead<wildcard>,
+                        negative_lookbehind<wildcard>,
                         literal<'b'>
                     >
                 >,
@@ -65,7 +65,7 @@ namespace meta::tests
                     sequence
                     <
                         literal<'b'>,
-                        negative_lookbehind<wildcard>,
+                        negative_lookahead<wildcard>,
                         literal<'a'>
                     >
                 >,

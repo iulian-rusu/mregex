@@ -44,7 +44,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires are_trivially_matchable_v<First, Rest ...>
         {
-            if (distance_smaller_than<size>(it, end))
+            if (distance_less_than<size>(it, end))
                 return {it, false};
             return unrolled_trivial_match(it, ctx, cont, std::make_index_sequence<size>{});
         }

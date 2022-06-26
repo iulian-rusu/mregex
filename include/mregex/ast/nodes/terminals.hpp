@@ -3,6 +3,7 @@
 
 #include <mregex/regex_context.hpp>
 #include <mregex/utility/distance.hpp>
+#include <mregex/utility/reversed_range_view.hpp>
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/ast_traits.hpp>
 #include <mregex/ast/match_result.hpp>
@@ -218,10 +219,12 @@ namespace meta::ast
         {
             auto const captured = std::get<ID>(ctx.captures);
             std::size_t const length_to_match = captured.length();
-            if (distance_smaller_than(length_to_match, it, end))
+            if (distance_less_than(length_to_match, it, end))
                 return {it, false};
 
-            for (auto c : captured)
+            // Lookbehinds use reverse iterators. To check for equality, iterator directions must be the same
+            constexpr bool different_iterators = !std::is_same_v<Iter, typename Context::iterator_type>;
+            for (auto c : reverse_if<different_iterators>(captured))
             {
                 auto subject = *it;
                 if constexpr (flags_of<Context>::icase)
@@ -234,6 +237,16 @@ namespace meta::ast
                 ++it;
             }
             return cont(it);
+        }
+
+    private:
+        template<bool Reverse, typename Range>
+        static constexpr auto reverse_if(Range &range) noexcept
+        {
+            if constexpr (Reverse)
+                return reversed_range_view{range};
+            else
+                return range;
         }
     };
 

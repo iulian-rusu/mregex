@@ -9,18 +9,27 @@ namespace meta::ast
     template<typename Inner>
     struct reverse_matcher
     {
-        // The AST is inverted to match the regex backwards
-        using ast_type = invert_t<Inner>;
-
         template<std::bidirectional_iterator Iter, typename Context>
         static constexpr bool can_match(Iter begin, Iter end, Iter it, Context &ctx) noexcept
+        requires (!is_trivially_matchable_v<Inner>)
         {
+            // For non-trivial nodes, the AST is inverted to match the regex backwards
+            using ast_type = invert_t<Inner>;
             using iterator_type = std::reverse_iterator<Iter>;
 
-            auto rend = std::make_reverse_iterator(begin); // Reversed begin becomes new end
             auto rbegin = std::make_reverse_iterator(end); // Reversed end becomes new begin
+            auto rend = std::make_reverse_iterator(begin); // Reversed begin becomes new end
             auto rit = std::make_reverse_iterator(it);
-            return ast_type::match(rbegin, rend, rit, ctx, continuations<iterator_type>::epsilon) == true;
+            auto match = ast_type::match(rbegin, rend, rit, ctx, continuations<iterator_type>::epsilon);
+            return  match == true;
+        }
+
+        template<std::bidirectional_iterator Iter, typename Context>
+        static constexpr bool can_match(Iter begin, Iter, Iter it, Context &ctx) noexcept
+        requires is_trivially_matchable_v<Inner>
+        {
+            // For trivially matchable nodes, a single step backwards is enough
+            return (it != begin && Inner::match_one(it - 1, ctx));
         }
     };
 
