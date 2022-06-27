@@ -2,9 +2,13 @@
 #define MREGEX_META_HELPERS_HPP
 
 #include <type_traits>
+#include <mregex/utility/static_string.hpp>
 
 namespace meta
 {
+    /**
+     * Metafunction that maps a sequence of values to types.
+     */
     template<std::size_t, typename T>
     using map_sequence = T;
 
@@ -46,5 +50,11 @@ namespace meta
 
     template<typename T>
     using forward_result_t = typename forward_result<T>::type;
+
+    /**
+     * Metafunction that converts a pack of characters to an instance of static_string.
+     */
+    template<char... Chars>
+    inline constexpr auto make_static_string = static_string{{Chars ..., '\0'}};
 }
 #endif //MREGEX_META_HELPERS_HPP

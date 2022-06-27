@@ -23,7 +23,7 @@ namespace meta::symbol
 
     struct group_mod {};
 
-    struct group_mod_lookbehind {};
+    struct group_mod_less {};
 
     struct group_begin {};
 
@@ -43,12 +43,12 @@ namespace meta::symbol
     struct set_range_esc {};
 
     // Symbols for tokens
-    template<auto>
+    template<char>
     struct character {};
 
     struct epsilon {};
 
-    template<auto>
+    template<char>
     struct expect {};
 
     // Symbol for parsing a backreference ID
@@ -69,7 +69,7 @@ namespace meta::symbol
     // Symbols for parsing named captures
     struct capture_name_begin {};
 
-    template<auto...>
+    template<char...>
     struct capture_name_seq {};
 
     template<static_string>
@@ -82,7 +82,7 @@ namespace meta::symbol
 
     struct make_literal : ast_update {};
 
-    template<auto>
+    template<char>
     struct push_literal : ast_update {};
 
     struct make_sequence : ast_update {};

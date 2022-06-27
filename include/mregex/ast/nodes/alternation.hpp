@@ -1,5 +1,5 @@
-#ifndef MREGEX_ALTERNATION_HPP
-#define MREGEX_ALTERNATION_HPP
+#ifndef MREGEX_NODES_ALTERNATION_HPP
+#define MREGEX_NODES_ALTERNATION_HPP
 
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/ast_traits.hpp>
@@ -31,4 +31,4 @@ namespace meta::ast
     template<typename First>
     struct alternation<First> : First {};
 }
-#endif //MREGEX_ALTERNATION_HPP
+#endif //MREGEX_NODES_ALTERNATION_HPP

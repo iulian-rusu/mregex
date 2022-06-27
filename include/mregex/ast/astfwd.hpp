@@ -1,6 +1,8 @@
 #ifndef MREGEX_ASTFWD_HPP
 #define MREGEX_ASTFWD_HPP
 
+#include <cstddef>
+
 namespace meta::ast
 {
     template<typename, typename...>
@@ -34,14 +36,14 @@ namespace meta::ast
 
     struct ending;
 
-    template<auto>
+    template<char>
     struct literal;
 
     struct whitespace;
 
     struct wildcard;
 
-    template<auto, auto>
+    template<char, char>
     struct range;
 
     template<typename T>
@@ -65,10 +67,13 @@ namespace meta::ast
     struct backref;
 
     template<typename>
+    struct named_backref;
+
+    template<typename>
     struct negated;
 
     template<std::size_t, typename, typename>
-    struct named_capture;
+    struct capture;
 
     template<typename>
     struct positive_lookahead;

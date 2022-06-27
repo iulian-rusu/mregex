@@ -1,9 +1,9 @@
 #ifndef MREGEX_CONCEPTS_HPP
 #define MREGEX_CONCEPTS_HPP
 
-#include <type_traits>
 #include <concepts>
 #include <tuple>
+#include <type_traits>
 
 namespace meta
 {

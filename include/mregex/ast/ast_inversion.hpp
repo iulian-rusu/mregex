@@ -2,6 +2,7 @@
 #define MREGEX_AST_INVERSION_HPP
 
 #include <mregex/ast/astfwd.hpp>
+#include <mregex/utility/stack.hpp>
 
 namespace meta::ast
 {
@@ -59,10 +60,10 @@ namespace meta::ast
         using type = repetition<A, B, invert_t<Inner>>;
     };
 
-    template<auto I, typename Inner>
-    struct invert<capture<I, Inner>>
+    template<std::size_t I, typename Name, typename Inner>
+    struct invert<capture<I, Name, Inner>>
     {
-        using type = capture<I, invert_t<Inner>>;
+        using type = capture<I, Name, invert_t<Inner>>;
     };
 
     template<typename Inner>

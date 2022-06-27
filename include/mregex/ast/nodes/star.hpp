@@ -1,9 +1,10 @@
-#ifndef MREGEX_STAR_HPP
-#define MREGEX_STAR_HPP
+#ifndef MREGEX_NODES_STAR_HPP
+#define MREGEX_NODES_STAR_HPP
 
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/ast_traits.hpp>
 #include <mregex/ast/match_result.hpp>
+#include <mregex/regex_context.hpp>
 
 namespace meta::ast
 {
@@ -89,4 +90,4 @@ namespace meta::ast
         }
     };
 }
-#endif //MREGEX_STAR_HPP
+#endif //MREGEX_NODES_STAR_HPP

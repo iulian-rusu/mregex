@@ -1,8 +1,8 @@
 #ifndef MREGEX_ESC_RULES_HPP
 #define MREGEX_ESC_RULES_HPP
 
-#include <mregex/grammar/char_class_rules.hpp>
 #include <mregex/grammar/backref_rules.hpp>
+#include <mregex/grammar/char_class_rules.hpp>
 
 namespace meta::grammar
 {
@@ -12,7 +12,7 @@ namespace meta::grammar
      *
      * @tparam C    The current character in the input pattern
      */
-    template<auto C, bool = C != '0' && is_numeric_v<C>>
+    template<char C, bool = C != '0' && is_numeric_v<C>>
     struct esc_rule
     {
         using type =
@@ -93,10 +93,10 @@ namespace meta::grammar
      * If none of the rules from above match, parse the escaped sequence
      * as a special character class.
      */
-    template<auto C>
+    template<char C>
     struct esc_rule<C, false> : char_class_rule<C> {};
 
-    template<auto C>
+    template<char C>
     using esc_rule_t = typename esc_rule<C>::type;
 }
 #endif //MREGEX_ESC_RULES_HPP

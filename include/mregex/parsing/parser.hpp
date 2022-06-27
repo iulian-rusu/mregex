@@ -5,8 +5,8 @@
 #include <mregex/ast/capture_indexer.hpp>
 #include <mregex/grammar/grammar.hpp>
 #include <mregex/parsing/lexer.hpp>
-#include <mregex/parsing/parser_status.hpp>
 #include <mregex/parsing/parser_result.hpp>
+#include <mregex/parsing/parser_status.hpp>
 
 namespace meta
 {

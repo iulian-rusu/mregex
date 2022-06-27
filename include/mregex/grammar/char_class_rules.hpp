@@ -1,9 +1,9 @@
 #ifndef MREGEX_CHAR_CLASS_RULES_HPP
 #define MREGEX_CHAR_CLASS_RULES_HPP
 
-#include <mregex/symbol.hpp>
-#include <mregex/utility/stack.hpp>
 #include <mregex/grammar/grammar_actions.hpp>
+#include <mregex/utility/stack.hpp>
+#include <mregex/symbol.hpp>
 
 namespace meta::grammar
 {
@@ -13,7 +13,7 @@ namespace meta::grammar
      *
      * @tparam C    The current character in the input pattern
      */
-    template<auto C>
+    template<char C>
     struct char_class_rule
     {
         using type =

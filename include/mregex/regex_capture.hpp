@@ -187,6 +187,36 @@ namespace meta
      */
     template<capture_storage Storage>
     inline constexpr bool is_nothrow_content_v = noexcept(std::get<0>(std::declval<Storage>()).content());
+
+    /**
+     * Metafunction used to rename a given regex capture type using pattern matching.
+     * @tparam Name     The new name for the capture type
+     * @tparam Capture  The capture type to be renamed
+     */
+    template<typename Name, typename Capture>
+    struct rename_capture;
+
+    template<typename Name, typename Capture>
+    using rename_capture_t = typename rename_capture<Name, Capture>::type;
+
+    template<typename Name, std::forward_iterator Iter, typename OldName>
+    struct rename_capture<Name, regex_capture_view<Iter, OldName>>
+    {
+        using type = regex_capture_view<Iter, Name>;
+    };
+
+    template<typename Name, typename OldName>
+    struct rename_capture<Name, regex_capture<OldName>>
+    {
+        using type = regex_capture<Name>;
+    };
+
+    /**
+     * Metafunction that deduces a valid capture type with a specified name
+     * for a given capture storage type.
+     */
+    template<typename Name, typename Storage>
+    using named_capture_t = rename_capture_t<Name, std::tuple_element_t<0, Storage>>;
 }
 
 template<meta::captured_content Capture>

@@ -32,7 +32,7 @@ namespace meta::tests
     static_assert(is_trivially_matchable_v<backref<1>> == false);
     static_assert(is_trivially_matchable_v<sequence<wildcard, whitespace>> == false);
     static_assert(is_trivially_matchable_v<alternation<wildcard, beginning>> == false);
-    static_assert(is_trivially_matchable_v<capture<1, wildcard>> == false);
+    static_assert(is_trivially_matchable_v<unnamed_capture<1, wildcard>> == false);
     static_assert(is_trivially_matchable_v<star<literal<'a'>>> == false);
     static_assert(is_trivially_matchable_v<alternation<star<whitespace>, literal<'a'>, literal<'b'>>> == false);
 }

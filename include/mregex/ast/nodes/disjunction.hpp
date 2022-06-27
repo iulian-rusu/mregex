@@ -1,5 +1,5 @@
-#ifndef MREGEX_DISJUNCTION_HPP
-#define MREGEX_DISJUNCTION_HPP
+#ifndef MREGEX_NODES_DISJUNCTION_HPP
+#define MREGEX_NODES_DISJUNCTION_HPP
 
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/match_result.hpp>
@@ -25,4 +25,4 @@ namespace meta::ast
     template<typename First>
     struct disjunction<First> : First {};
 }
-#endif //MREGEX_DISJUNCTION_HPP
+#endif //MREGEX_NODES_DISJUNCTION_HPP
