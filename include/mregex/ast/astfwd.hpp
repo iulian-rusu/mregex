@@ -67,8 +67,8 @@ namespace meta::ast
     template<typename>
     struct negated;
 
-    template<std::size_t, typename>
-    struct capture;
+    template<std::size_t, typename, typename>
+    struct named_capture;
 
     template<typename>
     struct positive_lookahead;

@@ -1,7 +1,7 @@
 #ifndef MREGEX_SYMBOL_HPP
 #define MREGEX_SYMBOL_HPP
 
-#include <type_traits>
+#include <mregex/utility/static_string.hpp>
 
 namespace meta::symbol
 {
@@ -66,6 +66,17 @@ namespace meta::symbol
     template<typename, typename>
     struct quantifier_values {};
 
+    // Symbols for parsing named captures
+    struct capture_name_begin {};
+
+    template<auto...>
+    struct capture_name_seq {};
+
+    template<static_string>
+    struct name {};
+
+    struct unnamed {};
+
     // Symbols that indicate an action which updates the AST structure
     struct ast_update {};
 
@@ -119,6 +130,7 @@ namespace meta::symbol
 
     struct make_negated : ast_update {};
 
+    template<typename>
     struct make_capture : ast_update {};
 
     struct make_set : ast_update {};

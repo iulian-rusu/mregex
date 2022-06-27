@@ -52,7 +52,7 @@ namespace meta
             context_type ctx{};
             auto res = ast_type::match(begin, end, begin, ctx, continuations<Iter>::equals(end));
             if (res.matched)
-                std::get<0>(ctx.captures) = regex_capture_view<0, Iter>{begin, end};
+                std::get<0>(ctx.captures) = regex_capture_view<Iter>{begin, end};
             else
                 ctx.clear();
             return result_type{res.matched, std::move(ctx.captures)};
@@ -79,7 +79,7 @@ namespace meta
             {
                 if (auto match = ast_type::match(begin, end, current, ctx, continuations<Iter>::epsilon))
                 {
-                    std::get<0>(ctx.captures) = regex_capture_view<0, Iter>{current, match.end};
+                    std::get<0>(ctx.captures) = regex_capture_view<Iter>{current, match.end};
                     return result_type{true, std::move(ctx.captures)};
                 }
 

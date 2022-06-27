@@ -5,6 +5,9 @@
 
 namespace meta
 {
+    template<std::size_t, typename T>
+    using map_sequence = T;
+
     /**
      * Metafunction used to detect if a type is present inside a type pack.
      */

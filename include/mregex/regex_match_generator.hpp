@@ -34,7 +34,7 @@ namespace meta
                 if (res && res.end != current_iter)
                 {
                     auto match_begin = current_iter;
-                    std::get<0>(ctx.captures) = regex_capture_view<0, iterator_type>{match_begin, res.end};
+                    std::get<0>(ctx.captures) = regex_capture_view<iterator_type>{match_begin, res.end};
                     current_iter = res.end;
                     active = current_iter != end_iter;
                     return result_type{true, std::move(ctx.captures)};

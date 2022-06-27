@@ -14,7 +14,7 @@ namespace meta
      * @tparam ID   The identifier of the capturing group
      * @tparam Iter The forward iterator type used to acces the input sequence
      */
-    template<std::size_t ID, std::forward_iterator Iter>
+    template<std::forward_iterator Iter, typename Name = symbol::unnamed>
     struct regex_capture_view
     {
         /**
@@ -86,11 +86,11 @@ namespace meta
      *
      * @tparam ID   The identifier of the capturing group
      */
-    template<std::size_t ID>
+    template<typename Name = symbol::unnamed>
     struct regex_capture
     {
         template<std::forward_iterator Iter>
-        explicit regex_capture(regex_capture_view<ID, Iter> const &capture_view)
+        explicit regex_capture(regex_capture_view<Iter, Name> const &capture_view)
                 : captured{capture_view.begin(), capture_view.end()}
         {}
 
@@ -145,8 +145,8 @@ namespace meta
     template<typename T>
     struct is_capture_view : std::false_type {};
 
-    template<std::size_t ID, std::forward_iterator Iter>
-    struct is_capture_view<regex_capture_view<ID, Iter>> : std::true_type {};
+    template<std::forward_iterator Iter, typename Name>
+    struct is_capture_view<regex_capture_view<Iter, Name>> : std::true_type {};
 
     template<typename T>
     inline constexpr bool is_capture_view_v = is_capture_view<T>::value;
@@ -160,7 +160,7 @@ namespace meta
     template<std::forward_iterator Iter, std::size_t... Indices>
     struct regex_capture_view_allocator<std::index_sequence<Indices ...>, Iter>
     {
-        using type = std::tuple<regex_capture_view<Indices, Iter> ...>;
+        using type = std::tuple<map_sequence<Indices, regex_capture_view<Iter>> ...>;
     };
 
     template<std::size_t N, std::forward_iterator Iter>
@@ -175,7 +175,7 @@ namespace meta
     template<std::size_t... Indices>
     struct regex_capture_allocator<std::index_sequence<Indices ...>>
     {
-        using type = std::tuple<regex_capture<Indices> ...>;
+        using type = std::tuple<map_sequence<Indices, regex_capture<>> ...>;
     };
 
     template<std::size_t N>

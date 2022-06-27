@@ -8,8 +8,8 @@
 
 namespace meta::ast
 {
-    template<std::size_t ID, typename Inner>
-    struct capture
+    template<std::size_t ID, typename Name, typename Inner>
+    struct named_capture
     {
         static constexpr std::size_t capture_count = 1 + Inner::capture_count;
 
@@ -21,9 +21,9 @@ namespace meta::ast
                 using base_iterator_type = typename Context::iterator_type;
                 // Current iterator type might be different if matching inside lookbehind
                 if constexpr (!std::is_same_v<Iter, base_iterator_type>)
-                    std::get<ID>(ctx.captures) = regex_capture_view<ID, base_iterator_type>{new_it.base(), it.base()};
+                    std::get<ID>(ctx.captures) = regex_capture_view<base_iterator_type, Name>{new_it.base(), it.base()};
                 else
-                    std::get<ID>(ctx.captures) = regex_capture_view<ID, Iter>{it, new_it};
+                    std::get<ID>(ctx.captures) = regex_capture_view<Iter, Name>{it, new_it};
                 return cont(new_it);
             };
             if (auto inner_match = Inner::match(begin, end, it, ctx, continuation))
@@ -32,5 +32,8 @@ namespace meta::ast
             return {it, false};
         }
     };
+
+    template<std::size_t ID, typename Inner>
+    using capture =  named_capture<ID, symbol::unnamed, Inner>;
 }
 #endif //MREGEX_CAPTURE_HPP
