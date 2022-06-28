@@ -6,35 +6,48 @@
 
 namespace meta
 {
+    /*
+     * LIFO-style metacontainer for a sequence of types.
+     */
     template<typename...>
     struct stack;
 
     namespace detail
     {
-        template<typename T, typename... Elems>
-        struct push_helper
+        template<typename Stack, typename T>
+        struct push_impl;
+
+        template<typename... Elems, typename T>
+        struct push_impl<stack<Elems ...>, T>
         {
             using type = stack<T, Elems ...>;
         };
 
-        template<typename... Ts , typename... Elems>
-        struct push_helper<stack<Ts ...>, Elems ...>
+        template<typename... Elems, typename... Ts>
+        struct push_impl<stack<Elems ...>, stack<Ts ...>>
         {
             using type = stack<Ts ..., Elems ...>;
         };
 
-        template<typename T, typename... Elems>
-        using push = typename push_helper<T, Elems ...>::type;
+        template<typename Stack>
+        struct pop_impl;
+
+        template<typename First, typename... Rest>
+        struct pop_impl<stack<First, Rest ...>>
+        {
+            using type = stack<Rest ...>;
+        };
+
+        template<>
+        struct pop_impl<stack<>>
+        {
+            using type = stack<>;
+        };
     }
 
     template<typename First, typename... Rest>
     struct stack<First, Rest ...>
     {
-        template<typename T>
-        using push = detail::push<T, First, Rest ...>;
-
-        using pop = stack<Rest ...>;
-
         using top = First;
     };
 
@@ -43,25 +56,19 @@ namespace meta
     template<>
     struct stack<>
     {
-        template<typename T>
-        using push = detail::push<T>;
-
-        using pop = stack<>;
-
         using top = empty_stack_marker;
     };
 
     template<typename Stack, typename T>
-    using push = typename Stack::template push<T>;
+    using push = typename detail::push_impl<Stack, T>::type;
 
     template<typename Stack>
-    using pop = typename Stack::pop;
+    using pop = typename detail::pop_impl<Stack>::type;
 
     template<typename Stack>
     using top = typename Stack::top;
 
     template<typename Stack>
     inline constexpr bool is_empty_v = std::is_same_v<empty_stack_marker, typename Stack::top>;
-
 }
 #endif //MREGEX_STACK_HPP

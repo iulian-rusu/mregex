@@ -62,19 +62,20 @@ namespace meta
             return string_type{begin_iter, end_iter};
         }
 
-        [[nodiscard]] std::string str() const
-        {
-            return std::string{begin_iter, end_iter};
-        }
-
         constexpr explicit operator bool() const noexcept
         {
             return length() > 0;
         }
 
-        constexpr explicit(false) operator string_type() const noexcept
+        explicit(false) operator std::string_view() const noexcept
+        requires std::contiguous_iterator<Iter>
         {
-            return content();
+            return {begin_iter, end_iter};
+        }
+
+        explicit(false) operator std::string() const noexcept
+        {
+            return {begin_iter, end_iter};
         }
 
     private:
