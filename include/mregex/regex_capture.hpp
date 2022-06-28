@@ -13,6 +13,7 @@ namespace meta
      *
      * @tparam ID   The identifier of the capturing group
      * @tparam Iter The forward iterator type used to acces the input sequence
+     * @tparam Name The name of the capturing group (optional)
      */
     template<std::forward_iterator Iter, typename Name = symbol::unnamed>
     struct regex_capture_view
@@ -85,6 +86,7 @@ namespace meta
      * Class that owns a copy of the captured content of a regex group.
      *
      * @tparam ID   The identifier of the capturing group
+     * @tparam Name The name of the capturing group (optional)
      */
     template<typename Name = symbol::unnamed>
     struct regex_capture
@@ -213,10 +215,12 @@ namespace meta
     };
 
     /**
-     * Metafunction that generates a valid capture type with a specified name
-     * for a given capture storage type.
+     * Metafunction that generates a valid named capture type for a given capture storage type.
+     *
+     * @tparam Storage  The capture storage used to deduce the generated type
+     * @tparam Name     The name of the generated capture type
      */
-    template<typename Storage, typename Name>
+    template<capture_storage Storage, typename Name>
     using named_capture_type_for = rename_capture_t<std::tuple_element_t<0, Storage>, Name>;
 }
 

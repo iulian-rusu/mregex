@@ -1145,7 +1145,7 @@ namespace meta::grammar
     template<std::size_t ID, char C>
     struct rule<symbol::backref_id<ID>, symbol::character<C>>
     {
-        using type = backref_rule_t<C, ID>;
+        using type = backref_rule_t<ID, C>;
     };
 
     template<std::size_t ID>
