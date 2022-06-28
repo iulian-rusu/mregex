@@ -25,4 +25,7 @@ namespace meta
     static_assert(error_position<"a{1,2,3}", 5>);
     static_assert(error_position<"a**b", 2>);
     static_assert(error_position<"(a(b(c(d)))))", 12>);
+    static_assert(error_position<"(?<1name>x)", 3>);
+    static_assert(error_position<"(?<name+>x)", 7>);
+    static_assert(error_position<"(?<namex)", 8>);
 }

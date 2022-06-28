@@ -3,6 +3,7 @@
 
 #include <mregex/grammar/esc_rules.hpp>
 #include <mregex/grammar/quantifier_rules.hpp>
+#include <mregex/grammar/capture_name_rules.hpp>
 
 namespace meta::grammar
 {
@@ -373,8 +374,25 @@ namespace meta::grammar
     template<char C>
     struct rule<symbol::group_mod_less, symbol::character<C>>
     {
-        // TODO: add rules for parsing capture names here
-        using type = reject;
+        using type = begin_capture_name_t<C>;
+    };
+
+    template<char... Chars, char C>
+    struct rule<symbol::capture_name_seq<Chars ...>, symbol::character<C>>
+    {
+        using type = update_capture_name_t<symbol::capture_name_seq<Chars ...>, C>;
+    };
+
+    template<char... Chars>
+    struct rule<symbol::capture_name_seq<Chars ...>, symbol::character<'>'>>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::group_begin,
+                    symbol::make_capture<symbol::name<make_static_string<Chars... >>>
+                >;
     };
 
     template<char C>

@@ -36,7 +36,7 @@ namespace meta::tests
     static_assert(std::is_same_v<stack<double, int, long, char>, push<stack<long, char>, stack<double, int>>>);
     // Pushing multiple elements on the stack
     static_assert(std::is_same_v<
-            stack<char, int, float, double, long, long double, long long, short int>,
-            push_all_t<char, int, float, double, long, long double, long long, short int>
+        stack<char, int, float, double, long, long double, long long, short int>,
+        push_all_t<char, int, float, double, long, long double, long long, short int>
     >);
 }

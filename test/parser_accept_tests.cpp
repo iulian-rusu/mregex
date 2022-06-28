@@ -108,6 +108,10 @@ namespace meta::tests
     static_assert(accepted<R"(((a|\\a+)|(d?|\\d))*)">);
     static_assert(accepted<R"(((a|\\a)|(0|1|2|3))?)">);
     static_assert(accepted<R"((((a|\\a)|(0|1|2|3))?)*x?y+abcd|efgh((x|z)?t)+)">);
+    static_assert(accepted<R"(abc(?<test>.[a-d]+)*cd)">);
+    static_assert(accepted<R"(abc(?<te2_3>.[a-d]+)+cd)">);
+    static_assert(accepted<R"(abc(?<lvl1>.[a-d]+(?<lvl2>x+y*))+cd)">);
+    static_assert(accepted<R"(abc(?<____>.[a-d]+(?<_1232>x+y*)+){2,3}cd)">);
 
     // Test invalid inputs
     static_assert(accepted<R"(()"> == false);
@@ -190,4 +194,9 @@ namespace meta::tests
     static_assert(accepted<R"(((a|\\a++)|(d?|\\d))*)"> == false);
     static_assert(accepted<R"(((a|\\a)|(0|1|?2|3))?)"> == false);
     static_assert(accepted<R"((((|\\a)|(0|1|2|3))?)*x?y+abcd|efgh((x|z)?t)+)"> == false);
+    static_assert(accepted<R"(abc(?<1name>xyz)d)"> == false);
+    static_assert(accepted<R"(abc(?<namexyz)d)"> == false);
+    static_assert(accepted<R"(abc(?<name >xyz)d)"> == false);
+    static_assert(accepted<R"(abc(?< name>xyz)d)"> == false);
+    static_assert(accepted<R"(abc(?<+name>xyz)d)"> == false);
 }

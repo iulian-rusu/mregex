@@ -13,77 +13,77 @@ namespace meta::tests
     static_assert(expected_inversion<nothing, nothing>);
     static_assert(expected_inversion<literal<'a'>, literal<'a'>>);
     static_assert(expected_inversion<
-            plus<literal<'a'>>,
-            plus<literal<'a'>>
+        plus<literal<'a'>>,
+        plus<literal<'a'>>
     >);
     static_assert(expected_inversion<
-            unnamed_capture<1, literal<'a'>>,
-            unnamed_capture<1, literal<'a'>>
+        unnamed_capture<1, literal<'a'>>,
+        unnamed_capture<1, literal<'a'>>
     >);
     static_assert(expected_inversion<
-            alternation<wildcard, literal<'a'>>,
-            alternation<wildcard, literal<'a'>>
+        alternation<wildcard, literal<'a'>>,
+        alternation<wildcard, literal<'a'>>
     >);
     static_assert(expected_inversion<
-            disjunction<wildcard, literal<'a'>>,
-            disjunction<wildcard, literal<'a'>>
+        disjunction<wildcard, literal<'a'>>,
+        disjunction<wildcard, literal<'a'>>
     >);
     static_assert(expected_inversion<
-            repetition<symbol::quantifier_value<3>, symbol::quantifier_value<5>, literal<'a'>>,
-            repetition<symbol::quantifier_value<3>, symbol::quantifier_value<5>, literal<'a'>>
+        repetition<symbol::quantifier_value<3>, symbol::quantifier_value<5>, literal<'a'>>,
+        repetition<symbol::quantifier_value<3>, symbol::quantifier_value<5>, literal<'a'>>
     >);
     static_assert(expected_inversion<
-            sequence<wildcard, literal<'a'>>,
-            sequence<literal<'a'>, wildcard>
+        sequence<wildcard, literal<'a'>>,
+        sequence<literal<'a'>, wildcard>
     >);
     static_assert(expected_inversion<
-            sequence<literal<'a'>, literal<'b'>, literal<'c'>>,
-            sequence<literal<'c'>, literal<'b'>, literal<'a'>>
+        sequence<literal<'a'>, literal<'b'>, literal<'c'>>,
+        sequence<literal<'c'>, literal<'b'>, literal<'a'>>
     >);
     static_assert(expected_inversion<
-            sequence<literal<'a'>, literal<'b'>, literal<'c'>, literal<'d'>>,
-            sequence<literal<'d'>, literal<'c'>, literal<'b'>, literal<'a'>>
+        sequence<literal<'a'>, literal<'b'>, literal<'c'>, literal<'d'>>,
+        sequence<literal<'d'>, literal<'c'>, literal<'b'>, literal<'a'>>
     >);
     static_assert(expected_inversion<
-            sequence<literal<'a'>, literal<'b'>, sequence<epsilon, literal<'c'>>>,
-            sequence<sequence<literal<'c'>, epsilon>, literal<'b'>, literal<'a'>>
+        sequence<literal<'a'>, literal<'b'>, sequence<epsilon, literal<'c'>>>,
+        sequence<sequence<literal<'c'>, epsilon>, literal<'b'>, literal<'a'>>
     >);
     static_assert(expected_inversion<
-            alternation<literal<'a'>, literal<'b'>, sequence<epsilon, literal<'c'>>>,
-            alternation<literal<'a'>, literal<'b'>, sequence<literal<'c'>, epsilon>>
+        alternation<literal<'a'>, literal<'b'>, sequence<epsilon, literal<'c'>>>,
+        alternation<literal<'a'>, literal<'b'>, sequence<literal<'c'>, epsilon>>
     >);
     static_assert(expected_inversion<
-            alternation<literal<'a'>, literal<'b'>, positive_lookahead<sequence<epsilon, literal<'c'>>>>,
-            alternation<literal<'a'>, literal<'b'>, positive_lookbehind<sequence<epsilon, literal<'c'>>>>
+        alternation<literal<'a'>, literal<'b'>, positive_lookahead<sequence<epsilon, literal<'c'>>>>,
+        alternation<literal<'a'>, literal<'b'>, positive_lookbehind<sequence<epsilon, literal<'c'>>>>
     >);
     static_assert(expected_inversion<
-            sequence
+        sequence
+        <
+            literal<'x'>,
+            star
             <
-                literal<'x'>,
-                star
+                sequence
                 <
-                    sequence
-                    <
-                        literal<'a'>,
-                        negative_lookbehind<wildcard>,
-                        literal<'b'>
-                    >
-                >,
-                literal<'y'>
+                    literal<'a'>,
+                    negative_lookbehind<wildcard>,
+                    literal<'b'>
+                >
             >,
-            sequence
+            literal<'y'>
+        >,
+        sequence
+        <
+            literal<'y'>,
+            star
             <
-                literal<'y'>,
-                star
+                sequence
                 <
-                    sequence
-                    <
-                        literal<'b'>,
-                        negative_lookahead<wildcard>,
-                        literal<'a'>
-                    >
-                >,
-                literal<'x'>
-            >
+                    literal<'b'>,
+                    negative_lookahead<wildcard>,
+                    literal<'a'>
+                >
+            >,
+            literal<'x'>
+        >
     >);
 }

@@ -13,6 +13,9 @@ namespace meta
     inline constexpr bool is_upper_v = 'A' <= C && C <= 'Z';
 
     template<char C>
+    inline constexpr bool is_word = is_lower_v<C> || is_upper_v<C> || is_numeric_v<C> || C == '_';
+
+    template<char C>
     inline constexpr auto to_lower_v = is_upper_v<C> ? C ^ 0x20 : C;
 
     template<char C>
