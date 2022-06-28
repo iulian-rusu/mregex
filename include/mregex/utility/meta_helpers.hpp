@@ -3,6 +3,7 @@
 
 #include <type_traits>
 #include <mregex/utility/static_string.hpp>
+#include <mregex/symbol.hpp>
 
 namespace meta
 {
@@ -52,9 +53,11 @@ namespace meta
     using forward_result_t = typename forward_result<T>::type;
 
     /**
-     * Metafunction that converts a pack of characters to an instance of static_string.
+     * Metafunction that converts a pack of characters to a symbolic name type.
+     *
+     * @note The sizeof... (Chars) is technically redundant but GCC 11.1 cannot deduce the size.
      */
     template<char... Chars>
-    inline constexpr auto make_static_string = static_string{{Chars ..., '\0'}};
+    using make_name = symbol::name<static_string<sizeof... (Chars)>{{Chars ..., '\0'}}>;
 }
 #endif //MREGEX_META_HELPERS_HPP

@@ -4,6 +4,7 @@
 #include <mregex/grammar/esc_rules.hpp>
 #include <mregex/grammar/quantifier_rules.hpp>
 #include <mregex/grammar/capture_name_rules.hpp>
+#include <mregex/utility/meta_helpers.hpp>
 
 namespace meta::grammar
 {
@@ -391,7 +392,7 @@ namespace meta::grammar
                 <
                     advance,
                     symbol::group_begin,
-                    symbol::make_capture<symbol::name<make_static_string<Chars... >>>
+                    symbol::make_capture<make_name<Chars ...>>
                 >;
     };
 

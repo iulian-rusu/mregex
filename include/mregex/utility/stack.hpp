@@ -2,7 +2,6 @@
 #define MREGEX_STACK_HPP
 
 #include <type_traits>
-#include <mregex/utility/meta_helpers.hpp>
 
 namespace meta
 {
