@@ -1,7 +1,5 @@
-#include <string_view>
-#include "tests.hpp"
+#include <mregex.hpp>
 
-#ifdef MREGEX_RUN_REGEX_UNION_TESTS
 namespace meta::tests
 {
     // Test capture count
@@ -51,4 +49,3 @@ namespace meta::tests
     static_assert(regex_union<R"(in)", R"(intern)", R"(internal)">::match("inter") == false);
     static_assert(regex_union<R"(aB+b)", R"(A+)", R"(a?Ab?)">::match("aaaaaaa") == false);
 }
-#endif //MREGEX_RUN_REGEX_UNION_TESTS

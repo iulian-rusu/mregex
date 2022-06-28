@@ -1,6 +1,5 @@
-#include "tests.hpp"
+#include <mregex.hpp>
 
-#ifdef MREGEX_RUN_PARSER_TESTS
 namespace meta::tests
 {
     using namespace ast;
@@ -872,4 +871,3 @@ namespace meta::tests
             >
     >);
 }
-#endif //MREGEX_RUN_PARSER_TESTS

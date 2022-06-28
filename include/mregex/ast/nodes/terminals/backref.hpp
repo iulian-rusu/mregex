@@ -27,13 +27,13 @@ namespace meta::ast
             template<typename Storage>
             static constexpr decltype(auto) get_capture(Storage &captures) noexcept
             {
-                return std::get<named_capture_t<Name, Storage>>(captures);
+                return std::get<named_capture_type_for<Storage, Name>>(captures);
             }
         };
     }
 
     template<typename LookupMethod>
-    struct backref_base
+    struct backref_base : terminal
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
@@ -73,9 +73,9 @@ namespace meta::ast
     };
 
     template<std::size_t ID>
-    struct backref : terminal, backref_base<detail::id_lookup_method<ID>> {};
+    struct backref : backref_base<detail::id_lookup_method<ID>> {};
 
     template<typename Name>
-    struct named_backref : terminal, backref_base<detail::name_lookup_method<Name>> {};
+    struct named_backref : backref_base<detail::name_lookup_method<Name>> {};
 }
 #endif //MREGEX_NODES_BACKREF_HPP

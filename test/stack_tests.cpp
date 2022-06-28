@@ -1,6 +1,5 @@
-#include "tests.hpp"
+#include <mregex.hpp>
 
-#ifdef MREGEX_RUN_STACK_TESTS
 namespace meta::tests
 {
     namespace
@@ -39,4 +38,3 @@ namespace meta::tests
     static_assert(std::is_same_v<stack<char, int, float, double, long, long double, long long, short int>,
             push_all_t<char, int, float, double, long, long double, long long, short int>>);
 }
-#endif //MREGEX_RUN_STACK_TESTS

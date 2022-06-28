@@ -1,7 +1,5 @@
-#include <string_view>
-#include "tests.hpp"
+#include <mregex.hpp>
 
-#ifdef MREGEX_RUN_REGEX_TESTS
 namespace meta::tests
 {
     namespace
@@ -33,4 +31,3 @@ namespace meta::tests
     static_assert(match_reverse<R"(a{2}c{1,3}b{1})">("bccca") == false);
     static_assert(match_reverse<R"((.+)ab\1)">("nice ba nice ") == false);
 }
-#endif

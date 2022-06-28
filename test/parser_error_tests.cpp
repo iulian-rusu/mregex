@@ -1,6 +1,5 @@
-#include "tests.hpp"
+#include <mregex.hpp>
 
-#ifdef MREGEX_RUN_PARSER_TESTS
 namespace meta
 {
     namespace
@@ -27,4 +26,3 @@ namespace meta
     static_assert(error_position<"a**b", 2>);
     static_assert(error_position<"(a(b(c(d)))))", 12>);
 }
-#endif //MREGEX_RUN_PARSER_TESTS

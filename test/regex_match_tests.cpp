@@ -1,7 +1,5 @@
-#include <string_view>
-#include "tests.hpp"
+#include <mregex.hpp>
 
-#ifdef MREGEX_RUN_REGEX_TESTS
 namespace meta::tests
 {
     // Test matching inputs
@@ -286,4 +284,3 @@ namespace meta::tests
     static_assert(regex<R"((.*)(?<!\1))">::match(R"(abc)") == false);
     static_assert(regex<R"((.*)x(?<!\1x))">::match(R"(abcx)") == false);
 }
-#endif //MREGEX_RUN_REGEX_TESTS

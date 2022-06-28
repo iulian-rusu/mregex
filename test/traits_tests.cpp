@@ -1,6 +1,5 @@
-#include "tests.hpp"
+#include <mregex.hpp>
 
-#ifdef MREGEX_RUN_TRAITS_TESTS
 namespace meta::tests
 {
     using namespace ast;
@@ -36,4 +35,3 @@ namespace meta::tests
     static_assert(is_trivially_matchable_v<star<literal<'a'>>> == false);
     static_assert(is_trivially_matchable_v<alternation<star<whitespace>, literal<'a'>, literal<'b'>>> == false);
 }
-#endif //MREGEX_RUN_TRAITS_TESTS

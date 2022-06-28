@@ -1,6 +1,5 @@
-#include "tests.hpp"
+#include <mregex.hpp>
 
-#ifdef MREGEX_RUN_PARSER_TESTS
 namespace meta::tests
 {
     namespace
@@ -192,4 +191,3 @@ namespace meta::tests
     static_assert(accepted<R"(((a|\\a)|(0|1|?2|3))?)"> == false);
     static_assert(accepted<R"((((|\\a)|(0|1|2|3))?)*x?y+abcd|efgh((x|z)?t)+)"> == false);
 }
-#endif //MREGEX_RUN_PARSER_TESTS

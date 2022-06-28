@@ -1,7 +1,5 @@
-#include <string_view>
-#include "tests.hpp"
+#include <mregex.hpp>
 
-#ifdef MREGEX_RUN_REGEX_TESTS
 namespace meta::tests
 {
     using uri_regex = regex<R"(([a-zA-Z][a-zA-Z0-9]*)://([^ /]+)(/[^ ]*)?)">;
@@ -45,4 +43,3 @@ namespace meta::tests
     static_assert(regex<" ^">::search("") == false);
     static_assert(regex<"$ ">::search("") == false);
 }
-#endif //MREGEX_RUN_REGEX_TESTS

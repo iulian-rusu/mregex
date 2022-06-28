@@ -25,14 +25,13 @@ an iterator compatible with `std::forward_iterator`
 * a flexible API that allows exact matching, searching or iterating over multiple results
     
 ## Installation
-
 The project is header-only and does not depend on any third-party libraries. 
 Currently, building is supported on GCC 10 and Clang 12, but any compiler that is C++20 compliant 
 will work.
 
 To install the library, simply add the contents of the `include` directory 
 to your compiler's include paths. If you are using a build system like `CMake`, update your 
-target's include directories in a similar manner.
+target's include directories or add a library dependency to `mregex`.
 
 ## Usage
 Below is an example of parsing a date.
@@ -61,6 +60,8 @@ for (auto &&res : word_regex::range(words))
     std::cout << res << '\n';
 }
 ```
+
+More examples can be found in the `example/` directory.
 
 ## Syntax
 Currently, the following syntax features are supported:
