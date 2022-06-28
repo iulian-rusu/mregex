@@ -58,6 +58,10 @@ namespace meta
         using top = empty_stack_marker;
     };
 
+    /**
+     * Metafunctions and operators for working with the container
+     */
+
     template<typename Stack, typename T>
     using push = typename detail::push_impl<Stack, T>::type;
 
@@ -66,6 +70,15 @@ namespace meta
 
     template<typename Stack>
     using top = typename Stack::top;
+
+    template<typename T, typename... Ts>
+    constexpr auto operator<<(stack<Ts ...>, T) -> push<stack<Ts ...>, T> { return {}; }
+
+    template<typename T, typename... Ts>
+    constexpr auto operator>>(T, stack<Ts ...>) -> push<stack<Ts ...>, T> { return {}; }
+
+    template<typename... Stacks>
+    using concat = decltype((Stacks{} >> ...));
 
     template<typename Stack>
     inline constexpr bool is_empty_v = std::is_same_v<empty_stack_marker, typename Stack::top>;

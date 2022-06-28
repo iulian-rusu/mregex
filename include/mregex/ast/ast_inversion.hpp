@@ -14,16 +14,10 @@ namespace meta::ast
             return {};
         }
 
-        template<typename T, typename... Ts>
-        constexpr auto operator+(stack<Ts ...>, T) noexcept -> stack<T, Ts ...>
-        {
-            return {};
-        }
-
         template<typename... Ts>
         constexpr auto invert_stack(stack<Ts ...>) noexcept
         {
-            return (stack<>{}  + ... + Ts{});
+            return (stack<>{}  << ... << Ts{});
         }
     }
 
