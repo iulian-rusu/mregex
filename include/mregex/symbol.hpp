@@ -72,8 +72,6 @@ namespace meta::symbol
     template<std::size_t>
     struct backref_id {};
 
-    struct backref_name_expect {};
-
     struct backref_name_begin {};
 
     template<char...>

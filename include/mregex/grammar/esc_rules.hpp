@@ -30,7 +30,8 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::backref_name_expect
+                    symbol::expect<'<'>,
+                    symbol::backref_name_begin
                 >;
     };
 

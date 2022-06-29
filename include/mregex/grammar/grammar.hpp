@@ -1174,23 +1174,6 @@ namespace meta::grammar
     };
 
     // Rules for parsing name-based backreferences
-    template<>
-    struct rule<symbol::backref_name_expect, symbol::character<'<'>>
-    {
-        using type =
-                stack
-                <
-                    advance,
-                    symbol::backref_name_begin
-                >;
-    };
-
-    template<char C>
-    struct rule<symbol::backref_name_expect, symbol::character<C>>
-    {
-        using type = reject;
-    };
-
     template<char C>
     struct rule<symbol::backref_name_begin, symbol::character<C>>
     {
