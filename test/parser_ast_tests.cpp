@@ -879,6 +879,18 @@ namespace meta::tests
             plus<literal<'x'>>
         >
     >);
+    static_assert(expected_ast<R"((?<group_name>x+)\k<group_name>)",
+        sequence
+        <
+            capture
+            <
+                1,
+                symbol::name<"group_name">,
+                plus<literal<'x'>>
+            >,
+            named_backref<symbol::name<"group_name">>
+        >
+    >);
     static_assert(expected_ast<R"(x(?<_capture_name>abc)+)",
         sequence
         <
@@ -899,7 +911,7 @@ namespace meta::tests
             >
         >
     >);
-    static_assert(expected_ast<R"((?<grp_1>abc)?-(?<grp_2>xyz){2,})",
+    static_assert(expected_ast<R"((?<grp_1>abc)? \k<grp_1> (?<grp_2>xyz){2,})",
         sequence
         <
             optional
@@ -916,7 +928,9 @@ namespace meta::tests
                     >
                 >
             >,
-            literal<'-'>,
+            literal<' '>,
+            named_backref<symbol::name<"grp_1">>,
+            literal<' '>,
             repetition
             <
                 symbol::quantifier_value<2>,

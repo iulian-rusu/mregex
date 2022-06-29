@@ -28,10 +28,11 @@ namespace meta::tests
     static_assert(is_trivially_matchable_v<alternation<whitespace, literal<'a'>, literal<'b'>>>);
     static_assert(is_trivially_matchable_v<epsilon> == false);
     static_assert(is_trivially_matchable_v<beginning> == false);
-    static_assert(is_trivially_matchable_v<backref<1>> == false);
     static_assert(is_trivially_matchable_v<sequence<wildcard, whitespace>> == false);
     static_assert(is_trivially_matchable_v<alternation<wildcard, beginning>> == false);
-    static_assert(is_trivially_matchable_v<unnamed_capture<1, wildcard>> == false);
+    static_assert(is_trivially_matchable_v<capture<1, symbol::name<"a">, wildcard>> == false);
+    static_assert(is_trivially_matchable_v<backref<1>> == false);
+    static_assert(is_trivially_matchable_v<named_backref<symbol::name<"a">>> == false);
     static_assert(is_trivially_matchable_v<star<literal<'a'>>> == false);
     static_assert(is_trivially_matchable_v<alternation<star<whitespace>, literal<'a'>, literal<'b'>>> == false);
 }

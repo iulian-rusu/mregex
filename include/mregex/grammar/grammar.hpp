@@ -2,8 +2,8 @@
 #define MREGEX_GRAMMAR_HPP
 
 #include <mregex/grammar/esc_rules.hpp>
+#include <mregex/grammar/name_rules.hpp>
 #include <mregex/grammar/quantifier_rules.hpp>
-#include <mregex/grammar/capture_name_rules.hpp>
 #include <mregex/utility/meta_helpers.hpp>
 
 namespace meta::grammar
@@ -375,13 +375,13 @@ namespace meta::grammar
     template<char C>
     struct rule<symbol::group_mod_less, symbol::character<C>>
     {
-        using type = begin_capture_name_t<C>;
+        using type = begin_name_t<symbol::capture_name_seq, C>;
     };
 
     template<char... Chars, char C>
     struct rule<symbol::capture_name_seq<Chars ...>, symbol::character<C>>
     {
-        using type = update_capture_name_t<symbol::capture_name_seq<Chars ...>, C>;
+        using type = update_name_t<symbol::capture_name_seq<Chars ...>, C>;
     };
 
     template<char... Chars>
@@ -1160,7 +1160,7 @@ namespace meta::grammar
         using type = reject;
     };
 
-    // Rules for parsing backreferences
+    // Rules for parsing identifier-based backreferences
     template<std::size_t ID, char C>
     struct rule<symbol::backref_id<ID>, symbol::character<C>>
     {
@@ -1171,6 +1171,47 @@ namespace meta::grammar
     struct rule<symbol::backref_id<ID>, symbol::epsilon>
     {
         using type = symbol::make_backref<ID>;
+    };
+
+    // Rules for parsing name-based backreferences
+    template<>
+    struct rule<symbol::backref_name_expect, symbol::character<'<'>>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::backref_name_begin
+                >;
+    };
+
+    template<char C>
+    struct rule<symbol::backref_name_expect, symbol::character<C>>
+    {
+        using type = reject;
+    };
+
+    template<char C>
+    struct rule<symbol::backref_name_begin, symbol::character<C>>
+    {
+        using type = begin_name_t<symbol::backref_name_seq, C>;
+    };
+
+    template<char... Chars, char C>
+    struct rule<symbol::backref_name_seq<Chars ...>, symbol::character<C>>
+    {
+        using type = update_name_t<symbol::backref_name_seq<Chars ...>, C>;
+    };
+
+    template<char... Chars>
+    struct rule<symbol::backref_name_seq<Chars ...>, symbol::character<'>'>>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::make_named_backref<make_name<Chars ...>>
+                >;
     };
 
     template<char C>

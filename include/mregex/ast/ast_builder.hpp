@@ -201,6 +201,12 @@ namespace meta::ast
         using type = stack<backref<ID>, Elems ...>;
     };
 
+    template<typename Name, typename T, typename... Elems>
+    struct build<symbol::make_named_backref<Name>, T, stack<Elems ...>>
+    {
+        using type = stack<named_backref<Name>, Elems ...>;
+    };
+
     template<typename A, typename B, typename T, typename First, typename... Rest>
     struct build<symbol::make_repetition<A, B>, T, stack<First, Rest ...>>
     {

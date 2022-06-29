@@ -11,7 +11,7 @@ set(
     regex_match_tests.cpp
     regex_search_tests.cpp
     regex_union_tests.cpp
-    regex_generator_tests.cpp
+    regex_iteration_tests.cpp
     iterator_api_tests.cpp
     ast_inversion_tests.cpp
 )

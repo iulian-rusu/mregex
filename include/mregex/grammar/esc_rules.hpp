@@ -24,6 +24,17 @@ namespace meta::grammar
     };
 
     template<>
+    struct esc_rule<'k', false>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::backref_name_expect
+                >;
+    };
+
+    template<>
     struct esc_rule<'0', false>
     {
         using type =
