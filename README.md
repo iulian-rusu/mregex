@@ -1,5 +1,5 @@
 # mregex - Metaprogramming-Based Regular Expressions
-[![Build Status](https://app.travis-ci.com/iulian-rusu/mregex.svg?token=yYkpQVp4y1XUXWqsFXsK&branch=master)](https://app.travis-ci.com/iulian-rusu/mregex)
+[![build](https://github.com/iulian-rusu/mregex/actions/workflows/build.yml/badge.svg)](https://github.com/iulian-rusu/mregex/actions/workflows/build.yml)
 
 This is a compile-time implementation of regular expressions in C++20.
 The library parses a regex pattern and compiles it into a native C++
