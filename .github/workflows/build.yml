@@ -1,5 +1,4 @@
 on: [push, pull_request]
-
 name: build
 jobs:
   build:
@@ -14,18 +13,21 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CXX: ${{ matrix.CXX }}
-    steps:
-      - uses: actions/checkout@v2
 
-      - name: Install Clang 12
+    steps:
+      - name: Checkout pushed code
+        uses: actions/checkout@v2
+
+      - name: Install Clang
         if: ${{ matrix.compiler == 'clang' }}
         run: |
           printf "deb https://apt.llvm.org/focal/ llvm-toolchain-focal-12 main" |sudo tee /etc/apt/sources.list.d/llvm-toolchain-focal-12.list
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key |sudo apt-key add -
           sudo apt update
           sudo apt install llvm-12
+           $CXX --version
 
-      - name: Install GCC 11
+      - name: Install GCC
         if: ${{ matrix.compiler == 'gcc' }}
         run: |
           sudo apt-get update
