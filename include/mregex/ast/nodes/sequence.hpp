@@ -32,7 +32,6 @@ namespace meta::ast
         {
             if (it == end)
                 return {it, false};
-
             if (First::match_one(it, ctx))
                 return sequence<Rest ...>::match(begin, end, it + 1, ctx, cont);
             return {it, false};

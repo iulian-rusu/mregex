@@ -14,7 +14,6 @@ namespace meta::ast
         {
             if (it == end)
                 return {it, false};
-
             if (match_one(it, ctx))
                 return cont(it + 1);
             return {it, false};

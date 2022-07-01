@@ -65,7 +65,6 @@ namespace meta::ast
         {
             if (auto rest_match = cont(it))
                 return rest_match;
-
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept -> match_result<Iter> {
                 if (new_it == it)
                     return {new_it, false};

@@ -13,13 +13,11 @@ namespace meta::ast
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            if constexpr (flags_of<Context>::multiline)
-            {
-                if (it != end && *it == '\n')
-                    return cont(it + 1);
-            }
             if (it == begin)
                 return cont(it);
+            if constexpr (flags_of<Context>::multiline)
+                if (it != end && *it == '\n')
+                    return cont(it);
             return {it, false};
         }
     };
@@ -30,13 +28,11 @@ namespace meta::ast
         static constexpr auto match(Iter, Iter end, Iter it, Context &, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            if constexpr (flags_of<Context>::multiline)
-            {
-                if (it != end && *it == '\n')
-                    return cont(it + 1);
-            }
             if (it == end)
                 return cont(it);
+            if constexpr (flags_of<Context>::multiline)
+                if (*it == '\n')
+                    return cont(it);
             return {it, false};
         }
     };

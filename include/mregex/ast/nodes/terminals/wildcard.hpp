@@ -15,7 +15,6 @@ namespace meta::ast
         {
             if (it == end)
                 return {it, false};
-
             if (match_one(it, ctx))
                 return cont(it + 1);
             return {it, false};
@@ -26,7 +25,6 @@ namespace meta::ast
         {
             if constexpr (flags_of<Context>::dotall)
                 return true;
-
             auto ch = *current;
             return ch != '\n' && ch != '\r';
         }

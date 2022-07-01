@@ -31,7 +31,7 @@ namespace meta
             while (active)
             {
                 auto res = ast_type::match(begin_iter, end_iter, current_iter, ctx, continuation_category::epsilon);
-                if (res && res.end != current_iter)
+                if (res.matched && res.end != current_iter)
                 {
                     auto match_begin = current_iter;
                     std::get<0>(ctx.captures) = regex_capture_view<iterator_type>{match_begin, res.end};

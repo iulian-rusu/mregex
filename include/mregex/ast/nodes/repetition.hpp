@@ -160,7 +160,6 @@ namespace meta::ast
         {
             if (repeats == 1)
                 return Inner::match(begin, end, it, ctx, cont);
-
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
                 return non_unrolled_generic_match(begin, end, new_it, ctx, cont, repeats - 1);
             };

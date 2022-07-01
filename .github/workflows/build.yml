@@ -21,11 +21,11 @@ jobs:
       - name: Install Clang
         if: ${{ matrix.compiler == 'clang' }}
         run: |
-          printf "deb https://apt.llvm.org/focal/ llvm-toolchain-focal-12 main" |sudo tee /etc/apt/sources.list.d/llvm-toolchain-focal-12.list
+          printf "deb https://apt.llvm.org/focal/ llvm-toolchain-focal-12 main" | sudo tee /etc/apt/sources.list.d/llvm-toolchain-focal-12.list
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key |sudo apt-key add -
           sudo apt update
           sudo apt install llvm-12
-           $CXX --version
+          $CXX --version
 
       - name: Install GCC
         if: ${{ matrix.compiler == 'gcc' }}

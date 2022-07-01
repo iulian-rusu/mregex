@@ -17,11 +17,11 @@ an iterator compatible with `std::forward_iterator`
   * backreferences
   * lookaheads
   * lookbehinds with arbitrary expressions (requires bidirectional iterators)
-* the ability to modify your regex with flags:
-  * `icase` - ignore case when matching
-  * `dotall` - make `.` match newline characters
-  * `multiline` - make `$` and `^` match beginnings/end of lines
-  * `ungreedy` - make quantifiers match as few characters as possible
+* flags that modify the matching behaviour:
+  * `icase` - enables case-insensitive matching
+  * `multiline` - enables multi-line mode, in which the anchors `^`/`$` will also match starts/ends of lines
+  * `ungreedy` - enables lazy matching, making quantifiers like `*` consume as few characters as possible
+  * `dotall` - allows the wildcard `.` to also match `\n` and `\r`
 * a flexible API that allows exact matching, searching or iterating over multiple results
     
 ## Installation
@@ -64,7 +64,7 @@ for (auto &&res : word_regex::range(words))
 More examples can be found in the `example/` directory.
 
 ## Syntax
-Currently, the following syntax features are supported:
+Below is a complete list of the supported syntax constructs:
 
 |      **Syntax**       |                                     **Effect**                                     |
 |:---------------------:|:----------------------------------------------------------------------------------:|
