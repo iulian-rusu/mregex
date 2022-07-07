@@ -28,7 +28,7 @@ namespace meta::ast
     };
 
     template<std::size_t ID, typename Name, typename Inner>
-    struct capture_name_spec<capture < ID, Name, Inner>>
+    struct capture_name_spec<capture<ID, Name, Inner>>
     {
         using type = push<capture_name_spec_t<Inner>, Name>;
     };
