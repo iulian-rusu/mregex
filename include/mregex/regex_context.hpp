@@ -2,8 +2,8 @@
 #define MREGEX_REGEX_CONTEXT_HPP
 
 #include <mregex/utility/tuple_helpers.hpp>
-#include <mregex/regex_flags.hpp>
 #include <mregex/regex_capture.hpp>
+#include <mregex/regex_flags.hpp>
 
 namespace meta
 {
@@ -28,7 +28,7 @@ namespace meta
             static constexpr bool unroll = is_flag_enabled_v<flag::unroll, Flags ...>;
         };
 
-        regex_capture_view_storage<AST::capture_count, Iter> captures{};
+        regex_capture_view_storage<AST, Iter> captures{};
 
         constexpr void clear() noexcept
         {

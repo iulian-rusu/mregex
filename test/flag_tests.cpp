@@ -1,6 +1,5 @@
-#include "tests.hpp"
+#include <mregex.hpp>
 
-#ifdef MREGEX_RUN_FLAG_TESTS
 namespace meta::tests
 {
     static_assert(is_flag_enabled_v<flag::icase, flag::i>);
@@ -20,4 +19,3 @@ namespace meta::tests
     static_assert(is_flag_enabled_v<flag::unroll, flag::ungreedy> == false);
     static_assert(is_flag_enabled_v<flag::s, int, void, char, double> == false);
 }
-#endif //MREGEX_RUN_FLAG_TESTS

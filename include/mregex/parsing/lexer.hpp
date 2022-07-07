@@ -1,7 +1,6 @@
 #ifndef MREGEX_LEXER_HPP
 #define MREGEX_LEXER_HPP
 
-#include <mregex/utility/static_string.hpp>
 #include <mregex/symbol.hpp>
 
 namespace meta

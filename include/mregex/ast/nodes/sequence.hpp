@@ -1,12 +1,11 @@
-#ifndef MREGEX_SEQUENCE_HPP
-#define MREGEX_SEQUENCE_HPP
+#ifndef MREGEX_NODES_SEQUENCE_HPP
+#define MREGEX_NODES_SEQUENCE_HPP
 
-
-#include <mregex/regex_context.hpp>
-#include <mregex/utility/distance.hpp>
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/ast_traits.hpp>
 #include <mregex/ast/match_result.hpp>
+#include <mregex/utility/distance.hpp>
+#include <mregex/regex_context.hpp>
 
 namespace meta::ast
 {
@@ -33,7 +32,6 @@ namespace meta::ast
         {
             if (it == end)
                 return {it, false};
-
             if (First::match_one(it, ctx))
                 return sequence<Rest ...>::match(begin, end, it + 1, ctx, cont);
             return {it, false};
@@ -65,4 +63,4 @@ namespace meta::ast
     template<typename First>
     struct sequence<First> : First {};
 }
-#endif //MREGEX_SEQUENCE_HPP
+#endif //MREGEX_NODES_SEQUENCE_HPP

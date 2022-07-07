@@ -100,7 +100,7 @@ namespace meta
          *
          * @return  An empty end-of-range iterator
          */
-        [[nodiscard]] constexpr auto end() noexcept
+        [[nodiscard]] constexpr auto end() const noexcept
         {
             return iterator{};
         }

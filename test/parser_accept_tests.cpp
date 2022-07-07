@@ -1,12 +1,11 @@
-#include "tests.hpp"
+#include <mregex.hpp>
 
-#ifdef MREGEX_RUN_PARSER_TESTS
 namespace meta::tests
 {
     namespace
     {
         template<static_string Pattern>
-        inline constexpr auto accepted = parser<Pattern>::accepted;
+        inline constexpr bool accepted = parser<Pattern>::accepted;
     }
 
     // Test valid inputs
@@ -68,6 +67,8 @@ namespace meta::tests
     static_assert(accepted<R"((?:(?:abc)))">);
     static_assert(accepted<R"(xyz(?=a)abc)">);
     static_assert(accepted<R"(xyz(?!a)abc)">);
+    static_assert(accepted<R"(xyz(?<=abc)abc)">);
+    static_assert(accepted<R"(xyz(?<!abc)abc)">);
     static_assert(accepted<R"(xyz(?<=a)abc)">);
     static_assert(accepted<R"(xyz(?<!a)abc)">);
     static_assert(accepted<R"(12(ab(?:cd)ef)\1gh)">);
@@ -107,6 +108,13 @@ namespace meta::tests
     static_assert(accepted<R"(((a|\\a+)|(d?|\\d))*)">);
     static_assert(accepted<R"(((a|\\a)|(0|1|2|3))?)">);
     static_assert(accepted<R"((((a|\\a)|(0|1|2|3))?)*x?y+abcd|efgh((x|z)?t)+)">);
+    static_assert(accepted<R"(abc(?<test>.[a-d]+)*cd)">);
+    static_assert(accepted<R"(abc(?<te2_3>.[a-d]+)+cd)">);
+    static_assert(accepted<R"(abc(?<lvl1>.[a-d]+(?<lvl2>x+y*))+cd)">);
+    static_assert(accepted<R"(abc(?<____>.[a-d]+(?<_1232>x+y*)+){2,3}cd)">);
+    static_assert(accepted<R"(abc(?<____>.[a-d]+(?<_1232>x+y*)+){2,3}cd\k<_1232>+)">);
+    static_assert(accepted<R"(abc(?<____>.[a-d]+(?<_1232>\k<____>{2}x+y*)+){2,3}cd)">);
+    static_assert(accepted<R"((?<foo>.)\k<foo>\1)">);
 
     // Test invalid inputs
     static_assert(accepted<R"(()"> == false);
@@ -150,6 +158,8 @@ namespace meta::tests
     static_assert(accepted<R"((?x))"> == false);
     static_assert(accepted<R"(xyz(?=)abc)"> == false);
     static_assert(accepted<R"(xyz(?!)abc)"> == false);
+    static_assert(accepted<R"(xyz(?<abc)abc)"> == false);
+    static_assert(accepted<R"(xyz(?<)abc)"> == false);
     static_assert(accepted<R"(xyz(?<a)abc)"> == false);
     static_assert(accepted<R"(xyz(?<<a)abc)"> == false);
     static_assert(accepted<R"((?:abc)"> == false);
@@ -187,5 +197,15 @@ namespace meta::tests
     static_assert(accepted<R"(((a|\\a++)|(d?|\\d))*)"> == false);
     static_assert(accepted<R"(((a|\\a)|(0|1|?2|3))?)"> == false);
     static_assert(accepted<R"((((|\\a)|(0|1|2|3))?)*x?y+abcd|efgh((x|z)?t)+)"> == false);
+    static_assert(accepted<R"((?<1name>xyz))"> == false);
+    static_assert(accepted<R"((?<namexyz))"> == false);
+    static_assert(accepted<R"((?<name >xyz))"> == false);
+    static_assert(accepted<R"((?< name>xyz))"> == false);
+    static_assert(accepted<R"((?<+name>xyz))"> == false);
+    static_assert(accepted<R"(\k<+name>)"> == false);
+    static_assert(accepted<R"(\k<name)"> == false);
+    static_assert(accepted<R"(\kname>)"> == false);
+    static_assert(accepted<R"(\k<1name>)"> == false);
+    static_assert(accepted<R"(\k<)"> == false);
+    static_assert(accepted<R"(\k)"> == false);
 }
-#endif //MREGEX_RUN_PARSER_TESTS

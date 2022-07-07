@@ -1,10 +1,10 @@
 #ifndef MREGEX_BACKREF_RULES_HPP
 #define MREGEX_BACKREF_RULES_HPP
 
-#include <mregex/symbol.hpp>
-#include <mregex/utility/stack.hpp>
-#include <mregex/utility/char_traits.hpp>
 #include <mregex/grammar/grammar_actions.hpp>
+#include <mregex/utility/char_traits.hpp>
+#include <mregex/utility/stack.hpp>
+#include <mregex/symbol.hpp>
 
 namespace meta::grammar
 {
@@ -12,10 +12,10 @@ namespace meta::grammar
      * Metafunction that decides if the current rule will continue
      * the backreference ID building or will finish it.
      *
-     * @tparam C    The current character in the input pattern
      * @tparam ID   The current backreference ID on the stack
+     * @tparam C    The current character in the input pattern
      */
-    template<auto C, std::size_t ID, bool = is_numeric_v<C>>
+    template<std::size_t ID, char C, bool = is_numeric_v<C>>
     struct backref_rule
     {
         using type =
@@ -26,13 +26,13 @@ namespace meta::grammar
                 >;
     };
 
-    template<auto C, std::size_t ID>
-    struct backref_rule<C, ID, false>
+    template<std::size_t ID, char C>
+    struct backref_rule<ID, C, false>
     {
         using type = symbol::make_backref<ID>;
     };
 
-    template<auto C, std::size_t ID>
-    using backref_rule_t = typename backref_rule<C, ID>::type;
+    template<std::size_t ID, char C>
+    using backref_rule_t = typename backref_rule<ID, C>::type;
 }
 #endif //MREGEX_BACKREF_RULES_HPP

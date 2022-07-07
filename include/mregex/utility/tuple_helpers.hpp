@@ -39,10 +39,10 @@ namespace meta
     }
 
     /**
-     * Applies a callable object on each element of a tuple-like container.
+     * Invokes a callable object for each element of a tuple-like container.
      *
-     * @param tuple     The type tuple to map the function onto
-     * @param func      The function used as a mapper
+     * @param tuple     The tuple to be iterated
+     * @param func      The function called on each tuple element
      */
     template<typename Tuple, typename Func>
     constexpr void iterate_tuple(Tuple &&tuple, Func &&func)

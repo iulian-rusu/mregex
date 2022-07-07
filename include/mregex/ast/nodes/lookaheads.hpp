@@ -1,9 +1,9 @@
-#ifndef MREGEX_LOOKAHEADS_HPP
-#define MREGEX_LOOKAHEADS_HPP
+#ifndef MREGEX_NODES_LOOKAHEADS_HPP
+#define MREGEX_NODES_LOOKAHEADS_HPP
 
-#include <mregex/utility/continuations.hpp>
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/ast_traits.hpp>
+#include <mregex/utility/continuations.hpp>
 
 namespace meta::ast
 {
@@ -59,4 +59,4 @@ namespace meta::ast
         }
     };
 }
-#endif //MREGEX_LOOKAHEADS_HPP
+#endif //MREGEX_NODES_LOOKAHEADS_HPP

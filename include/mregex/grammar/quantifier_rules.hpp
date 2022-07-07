@@ -1,10 +1,10 @@
 #ifndef MREGEX_QUANTIFIER_RULES_HPP
 #define MREGEX_QUANTIFIER_RULES_HPP
 
-#include <mregex/symbol.hpp>
-#include <mregex/utility/stack.hpp>
-#include <mregex/utility/char_traits.hpp>
 #include <mregex/grammar/grammar_actions.hpp>
+#include <mregex/utility/char_traits.hpp>
+#include <mregex/utility/stack.hpp>
+#include <mregex/symbol.hpp>
 
 namespace meta::grammar
 {
@@ -15,7 +15,7 @@ namespace meta::grammar
      *
      * @tparam C    The character that is parsed as replacement for the failed quantifier
      */
-    template<auto C>
+    template<char C>
     struct abort_quantifier_parsing
     {
         using type =
@@ -29,7 +29,7 @@ namespace meta::grammar
                 >;
     };
 
-    template<auto C>
+    template<char C>
     using abort_quantifier_parsing_t = typename abort_quantifier_parsing<C>::type;
 
     /**
@@ -38,7 +38,7 @@ namespace meta::grammar
      *
      * @tparam C    The current character being parsed
      */
-    template<auto C, bool = is_numeric_v<C>>
+    template<char C, bool = is_numeric_v<C>>
     struct begin_quantifier_value
     {
         using type =
@@ -49,13 +49,13 @@ namespace meta::grammar
                 >;
     };
     
-    template<auto C>
+    template<char C>
     struct begin_quantifier_value<C, false>
     {
         using type = abort_quantifier_parsing_t<'{'>;
     };
 
-    template<auto C>
+    template<char C>
     using begin_quantifier_value_t = typename begin_quantifier_value<C>::type;
 
     /**
@@ -64,10 +64,10 @@ namespace meta::grammar
      * @tparam T    The quantifier value symbol being updated
      * @tparam C    The current character being parsed
      */
-    template<typename T, auto C, bool = is_numeric_v<C>>
+    template<typename T, char C, bool = is_numeric_v<C>>
     struct update_quantifier_value;
 
-    template<auto N, auto C>
+    template<auto N, char C>
     struct update_quantifier_value<symbol::quantifier_value<N>, C, true>
     {
         using type =
@@ -78,7 +78,7 @@ namespace meta::grammar
                 >;
     };
 
-    template<typename T, auto N, auto C>
+    template<typename T, auto N, char C>
     struct update_quantifier_value<symbol::quantifier_values<T, symbol::quantifier_value<N>>, C, true>
     {
         using type =
@@ -89,7 +89,7 @@ namespace meta::grammar
                 >;
     };
 
-    template<typename T, auto C>
+    template<typename T, char C>
     struct update_quantifier_value<symbol::quantifier_values<T, symbol::quantifier_inf>, C, true>
     {
         using type =
@@ -100,13 +100,13 @@ namespace meta::grammar
                 >;
     };
 
-    template<typename T, auto C>
+    template<typename T, char C>
     struct update_quantifier_value<T, C, false>
     {
         using type = reject;
     };
 
-    template<typename T, auto C>
+    template<typename T, char C>
     using update_quantifier_value_t = typename update_quantifier_value<T, C>::type;
 }
 #endif //MREGEX_QUANTIFIER_RULES_HPP

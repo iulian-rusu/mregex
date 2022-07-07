@@ -3,11 +3,11 @@
 
 #include <mregex/ast/ast.hpp>
 #include <mregex/utility/continuations.hpp>
-#include <mregex/utility/universal_capture.hpp>
 #include <mregex/utility/input_range_adapter.hpp>
+#include <mregex/utility/universal_capture.hpp>
 #include <mregex/regex_context.hpp>
-#include <mregex/regex_result.hpp>
 #include <mregex/regex_match_generator.hpp>
+#include <mregex/regex_result.hpp>
 
 namespace ranges = std::ranges;
 
@@ -47,12 +47,12 @@ namespace meta
         [[nodiscard]] static constexpr auto match(Iter const begin, Iter const end) noexcept
         {
             using context_type = regex_context<Iter, ast_type, Flags ...>;
-            using result_type = regex_result_view<ast_type::capture_count, Iter>;
+            using result_type = regex_result_view<ast_type, Iter>;
 
             context_type ctx{};
             auto res = ast_type::match(begin, end, begin, ctx, continuations<Iter>::equals(end));
             if (res.matched)
-                std::get<0>(ctx.captures) = regex_capture_view<0, Iter>{begin, end};
+                std::get<0>(ctx.captures) = regex_capture_view<Iter>{begin, end};
             else
                 ctx.clear();
             return result_type{res.matched, std::move(ctx.captures)};
@@ -72,14 +72,14 @@ namespace meta
         [[nodiscard]] static constexpr auto search(Iter const begin, Iter const end, Iter const from) noexcept
         {
             using context_type = regex_context<Iter, ast_type, Flags ...>;
-            using result_type = regex_result_view<ast_type::capture_count, Iter>;
+            using result_type = regex_result_view<ast_type, Iter>;
 
             context_type ctx{};
             for (Iter current = from;; ++current)
             {
                 if (auto match = ast_type::match(begin, end, current, ctx, continuations<Iter>::epsilon))
                 {
-                    std::get<0>(ctx.captures) = regex_capture_view<0, Iter>{current, match.end};
+                    std::get<0>(ctx.captures) = regex_capture_view<Iter>{current, match.end};
                     return result_type{true, std::move(ctx.captures)};
                 }
 

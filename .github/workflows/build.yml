@@ -1,0 +1,47 @@
+on: [push, pull_request]
+name: build
+jobs:
+  build:
+    strategy:
+      matrix:
+        compiler: ["gcc", "clang"]
+        include:
+          - compiler: "gcc"
+            CXX: "g++-11"
+          - compiler: "clang"
+            CXX: "clang++-12"
+    runs-on: ubuntu-latest
+    env:
+      CXX: ${{ matrix.CXX }}
+
+    steps:
+      - name: Checkout pushed code
+        uses: actions/checkout@v2
+
+      - name: Install Clang
+        if: ${{ matrix.compiler == 'clang' }}
+        run: |
+          printf "deb https://apt.llvm.org/focal/ llvm-toolchain-focal-12 main" | sudo tee /etc/apt/sources.list.d/llvm-toolchain-focal-12.list
+          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key |sudo apt-key add -
+          sudo apt update
+          sudo apt install llvm-12
+          $CXX --version
+
+      - name: Install GCC
+        if: ${{ matrix.compiler == 'gcc' }}
+        run: |
+          sudo apt-get update
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+          sudo apt install -y g++-11
+          $CXX --version
+
+      - name: Install CMake
+        run: |
+          sudo apt install cmake
+          cmake --version
+
+      - name: Run CMake
+        run: cmake -S . -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build project
+        run: cmake --build build --target all --config Release -- -j4

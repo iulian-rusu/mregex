@@ -2,7 +2,9 @@
 #define MREGEX_GRAMMAR_HPP
 
 #include <mregex/grammar/esc_rules.hpp>
+#include <mregex/grammar/name_rules.hpp>
 #include <mregex/grammar/quantifier_rules.hpp>
+#include <mregex/utility/meta_helpers.hpp>
 
 namespace meta::grammar
 {
@@ -93,7 +95,7 @@ namespace meta::grammar
         using type = reject;
     };
 
-    template<auto C>
+    template<char C>
     struct rule<symbol::begin, symbol::character<C>>
     {
         using type =
@@ -166,7 +168,7 @@ namespace meta::grammar
                     symbol::mod,
                     symbol::seq,
                     symbol::alt,
-                    symbol::make_capture
+                    symbol::make_capture<symbol::unnamed>
                 >;
     };
 
@@ -182,7 +184,7 @@ namespace meta::grammar
                     symbol::mod,
                     symbol::seq,
                     symbol::alt,
-                    symbol::make_capture
+                    symbol::make_capture<symbol::unnamed>
                 >;
     };
 
@@ -215,7 +217,7 @@ namespace meta::grammar
                     symbol::mod,
                     symbol::seq,
                     symbol::alt,
-                    symbol::make_capture
+                    symbol::make_capture<symbol::unnamed>
                 >;
     };
 
@@ -225,7 +227,7 @@ namespace meta::grammar
         using type = reject;
     };
 
-    template<auto C>
+    template<char C>
     struct rule<symbol::group_begin_or_mod, symbol::character<C>>
     {
         using type =
@@ -236,7 +238,7 @@ namespace meta::grammar
                     symbol::mod,
                     symbol::seq,
                     symbol::alt,
-                    symbol::make_capture
+                    symbol::make_capture<symbol::unnamed>
                 >;
     };
 
@@ -251,7 +253,7 @@ namespace meta::grammar
                     symbol::mod,
                     symbol::seq,
                     symbol::alt,
-                    symbol::make_capture
+                    symbol::make_capture<symbol::unnamed>
                 >;
     };
 
@@ -265,7 +267,7 @@ namespace meta::grammar
                     symbol::make_beginning,
                     symbol::seq,
                     symbol::alt,
-                    symbol::make_capture
+                    symbol::make_capture<symbol::unnamed>
                 >;
     };
 
@@ -279,7 +281,7 @@ namespace meta::grammar
                     symbol::make_ending,
                     symbol::seq,
                     symbol::alt,
-                    symbol::make_capture
+                    symbol::make_capture<symbol::unnamed>
                 >;
     };
 
@@ -318,7 +320,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::group_mod_lookbehind
+                    symbol::group_mod_less
                 >;
     };
 
@@ -347,7 +349,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::group_mod_lookbehind, symbol::character<'='>>
+    struct rule<symbol::group_mod_less, symbol::character<'='>>
     {
         using type =
                 stack
@@ -359,7 +361,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::group_mod_lookbehind, symbol::character<'!'>>
+    struct rule<symbol::group_mod_less, symbol::character<'!'>>
     {
         using type =
                 stack
@@ -370,13 +372,31 @@ namespace meta::grammar
                 >;
     };
 
-    template<auto C>
-    struct rule<symbol::group_mod_lookbehind, symbol::character<C>>
+    template<char C>
+    struct rule<symbol::group_mod_less, symbol::character<C>>
     {
-        using type = reject;
+        using type = begin_name_t<symbol::capture_name_seq, C>;
     };
 
-    template<auto C>
+    template<char... Chars, char C>
+    struct rule<symbol::capture_name_seq<Chars ...>, symbol::character<C>>
+    {
+        using type = update_name_t<symbol::capture_name_seq<Chars ...>, C>;
+    };
+
+    template<char... Chars>
+    struct rule<symbol::capture_name_seq<Chars ...>, symbol::character<'>'>>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::group_begin,
+                    symbol::make_capture<make_name<Chars ...>>
+                >;
+    };
+
+    template<char C>
     struct rule<symbol::group_mod, symbol::character<C>>
     {
         using type = reject;
@@ -457,7 +477,7 @@ namespace meta::grammar
         using type = reject;
     };
 
-    template<auto C>
+    template<char C>
     struct rule<symbol::group_begin, symbol::character<C>>
     {
         using type =
@@ -536,7 +556,7 @@ namespace meta::grammar
                 >;
     };
 
-    template<auto C>
+    template<char C>
     struct rule<symbol::alt, symbol::character<C>>
     {
         using type = reject;
@@ -548,7 +568,7 @@ namespace meta::grammar
         using type = ignore;
     };
 
-    template<auto C>
+    template<char C>
     struct rule<symbol::esc, symbol::character<C>>
     {
         using type = esc_rule_t<C>;
@@ -604,7 +624,7 @@ namespace meta::grammar
                 >;
     };
 
-    template<auto C>
+    template<char C>
     struct rule<symbol::quantifier_begin, symbol::character<C>>
     {
         using type = begin_quantifier_value_t<C>;
@@ -616,7 +636,7 @@ namespace meta::grammar
         using type = abort_quantifier_parsing_t<'{'>;
     };
 
-    template<auto C>
+    template<char C>
     struct rule<symbol::mod, symbol::character<C>>
     {
         using type = ignore;
@@ -628,7 +648,7 @@ namespace meta::grammar
         using type = ignore;
     };
 
-    template<std::size_t N, auto C>
+    template<std::size_t N, char C>
     struct rule<symbol::quantifier_value<N>, symbol::character<C>>
     {
         using type = update_quantifier_value_t<symbol::quantifier_value<N>, C>;
@@ -656,7 +676,7 @@ namespace meta::grammar
                 >;
     };
 
-    template<typename A, typename B, auto C>
+    template<typename A, typename B, char C>
     struct rule<symbol::quantifier_values<A, B>, symbol::character<C>>
     {
         using type = update_quantifier_value_t<symbol::quantifier_values<A, B>, C>;
@@ -745,7 +765,7 @@ namespace meta::grammar
         using type = reject;
     };
 
-    template<auto C>
+    template<char C>
     struct rule<symbol::alt_seq, symbol::character<C>>
     {
         using type =
@@ -876,7 +896,7 @@ namespace meta::grammar
         using type = ignore;
     };
 
-    template<auto C>
+    template<char C>
     struct rule<symbol::seq, symbol::character<C>>
     {
         using type =
@@ -968,7 +988,7 @@ namespace meta::grammar
         using type = ignore;
     };
 
-    template<auto C>
+    template<char C>
     struct rule<symbol::set_begin_or_neg, symbol::character<C>>
     {
         using type =
@@ -999,7 +1019,7 @@ namespace meta::grammar
                 >;
     };
 
-    template<auto C>
+    template<char C>
     struct rule<symbol::set_begin, symbol::character<C>>
     {
         using type =
@@ -1042,7 +1062,7 @@ namespace meta::grammar
                 >;
     };
 
-    template<auto C>
+    template<char C>
     struct rule<symbol::set_seq, symbol::character<C>>
     {
         using type =
@@ -1054,7 +1074,7 @@ namespace meta::grammar
                 >;
     };
 
-    template<auto C>
+    template<char C>
     struct rule<symbol::set_range_begin, symbol::character<C>>
     {
         using type =
@@ -1105,7 +1125,7 @@ namespace meta::grammar
         using type = ignore;
     };
 
-    template<auto C>
+    template<char C>
     struct rule<symbol::set_range_seq, symbol::character<C>>
     {
         using type =
@@ -1117,13 +1137,13 @@ namespace meta::grammar
                 >;
     };
 
-    template<auto C>
+    template<char C>
     struct rule<symbol::set_esc, symbol::character<C>>
     {
         using type = esc_rule_t<C>;
     };
 
-    template<auto C>
+    template<char C>
     struct rule<symbol::set_range_esc, symbol::character<C>>
     {
         using type =
@@ -1140,11 +1160,11 @@ namespace meta::grammar
         using type = reject;
     };
 
-    // Rules for parsing backreferences
-    template<std::size_t ID, auto C>
+    // Rules for parsing identifier-based backreferences
+    template<std::size_t ID, char C>
     struct rule<symbol::backref_id<ID>, symbol::character<C>>
     {
-        using type = backref_rule_t<C, ID>;
+        using type = backref_rule_t<ID, C>;
     };
 
     template<std::size_t ID>
@@ -1153,7 +1173,31 @@ namespace meta::grammar
         using type = symbol::make_backref<ID>;
     };
 
-    template<auto C>
+    // Rules for parsing name-based backreferences
+    template<char C>
+    struct rule<symbol::backref_name_begin, symbol::character<C>>
+    {
+        using type = begin_name_t<symbol::backref_name_seq, C>;
+    };
+
+    template<char... Chars, char C>
+    struct rule<symbol::backref_name_seq<Chars ...>, symbol::character<C>>
+    {
+        using type = update_name_t<symbol::backref_name_seq<Chars ...>, C>;
+    };
+
+    template<char... Chars>
+    struct rule<symbol::backref_name_seq<Chars ...>, symbol::character<'>'>>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::make_named_backref<make_name<Chars ...>>
+                >;
+    };
+
+    template<char C>
     struct rule<symbol::expect<C>, symbol::character<C>>
     {
         using type = advance;

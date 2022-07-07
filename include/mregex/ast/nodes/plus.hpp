@@ -1,5 +1,5 @@
-#ifndef MREGEX_PLUS_HPP
-#define MREGEX_PLUS_HPP
+#ifndef MREGEX_NODES_PLUS_HPP
+#define MREGEX_NODES_PLUS_HPP
 
 #include <mregex/ast/astfwd.hpp>
 
@@ -11,4 +11,4 @@ namespace meta::ast
         static constexpr std::size_t capture_count = T::capture_count;
     };
 }
-#endif //MREGEX_PLUS_HPP
+#endif //MREGEX_NODES_PLUS_HPP

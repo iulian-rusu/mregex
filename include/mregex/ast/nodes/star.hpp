@@ -1,9 +1,10 @@
-#ifndef MREGEX_STAR_HPP
-#define MREGEX_STAR_HPP
+#ifndef MREGEX_NODES_STAR_HPP
+#define MREGEX_NODES_STAR_HPP
 
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/ast_traits.hpp>
 #include <mregex/ast/match_result.hpp>
+#include <mregex/regex_context.hpp>
 
 namespace meta::ast
 {
@@ -64,7 +65,6 @@ namespace meta::ast
         {
             if (auto rest_match = cont(it))
                 return rest_match;
-
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept -> match_result<Iter> {
                 if (new_it == it)
                     return {new_it, false};
@@ -89,4 +89,4 @@ namespace meta::ast
         }
     };
 }
-#endif //MREGEX_STAR_HPP
+#endif //MREGEX_NODES_STAR_HPP

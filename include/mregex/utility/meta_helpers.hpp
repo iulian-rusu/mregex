@@ -2,9 +2,17 @@
 #define MREGEX_META_HELPERS_HPP
 
 #include <type_traits>
+#include <mregex/utility/static_string.hpp>
+#include <mregex/symbol.hpp>
 
 namespace meta
 {
+    /**
+     * Metafunction that maps a sequence of values to types.
+     */
+    template<std::size_t, typename T>
+    using map_sequence = T;
+
     /**
      * Metafunction used to detect if a type is present inside a type pack.
      */
@@ -43,5 +51,13 @@ namespace meta
 
     template<typename T>
     using forward_result_t = typename forward_result<T>::type;
+
+    /**
+     * Metafunction that converts a pack of characters to a symbolic name type.
+     *
+     * @note The sizeof... (Chars) is technically redundant but GCC 11.1 cannot deduce the size.
+     */
+    template<char... Chars>
+    using make_name = symbol::name<static_string<sizeof... (Chars)>{{Chars ..., '\0'}}>;
 }
 #endif //MREGEX_META_HELPERS_HPP

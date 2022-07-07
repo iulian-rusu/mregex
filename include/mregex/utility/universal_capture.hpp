@@ -1,8 +1,8 @@
 #ifndef MREGEX_UNIVERSAL_CAPTURE_HPP
 #define MREGEX_UNIVERSAL_CAPTURE_HPP
 
-#include <type_traits>
 #include <functional>
+#include <type_traits>
 
 namespace meta
 {

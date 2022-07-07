@@ -1,10 +1,11 @@
-#ifndef MREGEX_REPETITION_HPP
-#define MREGEX_REPETITION_HPP
+#ifndef MREGEX_NODES_REPETITION_HPP
+#define MREGEX_NODES_REPETITION_HPP
 
-#include <mregex/utility/distance.hpp>
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/ast_traits.hpp>
 #include <mregex/ast/match_result.hpp>
+#include <mregex/utility/distance.hpp>
+#include <mregex/regex_context.hpp>
 
 namespace meta::ast
 {
@@ -159,7 +160,6 @@ namespace meta::ast
         {
             if (repeats == 1)
                 return Inner::match(begin, end, it, ctx, cont);
-
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
                 return non_unrolled_generic_match(begin, end, new_it, ctx, cont, repeats - 1);
             };
@@ -186,4 +186,4 @@ namespace meta::ast
     template<typename Inner>
     struct repetition<symbol::quantifier_value<0>, symbol::quantifier_inf, Inner> : star<Inner> {};
 }
-#endif //MREGEX_REPETITION_HPP
+#endif //MREGEX_NODES_REPETITION_HPP

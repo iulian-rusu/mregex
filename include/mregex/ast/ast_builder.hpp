@@ -1,10 +1,10 @@
 #ifndef MREGEX_AST_BUILDER_HPP
 #define MREGEX_AST_BUILDER_HPP
 
-#include <mregex/symbol.hpp>
-#include <mregex/utility/stack.hpp>
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/ast_traits.hpp>
+#include <mregex/utility/stack.hpp>
+#include <mregex/symbol.hpp>
 
 namespace meta::ast
 {
@@ -21,13 +21,13 @@ namespace meta::ast
     template<typename Symbol, typename Token, typename AST>
     using build_t = typename build<Symbol, Token, AST>::type;
 
-    template<auto C, typename Stack>
+    template<char C, typename Stack>
     struct build<symbol::make_literal, symbol::character<C>, Stack>
     {
         using type = push<Stack, literal<C>>;
     };
 
-    template<auto A, typename T, typename Stack>
+    template<char A, typename T, typename Stack>
     struct build<symbol::push_literal<A>, T, Stack>
     {
         using type = push<Stack, literal<A>>;
@@ -187,18 +187,24 @@ namespace meta::ast
         using type = stack<alternation<Second ..., First>, Rest ...>;
     };
 
-    template<typename T, typename First,  typename... Rest>
-    struct build<symbol::make_capture, T, stack<First, Rest ...>>
+    template<typename T, typename Name, typename First,  typename... Rest>
+    struct build<symbol::make_capture<Name>, T, stack<First, Rest ...>>
     {
         static constexpr auto ID = capture_count_v<First, Rest ...> + 1;
 
-        using type = stack<capture<ID, First>, Rest ...>;
+        using type = stack<capture<ID, Name, First>, Rest ...>;
     };
 
     template<std::size_t ID, typename T, typename... Elems>
     struct build<symbol::make_backref<ID>, T, stack<Elems ...>>
     {
         using type = stack<backref<ID>, Elems ...>;
+    };
+
+    template<typename Name, typename T, typename... Elems>
+    struct build<symbol::make_named_backref<Name>, T, stack<Elems ...>>
+    {
+        using type = stack<named_backref<Name>, Elems ...>;
     };
 
     template<typename A, typename B, typename T, typename First, typename... Rest>
@@ -214,19 +220,19 @@ namespace meta::ast
         using type = stack<nothing, Elems ...>;
     };
 
-    template<auto C, typename... Elems>
+    template<char C, typename... Elems>
     struct build<symbol::make_set_from_current_char, symbol::character<C>, stack<Elems ...>>
     {
         using type = stack<set<literal<C>>, Elems ...>;
     };
 
-    template<auto C, typename... First, typename... Rest>
+    template<char C, typename... First, typename... Rest>
     struct build<symbol::make_set_from_current_char, symbol::character<C>, stack<set<First ...>, Rest ...>>
     {
         using type = stack<set<literal<C>, First ...>, Rest ...>;
     };
 
-    template<auto C, typename... Rest>
+    template<char C, typename... Rest>
     struct build<symbol::make_set_from_current_char, symbol::character<C>, stack<nothing, Rest ...>>
     {
         using type = stack<set<literal<C>>, Rest ...>;
@@ -256,13 +262,13 @@ namespace meta::ast
         using type = stack<set<First ..., Second ...>, Rest ...>;
     };
 
-    template<auto B, auto A, typename... Second, typename... Rest>
+    template<char B, char A, typename... Second, typename... Rest>
     struct build<symbol::make_range, symbol::character<B>, stack<set<literal<A>, Second ...>, Rest ...>>
     {
         using type = stack<set<range<A, B>, Second ...>, Rest ...>;
     };
 
-    template<typename T, auto B, auto A, typename... Second, typename... Rest>
+    template<typename T, char B, char A, typename... Second, typename... Rest>
     struct build<symbol::make_range_from_stack, T, stack<set<literal<B>, literal<A>, Second ...>, Rest ...>>
     {
         using type = stack<set<range<A, B>, Second ...>, Rest ...>;

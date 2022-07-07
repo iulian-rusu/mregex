@@ -1,11 +1,11 @@
 #ifndef MREGEX_SYMBOL_HPP
 #define MREGEX_SYMBOL_HPP
 
-#include <type_traits>
+#include <mregex/utility/static_string.hpp>
 
 namespace meta::symbol
 {
-    // Basic symbols
+    // Symbols for basic operators
     struct begin {};
 
     struct esc {};
@@ -18,12 +18,21 @@ namespace meta::symbol
 
     struct alt_seq {};
 
+    // Symbols for parsing tokens
+    template<char>
+    struct character {};
+
+    struct epsilon {};
+
+    template<char>
+    struct expect {};
+
     // Symbols for parsing groups
     struct group_begin_or_mod {};
 
     struct group_mod {};
 
-    struct group_mod_lookbehind {};
+    struct group_mod_less {};
 
     struct group_begin {};
 
@@ -42,19 +51,6 @@ namespace meta::symbol
 
     struct set_range_esc {};
 
-    // Symbols for tokens
-    template<auto>
-    struct character {};
-
-    struct epsilon {};
-
-    template<auto>
-    struct expect {};
-
-    // Symbol for parsing a backreference ID
-    template<std::size_t>
-    struct backref_id {};
-
     // Symbols for parsing quantifiers
     struct quantifier_begin {};
 
@@ -66,12 +62,33 @@ namespace meta::symbol
     template<typename, typename>
     struct quantifier_values {};
 
+    // Symbols for named AST nodes
+    template<static_string>
+    struct name {};
+
+    struct unnamed {};
+
+    // Symbol for parsing backreferences
+    template<std::size_t>
+    struct backref_id {};
+
+    struct backref_name_begin {};
+
+    template<char...>
+    struct backref_name_seq {};
+
+    // Symbols for parsing named captures
+    struct capture_name_begin {};
+
+    template<char...>
+    struct capture_name_seq {};
+
     // Symbols that indicate an action which updates the AST structure
     struct ast_update {};
 
     struct make_literal : ast_update {};
 
-    template<auto>
+    template<char>
     struct push_literal : ast_update {};
 
     struct make_sequence : ast_update {};
@@ -119,8 +136,6 @@ namespace meta::symbol
 
     struct make_negated : ast_update {};
 
-    struct make_capture : ast_update {};
-
     struct make_set : ast_update {};
 
     struct make_set_from_current_char : ast_update {};
@@ -131,8 +146,14 @@ namespace meta::symbol
 
     struct make_range_from_stack : ast_update {};
 
+    template<typename>
+    struct make_capture : ast_update {};
+
     template<std::size_t>
     struct make_backref : ast_update {};
+
+    template<typename>
+    struct make_named_backref : ast_update {};
 
     /**
      * Type trait to distinguish AST update symbols from other symbols.

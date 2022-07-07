@@ -1,6 +1,5 @@
-#include "tests.hpp"
+#include <mregex.hpp>
 
-#ifdef MREGEX_RUN_PARSER_TESTS
 namespace meta::tests
 {
     using namespace ast;
@@ -14,117 +13,117 @@ namespace meta::tests
     static_assert(expected_ast<R"()", epsilon>);
     static_assert(expected_ast<R"(a)", literal<'a'>>);
     static_assert(expected_ast<R"(^ab)",
-            sequence
-            <
-                beginning,
-                literal<'a'>,
-                literal<'b'>
-            >
+        sequence
+        <
+            beginning,
+            literal<'a'>,
+            literal<'b'>
+        >
     >);
     static_assert(expected_ast<R"(ab$)",
-            sequence
-            <
-                literal<'a'>,
-                literal<'b'>,
-                ending
-            >
+        sequence
+        <
+            literal<'a'>,
+            literal<'b'>,
+            ending
+        >
     >);
     static_assert(expected_ast<R"(^ab$)",
-            sequence
-            <
-                beginning,
-                literal<'a'>,
-                literal<'b'>,
-                ending
-            >
+        sequence
+        <
+            beginning,
+            literal<'a'>,
+            literal<'b'>,
+            ending
+        >
     >);
     static_assert(expected_ast<R"(x(?=ab)x)",
-            sequence
+        sequence
+        <
+            literal<'x'>,
+            positive_lookahead
             <
-                literal<'x'>,
-                positive_lookahead
+                sequence
                 <
-                    sequence
-                    <
-                        literal<'a'>,
-                        literal<'b'>
-                    >
-                >,
-                literal<'x'>
-            >
+                    literal<'a'>,
+                    literal<'b'>
+                >
+            >,
+            literal<'x'>
+        >
     >);
     static_assert(expected_ast<R"(.+(?<=a+)a)",
-            sequence
+        sequence
+        <
+            plus<wildcard>,
+            positive_lookbehind
             <
-                plus<wildcard>,
-                positive_lookbehind
-                <
-                    plus<literal<'a'>>
-                >,
-                literal<'a'>
-            >
+                plus<literal<'a'>>
+            >,
+            literal<'a'>
+        >
     >);
     static_assert(expected_ast<R"(.*(?<!a|b))",
-            sequence
+        sequence
+        <
+            star<wildcard>,
+            negative_lookbehind
             <
-                star<wildcard>,
-                negative_lookbehind
+                alternation
                 <
-                    alternation
+                    literal<'a'>,
+                    literal<'b'>
+                >
+            >
+        >
+    >);
+    static_assert(expected_ast<R"(x(?!ab){2}x)",
+        sequence
+        <
+            literal<'x'>,
+            exact_repetition
+            <
+                2,
+                negative_lookahead
+                <
+                    sequence
                     <
                         literal<'a'>,
                         literal<'b'>
                     >
                 >
-            >
+            >,
+            literal<'x'>
+        >
     >);
-    static_assert(expected_ast<R"(x(?!ab){2}x)",
-            sequence
+    static_assert(expected_ast<R"(x(?<=a(?<!c*d?)b)x)",
+        sequence
+        <
+            literal<'x'>,
+            positive_lookbehind
             <
-                literal<'x'>,
-                exact_repetition
+                sequence
                 <
-                    2,
-                    negative_lookahead
+                    literal<'a'>,
+                    negative_lookbehind
                     <
                         sequence
                         <
-                            literal<'a'>,
-                            literal<'b'>
-                        >
-                    >
-                >,
-                literal<'x'>
-            >
-    >);
-    static_assert(expected_ast<R"(x(?<=a(?<!c*d?)b)x)",
-            sequence
-            <
-                literal<'x'>,
-                positive_lookbehind
-                <
-                    sequence
-                    <
-                        literal<'a'>,
-                        negative_lookbehind
-                        <
-                            sequence
+                            star
                             <
-                                star
-                                <
-                                    literal<'c'>
-                                >,
-                                optional
-                                <
-                                    literal<'d'>
-                                >
+                                literal<'c'>
+                            >,
+                            optional
+                            <
+                                literal<'d'>
                             >
-                        >,
-                        literal<'b'>
-                    >
-                >,
-                literal<'x'>
-            >
+                        >
+                    >,
+                    literal<'b'>
+                >
+            >,
+            literal<'x'>
+        >
     >);
     static_assert(expected_ast<R"(\n)", literal<'\n'>>);
     static_assert(expected_ast<R"(\r)", literal<'\r'>>);
@@ -136,429 +135,428 @@ namespace meta::tests
     static_assert(expected_ast<R"(\a)", alpha>);
     static_assert(expected_ast<R"(\D)", negated<digit>>);
     static_assert(expected_ast<R"(a.?b)",
-            sequence
+        sequence
+        <
+            literal<'a'>,
+            optional
             <
-                literal<'a'>,
-                optional
-                <
-                    wildcard
-                >,
-                literal<'b'>
-            >
+                wildcard
+            >,
+            literal<'b'>
+        >
     >);
     static_assert(expected_ast<R"((c))",
-            capture
-            <
-                1,
-                literal<'c'>
-            >
+        unnamed_capture
+        <
+            1,
+            literal<'c'>
+        >
     >);
     static_assert(expected_ast<R"((?:c))", literal<'c'>>);
     static_assert(expected_ast<R"(\1)", backref<1>>);
     static_assert(expected_ast<R"(\31)", backref<31>>);
     static_assert(expected_ast<R"(\1+)",
-            plus
-            <
-                backref<1>
-            >
+        plus
+        <
+            backref<1>
+        >
     >);
     static_assert(expected_ast<R"(\42?)",
-            optional
-            <
-                backref<42>
-            >
+        optional
+        <
+            backref<42>
+        >
     >);
     static_assert(expected_ast<R"((c)\1)",
-            sequence
+        sequence
+        <
+            unnamed_capture
             <
-                capture
-                <
-                    1,
-                    literal<'c'>
-                >,
-                backref<1>
-            >
+                1,
+                literal<'c'>
+            >,
+            backref<1>
+        >
     >);
     static_assert(expected_ast<R"((c)\0)",
-            sequence
+        sequence
+        <
+            unnamed_capture
             <
-                capture
-                <
-                    1,
-                    literal<'c'>
-                >,
-                literal<'\0'>
-            >
+                1,
+                literal<'c'>
+            >,
+            literal<'\0'>
+        >
     >);
     static_assert(expected_ast<R"((c)\12)",
-            sequence
+        sequence
+        <
+            unnamed_capture
             <
-                capture
-                <
-                    1,
-                    literal<'c'>
-                >,
-                backref<12>
-            >
+                1,
+                literal<'c'>
+            >,
+            backref<12>
+        >
     >);
     static_assert(expected_ast<R"((c)\01)",
-            sequence
+        sequence
+        <
+            unnamed_capture
             <
-                capture
-                <
-                    1,
-                    literal<'c'>
-                >,
-                literal<'\0'>,
-                literal<'1'>
-            >
+                1,
+                literal<'c'>
+            >,
+            literal<'\0'>,
+            literal<'1'>
+        >
     >);
     static_assert(expected_ast<R"((c)\12?x)",
-            sequence
+        sequence
+        <
+            unnamed_capture
             <
-                capture
-                <
-                    1,
-                    literal<'c'>
-                >,
-                optional
-                <
-                    backref<12>
-                >,
-                literal<'x'>
-            >
-    >);
-    static_assert(expected_ast<R"(((c))(e))",
-            sequence
-            <
-                capture
-                <
-                    1,
-                    capture
-                    <
-                        2,
-                        literal<'c'>
-                    >
-                >,
-                capture
-                <
-                    3,
-                    literal<'e'>
-                >
-            >
-    >);
-    static_assert(expected_ast<R"(((?:c))(e))",
-            sequence
-            <
-                capture
-                <
-                    1,
-                    literal<'c'>
-                >,
-                capture
-                <
-                    2,
-                    literal<'e'>
-                >
-            >
-    >);
-    static_assert(expected_ast<R"(c?)",
+                1,
+                literal<'c'>
+            >,
             optional
             <
-                literal<'c'>
+                backref<12>
+            >,
+            literal<'x'>
+        >
+    >);
+    static_assert(expected_ast<R"(((c))(e))",
+        sequence
+        <
+            unnamed_capture
+            <
+                1,
+                unnamed_capture
+                <
+                    2,
+                    literal<'c'>
+                >
+            >,
+            unnamed_capture
+            <
+                3,
+                literal<'e'>
             >
+        >
+    >);
+    static_assert(expected_ast<R"(((?:c))(e))",
+        sequence
+        <
+            unnamed_capture
+            <
+                1,
+                literal<'c'>
+            >,
+            unnamed_capture
+            <
+                2,
+                literal<'e'>
+            >
+        >
+    >);
+    static_assert(expected_ast<R"(c?)",
+        optional
+        <
+            literal<'c'>
+        >
     >);
     static_assert(expected_ast<R"(c*)",
+        star
+        <
+            literal<'c'>
+        >
+    >);
+    static_assert(expected_ast<R"(c+)",
+        plus
+        <
+            literal<'c'>
+        >
+    >);
+    static_assert(expected_ast<R"(c{2})",
+        repetition
+        <
+            symbol::quantifier_value<2>,
+            symbol::quantifier_value<2>,
+            literal<'c'>
+        >
+    >);
+    static_assert(expected_ast<R"(c{0})",
+        repetition
+        <
+            symbol::quantifier_value<0>,
+            symbol::quantifier_value<0>,
+            literal<'c'>
+        >
+    >);
+    static_assert(expected_ast<R"(c{)",
+        sequence
+        <
+            literal<'c'>,
+            literal<'{'>
+        >
+    >);
+    static_assert(expected_ast<R"(c{})",
+        sequence
+        <
+            literal<'c'>,
+            literal<'{'>,
+            literal<'}'>
+        >
+    >);
+    static_assert(expected_ast<R"(c{*})",
+        sequence
+        <
+            literal<'c'>,
+            star
+            <
+                literal<'{'>
+            >,
+            literal<'}'>
+        >
+    >);
+    static_assert(expected_ast<R"(c{22})",
+        repetition
+        <
+            symbol::quantifier_value<22>,
+            symbol::quantifier_value<22>,
+            literal<'c'>
+        >
+    >);
+    static_assert(expected_ast<R"(c{22,})",
+        repetition
+        <
+            symbol::quantifier_value<22>,
+            symbol::quantifier_inf,
+            literal<'c'>
+        >
+    >);
+    static_assert(expected_ast<R"(c{22,0})", // parsable syntax but will not compile when trying to match
+        repetition
+        <
+            symbol::quantifier_value<22>,
+            symbol::quantifier_value<0>,
+            literal<'c'>
+        >
+    >);
+    static_assert(expected_ast<R"(c{984,7644})",
+        repetition
+        <
+            symbol::quantifier_value<984>,
+            symbol::quantifier_value<7644>,
+            literal<'c'>
+        >
+    >);
+    static_assert(expected_ast<R"(c{0,22})",
+        repetition
+        <
+            symbol::quantifier_value<0>,
+            symbol::quantifier_value<22>,
+            literal<'c'>
+        >
+    >);
+    static_assert(expected_ast<R"(c{,22})",
+        sequence
+        <
+            literal<'c'>,
+            literal<'{'>,
+            literal<','>,
+            literal<'2'>,
+            literal<'2'>,
+            literal<'}'>
+        >
+    >);
+    static_assert(expected_ast<R"(c\{22})",
+        sequence
+        <
+            literal<'c'>,
+            literal<'{'>,
+            literal<'2'>,
+            literal<'2'>,
+            literal<'}'>
+        >
+    >);
+    static_assert(expected_ast<R"(c{012})",
+        repetition
+        <
+            symbol::quantifier_value<12>,
+            symbol::quantifier_value<12>,
+            literal<'c'>
+        >
+    >);
+    static_assert(expected_ast<R"(c{x})",
+        sequence
+        <
+            literal<'c'>,
+            literal<'{'>,
+            literal<'x'>,
+            literal<'}'>
+        >
+    >);
+    static_assert(expected_ast<R"(c*{012})",
+        sequence
+        <
             star
             <
                 literal<'c'>
-            >
-    >);
-    static_assert(expected_ast<R"(c+)",
-            plus
-            <
-                literal<'c'>
-            >
-    >);
-    static_assert(expected_ast<R"(c{2})",
-            repetition
-            <
-                symbol::quantifier_value<2>,
-                symbol::quantifier_value<2>,
-                literal<'c'>
-            >
-    >);
-    static_assert(expected_ast<R"(c{0})",
-            repetition
-            <
-                symbol::quantifier_value<0>,
-                symbol::quantifier_value<0>,
-                literal<'c'>
-            >
-    >);
-    static_assert(expected_ast<R"(c{)",
-            sequence
-            <
-                literal<'c'>,
-                literal<'{'>
-            >
-    >);
-    static_assert(expected_ast<R"(c{})",
-            sequence
-            <
-                literal<'c'>,
-                literal<'{'>,
-                literal<'}'>
-            >
-    >);
-    static_assert(expected_ast<R"(c{*})",
-            sequence
-            <
-                literal<'c'>,
-                star
-                <
-                    literal<'{'>
-                >,
-                literal<'}'>
-            >
-    >);
-    static_assert(expected_ast<R"(c{22})",
-            repetition
-            <
-                symbol::quantifier_value<22>,
-                symbol::quantifier_value<22>,
-                literal<'c'>
-            >
-    >);
-    static_assert(expected_ast<R"(c{22,})",
-            repetition
-            <
-                symbol::quantifier_value<22>,
-                symbol::quantifier_inf,
-                literal<'c'>
-            >
-    >);
-    static_assert(expected_ast<R"(c{22,0})", // parsable syntax but will not compile when trying to match
-            repetition
-            <
-                symbol::quantifier_value<22>,
-                symbol::quantifier_value<0>,
-                literal<'c'>
-            >
-    >);
-    static_assert(expected_ast<R"(c{984,7644})",
-            repetition
-            <
-                symbol::quantifier_value<984>,
-                symbol::quantifier_value<7644>,
-                literal<'c'>
-            >
-    >);
-    static_assert(expected_ast<R"(c{0,22})",
-            repetition
-            <
-                symbol::quantifier_value<0>,
-                symbol::quantifier_value<22>,
-                literal<'c'>
-            >
-    >);
-    static_assert(expected_ast<R"(c{,22})",
-            sequence
-            <
-                literal<'c'>,
-                literal<'{'>,
-                literal<','>,
-                literal<'2'>,
-                literal<'2'>,
-                literal<'}'>
-            >
-    >);
-    static_assert(expected_ast<R"(c\{22})",
-            sequence
-            <
-                literal<'c'>,
-                literal<'{'>,
-                literal<'2'>,
-                literal<'2'>,
-                literal<'}'>
-            >
-    >);
-    static_assert(expected_ast<R"(c{012})",
-            repetition
-            <
-                symbol::quantifier_value<12>,
-                symbol::quantifier_value<12>,
-                literal<'c'>
-            >
-    >);
-    static_assert(expected_ast<R"(c{x})",
-            sequence
-            <
-                literal<'c'>,
-                literal<'{'>,
-                literal<'x'>,
-                literal<'}'>
-            >
-    >);
-    static_assert(expected_ast<R"(c*{012})",
-            sequence
-            <
-                star
-                <
-                    literal<'c'>
-                >,
-                literal<'{'>,
-                literal<'0'>,
-                literal<'1'>,
-                literal<'2'>,
-                literal<'}'>
-            >
+            >,
+            literal<'{'>,
+            literal<'0'>,
+            literal<'1'>,
+            literal<'2'>,
+            literal<'}'>
+        >
     >);
     static_assert(expected_ast<R"((c*{012}){3})",
+        repetition
+        <
+            symbol::quantifier_value<3>,
+            symbol::quantifier_value<3>,
+            unnamed_capture
+            <
+                1,
+                sequence
+                <
+                    star
+                    <
+                        literal<'c'>
+                    >,
+                    literal<'{'>,
+                    literal<'0'>,
+                    literal<'1'>,
+                    literal<'2'>,
+                    literal<'}'>
+                >
+            >
+        >
+    >);
+    static_assert(expected_ast<R"(a(b(cd)*){15})",
+        sequence
+        <
+            literal<'a'>,
             repetition
             <
-                symbol::quantifier_value<3>,
-                symbol::quantifier_value<3>,
-                capture
+                symbol::quantifier_value<15>,
+                symbol::quantifier_value<15>,
+                unnamed_capture
                 <
                     1,
                     sequence
                     <
+                        literal<'b'>,
                         star
                         <
-                            literal<'c'>
-                        >,
-                        literal<'{'>,
-                        literal<'0'>,
-                        literal<'1'>,
-                        literal<'2'>,
-                        literal<'}'>
-                    >
-                >
-            >
-    >);
-    static_assert(expected_ast<R"(a(b(cd)*){15})",
-            sequence
-            <
-                literal<'a'>,
-                repetition
-                <
-                    symbol::quantifier_value<15>,
-                    symbol::quantifier_value<15>,
-                    capture
-                    <
-                        1,
-                        sequence
-                        <
-                            literal<'b'>,
-                            star
+                            unnamed_capture
                             <
-                                capture
+                                2,
+                                sequence
                                 <
-                                    2,
-                                    sequence
-                                    <
-                                        literal<'c'>,
-                                        literal<'d'>
-                                    >
+                                    literal<'c'>,
+                                    literal<'d'>
                                 >
                             >
                         >
                     >
                 >
             >
+        >
     >);
     static_assert(expected_ast<R"((\(+)*)",
-            star
+        star
+        <
+            unnamed_capture
             <
-                capture
+                1,
+                plus
                 <
-                    1,
-                    plus
-                    <
-                        literal<'('>
-                    >
+                    literal<'('>
                 >
             >
+        >
     >);
     static_assert(expected_ast<R"((\++)*)",
-            star
+        star
+        <
+            unnamed_capture
             <
-                capture
-                <
-                    1,
-                    plus
-                    <
-                        literal<'+'>
-                    >
-                >
-            >
-    >);
-    static_assert(expected_ast<R"((?:\++)*)",
-            star
-            <
+                1,
                 plus
                 <
                     literal<'+'>
                 >
             >
+        >
+    >);
+    static_assert(expected_ast<R"((?:\++)*)",
+        star
+        <
+            plus
+            <
+                literal<'+'>
+            >
+        >
     >);
     static_assert(expected_ast<R"(x(?:abc)*x)",
-            sequence
+        sequence
+        <
+            literal<'x'>,
+            star
             <
-                literal<'x'>,
-                star
+                sequence
                 <
-                    sequence
-                    <
-                        literal<'a'>,
-                        literal<'b'>,
-                        literal<'c'>
-                    >
-                >,
-                literal<'x'>
-            >
+                    literal<'a'>,
+                    literal<'b'>,
+                    literal<'c'>
+                >
+            >,
+            literal<'x'>
+        >
     >);
     static_assert(expected_ast<R"(xyz?(.(?:a(?:b(c(d))?)*)?)*zyx?)",
-            sequence
+        sequence
+        <
+            literal<'x'>,
+            literal<'y'>,
+            optional
             <
-                literal<'x'>,
-                literal<'y'>,
-                optional
+                literal<'z'>
+            >,
+            star
+            <
+                unnamed_capture
                 <
-                    literal<'z'>
-                >,
-                star
-                <
-                    capture
+                    1,
+                    sequence
                     <
-                        1,
-                        sequence
+                        wildcard,
+                        optional
                         <
-                            wildcard,
-                            optional
+                            sequence
                             <
-                                sequence
+                                literal<'a'>,
+                                star
                                 <
-                                    literal<'a'>,
-                                    star
+                                    sequence
                                     <
-                                        sequence
+                                        literal<'b'>,
+                                        optional
                                         <
-                                            literal<'b'>,
-                                            optional
+                                            unnamed_capture
                                             <
-                                                capture
+                                                2,
+                                                sequence
                                                 <
-                                                    2,
-                                                    sequence
+                                                    literal<'c'>,
+                                                    unnamed_capture
                                                     <
-                                                        literal<'c'>,
-                                                        capture
-                                                        <
-                                                            3,
-                                                            literal<'d'>
-                                                        >
+                                                        3,
+                                                        literal<'d'>
                                                     >
                                                 >
                                             >
@@ -568,308 +566,387 @@ namespace meta::tests
                             >
                         >
                     >
-                >,
-                literal<'z'>,
-                literal<'y'>,
-                optional
-                <
-                    literal<'x'>
                 >
+            >,
+            literal<'z'>,
+            literal<'y'>,
+            optional
+            <
+                literal<'x'>
             >
+        >
     >);
     static_assert(expected_ast<R"(\\)", literal<'\\'>>);
     static_assert(expected_ast<R"(\(?x+)",
-            sequence
+        sequence
+        <
+            optional
             <
-                optional
-                <
-                    literal<'('>
-                >,
-                plus
-                <
-                    literal<'x'>
-                >
+                literal<'('>
+            >,
+            plus
+            <
+                literal<'x'>
             >
+        >
     >);
     static_assert(expected_ast<R"(abc)",
+        sequence
+        <
+            literal<'a'>,
+            literal<'b'>,
+            literal<'c'>
+        >
+    >);
+    static_assert(expected_ast<R"(a|b|c)",
+        alternation
+        <
+            literal<'a'>,
+            literal<'b'>,
+            literal<'c'>
+        >
+    >);
+    static_assert(expected_ast<R"(aa|bb|cc)",
+        alternation
+        <
             sequence
             <
                 literal<'a'>,
+                literal<'a'>
+            >,
+            sequence
+            <
                 literal<'b'>,
+                literal<'b'>
+            >,
+            sequence
+            <
+                literal<'c'>,
                 literal<'c'>
             >
-    >);
-    static_assert(expected_ast<R"(a|b|c)",
-            alternation
-            <
-                literal<'a'>,
-                literal<'b'>,
-                literal<'c'>
-            >
-    >);
-    static_assert(expected_ast<R"(aa|bb|cc)",
-            alternation
-            <
-                sequence
-                <
-                    literal<'a'>,
-                    literal<'a'>
-                >,
-                sequence
-                <
-                    literal<'b'>,
-                    literal<'b'>
-                >,
-                sequence
-                <
-                    literal<'c'>,
-                    literal<'c'>
-                >
-            >
+        >
     >);
     // alternation<optional<a>, b> simplifies to alternation<a, epsilon, b>
     static_assert(expected_ast<R"(a?|b|c)",
-            alternation
-            <
-                literal<'a'>,
-                epsilon,
-                literal<'b'>,
-                literal<'c'>
-            >
+        alternation
+        <
+            literal<'a'>,
+            epsilon,
+            literal<'b'>,
+            literal<'c'>
+        >
     >);
     static_assert(expected_ast<R"([a])",
-            set
-            <
-                literal<'a'>
-            >
+        set
+        <
+            literal<'a'>
+        >
     >);
     static_assert(expected_ast<R"([.])",
-            set
-            <
-                literal<'.'>
-            >
+        set
+        <
+            literal<'.'>
+        >
     >);
     static_assert(expected_ast<R"([])", nothing>);
     static_assert(expected_ast<R"([^])", negated<nothing>>);
     static_assert(expected_ast<R"([a][b])",
-            sequence
+        sequence
+        <
+            set
+            <
+                literal<'a'>
+            >,
+            set
+            <
+                literal<'b'>
+            >
+        >
+    >);
+    static_assert(expected_ast<R"([][b])",
+        sequence
+        <
+            nothing,
+            set
+            <
+                literal<'b'>
+            >
+        >
+    >);
+    static_assert(expected_ast<R"([a]?[b])",
+        sequence
+        <
+            optional
             <
                 set
                 <
                     literal<'a'>
-                >,
-                set
-                <
-                    literal<'b'>
                 >
-            >
-    >);
-    static_assert(expected_ast<R"([][b])",
-            sequence
+            >,
+            set
             <
-                nothing,
-                set
-                <
-                    literal<'b'>
-                >
+                literal<'b'>
             >
-    >);
-    static_assert(expected_ast<R"([a]?[b])",
-            sequence
-            <
-                optional
-                <
-                    set
-                    <
-                        literal<'a'>
-                    >
-                >,
-                set
-                <
-                    literal<'b'>
-                >
-            >
+        >
     >);
     static_assert(expected_ast<R"([a]?[b]?)",
-            sequence
+        sequence
+        <
+            optional
             <
-                optional
+                set
                 <
-                    set
-                    <
-                        literal<'a'>
-                    >
-                >,
-                optional
+                    literal<'a'>
+                >
+            >,
+            optional
+            <
+                set
                 <
-                    set
-                    <
-                        literal<'b'>
-                    >
+                    literal<'b'>
                 >
             >
+        >
     >);
     static_assert(expected_ast<R"([abc])",
-            set
-            <
-                literal<'c'>,
-                literal<'b'>,
-                literal<'a'>
-            >
+        set
+        <
+            literal<'c'>,
+            literal<'b'>,
+            literal<'a'>
+        >
     >);
     static_assert(expected_ast<R"([a-z])",
-            set
-            <
-                range<'a', 'z'>
-            >
+        set
+        <
+            range<'a', 'z'>
+        >
     >);
     static_assert(expected_ast<R"([a\-z])",
-            set
-            <
-                literal<'z'>,
-                literal<'-'>,
-                literal<'a'>
-            >
+        set
+        <
+            literal<'z'>,
+            literal<'-'>,
+            literal<'a'>
+        >
     >);
     static_assert(expected_ast<R"([a-z-])",
-            set
-            <
-                literal<'-'>,
-                range<'a', 'z'>
-            >
+        set
+        <
+            literal<'-'>,
+            range<'a', 'z'>
+        >
     >);
     static_assert(expected_ast<R"([a-z-A])",
-            set
-            <
-                literal<'A'>,
-                literal<'-'>,
-                range<'a', 'z'>
-            >
+        set
+        <
+            literal<'A'>,
+            literal<'-'>,
+            range<'a', 'z'>
+        >
     >);
     static_assert(expected_ast<R"([a-z0-9A-Z])",
+        set
+        <
+            range<'A', 'Z'>,
+            range<'0', '9'>,
+            range<'a', 'z'>
+        >
+    >);
+    static_assert(expected_ast<R"([a-[0-\]])",
+        set
+        <
+            range<'0', ']'>,
+            range<'a', '['>
+        >
+    >);
+    static_assert(expected_ast<R"([^a-[0-\]])",
+        negated
+        <
+            set
+            <
+                range<'0', ']'>,
+                range<'a', '['>
+            >
+        >
+    >);
+    static_assert(expected_ast<R"([a-[0-\]])",
+        set
+        <
+            range<'0', ']'>,
+            range<'a', '['>
+        >
+    >);
+    static_assert(expected_ast<R"([-a-[0-\]])",
+        set
+        <
+            range<'0', ']'>,
+            range<'a', '['>,
+            literal<'-'>
+        >
+    >);
+    static_assert(expected_ast<R"([^-aA-Z])",
+        negated
+        <
             set
             <
                 range<'A', 'Z'>,
-                range<'0', '9'>,
-                range<'a', 'z'>
-            >
-    >);
-    static_assert(expected_ast<R"([a-[0-\]])",
-            set
-            <
-                range<'0', ']'>,
-                range<'a', '['>
-            >
-    >);
-    static_assert(expected_ast<R"([^a-[0-\]])",
-            negated
-            <
-                set
-                <
-                    range<'0', ']'>,
-                    range<'a', '['>
-                >
-            >
-    >);
-    static_assert(expected_ast<R"([a-[0-\]])",
-            set
-            <
-                range<'0', ']'>,
-                range<'a', '['>
-            >
-    >);
-    static_assert(expected_ast<R"([-a-[0-\]])",
-            set
-            <
-                range<'0', ']'>,
-                range<'a', '['>,
+                literal<'a'>,
                 literal<'-'>
             >
+        >
     >);
-    static_assert(expected_ast<R"([^-aA-Z])",
+    static_assert(expected_ast<R"(a[^-a-z\WA-Z])",
+        sequence
+        <
+            literal<'a'>,
             negated
             <
                 set
                 <
                     range<'A', 'Z'>,
-                    literal<'a'>,
+                    negated<word>,
+                    range<'a', 'z'>,
                     literal<'-'>
                 >
             >
-    >);
-    static_assert(expected_ast<R"(a[^-a-z\WA-Z])",
-            sequence
-            <
-                literal<'a'>,
-                negated
-                <
-                    set
-                    <
-                        range<'A', 'Z'>,
-                        negated<word>,
-                        range<'a', 'z'>,
-                        literal<'-'>
-                    >
-                >
-            >
+        >
     >);
     static_assert(expected_ast<R"(\h\X[^a^[\]b\c]yy)",
-            sequence
+        sequence
+        <
+            literal<'h'>,
+            negated<hexa>,
+            negated
             <
-                literal<'h'>,
-                negated<hexa>,
-                negated
+                set
                 <
-                    set
-                    <
-                        literal<'c'>,
-                        literal<'b'>,
-                        literal<']'>,
-                        literal<'['>,
-                        literal<'^'>,
-                        literal<'a'>
-                    >
-                >,
-                literal<'y'>,
-                literal<'y'>
-            >
+                    literal<'c'>,
+                    literal<'b'>,
+                    literal<']'>,
+                    literal<'['>,
+                    literal<'^'>,
+                    literal<'a'>
+                >
+            >,
+            literal<'y'>,
+            literal<'y'>
+        >
     >);
-    static_assert(expected_ast<R"(((tuv)?b+)*|xy)",
-            alternation
+    static_assert(expected_ast<R"(((?<_t3st1ng>tuv)?b+)*|xy)",
+        alternation
+        <
+            star
             <
-                star
+                unnamed_capture
                 <
-                    capture
+                    1,
+                    sequence
                     <
-                        1,
-                        sequence
+                        optional
                         <
-                            optional
+                            capture
                             <
-                                capture
+                                2,
+                                symbol::name<"_t3st1ng">,
+                                sequence
                                 <
-                                    2,
-                                    sequence
-                                    <
-                                        literal<'t'>,
-                                        literal<'u'>,
-                                        literal<'v'>
-                                    >
+                                    literal<'t'>,
+                                    literal<'u'>,
+                                    literal<'v'>
                                 >
-                            >,
-                            plus
-                            <
-                                literal<'b'>
                             >
+                        >,
+                        plus
+                        <
+                            literal<'b'>
                         >
                     >
-                >,
-                sequence
+                >
+            >,
+            sequence
+            <
+                literal<'x'>,
+                literal<'y'>
+            >
+        >
+    >);
+    static_assert(expected_ast<R"((?<test>x+))",
+        capture
+        <
+            1,
+            symbol::name<"test">,
+            plus<literal<'x'>>
+        >
+    >);
+    static_assert(expected_ast<R"((?<group_name>x+)\k<group_name>)",
+        sequence
+        <
+            capture
+            <
+                1,
+                symbol::name<"group_name">,
+                plus<literal<'x'>>
+            >,
+            named_backref<symbol::name<"group_name">>
+        >
+    >);
+    static_assert(expected_ast<R"(x(?<_capture_name>abc)+)",
+        sequence
+        <
+            literal<'x'>,
+            plus
+            <
+                capture
                 <
-                    literal<'x'>,
-                    literal<'y'>
+                    1,
+                    symbol::name<"_capture_name">,
+                    sequence
+                    <
+                        literal<'a'>,
+                        literal<'b'>,
+                        literal<'c'>
+                    >
                 >
             >
+        >
+    >);
+    static_assert(expected_ast<R"((?<grp_1>abc)? \k<grp_1> (?<grp_2>xyz){2,})",
+        sequence
+        <
+            optional
+            <
+                capture
+                <
+                    1,
+                    symbol::name<"grp_1">,
+                    sequence
+                    <
+                        literal<'a'>,
+                        literal<'b'>,
+                        literal<'c'>
+                    >
+                >
+            >,
+            literal<' '>,
+            named_backref<symbol::name<"grp_1">>,
+            literal<' '>,
+            repetition
+            <
+                symbol::quantifier_value<2>,
+                symbol::quantifier_inf,
+                capture
+                <
+                    2,
+                    symbol::name<"grp_2">,
+                    sequence
+                    <
+                        literal<'x'>,
+                        literal<'y'>,
+                        literal<'z'>
+                    >
+                >
+            >
+        >
     >);
 }
-#endif //MREGEX_RUN_PARSER_TESTS

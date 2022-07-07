@@ -1,0 +1,12 @@
+function(mregex_add_example filename)
+    set(target_name example_${filename})
+    add_executable(${target_name} ${filename}.cpp)
+    target_link_libraries(${target_name} PUBLIC mregex)
+    set_property(TARGET ${target_name} PROPERTY CXX_STANDARD 20)
+endfunction()
+
+mregex_add_example(basic)
+mregex_add_example(extracting_captures)
+mregex_add_example(url_parsing)
+mregex_add_example(regex_iteration)
+mregex_add_example(structured_bindings)

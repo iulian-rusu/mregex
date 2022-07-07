@@ -1,6 +1,5 @@
-#include "tests.hpp"
+#include <mregex.hpp>
 
-#ifdef MREGEX_RUN_REGEX_TESTS
 namespace meta::tests
 {
     namespace
@@ -46,4 +45,3 @@ namespace meta::tests
     static_assert(token_count<R"(.+)">("123456") == 1);
     static_assert(token_count<R"(.+)", flag::ungreedy>("123456") == 6);
 }
-#endif //MREGEX_RUN_REGEX_TESTS
