@@ -90,8 +90,10 @@ Below is a complete list of the supported syntax constructs:
 |        `{N,}`         |                              match at least `N` times                              |
 |        `{N,M}`        |                          match between `N` and `M` times                           |
 |       `(expr)`        |                       capture the result of matching `expr`                        |
+|    `(?<name>expr)`    |                   capture by name the result of matching `expr`                    |
 |      `(?:expr)`       |                             make a non-capturing group                             |
 |         `\N`          |                  backreference to the capturing group number `N`                   |
+|      `\k<name>`       |                      backreference to a named capturing group                      |
 |      `(?=expr)`       |       (positive lookahead) test if `expr` will match from the current point        |
 |      `(?!expr)`       |            (negative lookahead) test the negation of positive lookahead            |
 |      `(?<=expr)`      |  (positive lookbehind) test if `expr` would have matched before the current point  |

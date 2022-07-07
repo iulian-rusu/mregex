@@ -28,7 +28,7 @@ namespace meta
             static constexpr bool unroll = is_flag_enabled_v<flag::unroll, Flags ...>;
         };
 
-        regex_capture_view_storage<AST::capture_count, Iter> captures{};
+        regex_capture_view_storage<AST, Iter> captures{};
 
         constexpr void clear() noexcept
         {

@@ -4,6 +4,7 @@
 #include <string>
 #include <iterator>
 #include <string_view>
+#include <mregex/ast/capture_name_specifier.hpp>
 #include <mregex/utility/concepts.hpp>
 
 namespace meta
@@ -155,34 +156,34 @@ namespace meta
     inline constexpr bool is_capture_view_v = is_capture_view<T>::value;
 
     /**
-     * Defines a std::tuple with N + 1 elements of type regex_capture_view.
+     * Defines a std::tuple used to store views into regex captures
      */
     template<typename, typename>
     struct regex_capture_view_allocator;
 
-    template<std::forward_iterator Iter, std::size_t... Indices>
-    struct regex_capture_view_allocator<std::index_sequence<Indices ...>, Iter>
+    template<std::forward_iterator Iter, typename... Names>
+    struct regex_capture_view_allocator<stack<Names ...>, Iter>
     {
-        using type = std::tuple<map_sequence<Indices, regex_capture_view<Iter>> ...>;
+        using type = std::tuple<regex_capture_view<Iter>, regex_capture_view<Iter, Names> ...>;
     };
 
-    template<std::size_t N, std::forward_iterator Iter>
-    using regex_capture_view_storage = typename regex_capture_view_allocator<std::make_index_sequence<N + 1>, Iter>::type;
+    template<typename AST, std::forward_iterator Iter>
+    using regex_capture_view_storage = typename regex_capture_view_allocator<ast::capture_name_spec_t<AST>, Iter>::type;
 
     /**
-     * Defines a std::tuple with N + 1 elements of type regex_capture.
+     * Defines a std::tuple used to store memory-owning regex captures
      */
     template<typename>
     struct regex_capture_allocator;
 
-    template<std::size_t... Indices>
-    struct regex_capture_allocator<std::index_sequence<Indices ...>>
+    template<typename... Names>
+    struct regex_capture_allocator<stack<Names ...>>
     {
-        using type = std::tuple<map_sequence<Indices, regex_capture<>> ...>;
+        using type = std::tuple<regex_capture<>, regex_capture<Names> ...>;
     };
 
-    template<std::size_t N>
-    using regex_capture_storage = typename regex_capture_allocator<std::make_index_sequence<N + 1>>::type;
+    template<typename AST>
+    using regex_capture_storage = typename regex_capture_allocator<ast::capture_name_spec_t<AST>>::type;
 
     /**
      * Type trait that checks if the given capture storage type may throw

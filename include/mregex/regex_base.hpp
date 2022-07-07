@@ -47,7 +47,7 @@ namespace meta
         [[nodiscard]] static constexpr auto match(Iter const begin, Iter const end) noexcept
         {
             using context_type = regex_context<Iter, ast_type, Flags ...>;
-            using result_type = regex_result_view<ast_type::capture_count, Iter>;
+            using result_type = regex_result_view<ast_type, Iter>;
 
             context_type ctx{};
             auto res = ast_type::match(begin, end, begin, ctx, continuations<Iter>::equals(end));
@@ -72,7 +72,7 @@ namespace meta
         [[nodiscard]] static constexpr auto search(Iter const begin, Iter const end, Iter const from) noexcept
         {
             using context_type = regex_context<Iter, ast_type, Flags ...>;
-            using result_type = regex_result_view<ast_type::capture_count, Iter>;
+            using result_type = regex_result_view<ast_type, Iter>;
 
             context_type ctx{};
             for (Iter current = from;; ++current)

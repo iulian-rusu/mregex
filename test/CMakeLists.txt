@@ -2,6 +2,7 @@
 set(
     test_sources
     main.cpp
+    capture_name_specifier_tests.cpp
     stack_tests.cpp
     traits_tests.cpp
     parser_ast_tests.cpp

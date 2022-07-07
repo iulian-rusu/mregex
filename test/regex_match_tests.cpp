@@ -169,8 +169,8 @@ namespace meta::tests
     static_assert(regex<R"(.{3}(?<=(.{3}))\1)">::match(R"(abcabc)"));
     static_assert(regex<R"((.*)x(?<=\1x))">::match(R"(abcx)"));
     static_assert(regex<R"((.)(?:(x)|y)\1)">::match("aya"));
-    static_assert(regex<R"((?:(x)x|xy)\1)">::match("xy"));
-    static_assert(regex<R"((?:(x)x|xy)\1)">::match("xxx"));
+    static_assert(regex<R"((?:(?<grp_name>x)x|xy)\k<grp_name>)">::match("xy"));
+    static_assert(regex<R"((?:(?<grp_name>x)x|xy)\k<grp_name>)">::match("xxx"));
 
     // Test non-matching inputs
     static_assert(regex<R"()">::match("t") == false);
@@ -250,7 +250,7 @@ namespace meta::tests
     static_assert(regex<R"(a.+)">::match("this regex will match any input") == false);
     static_assert(regex<R"(.+)">::match("\nexcept new lines") == false);
     static_assert(regex<R"(a?   b? c?)">::match("abc") == false);
-    static_assert(regex<R"((x{2,})\1+)">::match("xxxxxxxxxxx") == false);
+    static_assert(regex<R"((?<grp1>x{2,})\k<grp1>+)">::match("xxxxxxxxxxx") == false);
     static_assert(regex<R"(0x(\x+)h?)", flag::i>::match("0X012323EJH") == false);
     static_assert(regex<R"([^a-z]+)">::with<flag::icase>::match("AABBBDBDBDBBSABBDBDBABBA") == false);
     static_assert(regex<R"(^abcd$)", flag::m>::match("\nabcd\n\n") == false);
