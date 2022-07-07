@@ -41,13 +41,13 @@ namespace meta::tests
     >);
     // Concatenate multiple stacks
     static_assert(std::is_same_v<
-            stack<char, int, float, double, long, long double, long long, short int>,
-            concat
-            <
-                stack<char>,
-                stack<int, float>,
-                stack<double, long, long double>,
-                stack<long long, short int>
-            >
+        stack<char, int, float, double, long, long double, long long, short int>,
+        concat
+        <
+            stack<char>,
+            stack<int, float>,
+            stack<double, long, long double>,
+            stack<long long, short int>
+        >
     >);
 }
