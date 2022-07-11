@@ -3,7 +3,7 @@
 
 int main()
 {
-    using url_regex = meta::regex<R"((\w+):\/\/(?:(?:(\w+)?(?::(\w+))?@)?([\w.]+)(?::(\d+))?)?(?:(\/[-/\w]+)?\?([\w=&]+))?)">;
+    using url_regex = meta::regex<R"((\w+):\/\/(?:(?:(\w+)(?::(\w+))?@)?([\w.]+)(?::(\d+))?)?(?:(\/[-/\w]+)?\?([\w=&]+))?)">;
 
     // Matching can be done in constexpr or at runtime
     constexpr std::string_view url = "https://username:password@hostname.com:8080/path/to/resource?id=12345";

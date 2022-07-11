@@ -33,15 +33,14 @@ target_include_directories(mregex INTERFACE include/)
 # Installation
 install(DIRECTORY include/mregex DESTINATION include FILES_MATCHING PATTERN *.hpp)
 
-# Running tests
+# Building tests
 option(MREGEX_BUILD_TESTS "build tests" ON)
 if (${MREGEX_BUILD_TESTS})
-    enable_testing()
     add_subdirectory(test/)
 endif()
 
 # Building examples
-option(MREGEX_BUILD_EXAMPLE "build examples" ON)
-if (${MREGEX_BUILD_EXAMPLE})
+option(MREGEX_BUILD_EXAMPLES "build examples" ON)
+if (${MREGEX_BUILD_EXAMPLES})
     add_subdirectory(example/)
 endif()

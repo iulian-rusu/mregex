@@ -6,7 +6,7 @@
 namespace meta::ast
 {
     /**
-     * Data structure returned by all matching functions of AST nodes.
+     * Data structure returned by matching methods of AST nodes.
      */
     template<std::forward_iterator Iter>
     struct match_result

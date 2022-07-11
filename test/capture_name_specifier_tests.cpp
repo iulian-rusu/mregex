@@ -28,6 +28,6 @@ namespace meta::tests
         stack<unnamed, name<"a">, name<"b">, unnamed, unnamed, unnamed, name<"c">, unnamed>
     >);
     static_assert(expected_name_spec<"(?<a>.){5}(?<b>.){5,10}(?<c>.){5,}",
-            stack<name<"a">, name<"b">, name<"c">>
+        stack<name<"a">, name<"b">, name<"c">>
     >);
 }

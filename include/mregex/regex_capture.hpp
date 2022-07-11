@@ -156,7 +156,7 @@ namespace meta
     inline constexpr bool is_capture_view_v = is_capture_view<T>::value;
 
     /**
-     * Defines a std::tuple used to store views into regex captures
+     * Defines a std::tuple used to store views into regex captures.
      */
     template<typename, typename>
     struct regex_capture_view_allocator;
@@ -171,7 +171,7 @@ namespace meta
     using regex_capture_view_storage = typename regex_capture_view_allocator<ast::capture_name_spec_t<AST>, Iter>::type;
 
     /**
-     * Defines a std::tuple used to store memory-owning regex captures
+     * Defines a std::tuple used to store memory-owning regex captures.
      */
     template<typename>
     struct regex_capture_allocator;
