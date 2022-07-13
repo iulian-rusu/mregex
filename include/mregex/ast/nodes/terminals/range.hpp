@@ -40,7 +40,7 @@ namespace meta::ast
         }
     };
 
-    template<char A>
-    struct range<A, A> : literal<A> {};
+    template<char C>
+    struct range<C, C> : literal<C> {};
 }
 #endif //MREGEX_NODES_RANGE_HPP

@@ -148,14 +148,14 @@ namespace meta
          * Use the group() method for extracting captures.
          */
         template<std::size_t ID>
-        [[nodiscard]] constexpr decltype(auto) get() noexcept(is_nothrow_content_v<Storage>)
+        constexpr decltype(auto) get() noexcept(is_nothrow_content_v<Storage>)
         {
             assert_valid_group<ID + 1>();
             return std::get<ID + 1>(captures);
         }
 
         template<std::size_t ID>
-        [[nodiscard]] constexpr decltype(auto) get() const noexcept(is_nothrow_content_v<Storage>)
+        constexpr decltype(auto) get() const noexcept(is_nothrow_content_v<Storage>)
         {
             assert_valid_group<ID + 1>();
             return std::get<ID + 1>(captures);
@@ -166,7 +166,7 @@ namespace meta
         Storage captures;
 
         template<std::size_t ID>
-        constexpr void assert_valid_group() const noexcept
+        static constexpr void assert_valid_group() noexcept
         {
             static_assert(ID <= capture_count, "capturing group does not exist");
         }

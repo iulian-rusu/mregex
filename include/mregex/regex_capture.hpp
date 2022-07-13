@@ -103,9 +103,19 @@ namespace meta
             return captured.length();
         }
 
+        [[nodiscard]] auto begin() noexcept
+        {
+            return captured.begin();
+        }
+
         [[nodiscard]] auto begin() const noexcept
         {
             return captured.begin();
+        }
+
+        [[nodiscard]] auto end() noexcept
+        {
+            return captured.end();
         }
 
         [[nodiscard]] auto end() const noexcept
@@ -128,9 +138,24 @@ namespace meta
             return captured;
         }
 
-        constexpr explicit operator bool() const noexcept
+        [[nodiscard]] auto &operator[](std::size_t index)
+        {
+            return captured[index];
+        }
+
+        [[nodiscard]] auto const &operator[](std::size_t index) const
+        {
+            return captured[index];
+        }
+
+        explicit operator bool() const noexcept
         {
             return length() > 0;
+        }
+
+        explicit(false) operator std::string_view() const noexcept
+        {
+            return captured;
         }
 
         explicit(false) operator std::string() const noexcept
