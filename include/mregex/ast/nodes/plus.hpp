@@ -5,10 +5,10 @@
 
 namespace meta::ast
 {
-    template<typename T>
-    struct plus : sequence<T, star<T>>
+    template<bool Lazy, typename Inner>
+    struct basic_plus : sequence<Inner, basic_star<Lazy, Inner>>
     {
-        static constexpr std::size_t capture_count = T::capture_count;
+        static constexpr std::size_t capture_count = Inner::capture_count;
     };
 }
 #endif //MREGEX_NODES_PLUS_HPP

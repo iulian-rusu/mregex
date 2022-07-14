@@ -9,11 +9,17 @@
 
 namespace meta::ast
 {
-    template<std::size_t A, typename Inner>
-    using exact_repetition = repetition<symbol::quantifier_value<A>, symbol::quantifier_value<A>, Inner>;
+    template<bool, typename, typename, typename>
+    struct basic_repetition;
 
-    template<std::size_t A, std::size_t B, typename Inner>
-    struct repetition<symbol::quantifier_value<A>, symbol::quantifier_value<B>, Inner>
+    template<bool Lazy, std::size_t N, typename Inner>
+    using basic_exact_repetition = basic_repetition<Lazy, symbol::quantifier_value<N>, symbol::quantifier_value<N>, Inner>;
+
+    template<std::size_t N, typename Inner>
+    using exact_repetition = basic_exact_repetition<false, N, Inner>;
+
+    template<bool Lazy, std::size_t A, std::size_t B, typename Inner>
+    struct basic_repetition<Lazy, symbol::quantifier_value<A>, symbol::quantifier_value<B>, Inner>
     {
         static_assert(A < B, "invalid repetition bounds");
 
@@ -28,7 +34,7 @@ namespace meta::ast
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
                 return match_rest(begin, end, new_it, ctx, cont);
             };
-            return exact_repetition<A, Inner>::match(begin, end, it, ctx, continuation);
+            return basic_exact_repetition<Lazy, A, Inner>::match(begin, end, it, ctx, continuation);
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
@@ -39,12 +45,23 @@ namespace meta::ast
             return match_rest(begin, end, it, ctx, cont);
         }
 
+    private:
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match_rest(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
+        {
+            if constexpr (Lazy ^ flags_of<Context>::ungreedy)
+                return lazy_match_rest(begin, end, it, ctx, cont);
+            else
+                return greedy_match_rest(begin, end, it, ctx, cont);
+        }
+
+        template<std::forward_iterator Iter, typename Context, typename Continuation>
+        static constexpr auto greedy_match_rest(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        -> match_result<Iter>
         requires (!is_trivially_matchable_v<Inner>)
         {
-            using next_repetition = repetition<symbol::quantifier_value<0>, symbol::quantifier_value<R - 1>, Inner>;
+            using next_repetition = basic_repetition<Lazy, symbol::quantifier_value<0>, symbol::quantifier_value<R - 1>, Inner>;
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
                 return next_repetition::match(begin, end, new_it, ctx, cont);
             };
@@ -54,7 +71,7 @@ namespace meta::ast
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match_rest(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto greedy_match_rest(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         requires is_trivially_matchable_v<Inner>
         {
@@ -63,10 +80,41 @@ namespace meta::ast
                     break;
             return cont(it);
         }
+
+        template<std::forward_iterator Iter, typename Context, typename Continuation>
+        static constexpr auto lazy_match_rest(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        -> match_result<Iter>
+        requires (!is_trivially_matchable_v<Inner>)
+        {
+            using next_repetition = basic_repetition<Lazy, symbol::quantifier_value<0>, symbol::quantifier_value<R - 1>, Inner>;
+            if (auto rest_match = cont(it))
+                return rest_match;
+            auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
+                return next_repetition::match(begin, end, new_it, ctx, cont);
+            };
+            return Inner::match(begin, end, it, ctx, continuation);
+        }
+
+        template<std::forward_iterator Iter, typename Context, typename Continuation>
+        static constexpr auto lazy_match_rest(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        -> match_result<Iter>
+        requires is_trivially_matchable_v<Inner>
+        {
+            for (std::size_t matched = 0;; ++matched, ++it)
+            {
+                if (auto rest_match = cont(it))
+                    return rest_match;
+                if (it == end || matched == R)
+                    break;
+                if (!Inner::match_one(it, ctx))
+                    break;
+            }
+            return cont(it);
+        }
     };
 
-    template<std::size_t N, typename Inner>
-    struct repetition<symbol::quantifier_value<N>, symbol::quantifier_inf, Inner>
+    template<bool Lazy, std::size_t N, typename Inner>
+    struct basic_repetition<Lazy, symbol::quantifier_value<N>, symbol::quantifier_inf, Inner>
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
 
@@ -77,12 +125,12 @@ namespace meta::ast
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
                 return star<Inner>::match(begin, end, new_it, ctx, cont);
             };
-            return exact_repetition<N, Inner>::match(begin, end, it, ctx, continuation);
+            return basic_exact_repetition<Lazy, N, Inner>::match(begin, end, it, ctx, continuation);
         }
     };
 
-    template<std::size_t N, typename Inner>
-    struct repetition<symbol::quantifier_value<N>, symbol::quantifier_value<N>, Inner>
+    template<bool Lazy, std::size_t N, typename Inner>
+    struct basic_repetition<Lazy, symbol::quantifier_value<N>, symbol::quantifier_value<N>, Inner>
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
 
@@ -94,7 +142,7 @@ namespace meta::ast
             if constexpr (flags_of<Context>::unroll)
             {
                 auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
-                    return exact_repetition<N - 1, Inner>::match(begin, end, new_it, ctx, cont);
+                    return basic_exact_repetition<Lazy, N - 1, Inner>::match(begin, end, new_it, ctx, cont);
                 };
                 return Inner::match(begin, end, it, ctx, continuation);
             }
@@ -167,23 +215,16 @@ namespace meta::ast
         }
     };
 
-    template<typename Inner>
-    struct repetition<symbol::quantifier_value<0>, symbol::quantifier_value<0>, Inner>
+    template<bool Lazy, typename Inner>
+    struct basic_repetition<Lazy, symbol::quantifier_value<0>, symbol::quantifier_value<0>, Inner> : epsilon
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
-
-        template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter, Iter, Iter it, Context &, Continuation &&cont) noexcept
-        -> match_result<Iter>
-        {
-            return cont(it);
-        }
     };
 
-    template<typename Inner>
-    struct repetition<symbol::quantifier_value<1>, symbol::quantifier_value<1>, Inner> : Inner {};
+    template<bool Lazy, typename Inner>
+    struct basic_repetition<Lazy, symbol::quantifier_value<1>, symbol::quantifier_value<1>, Inner> : Inner {};
 
-    template<typename Inner>
-    struct repetition<symbol::quantifier_value<0>, symbol::quantifier_inf, Inner> : star<Inner> {};
+    template<bool Lazy, typename Inner>
+    struct basic_repetition<Lazy, symbol::quantifier_value<0>, symbol::quantifier_inf, Inner> : basic_star<Lazy, Inner> {};
 }
 #endif //MREGEX_NODES_REPETITION_HPP

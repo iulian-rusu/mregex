@@ -3,8 +3,7 @@
 
 int main()
 {
-    // The ungreedy flag can be used to enable lazy quantifiers (*, +, {N,M})
-    using word_regex = meta::regex<R"(\w+(?=\W))", meta::flag::ungreedy>;
+    using word_regex = meta::regex<R"(\w+?(?=\W))">;
 
     // The range() method returns a range that lazily generates the results one-by-one
     // Old results are discarded after advancing the iterator

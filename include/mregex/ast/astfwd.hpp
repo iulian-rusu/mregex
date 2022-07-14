@@ -14,14 +14,41 @@ namespace meta::ast
     template<typename, typename...>
     struct disjunction;
 
-    template<typename>
-    struct star;
+    template<bool, typename>
+    struct basic_star;
 
-    template<typename>
-    struct plus;
+    template<typename Inner>
+    using star = basic_star<false, Inner>;
 
-    template<typename, typename, typename>
-    struct repetition;
+    template<typename Inner>
+    using lazy_star = basic_star<false, Inner>;
+
+    template<bool, typename>
+    struct basic_plus;
+
+    template<typename Inner>
+    using plus = basic_plus<false, Inner>;
+
+    template<typename Inner>
+    using lazy_plus = basic_plus<true, Inner>;
+
+    template<bool, typename>
+    struct basic_optional;
+
+    template<typename Inner>
+    using optional = basic_optional<false, Inner>;
+
+    template<typename Inner>
+    using lazy_optional = basic_optional<true, Inner>;
+
+    template<bool, typename, typename, typename>
+    struct basic_repetition;
+
+    template<typename A, typename B, typename Inner>
+    using repetition = basic_repetition<false, A, B, Inner>;
+
+    template<typename A, typename B, typename Inner>
+    using lazy_repetition = basic_repetition<true, A, B, Inner>;
 
     struct terminal;
 
@@ -45,9 +72,6 @@ namespace meta::ast
 
     template<char, char>
     struct range;
-
-    template<typename T>
-    using optional = alternation<T, epsilon>;
 
     using digit = range<'0', '9'>;
 

@@ -16,6 +16,7 @@
 #include <mregex/ast/nodes/disjunction.hpp>
 #include <mregex/ast/nodes/lookaheads.hpp>
 #include <mregex/ast/nodes/lookbehinds.hpp>
+#include <mregex/ast/nodes/optional.hpp>
 #include <mregex/ast/nodes/plus.hpp>
 #include <mregex/ast/nodes/repetition.hpp>
 #include <mregex/ast/nodes/sequence.hpp>

@@ -20,7 +20,7 @@ an iterator compatible with `std::forward_iterator`
 * flags that modify the matching behaviour:
   * `icase` - enables case-insensitive matching
   * `multiline` - enables multi-line mode, in which the anchors `^`/`$` will also match starts/ends of lines
-  * `ungreedy` - enables lazy matching, making quantifiers like `*` consume as few characters as possible
+  * `ungreedy` - swaps lazy and greedy quantifiers
   * `dotall` - allows the wildcard `.` to also match `\n` and `\r`
 * a flexible API that allows exact matching, searching or iterating over multiple results
     
@@ -85,19 +85,20 @@ Below is a complete list of the supported syntax constructs:
 |          `*`          |                             match any number of times                              |
 |          `+`          |                                match at least once                                 |
 |          `?`          |                              match one or zero times                               |
-|  <code>&#124;</code>  |                           match the left or right option                           |
 |         `{N}`         |                              match exactly `N` times                               |
 |        `{N,}`         |                              match at least `N` times                              |
 |        `{N,M}`        |                          match between `N` and `M` times                           |
+| `??`, `*?`, `+?` etc. |                               make quantifiers lazy                                |
+|  <code>&#124;</code>  |                           match the left or right option                           |
+|      `(?:expr)`       |                             make a non-capturing group                             |
 |       `(expr)`        |                       capture the result of matching `expr`                        |
 |    `(?<name>expr)`    |                   capture by name the result of matching `expr`                    |
-|      `(?:expr)`       |                             make a non-capturing group                             |
 |         `\N`          |                  backreference to the capturing group number `N`                   |
 |      `\k<name>`       |                      backreference to a named capturing group                      |
 |      `(?=expr)`       |       (positive lookahead) test if `expr` will match from the current point        |
-|      `(?!expr)`       |            (negative lookahead) test the negation of positive lookahead            |
+|      `(?!expr)`       |            (negative lookahead) test the opposite of positive lookahead            |
 |      `(?<=expr)`      |  (positive lookbehind) test if `expr` would have matched before the current point  |
-|      `(?<!expr)`      |           (negative lookbehind) test the negation of positive lookbehind           |
+|      `(?<!expr)`      |           (negative lookbehind) test the opposite of positive lookbehind           |
 
 ## Credits
 This project was inspired by other compile-time regex libraries

@@ -587,7 +587,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_star
+                    symbol::action_mod<symbol::make_star>
                 >;
     };
 
@@ -598,7 +598,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_plus
+                    symbol::action_mod<symbol::make_plus>
                 >;
     };
 
@@ -609,7 +609,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_optional
+                    symbol::action_mod<symbol::make_optional>
                 >;
     };
 
@@ -661,7 +661,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_repetition<symbol::quantifier_value<N>, symbol::quantifier_value<N>>
+                    symbol::action_mod<symbol::make_repetition<symbol::quantifier_value<N>, symbol::quantifier_value<N>>>
                 >;
     };
 
@@ -689,8 +689,31 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_repetition<A, B>
+                    symbol::action_mod<symbol::make_repetition<A, B>>
                 >;
+    };
+
+    template<typename Action>
+    struct rule<symbol::action_mod<Action>, symbol::character<'?'>>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::make_lazy<Action>
+                >;
+    };
+
+    template<typename Update, char C>
+    struct rule<symbol::action_mod<Update>, symbol::character<C>>
+    {
+        using type = Update;
+    };
+
+    template<typename Update>
+    struct rule<symbol::action_mod<Update>, symbol::epsilon>
+    {
+        using type = Update;
     };
 
     template<>

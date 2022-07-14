@@ -20,11 +20,19 @@ namespace meta::tests
     static_assert(accepted<R"(c?)">);
     static_assert(accepted<R"(c*)">);
     static_assert(accepted<R"(c+)">);
+    static_assert(accepted<R"(c??)">);
+    static_assert(accepted<R"(c*?)">);
+    static_assert(accepted<R"(c+?)">);
     static_assert(accepted<R"(c{2})">);
+    static_assert(accepted<R"(c{2}?)">);
     static_assert(accepted<R"(c{})">);
+    static_assert(accepted<R"(c{}?)">);
     static_assert(accepted<R"(c{)">);
+    static_assert(accepted<R"(c{?)">);
     static_assert(accepted<R"(c{?})">);
+    static_assert(accepted<R"(c{?}?)">);
     static_assert(accepted<R"(c{,0})">);
+    static_assert(accepted<R"(c{,0}?)">);
     static_assert(accepted<R"(c{*})">);
     static_assert(accepted<R"(c{+})">);
     static_assert(accepted<R"(c{|})">);
@@ -34,6 +42,7 @@ namespace meta::tests
     static_assert(accepted<R"(c{1,23})">);
     static_assert(accepted<R"(c{12,})">);
     static_assert(accepted<R"(c{0,123})">);
+    static_assert(accepted<R"(c{0,123}?)">);
     static_assert(accepted<R"(c{1,2})">);
     static_assert(accepted<R"(c{,})">);
     static_assert(accepted<R"(c{ 0, 123})">);
@@ -52,8 +61,9 @@ namespace meta::tests
     static_assert(accepted<R"((one+|two|three)*)">);
     static_assert(accepted<R"((one|two+|three)+)">);
     static_assert(accepted<R"((\(+)*)">);
-    static_assert(accepted<R"((\++)*)">);
+    static_assert(accepted<R"((\++?)*)">);
     static_assert(accepted<R"((\?+)?)">);
+    static_assert(accepted<R"((\?+?)?)">);
     static_assert(accepted<R"((\|+\))?)">);
     static_assert(accepted<R"(x(?:x))">);
     static_assert(accepted<R"((?:x)x)">);
@@ -75,6 +85,7 @@ namespace meta::tests
     static_assert(accepted<R"((?:(((?:abd))+)x?)|(?:xyz)+)">);
     static_assert(accepted<R"(x*(x?(abc+(?:xyz)?)+x)*x)">);
     static_assert(accepted<R"(x*(x?(abc+(?:xyz)?)+x)*x\1+\2?)">);
+    static_assert(accepted<R"(x*?(x?(abc+?(?:xyz)?)+x)*x\1+?\2??)">);
     static_assert(accepted<R"(x\*\(x\?(abc\+(?:xyz)\?)\+x\)\*x)">);
     static_assert(accepted<R"([a])">);
     static_assert(accepted<R"([a][b])">);
@@ -98,6 +109,7 @@ namespace meta::tests
     static_assert(accepted<R"(f?[a-zA-Z]?a?)">);
     static_assert(accepted<R"(f?[a-z-]?a?)">);
     static_assert(accepted<R"(f?[a-z-A]?a?)">);
+    static_assert(accepted<R"(f??[a-z-A]??a?)">);
     static_assert(accepted<R"(f*[a-zA-Z]*a?)">);
     static_assert(accepted<R"(f+[a-zA-Z]+a+)">);
     static_assert(accepted<R"(f?[a-zA-Z]?a?[xyzt\w0-9]+d?)">);
@@ -115,6 +127,7 @@ namespace meta::tests
     static_assert(accepted<R"(abc(?<____>.[a-d]+(?<_1232>x+y*)+){2,3}cd\k<_1232>+)">);
     static_assert(accepted<R"(abc(?<____>.[a-d]+(?<_1232>\k<____>{2}x+y*)+){2,3}cd)">);
     static_assert(accepted<R"((?<foo>.)\k<foo>\1)">);
+    static_assert(accepted<R"((?<foo>.+?)\k<foo>*?\1)">);
 
     // Test invalid inputs
     static_assert(accepted<R"(()"> == false);
@@ -138,8 +151,10 @@ namespace meta::tests
     static_assert(accepted<R"($?)"> == false);
     static_assert(accepted<R"(^$+)"> == false);
     static_assert(accepted<R"(^$*)"> == false);
+    static_assert(accepted<R"(^$*?)"> == false);
     static_assert(accepted<R"(^*$?)"> == false);
-    static_assert(accepted<R"(^?$?)"> == false);
+    static_assert(accepted<R"(^*$?)"> == false);
+    static_assert(accepted<R"(^?$??)"> == false);
     static_assert(accepted<R"((+))"> == false);
     static_assert(accepted<R"((+))"> == false);
     static_assert(accepted<R"((?))"> == false);
@@ -187,8 +202,9 @@ namespace meta::tests
     static_assert(accepted<R"(((((((a)))))\))"> == false);
     static_assert(accepted<R"(f?[a-zA-]?a?)"> == false);
     static_assert(accepted<R"(f?[a--z-]?a?)"> == false);
-    static_assert(accepted<R"(f?[a-z-A]??)"> == false);
+    static_assert(accepted<R"(f?[a-z-A]?+)"> == false);
     static_assert(accepted<R"(f*[a-zA-Z*a?)"> == false);
+    static_assert(accepted<R"(f**[a-zA-Z])"> == false);
     static_assert(accepted<R"(+[a-zA-Z]+a+)"> == false);
     static_assert(accepted<R"(ab|cd|[a-zA-Z]|ab{3|ac)"> == false);
     static_assert(accepted<R"(ab|(cd|[a-zA-Z]|ab\)|ac)"> == false);
@@ -206,6 +222,7 @@ namespace meta::tests
     static_assert(accepted<R"(\k<name)"> == false);
     static_assert(accepted<R"(\kname>)"> == false);
     static_assert(accepted<R"(\k<1name>)"> == false);
+    static_assert(accepted<R"(\k<name>*+)"> == false);
     static_assert(accepted<R"(\k<)"> == false);
     static_assert(accepted<R"(\k)"> == false);
 }

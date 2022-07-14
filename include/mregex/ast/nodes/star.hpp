@@ -8,8 +8,8 @@
 
 namespace meta::ast
 {
-    template<typename Inner>
-    struct star
+    template<bool Lazy, typename Inner>
+    struct basic_star
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
 
@@ -17,7 +17,7 @@ namespace meta::ast
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            if constexpr (flags_of<Context>::ungreedy)
+            if constexpr (Lazy ^ flags_of<Context>::ungreedy)
                 return lazy_match(begin, end, it, ctx, cont);
             else
                 return greedy_match(begin, end, it, ctx, cont);
@@ -78,10 +78,12 @@ namespace meta::ast
         -> match_result<Iter>
         requires is_trivially_matchable_v<Inner>
         {
-            for (; it != end; ++it)
+            for (;; ++it)
             {
                 if (auto rest_match = cont(it))
                     return rest_match;
+                if (it == end)
+                    break;
                 if (!Inner::match_one(it, ctx))
                     break;
             }

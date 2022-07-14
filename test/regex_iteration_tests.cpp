@@ -25,6 +25,7 @@ namespace meta::tests
     static_assert(token_count<R"(a+)">("") == 0);
     static_assert(token_count<R"(a+)">("bbb ccc ddd") == 0);
     static_assert(token_count<R"(a+)", flag::ungreedy>("a aa aaa") == 6);
+    static_assert(token_count<R"(a+?)", flag::ungreedy>("a aa aaa") == 3);
     static_assert(token_count<R"(a+)">("a aa aaa") == 3);
     static_assert(token_count<R"(abc)">("a") == 0);
     static_assert(token_count<R"(abc)">("abcd abcd") == 2);
@@ -44,4 +45,5 @@ namespace meta::tests
     static_assert(token_count<R"(.)">("a") == 1);
     static_assert(token_count<R"(.+)">("123456") == 1);
     static_assert(token_count<R"(.+)", flag::ungreedy>("123456") == 6);
+    static_assert(token_count<R"(.+?)", flag::ungreedy>("123456") == 1);
 }

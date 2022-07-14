@@ -30,10 +30,16 @@ namespace meta::ast
         using type = Wrapper<preorder_indexing_t<Offset, Inner> ...>;
     };
 
-    template<std::size_t Offset, typename A, typename B, typename Inner>
-    struct preorder_indexing<Offset, repetition<A, B, Inner>>
+    template<std::size_t Offset, template<bool, typename> typename Wrapper, bool Lazy, typename Inner>
+    struct preorder_indexing<Offset, Wrapper<Lazy, Inner>>
     {
-        using type = repetition<A, B, preorder_indexing_t<Offset, Inner>>;
+        using type = Wrapper<Lazy, preorder_indexing_t<Offset, Inner>>;
+    };
+
+    template<std::size_t Offset, bool Lazy, typename A, typename B, typename Inner>
+    struct preorder_indexing<Offset, basic_repetition<Lazy, A, B, Inner>>
+    {
+        using type = basic_repetition<Lazy, A, B, preorder_indexing_t<Offset, Inner>>;
     };
 
     template<std::size_t Offset, std::size_t I, typename Name, typename Inner>

@@ -27,16 +27,22 @@ namespace meta::ast
         using type = concat<capture_name_spec_t<Inner> ...>;
     };
 
+    template<template<bool, typename> typename Wrapper, bool Lazy, typename Inner>
+    struct capture_name_spec<Wrapper<Lazy, Inner>>
+    {
+        using type = capture_name_spec_t<Inner>;
+    };
+
+    template<bool Lazy, typename A, typename B, typename Inner>
+    struct capture_name_spec<basic_repetition<Lazy, A, B, Inner>>
+    {
+        using type = capture_name_spec_t<Inner>;
+    };
+
     template<std::size_t ID, typename Name, typename Inner>
     struct capture_name_spec<capture<ID, Name, Inner>>
     {
         using type = push<capture_name_spec_t<Inner>, Name>;
-    };
-
-    template<typename A, typename B, typename Inner>
-    struct capture_name_spec<repetition<A, B, Inner>>
-    {
-        using type = capture_name_spec_t<Inner>;
     };
 }
 #endif //MREGEX_CAPTURE_NAME_SPECIFIER_HPP

@@ -12,6 +12,9 @@ namespace meta::symbol
 
     struct mod {};
 
+    template<typename>
+    struct action_mod {};
+
     struct seq {};
 
     struct alt {};
@@ -103,6 +106,9 @@ namespace meta::symbol
     struct make_optional : ast_update {};
 
     struct make_plus : ast_update {};
+
+    template<typename>
+    struct make_lazy : ast_update {};
 
     struct make_alpha : ast_update {};
 
