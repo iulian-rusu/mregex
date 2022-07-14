@@ -722,10 +722,10 @@ namespace meta::grammar
         using type = Action;
     };
 
-    template<typename Update>
-    struct rule<symbol::action_mod<Update>, symbol::epsilon>
+    template<typename Action>
+    struct rule<symbol::action_mod<Action>, symbol::epsilon>
     {
-        using type = Update;
+        using type = Action;
     };
 
     template<>

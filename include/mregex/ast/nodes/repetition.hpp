@@ -212,8 +212,8 @@ namespace meta::ast
                 std::index_sequence<Indices ...> &&
         ) noexcept -> match_result<Iter>
         {
-            if ((Inner::match_one(it + Indices, ctx) && ...))
-                return cont(it + N);
+            if ((Inner::match_one(std::next(it, Indices), ctx) && ...))
+                return cont(std::next(it, N));
             return {it, false};
         }
 

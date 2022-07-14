@@ -33,7 +33,7 @@ namespace meta::ast
             if (it == end)
                 return {it, false};
             if (First::match_one(it, ctx))
-                return sequence<Rest ...>::match(begin, end, it + 1, ctx, cont);
+                return sequence<Rest ...>::match(begin, end, std::next(it), ctx, cont);
             return {it, false};
         }
 
@@ -46,7 +46,6 @@ namespace meta::ast
                 return {it, false};
             return unrolled_trivial_match(it, ctx, cont, std::make_index_sequence<size>{});
         }
-
     private:
         template<std::forward_iterator Iter, typename Context, typename Continuation, std::size_t Index, std::size_t... Indices>
         static constexpr auto unrolled_trivial_match(
@@ -54,8 +53,8 @@ namespace meta::ast
                 std::index_sequence<Index, Indices ...> &&
         ) noexcept -> match_result<Iter>
         {
-            if (First::match_one(it, ctx) && (Rest::match_one(it + Indices, ctx) && ...))
-                return cont(it + size);
+            if (First::match_one(it, ctx) && (Rest::match_one(std::next(it, Indices), ctx) && ...))
+                return cont(std::next(it, size));
             return {it, false};
         }
     };
