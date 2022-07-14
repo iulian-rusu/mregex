@@ -82,14 +82,15 @@ Below is a complete list of the supported syntax constructs:
 |         `\x`          |                          match any hexadecimal character                           |
 | `\D`, `\W`, `\U` etc. |                match any character **not** in the respective class                 |
 |         `\ `          |   remove any special meaning from the next token (ex. `\.` will only match `.`)    |
+|  <code>&#124;</code>  |                         match the left or right expression                         |
 |          `*`          |                             match any number of times                              |
 |          `+`          |                                match at least once                                 |
 |          `?`          |                              match one or zero times                               |
 |         `{N}`         |                              match exactly `N` times                               |
 |        `{N,}`         |                              match at least `N` times                              |
 |        `{N,M}`        |                          match between `N` and `M` times                           |
-| `??`, `*?`, `+?` etc. |                               make quantifiers lazy                                |
-|  <code>&#124;</code>  |                           match the left or right option                           |
+| `??`, `*?`, `{N,M}?`  |                               make quantifiers lazy                                |
+| `?+`, `*+`, `{N,M}+`  |                   make quantifiers possessive (non-backtracking)                   |
 |      `(?:expr)`       |                             make a non-capturing group                             |
 |       `(expr)`        |                       capture the result of matching `expr`                        |
 |    `(?<name>expr)`    |                   capture by name the result of matching `expr`                    |

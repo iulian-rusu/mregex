@@ -110,6 +110,9 @@ namespace meta::symbol
     template<typename>
     struct make_lazy : ast_update {};
 
+    template<typename>
+    struct make_possessive : ast_update {};
+
     struct make_alpha : ast_update {};
 
     struct make_digit : ast_update {};

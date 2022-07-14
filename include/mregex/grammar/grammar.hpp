@@ -704,6 +704,17 @@ namespace meta::grammar
                 >;
     };
 
+    template<typename Action>
+    struct rule<symbol::action_mod<Action>, symbol::character<'+'>>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::make_possessive<Action>
+                >;
+    };
+
     template<typename Update, char C>
     struct rule<symbol::action_mod<Update>, symbol::character<C>>
     {

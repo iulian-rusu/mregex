@@ -8,7 +8,7 @@
 
 namespace meta::ast
 {
-    template<bool Lazy, typename Inner>
+    template<match_mode Mode, typename Inner>
     struct basic_optional
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
@@ -17,10 +17,10 @@ namespace meta::ast
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            if constexpr (Lazy ^ flags_of<Context>::ungreedy)
-                return lazy_match(begin, end, it, ctx, cont);
-            else
+            if constexpr ((Mode == match_mode::greedy) ^ flags_of<Context>::ungreedy)
                 return greedy_match(begin, end, it, ctx, cont);
+            else
+                return lazy_match(begin, end, it, ctx, cont);
         }
 
     private:

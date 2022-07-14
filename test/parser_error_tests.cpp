@@ -14,7 +14,7 @@ namespace meta
     static_assert(error_position<R"(|)", 0>);
     static_assert(error_position<R"(?)", 0>);
     static_assert(error_position<R"(())", 1>);
-    static_assert(error_position<R"(a?+)", 2>);
+    static_assert(error_position<R"(a?*)", 2>);
     static_assert(error_position<R"(ab|+cd)", 3>);
     static_assert(error_position<R"(((ab))", 5>);
     static_assert(error_position<R"((?xx))", 2>);

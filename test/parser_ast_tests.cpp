@@ -149,7 +149,9 @@ namespace meta::tests
     static_assert(expected_ast<R"(\1+)", plus<backref<1>>>);
     static_assert(expected_ast<R"(\42?)", optional<backref<42>>>);
     static_assert(expected_ast<R"(\1+?)", lazy_plus<backref<1>>>);
+    static_assert(expected_ast<R"(\1++)", possessive_plus<backref<1>>>);
     static_assert(expected_ast<R"(\42??)", lazy_optional<backref<42>>>);
+    static_assert(expected_ast<R"(\42?+)", possessive_optional<backref<42>>>);
     static_assert(expected_ast<R"((c)\1)",
         sequence
         <
@@ -310,8 +312,8 @@ namespace meta::tests
             literal<'c'>
         >
     >);
-    static_assert(expected_ast<R"(c{984,7644})",
-        repetition
+    static_assert(expected_ast<R"(c{984,7644}+)",
+        possessive_repetition
         <
             symbol::quantifier_value<984>,
             symbol::quantifier_value<7644>,
@@ -457,6 +459,22 @@ namespace meta::tests
         <
             literal<'x'>,
             star
+            <
+                sequence
+                <
+                    literal<'a'>,
+                    literal<'b'>,
+                    literal<'c'>
+                >
+            >,
+            literal<'x'>
+        >
+    >);
+    static_assert(expected_ast<R"(x(?:abc)*+x)",
+        sequence
+        <
+            literal<'x'>,
+            possessive_star
             <
                 sequence
                 <

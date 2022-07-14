@@ -5,8 +5,8 @@
 
 namespace meta::ast
 {
-    template<bool Lazy, typename Inner>
-    struct basic_plus : sequence<Inner, basic_star<Lazy, Inner>>
+    template<match_mode Mode, typename Inner>
+    struct basic_plus : sequence<Inner, basic_star<Mode, Inner>>
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
     };

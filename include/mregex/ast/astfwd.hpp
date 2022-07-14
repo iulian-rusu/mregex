@@ -1,7 +1,7 @@
 #ifndef MREGEX_ASTFWD_HPP
 #define MREGEX_ASTFWD_HPP
 
-#include <cstddef>
+#include <mregex/ast/match_mode.hpp>
 
 namespace meta::ast
 {
@@ -14,41 +14,53 @@ namespace meta::ast
     template<typename, typename...>
     struct disjunction;
 
-    template<bool, typename>
+    template<match_mode, typename>
     struct basic_star;
 
     template<typename Inner>
-    using star = basic_star<false, Inner>;
+    using star = basic_star<match_mode::greedy, Inner>;
 
     template<typename Inner>
-    using lazy_star = basic_star<true, Inner>;
+    using lazy_star = basic_star<match_mode::lazy, Inner>;
 
-    template<bool, typename>
+    template<typename Inner>
+    using possessive_star = basic_star<match_mode::possessive, Inner>;
+
+    template<match_mode, typename>
     struct basic_plus;
 
     template<typename Inner>
-    using plus = basic_plus<false, Inner>;
+    using plus = basic_plus<match_mode::greedy, Inner>;
 
     template<typename Inner>
-    using lazy_plus = basic_plus<true, Inner>;
+    using lazy_plus = basic_plus<match_mode::lazy, Inner>;
 
-    template<bool, typename>
+    template<typename Inner>
+    using possessive_plus = basic_plus<match_mode::possessive, Inner>;
+
+    template<match_mode, typename>
     struct basic_optional;
 
     template<typename Inner>
-    using optional = basic_optional<false, Inner>;
+    using optional = basic_optional<match_mode::greedy, Inner>;
 
     template<typename Inner>
-    using lazy_optional = basic_optional<true, Inner>;
+    using lazy_optional = basic_optional<match_mode::lazy, Inner>;
 
-    template<bool, typename, typename, typename>
+    template<typename Inner>
+    using possessive_optional = Inner; // An optional which does not backtrack is not really optional
+
+    template<match_mode, typename, typename, typename>
     struct basic_repetition;
 
     template<typename A, typename B, typename Inner>
-    using repetition = basic_repetition<false, A, B, Inner>;
+    using repetition = basic_repetition<match_mode::greedy, A, B, Inner>;
 
     template<typename A, typename B, typename Inner>
-    using lazy_repetition = basic_repetition<true, A, B, Inner>;
+    using lazy_repetition = basic_repetition<match_mode::lazy, A, B, Inner>;
+
+    template<typename A, typename B, typename Inner>
+    using possessive_repetition = basic_repetition<match_mode::possessive, A, B, Inner>;
 
     struct terminal;
 
