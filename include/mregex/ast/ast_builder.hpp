@@ -129,59 +129,24 @@ namespace meta::ast
         using type = stack<negated<First>, Rest ...>;
     };
 
-    template<typename T, typename First, typename... Rest>
-    struct build<symbol::make_star, T, stack<First, Rest ...>>
+    template<match_mode Mode, typename T, typename First, typename... Rest>
+    struct build<symbol::make_star<Mode>, T, stack<First, Rest ...>>
     {
-        using type = stack<star<First>, Rest ...>;
+        using type = stack<basic_star<Mode, First>, Rest ...>;
     };
 
-    template<typename T, typename First, typename... Rest>
-    struct build<symbol::make_lazy<symbol::make_star>, T, stack<First, Rest ...>>
+    template<match_mode Mode, typename T, typename First, typename... Rest>
+    struct build<symbol::make_optional<Mode>, T, stack<First, Rest ...>>
     {
-        using type = stack<lazy_star<First>, Rest ...>;
+        using type = stack<basic_optional<Mode, First>, Rest ...>;
     };
 
-    template<typename T, typename First, typename... Rest>
-    struct build<symbol::make_possessive<symbol::make_star>, T, stack<First, Rest ...>>
+    template<match_mode Mode, typename T, typename First, typename... Rest>
+    struct build<symbol::make_plus<Mode>, T, stack<First, Rest ...>>
     {
-        using type = stack<possessive_star<First>, Rest ...>;
+        using type = stack<basic_plus<Mode, First>, Rest ...>;
     };
 
-    template<typename T, typename First, typename... Rest>
-    struct build<symbol::make_optional, T, stack<First, Rest ...>>
-    {
-        using type = stack<optional<First>, Rest ...>;
-    };
-
-    template<typename T, typename First, typename... Rest>
-    struct build<symbol::make_lazy<symbol::make_optional>, T, stack<First, Rest ...>>
-    {
-        using type = stack<lazy_optional<First>, Rest ...>;
-    };
-
-    template<typename T, typename Stack>
-    struct build<symbol::make_possessive<symbol::make_optional>, T, Stack>
-    {
-        using type = Stack;
-    };
-
-    template<typename T, typename First, typename... Rest>
-    struct build<symbol::make_plus, T, stack<First, Rest ...>>
-    {
-        using type = stack<plus<First>, Rest ...>;
-    };
-
-    template<typename T, typename First, typename... Rest>
-    struct build<symbol::make_lazy<symbol::make_plus>, T, stack<First, Rest ...>>
-    {
-        using type = stack<lazy_plus<First>, Rest ...>;
-    };
-
-    template<typename T, typename First, typename... Rest>
-    struct build<symbol::make_possessive<symbol::make_plus>, T, stack<First, Rest ...>>
-    {
-        using type = stack<possessive_plus<First>, Rest ...>;
-    };
 
     // Combine any two non-sequence symbols into a sequence
     template<typename T, typename First, typename Second, typename... Rest>
@@ -243,22 +208,10 @@ namespace meta::ast
         using type = stack<named_backref<Name>, Elems ...>;
     };
 
-    template<typename A, typename B, typename T, typename First, typename... Rest>
-    struct build<symbol::make_repetition<A, B>, T, stack<First, Rest ...>>
+    template<match_mode Mode, typename A, typename B, typename T, typename First, typename... Rest>
+    struct build<symbol::make_repetition<Mode, A, B>, T, stack<First, Rest ...>>
     {
-        using type = stack<repetition<A, B, First>, Rest ...>;
-    };
-
-    template<typename A, typename B, typename T, typename First, typename... Rest>
-    struct build<symbol::make_lazy<symbol::make_repetition<A, B>>, T, stack<First, Rest ...>>
-    {
-        using type = stack<lazy_repetition<A, B, First>, Rest ...>;
-    };
-
-    template<typename A, typename B, typename T, typename First, typename... Rest>
-    struct build<symbol::make_possessive<symbol::make_repetition<A, B>>, T, stack<First, Rest ...>>
-    {
-        using type = stack<possessive_repetition<A, B, First>, Rest ...>;
+        using type = stack<basic_repetition<Mode, A, B, First>, Rest ...>;
     };
 
     // Set building rules

@@ -48,7 +48,7 @@ namespace meta::ast
     using lazy_optional = basic_optional<match_mode::lazy, Inner>;
 
     template<typename Inner>
-    using possessive_optional = Inner; // An optional which does not backtrack is not really optional
+    using possessive_optional = basic_optional<match_mode::possessive, Inner>;
 
     template<match_mode, typename, typename, typename>
     struct basic_repetition;

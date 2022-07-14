@@ -1,6 +1,7 @@
 #ifndef MREGEX_SYMBOL_HPP
 #define MREGEX_SYMBOL_HPP
 
+#include <mregex/ast/match_mode.hpp>
 #include <mregex/utility/static_string.hpp>
 
 namespace meta::symbol
@@ -81,8 +82,6 @@ namespace meta::symbol
     struct backref_name_seq {};
 
     // Symbols for parsing named captures
-    struct capture_name_begin {};
-
     template<char...>
     struct capture_name_seq {};
 
@@ -98,20 +97,17 @@ namespace meta::symbol
 
     struct make_alternation : ast_update {};
 
+    template<ast::match_mode>
     struct make_star : ast_update {};
 
-    template<typename, typename>
+    template<ast::match_mode, typename, typename>
     struct make_repetition : ast_update {};
 
+    template<ast::match_mode>
     struct make_optional : ast_update {};
 
+    template<ast::match_mode>
     struct make_plus : ast_update {};
-
-    template<typename>
-    struct make_lazy : ast_update {};
-
-    template<typename>
-    struct make_possessive : ast_update {};
 
     struct make_alpha : ast_update {};
 

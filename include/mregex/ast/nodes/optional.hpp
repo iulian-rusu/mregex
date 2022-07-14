@@ -42,5 +42,9 @@ namespace meta::ast
             return Inner::match(begin, end, it, ctx, cont);
         }
     };
+
+    // An optional which doesn't backtrack is equivalent to a non-optional expression
+    template<typename Inner>
+    struct basic_optional<match_mode::possessive, Inner> : Inner {};
 }
 #endif //MREGEX_NODES_OPTIONAL_HPP

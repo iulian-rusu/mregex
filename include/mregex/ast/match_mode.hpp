@@ -5,6 +5,10 @@
 
 namespace meta::ast
 {
+    /**
+     * Enumerator which lists the possible match modes
+     * for various regex quantifiers.
+     */
     enum class match_mode : std::int8_t
     {
         greedy = 0,

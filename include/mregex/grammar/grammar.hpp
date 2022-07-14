@@ -587,7 +587,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::action_mod<symbol::make_star>
+                    symbol::action_mod<symbol::make_star<ast::match_mode::greedy>>
                 >;
     };
 
@@ -598,7 +598,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::action_mod<symbol::make_plus>
+                    symbol::action_mod<symbol::make_plus<ast::match_mode::greedy>>
                 >;
     };
 
@@ -609,7 +609,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::action_mod<symbol::make_optional>
+                    symbol::action_mod<symbol::make_optional<ast::match_mode::greedy>>
                 >;
     };
 
@@ -657,11 +657,12 @@ namespace meta::grammar
     template<std::size_t N>
     struct rule<symbol::quantifier_value<N>, symbol::character<'}'>>
     {
+        using action = symbol::make_repetition<ast::match_mode::greedy, symbol::quantifier_value<N>, symbol::quantifier_value<N>>;
         using type =
                 stack
                 <
                     advance,
-                    symbol::action_mod<symbol::make_repetition<symbol::quantifier_value<N>, symbol::quantifier_value<N>>>
+                    symbol::action_mod<action>
                 >;
     };
 
@@ -689,36 +690,36 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::action_mod<symbol::make_repetition<A, B>>
+                    symbol::action_mod<symbol::make_repetition<ast::match_mode::greedy, A, B>>
                 >;
     };
 
-    template<typename Action>
-    struct rule<symbol::action_mod<Action>, symbol::character<'?'>>
+    template<template<ast::match_mode, typename...> typename Action, ast::match_mode Mode, typename... Inner>
+    struct rule<symbol::action_mod<Action<Mode, Inner ...>>, symbol::character<'?'>>
     {
         using type =
                 stack
                 <
                     advance,
-                    symbol::make_lazy<Action>
+                    Action<ast::match_mode::lazy, Inner ...>
                 >;
     };
 
-    template<typename Action>
-    struct rule<symbol::action_mod<Action>, symbol::character<'+'>>
+    template<template<ast::match_mode, typename...> typename Action, ast::match_mode Mode, typename... Inner>
+    struct rule<symbol::action_mod<Action<Mode, Inner ...>>, symbol::character<'+'>>
     {
         using type =
                 stack
                 <
                     advance,
-                    symbol::make_possessive<Action>
+                    Action<ast::match_mode::possessive, Inner ...>
                 >;
     };
 
-    template<typename Update, char C>
-    struct rule<symbol::action_mod<Update>, symbol::character<C>>
+    template<typename Action, char C>
+    struct rule<symbol::action_mod<Action>, symbol::character<C>>
     {
-        using type = Update;
+        using type = Action;
     };
 
     template<typename Update>
