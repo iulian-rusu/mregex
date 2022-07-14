@@ -80,7 +80,7 @@ namespace meta::ast
         requires (is_trivially_matchable_v<Inner> && std::bidirectional_iterator<Iter>)
         {
             Iter const start = it;
-            for (std::size_t matched = 0; it != end && matched < N; ++matched, ++it)
+            for (std::size_t matched = 0; matched != N && it != end; ++matched, ++it)
                 if (!Inner::match_one(it, ctx))
                     break;
             for (; it != start; --it)
@@ -94,10 +94,10 @@ namespace meta::ast
         -> match_result<Iter>
         requires (!is_trivially_matchable_v<Inner>)
         {
+            if (auto rest_match = cont(it))
+                return rest_match;
             if constexpr (N > 0)
             {
-                if (auto rest_match = cont(it))
-                    return rest_match;
                 auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
                     return lazy_match_rest<N - 1>(begin, end, new_it, ctx, cont);
                 };
@@ -105,7 +105,7 @@ namespace meta::ast
             }
             else
             {
-                return cont(it);
+                return {it, false};
             }
         }
 
@@ -118,12 +118,12 @@ namespace meta::ast
             {
                 if (auto rest_match = cont(it))
                     return rest_match;
-                if (it == end || matched == N)
+                if (matched == N || it == end)
                     break;
                 if (!Inner::match_one(it, ctx))
                     break;
             }
-            return cont(it);
+            return {it, false};
         }
 
         template<std::size_t N, std::forward_iterator Iter, typename Context, typename Continuation>
@@ -146,7 +146,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires is_trivially_matchable_v<Inner>
         {
-            for (std::size_t matched = 0; it != end && matched < N; ++matched, ++it)
+            for (std::size_t matched = 0; matched != N && it != end; ++matched, ++it)
                 if (!Inner::match_one(it, ctx))
                     break;
             return cont(it);
@@ -233,7 +233,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires (!std::random_access_iterator<Iter>)
         {
-            for (std::size_t matched = 0; matched < N; ++matched)
+            for (std::size_t matched = 0; matched != N; ++matched)
                 if (!Inner::match_one(it++, ctx))
                     return {it, false};
             return cont(it);
