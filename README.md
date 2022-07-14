@@ -11,9 +11,9 @@ The library offers the following features:
 an iterator compatible with `std::forward_iterator`
 * compile-time syntax checking
 * support for a large portion of the standard regex syntax:
-  * quantifiers (`*`, `?`, `+`, `{N,M}`)
+  * quantifiers (`*`, `?`, `+`, `{N,M}`), including lazy and possessive versions
   * alternations and sets
-  * capturing groups
+  * capturing groups, including named captures
   * backreferences
   * lookaheads
   * lookbehinds with arbitrary expressions (requires bidirectional iterators)
@@ -89,13 +89,13 @@ Below is a complete list of the supported syntax constructs:
 |         `{N}`         |                              match exactly `N` times                               |
 |        `{N,}`         |                              match at least `N` times                              |
 |        `{N,M}`        |                          match between `N` and `M` times                           |
-| `??`, `*?`, `{N,M}?`  |                               make quantifiers lazy                                |
-| `?+`, `*+`, `{N,M}+`  |                   make quantifiers possessive (non-backtracking)                   |
-|      `(?:expr)`       |                             make a non-capturing group                             |
+| `??`, `*?`, `{N,M}?`  |                    match as few characters as possible (lazily)                    |
+| `?+`, `*+`, `{N,M}+`  |                     match without backtracking (possessively)                      |
 |       `(expr)`        |                       capture the result of matching `expr`                        |
 |    `(?<name>expr)`    |                   capture by name the result of matching `expr`                    |
 |         `\N`          |                  backreference to the capturing group number `N`                   |
 |      `\k<name>`       |                      backreference to a named capturing group                      |
+|      `(?:expr)`       |                             make a non-capturing group                             |
 |      `(?=expr)`       |       (positive lookahead) test if `expr` will match from the current point        |
 |      `(?!expr)`       |            (negative lookahead) test the opposite of positive lookahead            |
 |      `(?<=expr)`      |  (positive lookbehind) test if `expr` would have matched before the current point  |
