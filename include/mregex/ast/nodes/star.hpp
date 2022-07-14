@@ -78,16 +78,16 @@ namespace meta::ast
         -> match_result<Iter>
         requires is_trivially_matchable_v<Inner>
         {
-            for (;; ++it)
+            while (true)
             {
                 if (auto rest_match = cont(it))
                     return rest_match;
                 if (it == end)
                     break;
-                if (!Inner::match_one(it, ctx))
+                if (!Inner::match_one(it++, ctx))
                     break;
             }
-            return cont(it);
+            return {it, false};
         }
     };
 }

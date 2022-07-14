@@ -123,7 +123,7 @@ namespace meta::ast
         -> match_result<Iter>
         {
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
-                return star<Inner>::match(begin, end, new_it, ctx, cont);
+                return basic_star<Lazy, Inner>::match(begin, end, new_it, ctx, cont);
             };
             return basic_exact_repetition<Lazy, N, Inner>::match(begin, end, it, ctx, continuation);
         }

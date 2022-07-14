@@ -21,7 +21,7 @@ namespace meta::ast
     using star = basic_star<false, Inner>;
 
     template<typename Inner>
-    using lazy_star = basic_star<false, Inner>;
+    using lazy_star = basic_star<true, Inner>;
 
     template<bool, typename>
     struct basic_plus;
