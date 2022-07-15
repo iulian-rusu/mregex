@@ -15,5 +15,5 @@ int main()
 
     auto match = my_regex::match(list);
     std::cout << "Log level: " << match.group<"level">() << '\n';
-    std::cout << "Message: " << match.group<"msg">() << '\n';
+    std::cout << "Message: '" << match.group<"msg">() << "'\n";
 }

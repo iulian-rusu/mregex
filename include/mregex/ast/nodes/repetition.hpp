@@ -131,13 +131,11 @@ namespace meta::ast
         -> match_result<Iter>
         requires (!is_trivially_matchable_v<Inner>)
         {
-            std::size_t matched = 0;
-            while (matched < N)
-            {
-                auto inner_match = Inner::match(begin, end, it, ctx, continuations<Iter>::epsilon);
-                it = inner_match.end;
-                ++matched;
-            }
+            for (std::size_t matched = 0; matched < N; ++matched)
+                if (auto inner_match = Inner::match(begin, end, it, ctx, continuations<Iter>::epsilon))
+                    it = inner_match.end;
+                else
+                    break;
             return cont(it);
         }
 
@@ -199,21 +197,21 @@ namespace meta::ast
         {
             if (distance_less_than<N>(it, end))
                 return {it, false};
-            if constexpr (flags_of<Context>::unroll)
+            if constexpr (flags_of<Context>::unroll && std::random_access_iterator<Iter>)
                 return unrolled_trivial_match(it, ctx, cont, std::make_index_sequence<N>{});
             else
                 return non_unrolled_trivial_match(it, ctx, cont);
         }
 
     private:
-        template<std::forward_iterator Iter, typename Context, typename Continuation, std::size_t... Indices>
+        template<std::random_access_iterator Iter, typename Context, typename Continuation, std::size_t... Indices>
         static constexpr auto unrolled_trivial_match(
                 Iter it, Context &ctx, Continuation &&cont,
                 std::index_sequence<Indices ...> &&
         ) noexcept -> match_result<Iter>
         {
-            if ((Inner::match_one(std::next(it, Indices), ctx) && ...))
-                return cont(std::next(it, N));
+            if ((Inner::match_one(it + Indices, ctx) && ...))
+                return cont(it + N);
             return {it, false};
         }
 

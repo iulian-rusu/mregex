@@ -93,6 +93,8 @@ namespace meta
     template<typename Name = symbol::unnamed>
     struct regex_capture
     {
+        regex_capture() = default;
+
         template<std::forward_iterator Iter>
         explicit regex_capture(regex_capture_view<Iter, Name> const &capture_view)
                 : captured{capture_view.begin(), capture_view.end()}
