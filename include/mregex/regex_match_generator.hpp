@@ -18,7 +18,7 @@ namespace meta
     {
         using ast_type = typename Context::ast_type;
         using iterator_type = typename Context::iterator_type;
-        using result_type = regex_result_view<ast_type, iterator_type>;
+        using result_type = typename Context::result_type;
         using continuation_category = continuations<iterator_type>;
 
         constexpr regex_match_generator(iterator_type start, iterator_type stop)

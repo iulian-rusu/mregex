@@ -4,7 +4,7 @@
 
 int main()
 {
-    // The regex matches words with 4 of 5 characters
+    // This regex matches words with 4 or 5 letters
     using my_regex = meta::regex<R"((?<!\w)\w{4,5}+(?!\w))">;
 
     std::string_view text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";

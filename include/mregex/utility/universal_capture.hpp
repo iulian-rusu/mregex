@@ -9,7 +9,7 @@ namespace meta
     /**
      * Wrapper class to handle perfect forwarding of lambda expression captures.
      */
-    template <typename T>
+    template<typename T>
     struct value_wrapper
     {
         using value_type = std::remove_reference_t<T>;

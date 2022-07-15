@@ -2,14 +2,14 @@
 #define MREGEX_REGEX_CONTEXT_HPP
 
 #include <mregex/utility/tuple_helpers.hpp>
-#include <mregex/regex_capture.hpp>
 #include <mregex/regex_flags.hpp>
+#include <mregex/regex_result.hpp>
 
 namespace meta
 {
     /**
      * Data structure that holds static information about the regex as well as
-     * match-time information like iterator types and captured contents.
+     * match-time information like captured contents.
      */
     template<std::forward_iterator Iter, typename AST, typename... Flags>
     struct regex_context
@@ -18,6 +18,8 @@ namespace meta
 
         using ast_type = AST;
         using iterator_type = Iter;
+        using result_type = regex_result_view<ast::capture_name_spec_t<ast_type>, iterator_type>;
+        using storage_type = typename result_type::storage_type;
 
         struct flags
         {
@@ -28,7 +30,7 @@ namespace meta
             static constexpr bool unroll = is_flag_enabled_v<flag::unroll, Flags ...>;
         };
 
-        regex_capture_view_storage<AST, Iter> captures{};
+        storage_type captures{};
 
         constexpr void clear() noexcept
         {

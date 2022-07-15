@@ -11,10 +11,10 @@ namespace meta
     /**
      * Class returned by all regex matching/searching functions.
      *
-     * @tparam AST      The abstract syntax tree of the regular expression
+     * @tparam NameSpec The metacontainer with the capture name specification
      * @tparam Storage  The storage type used to hold the captures
      */
-    template<typename AST, capture_storage Storage>
+    template<typename NameSpec, capture_storage Storage>
     struct basic_regex_result;
 
     /**
@@ -22,25 +22,26 @@ namespace meta
      * If the orginal input string expires before this result object,
      * the behavior is undefined.
      */
-    template<typename AST, std::forward_iterator Iter>
-    using regex_result_view = basic_regex_result<AST, regex_capture_view_storage<AST, Iter>>;
+    template<typename NameSpec, std::forward_iterator Iter>
+    using regex_result_view = basic_regex_result<NameSpec, regex_capture_view_storage<NameSpec, Iter>>;
 
     /**
      * Result that holds ownership of captured content.
      */
-    template<typename AST>
-    using regex_result = basic_regex_result<AST, regex_capture_storage<AST>>;
+    template<typename NameSpec>
+    using regex_result = basic_regex_result<NameSpec, regex_capture_storage<NameSpec>>;
 
-    template<typename AST, capture_storage Storage>
+    template<typename NameSpec, capture_storage Storage>
     struct basic_regex_result
     {
-        using capture_type = std::tuple_element_t<0, Storage>;
+        using storage_type = Storage;
+        using capture_type = std::tuple_element_t<0, storage_type>;
 
-        static constexpr std::size_t capture_count = AST::capture_count;
+        static constexpr std::size_t capture_count = std::tuple_size_v<storage_type> - 1;
 
         template<typename S>
         constexpr basic_regex_result(bool m, S &&s)
-        noexcept(std::is_nothrow_move_constructible_v<Storage>)
+        noexcept(std::is_nothrow_move_constructible_v<storage_type>)
                 : matched{m}, captures{std::forward<S>(s)}
         {}
 
@@ -71,7 +72,7 @@ namespace meta
             auto owning_captures = generate_tuple(captures, [](auto const &capture) {
                 return regex_capture{capture};
             });
-            return regex_result<AST>{matched, std::move(owning_captures)};
+            return regex_result<NameSpec>{matched, std::move(owning_captures)};
         }
 
         /**
@@ -83,7 +84,7 @@ namespace meta
          * @return      The capturing group
          */
         template<std::size_t ID>
-        [[nodiscard]] constexpr auto &group() & noexcept(is_nothrow_content_v<Storage>)
+        [[nodiscard]] constexpr auto &group() & noexcept(is_nothrow_content_v<storage_type>)
         {
             assert_valid_group<ID>();
             return std::get<ID>(captures);
@@ -98,9 +99,9 @@ namespace meta
          * @return      The capturing group
          */
         template<static_string Name>
-        [[nodiscard]] constexpr auto &group() & noexcept(is_nothrow_content_v<Storage>)
+        [[nodiscard]] constexpr auto &group() & noexcept(is_nothrow_content_v<storage_type>)
         {
-            return std::get<named_capture_type_for<Storage, symbol::name<Name>>>(captures);
+            return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(captures);
         }
 
         /**
@@ -110,29 +111,29 @@ namespace meta
          */
 
         template<std::size_t ID>
-        [[nodiscard]] constexpr auto const &group() const & noexcept(is_nothrow_content_v<Storage>)
+        [[nodiscard]] constexpr auto const &group() const & noexcept(is_nothrow_content_v<storage_type>)
         {
             assert_valid_group<ID>();
             return std::get<ID>(captures);
         }
 
         template<std::size_t ID>
-        [[nodiscard]] constexpr auto &&group() && noexcept(is_nothrow_content_v<Storage>)
+        [[nodiscard]] constexpr auto &&group() && noexcept(is_nothrow_content_v<storage_type>)
         {
             assert_valid_group<ID>();
             return std::get<ID>(captures);
         }
 
         template<static_string Name>
-        [[nodiscard]] constexpr auto const &group() const & noexcept(is_nothrow_content_v<Storage>)
+        [[nodiscard]] constexpr auto const &group() const & noexcept(is_nothrow_content_v<storage_type>)
         {
-            return std::get<named_capture_type_for<Storage, symbol::name<Name>>>(captures);
+            return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(captures);
         }
 
         template<static_string Name>
         [[nodiscard]] constexpr auto &&group() && noexcept(is_nothrow_content_v<Storage>)
         {
-            return std::get<named_capture_type_for<Storage, symbol::name<Name>>>(captures);
+            return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(captures);
         }
 
         /**
@@ -140,27 +141,27 @@ namespace meta
          * Use the group() method for extracting captures.
          */
         template<std::size_t ID>
-        constexpr decltype(auto) get() noexcept(is_nothrow_content_v<Storage>)
+        constexpr decltype(auto) get() noexcept(is_nothrow_content_v<storage_type>)
         {
             assert_valid_group<ID + 1>();
             return std::get<ID + 1>(captures);
         }
 
         template<std::size_t ID>
-        constexpr decltype(auto) get() const noexcept(is_nothrow_content_v<Storage>)
+        constexpr decltype(auto) get() const noexcept(is_nothrow_content_v<storage_type>)
         {
             assert_valid_group<ID + 1>();
             return std::get<ID + 1>(captures);
         }
 
-        constexpr explicit operator bool() const noexcept
-        {
-            return matched;
-        }
-
         constexpr bool operator==(bool b) const noexcept
         {
             return matched == b;
+        }
+
+        constexpr explicit operator bool() const noexcept
+        {
+            return matched;
         }
 
         explicit(false) operator std::string_view() const noexcept
@@ -176,7 +177,7 @@ namespace meta
 
     private:
         bool matched;
-        Storage captures;
+        storage_type captures;
 
         template<std::size_t ID>
         static constexpr void assert_valid_group() noexcept
@@ -186,19 +187,22 @@ namespace meta
     };
 }
 
-template<typename AST, typename Storage>
-std::ostream &operator<<(std::ostream &os, meta::basic_regex_result<AST, Storage> const &result)
+template<typename NameSpec, typename Storage>
+std::ostream &operator<<(std::ostream &os, meta::basic_regex_result<NameSpec, Storage> const &result)
 {
     return os << result.template group<0>();
 }
 
 namespace std
 {
-    template <typename AST, typename Storage>
-    struct tuple_size<meta::basic_regex_result<AST, Storage>> : integral_constant<size_t, AST::capture_count> {};
+    template<typename NameSpec, typename Storage>
+    struct tuple_size<meta::basic_regex_result<NameSpec, Storage>>
+    {
+        static constexpr size_t value = meta::basic_regex_result<NameSpec, Storage>::capture_count;
+    };
 
-    template <size_t ID, typename AST, typename Storage>
-    struct tuple_element<ID, meta::basic_regex_result<AST, Storage>>
+    template<size_t ID, typename NameSpec, typename Storage>
+    struct tuple_element<ID, meta::basic_regex_result<NameSpec, Storage>>
     {
         using type = tuple_element_t<ID + 1, Storage>;
     };

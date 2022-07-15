@@ -194,8 +194,8 @@ namespace meta
         using type = std::tuple<regex_capture_view<Iter>, regex_capture_view<Iter, Names> ...>;
     };
 
-    template<typename AST, std::forward_iterator Iter>
-    using regex_capture_view_storage = typename regex_capture_view_allocator<ast::capture_name_spec_t<AST>, Iter>::type;
+    template<typename NameSpec, std::forward_iterator Iter>
+    using regex_capture_view_storage = typename regex_capture_view_allocator<NameSpec, Iter>::type;
 
     /**
      * Defines a std::tuple used to store memory-owning regex captures.
@@ -209,8 +209,8 @@ namespace meta
         using type = std::tuple<regex_capture<>, regex_capture<Names> ...>;
     };
 
-    template<typename AST>
-    using regex_capture_storage = typename regex_capture_allocator<ast::capture_name_spec_t<AST>>::type;
+    template<typename NameSpec>
+    using regex_capture_storage = typename regex_capture_allocator<NameSpec>::type;
 
     /**
      * Type trait that checks if the given capture storage type may throw
@@ -225,7 +225,7 @@ namespace meta
      * @tparam Capture  The capture type to be renamed
      * @tparam Name     The new name for the capture type
      */
-    template< typename Capture, typename Name>
+    template<typename Capture, typename Name>
     struct rename_capture;
 
     template<typename Capture, typename Name>
