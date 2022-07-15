@@ -58,7 +58,7 @@ namespace meta::ast
         ) noexcept -> match_result<Iter>
         {
             if (First::match_one(it, ctx) && (Rest::match_one(it + Indices, ctx) && ...))
-                return cont(std::next(it, size));
+                return cont(it + size);
             return {it, false};
         }
 

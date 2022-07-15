@@ -21,15 +21,15 @@ namespace meta
         using result_type = regex_result_view<ast_type, iterator_type>;
         using continuation_category = continuations<iterator_type>;
 
-        constexpr regex_match_generator(iterator_type start, iterator_type stop, iterator_type current)
-                : begin_iter{start}, end_iter{stop}, current_iter{current}, active{true}
+        constexpr regex_match_generator(iterator_type start, iterator_type stop)
+                : begin_iter{start}, end_iter{stop}, current_iter{start}, active{true}
         {}
 
         [[nodiscard]] constexpr result_type operator()() noexcept
         {
-            Context ctx{};
             while (active)
             {
+                Context ctx{};
                 auto res = ast_type::match(begin_iter, end_iter, current_iter, ctx, continuation_category::epsilon);
                 if (res.matched && res.end != current_iter)
                 {
@@ -39,15 +39,9 @@ namespace meta
                     active = current_iter != end_iter;
                     return result_type{true, std::move(ctx.captures)};
                 }
-
-                active = current_iter != end_iter;
-                if (active)
-                {
-                    ++current_iter;
-                    ctx.clear();
-                }
+                active = current_iter++ != end_iter;
             }
-            return result_type{false, std::move(ctx.captures)};
+            return result_type{false, Context{}.captures};
         }
 
     private:

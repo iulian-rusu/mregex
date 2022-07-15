@@ -19,11 +19,11 @@ namespace meta
     /**
      * Concept used to constrain a type that saves the content captured by regex groups.
      */
-    template<typename R>
-    concept captured_content = std::ranges::forward_range<R> && requires(R range)
+    template<typename C>
+    concept captured_content = std::ranges::forward_range<C> && requires(C capture)
     {
-        { range.content() } -> char_range;
-        { range.length() } -> std::convertible_to<std::size_t>;
+        { capture.content() } -> char_range;
+        { capture.length() } -> std::convertible_to<std::size_t>;
     };
 
     /**

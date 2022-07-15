@@ -34,6 +34,8 @@ namespace meta
     template<typename AST, capture_storage Storage>
     struct basic_regex_result
     {
+        using capture_type = std::tuple_element_t<0, Storage>;
+
         static constexpr std::size_t capture_count = AST::capture_count;
 
         template<typename S>
@@ -41,16 +43,6 @@ namespace meta
         noexcept(std::is_nothrow_move_constructible_v<Storage>)
                 : matched{m}, captures{std::forward<S>(s)}
         {}
-
-        constexpr explicit operator bool() const noexcept
-        {
-            return matched;
-        }
-
-        constexpr bool operator==(bool b) const noexcept
-        {
-            return matched == b;
-        }
 
         [[nodiscard]] constexpr std::size_t length() const noexcept
         {
@@ -74,7 +66,7 @@ namespace meta
          * @return  A new regex_result object that holds ownership of captures
          */
         [[nodiscard]] auto own() const
-        requires is_capture_view_v<std::tuple_element_t<0, Storage>>
+        requires is_capture_view_v<capture_type>
         {
             auto owning_captures = generate_tuple(captures, [](auto const &capture) {
                 return regex_capture{capture};
@@ -159,6 +151,27 @@ namespace meta
         {
             assert_valid_group<ID + 1>();
             return std::get<ID + 1>(captures);
+        }
+
+        constexpr explicit operator bool() const noexcept
+        {
+            return matched;
+        }
+
+        constexpr bool operator==(bool b) const noexcept
+        {
+            return matched == b;
+        }
+
+        explicit(false) operator std::string_view() const noexcept
+        requires std::is_convertible_v<capture_type, std::string_view>
+        {
+            return group<0>();
+        }
+
+        explicit(false) operator std::string() const noexcept
+        {
+            return group<0>();
         }
 
     private:

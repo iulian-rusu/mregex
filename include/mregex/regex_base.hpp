@@ -65,25 +65,24 @@ namespace meta
          *
          * @param begin An iterator pointing to the start of the sequence
          * @param end   An iterator pointing to the end of the sequence
-         * @param from  The iterator to start searching from
          * @return      An object that holds the results of the search
          */
         template<std::forward_iterator Iter>
-        [[nodiscard]] static constexpr auto search(Iter const begin, Iter const end, Iter const from) noexcept
+        [[nodiscard]] static constexpr auto search(Iter const begin, Iter const end) noexcept
         {
             using context_type = regex_context<Iter, ast_type, Flags ...>;
             using result_type = regex_result_view<ast_type, Iter>;
 
             context_type ctx{};
-            for (Iter current = from;; ++current)
+            for (Iter it = begin;; ++it)
             {
-                if (auto match = ast_type::match(begin, end, current, ctx, continuations<Iter>::epsilon))
+                if (auto match = ast_type::match(begin, end, it, ctx, continuations<Iter>::epsilon))
                 {
-                    std::get<0>(ctx.captures) = regex_capture_view<Iter>{current, match.end};
+                    std::get<0>(ctx.captures) = regex_capture_view<Iter>{it, match.end};
                     return result_type{true, std::move(ctx.captures)};
                 }
 
-                if (current == end)
+                if (it == end)
                     break;
                 ctx.clear();
             }
@@ -91,7 +90,24 @@ namespace meta
         }
 
         /**
-         * Creates a range which contains all non-zero length matches of the
+         * Creates a lazy generator that yields non-empty matches in the given
+         * input sequence. The supplied iterator pair must form a valid range,
+         * otherwise the behavior is undefined.
+         *
+         * @param begin An iterator pointing to the start of the sequence
+         * @param end   An iterator pointing to the end of the sequence
+         * @return      A functor that generates regex matches
+         */
+        template<std::forward_iterator Iter>
+        [[nodiscard]] static constexpr auto generator(Iter const begin, Iter const end) noexcept
+        {
+            using context_type = regex_context<Iter, ast_type, Flags ...>;
+
+            return regex_match_generator<context_type>{begin, end};
+        }
+
+        /**
+         * Creates a range which contains all non-empty length matches of the
          * pattern inside the input sequence. The supplied iterator pair must
          * form a valid range, otherwise the behavior is undefined.
          *
@@ -102,10 +118,7 @@ namespace meta
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto range(Iter const begin, Iter const end) noexcept
         {
-            using context_type = regex_context<Iter, ast_type, Flags ...>;
-
-            regex_match_generator<context_type> generator{begin, end, begin};
-            return input_range_adapter{generator};
+            return input_range_adapter{generator(begin, end)};
         }
 
         /**
@@ -135,20 +148,46 @@ namespace meta
 
         [[nodiscard]] static constexpr auto search(std::string_view input) noexcept
         {
-            return search(std::cbegin(input), std::cend(input), std::cbegin(input));
+            return search(std::cbegin(input), std::cend(input));
         }
 
         template<char_range R>
         [[nodiscard]] static constexpr auto search(R const &input) noexcept
         {
-            return search(std::cbegin(input), std::cend(input), std::cbegin(input));
+            return search(std::cbegin(input), std::cend(input));
         }
 
         template<char_range R>
         [[nodiscard]] static constexpr auto search(R &&input) noexcept
         requires is_expiring_memory_owner_v<R &&>
         {
-            return search(std::cbegin(input), std::cend(input), std::cbegin(input)).own();
+            return search(std::cbegin(input), std::cend(input)).own();
+        }
+
+        [[nodiscard]] static constexpr auto generator(std::string_view input) noexcept
+        {
+            return generator(std::cbegin(input), std::cend(input));
+        }
+
+        template<char_range R>
+        [[nodiscard]] static constexpr auto generator(R const &input) noexcept
+        {
+            return generator(std::cbegin(input), std::cend(input));
+        }
+
+        template<char_range R>
+        [[nodiscard]] static constexpr auto generator(R &&input) noexcept
+        requires is_expiring_memory_owner_v<R &&>
+        {
+            using iterator_type = decltype(std::cbegin(input));
+            using context_type = regex_context<iterator_type, ast_type, Flags ...>;
+
+            auto begin = std::cbegin(input);
+            auto end = std::cend(input);
+            regex_match_generator<context_type> generator{begin, end};
+            return [=, cap = universal_capture{std::forward<R>(input)}]() mutable {
+                return generator();
+            };
         }
 
         [[nodiscard]] static constexpr auto range(std::string_view input) noexcept
@@ -159,17 +198,7 @@ namespace meta
         template<char_range R>
         [[nodiscard]] static constexpr auto range(R &&input) noexcept
         {
-            using iterator_type = decltype(std::cbegin(input));
-            using context_type = regex_context<iterator_type, ast_type, Flags ...>;
-
-            auto begin = std::cbegin(input);
-            auto end = std::cend(input);
-            regex_match_generator<context_type> generator{begin, end, begin};
-            return input_range_adapter{
-                [=, cap = universal_capture{std::forward<R>(input)}]() mutable {
-                    return generator();
-                }
-            };
+            return input_range_adapter{generator(std::forward<R>(input))};
         }
     };
 }

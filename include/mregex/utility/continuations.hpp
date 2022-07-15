@@ -18,7 +18,7 @@ namespace meta
         };
 
         static constexpr auto equals = [](Iter target) noexcept {
-            return [=](Iter it) -> ast::match_result<Iter> {
+            return [=](Iter it) noexcept -> ast::match_result<Iter> {
                 return {it, it == target};
             };
         };
