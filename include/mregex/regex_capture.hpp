@@ -12,26 +12,12 @@ namespace meta
     /**
      * Class that holds a view into the captured content of a regex group.
      *
-     * @tparam ID   The identifier of the capturing group
      * @tparam Iter The forward iterator type used to acces the input sequence
      * @tparam Name The name of the capturing group (optional)
      */
     template<std::forward_iterator Iter, typename Name = symbol::unnamed>
     struct regex_capture_view
     {
-        /**
-         *  Helper type alias to decide which string type can be constructed from the given
-         *  iterator type. Unfortunatelly, std::string_view is only constructible from
-         *  contiguous iterator categories.
-         */
-        using string_type =
-                std::conditional_t
-                <
-                    std::contiguous_iterator<Iter>,
-                    std::string_view,
-                    std::string
-                >;
-
         constexpr regex_capture_view() = default;
 
         constexpr explicit regex_capture_view(Iter start, Iter stop) noexcept
@@ -58,9 +44,24 @@ namespace meta
             return end_iter;
         }
 
-        [[nodiscard]] constexpr auto content() const noexcept
+        [[nodiscard]] constexpr auto content() const noexcept(std::contiguous_iterator<Iter>)
         {
-            return string_type{begin_iter, end_iter};
+            if constexpr (std::contiguous_iterator<Iter>)
+                return std::string_view{begin_iter, end_iter};
+            else
+                return std::string{begin_iter, end_iter};
+        }
+
+        [[nodiscard]] constexpr auto &operator[](std::size_t index)
+        requires std::random_access_iterator<Iter>
+        {
+            return *(begin_iter + index);
+        }
+
+        [[nodiscard]] constexpr auto const &operator[](std::size_t index) const
+        requires std::random_access_iterator<Iter>
+        {
+            return *(begin_iter + index);
         }
 
         constexpr explicit operator bool() const noexcept
@@ -68,13 +69,8 @@ namespace meta
             return length() > 0;
         }
 
-        explicit(false) operator std::string_view() const noexcept
+        constexpr explicit(false) operator std::string_view() const noexcept
         requires std::contiguous_iterator<Iter>
-        {
-            return {begin_iter, end_iter};
-        }
-
-        explicit(false) operator std::string() const noexcept
         {
             return {begin_iter, end_iter};
         }
@@ -87,7 +83,6 @@ namespace meta
     /**
      * Class that owns a copy of the captured content of a regex group.
      *
-     * @tparam ID   The identifier of the capturing group
      * @tparam Name The name of the capturing group (optional)
      */
     template<typename Name = symbol::unnamed>
@@ -112,7 +107,7 @@ namespace meta
 
         [[nodiscard]] auto begin() const noexcept
         {
-            return captured.begin();
+            return captured.cbegin();
         }
 
         [[nodiscard]] auto end() noexcept
@@ -122,7 +117,7 @@ namespace meta
 
         [[nodiscard]] auto end() const noexcept
         {
-            return captured.end();
+            return captured.cend();
         }
 
         [[nodiscard]] auto &content() & noexcept
@@ -158,11 +153,6 @@ namespace meta
         explicit(false) operator std::string_view() const noexcept
         {
             return captured;
-        }
-
-        explicit(false) operator std::string() const noexcept
-        {
-            return content();
         }
 
     private:
@@ -211,13 +201,6 @@ namespace meta
 
     template<typename NameSpec>
     using regex_capture_storage = typename regex_capture_allocator<NameSpec>::type;
-
-    /**
-     * Type trait that checks if the given capture storage type may throw
-     * exceptions when accessing contents.
-     */
-    template<capture_storage Storage>
-    inline constexpr bool is_nothrow_content_v = noexcept(std::get<0>(std::declval<Storage>()).content());
 
     /**
      * Metafunction used to rename a given regex capture type using pattern matching.

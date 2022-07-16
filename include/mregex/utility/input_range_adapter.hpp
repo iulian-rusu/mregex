@@ -36,7 +36,7 @@ namespace meta
             constexpr iterator() noexcept = default;
 
             constexpr iterator(input_range_adapter<Gen> *ptr) noexcept
-                : gen_ptr{ptr}
+                    : gen_ptr{ptr}
             {}
 
             constexpr explicit operator bool() const noexcept

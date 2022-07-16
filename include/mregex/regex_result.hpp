@@ -11,7 +11,7 @@ namespace meta
     /**
      * Class returned by all regex matching/searching functions.
      *
-     * @tparam NameSpec The metacontainer with the capture name specification
+     * @tparam NameSpec The type that contains the capture name specification
      * @tparam Storage  The storage type used to hold the captures
      */
     template<typename NameSpec, capture_storage Storage>
@@ -84,7 +84,7 @@ namespace meta
          * @return      The capturing group
          */
         template<std::size_t ID>
-        [[nodiscard]] constexpr auto &group() & noexcept(is_nothrow_content_v<storage_type>)
+        [[nodiscard]] constexpr auto &group() & noexcept
         {
             assert_valid_group<ID>();
             return std::get<ID>(captures);
@@ -99,7 +99,7 @@ namespace meta
          * @return      The capturing group
          */
         template<static_string Name>
-        [[nodiscard]] constexpr auto &group() & noexcept(is_nothrow_content_v<storage_type>)
+        [[nodiscard]] constexpr auto &group() & noexcept
         {
             return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(captures);
         }
@@ -111,27 +111,27 @@ namespace meta
          */
 
         template<std::size_t ID>
-        [[nodiscard]] constexpr auto const &group() const & noexcept(is_nothrow_content_v<storage_type>)
+        [[nodiscard]] constexpr auto const &group() const & noexcept
         {
             assert_valid_group<ID>();
             return std::get<ID>(captures);
         }
 
         template<std::size_t ID>
-        [[nodiscard]] constexpr auto &&group() && noexcept(is_nothrow_content_v<storage_type>)
+        [[nodiscard]] constexpr auto &&group() && noexcept
         {
             assert_valid_group<ID>();
             return std::get<ID>(captures);
         }
 
         template<static_string Name>
-        [[nodiscard]] constexpr auto const &group() const & noexcept(is_nothrow_content_v<storage_type>)
+        [[nodiscard]] constexpr auto const &group() const & noexcept
         {
             return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(captures);
         }
 
         template<static_string Name>
-        [[nodiscard]] constexpr auto &&group() && noexcept(is_nothrow_content_v<Storage>)
+        [[nodiscard]] constexpr auto &&group() && noexcept
         {
             return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(captures);
         }
@@ -141,14 +141,14 @@ namespace meta
          * Use the group() method for extracting captures.
          */
         template<std::size_t ID>
-        constexpr decltype(auto) get() noexcept(is_nothrow_content_v<storage_type>)
+        constexpr decltype(auto) get() noexcept
         {
             assert_valid_group<ID + 1>();
             return std::get<ID + 1>(captures);
         }
 
         template<std::size_t ID>
-        constexpr decltype(auto) get() const noexcept(is_nothrow_content_v<storage_type>)
+        constexpr decltype(auto) get() const noexcept
         {
             assert_valid_group<ID + 1>();
             return std::get<ID + 1>(captures);
@@ -164,15 +164,10 @@ namespace meta
             return matched;
         }
 
-        explicit(false) operator std::string_view() const noexcept
+        constexpr explicit(false) operator std::string_view() const noexcept
         requires std::is_convertible_v<capture_type, std::string_view>
         {
-            return group<0>();
-        }
-
-        explicit(false) operator std::string() const noexcept
-        {
-            return group<0>();
+            return static_cast<std::string_view>(group<0>());
         }
 
     private:

@@ -24,6 +24,7 @@ namespace meta
     {
         { capture.content() } -> char_range;
         { capture.length() } -> std::convertible_to<std::size_t>;
+        static_cast<bool>(capture);
     };
 
     /**
@@ -37,7 +38,7 @@ namespace meta
 
     /**
      * Concept used to constrain a functor type that can be invoked to generate
-     * values explicitly convertible to bool.
+     * values convertible to bool.
      */
     template<typename G>
     concept bool_testable_generator = requires(G gen)

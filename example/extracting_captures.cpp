@@ -12,7 +12,7 @@ int main()
     {
         // The group<>() method returns a special object that contains the captured content
         auto name = match.group<1>();
-        // Regex captures are also implicitly convertible to a std::string or std::string_view
+        // Regex captures are also implicitly convertible to std::string_view (when using contiguous iterators)
         std::string_view age = match.group<2>();
         // Named capturing groups can be accessed either by index or by their name
         auto country = match.group<"country_name">();

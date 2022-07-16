@@ -177,15 +177,15 @@ namespace meta
 
         template<char_range R>
         [[nodiscard]] static constexpr auto generator(R &&input) noexcept
-        requires is_expiring_memory_owner_v<R &&>
         {
             using iterator_type = decltype(std::cbegin(input));
             using context_type = regex_context<iterator_type, ast_type, Flags ...>;
 
-            auto begin = std::cbegin(input);
-            auto end = std::cend(input);
+            auto const captured = universal_capture{std::forward<R>(input)};
+            auto begin = std::cbegin(captured.get());
+            auto end = std::cend(captured.get());
             regex_match_generator<context_type> generator{begin, end};
-            return [=, cap = universal_capture{std::forward<R>(input)}]() mutable {
+            return [=, cap = std::move(captured)]() mutable {
                 return generator();
             };
         }
