@@ -4,7 +4,6 @@
 #include <mregex/ast/ast.hpp>
 #include <mregex/utility/continuations.hpp>
 #include <mregex/utility/input_range_adapter.hpp>
-#include <mregex/utility/universal_capture.hpp>
 #include <mregex/regex_context.hpp>
 #include <mregex/regex_match_generator.hpp>
 #include <mregex/regex_result.hpp>
@@ -70,23 +69,13 @@ namespace meta
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto search(Iter const begin, Iter const end) noexcept
         {
+            using search_ast_type = ast::make_search_ast<ast_type>;
             using context_type = regex_context<Iter, ast_type, Flags ...>;
             using result_type = typename context_type::result_type;
 
             context_type ctx{};
-            for (Iter it = begin;; ++it)
-            {
-                if (auto match = ast_type::match(begin, end, it, ctx, continuations<Iter>::epsilon))
-                {
-                    std::get<0>(ctx.captures) = regex_capture_view<Iter>{it, match.end};
-                    return result_type{true, std::move(ctx.captures)};
-                }
-
-                if (it == end)
-                    break;
-                ctx.clear();
-            }
-            return result_type{false, std::move(ctx.captures)};
+            auto res = search_ast_type::match(begin, end, begin, ctx, continuations<Iter>::epsilon);
+            return result_type{res.matched, std::move(ctx.captures)};
         }
 
         /**
@@ -175,30 +164,15 @@ namespace meta
             return generator(std::cbegin(input), std::cend(input));
         }
 
-        template<char_range R>
-        [[nodiscard]] static constexpr auto generator(R &&input) noexcept
-        {
-            using iterator_type = decltype(std::cbegin(input));
-            using context_type = regex_context<iterator_type, ast_type, Flags ...>;
-
-            auto const captured = universal_capture{std::forward<R>(input)};
-            auto begin = std::cbegin(captured.get());
-            auto end = std::cend(captured.get());
-            regex_match_generator<context_type> generator{begin, end};
-            return [=, cap = std::move(captured)]() mutable {
-                return generator();
-            };
-        }
-
         [[nodiscard]] static constexpr auto range(std::string_view input) noexcept
         {
             return range(std::cbegin(input), std::cend(input));
         }
 
         template<char_range R>
-        [[nodiscard]] static constexpr auto range(R &&input) noexcept
+        [[nodiscard]] static constexpr auto range(R const &input) noexcept
         {
-            return input_range_adapter{generator(std::forward<R>(input))};
+            return input_range_adapter{generator(input)};
         }
     };
 }

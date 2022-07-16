@@ -9,7 +9,7 @@ namespace meta
 {
     /**
      * A functor that searches through the range given by an iterator pair and
-     * yields all non-empty matches of the regex.
+     * yields all regex matches. At most one empty match will be generated.
      *
      * @tparam Context  The matching context formed from the AST of the regular expression
      */
@@ -17,8 +17,10 @@ namespace meta
     struct regex_match_generator
     {
         using ast_type = typename Context::ast_type;
+        using search_ast_type = ast::make_search_ast<ast_type>;
         using iterator_type = typename Context::iterator_type;
         using result_type = typename Context::result_type;
+        using capture_type = typename result_type::capture_type;
         using continuation_category = continuations<iterator_type>;
 
         constexpr regex_match_generator(iterator_type start, iterator_type stop)
@@ -27,19 +29,17 @@ namespace meta
 
         [[nodiscard]] constexpr result_type operator()() noexcept
         {
-            while (active)
+            if (active)
             {
                 Context ctx{};
-                auto res = ast_type::match(begin_iter, end_iter, current_iter, ctx, continuation_category::epsilon);
-                if (res.matched && res.end != current_iter)
+                auto res = search_ast_type::match(begin_iter, end_iter, current_iter, ctx, continuation_category::epsilon);
+                if (res.matched)
                 {
-                    auto match_begin = current_iter;
-                    std::get<0>(ctx.captures) = regex_capture_view<iterator_type>{match_begin, res.end};
+                    active = std::get<0>(ctx.captures).length() > 0;
                     current_iter = res.end;
-                    active = current_iter != end_iter;
                     return result_type{true, std::move(ctx.captures)};
                 }
-                active = current_iter++ != end_iter;
+                active = false;
             }
             return result_type{false, Context{}.captures};
         }

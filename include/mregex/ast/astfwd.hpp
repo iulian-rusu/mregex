@@ -82,6 +82,8 @@ namespace meta::ast
 
     struct wildcard;
 
+    struct ignore_prefix;
+
     template<char, char>
     struct range;
 

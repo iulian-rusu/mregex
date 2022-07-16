@@ -5,6 +5,10 @@
 
 namespace meta::ast
 {
+    /**
+     * Terminals are AST nodes which cannot contain arbitrary inner subexpressions.
+     * Therefore, they always have 0 inner captures.
+     */
     struct terminal
     {
         static constexpr std::size_t capture_count = 0;
