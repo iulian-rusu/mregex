@@ -2,17 +2,10 @@
 #define MREGEX_META_HELPERS_HPP
 
 #include <type_traits>
-#include <mregex/utility/static_string.hpp>
 #include <mregex/symbol.hpp>
 
 namespace meta
 {
-    /**
-     * Metafunction that maps a sequence of values to types.
-     */
-    template<std::size_t, typename T>
-    using map_sequence = T;
-
     /**
      * Metafunction used to detect if a type is present inside a type pack.
      */

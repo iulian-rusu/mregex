@@ -53,8 +53,8 @@ namespace meta::ast
     private:
         template<std::random_access_iterator Iter, typename Context, typename Continuation, std::size_t Index, std::size_t... Indices>
         static constexpr auto unrolled_trivial_match(
-                Iter it, Context &ctx, Continuation &&cont,
-                std::index_sequence<Index, Indices ...> &&
+            Iter it, Context &ctx, Continuation &&cont,
+            std::index_sequence<Index, Indices ...> &&
         ) noexcept -> match_result<Iter>
         {
             if (First::match_one(it, ctx) && (Rest::match_one(it + Indices, ctx) && ...))

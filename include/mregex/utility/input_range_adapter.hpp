@@ -20,9 +20,9 @@ namespace meta
         using value_type = std::remove_reference_t<result_type>;
 
         template<typename G>
-        constexpr explicit input_range_adapter(G &&g)
+        constexpr explicit input_range_adapter(G &&generator)
         noexcept(std::is_nothrow_move_constructible_v<Gen> && noexcept(Gen::operator()()))
-                : Gen{std::forward<G>(g)}, current_result{Gen::operator()()}
+            : Gen{std::forward<G>(generator)}, current_result{Gen::operator()()}
         {}
 
         struct iterator
@@ -36,7 +36,7 @@ namespace meta
             constexpr iterator() noexcept = default;
 
             constexpr iterator(input_range_adapter<Gen> *ptr) noexcept
-                    : gen_ptr{ptr}
+                : gen_ptr{ptr}
             {}
 
             constexpr explicit operator bool() const noexcept

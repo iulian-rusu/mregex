@@ -19,9 +19,9 @@ namespace meta::ast
             return matched;
         }
 
-        constexpr bool operator==(bool b) const noexcept
+        constexpr bool operator==(bool value) const noexcept
         {
-            return matched == b;
+            return matched == value;
         }
     };
 }

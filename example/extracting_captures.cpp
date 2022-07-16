@@ -7,8 +7,7 @@ int main()
     using my_regex = meta::regex<R"(Name: (\w+), age: (\d+), country: (?<country_name>\w+);)">;
 
     std::string_view str = "Name: John, age: 42, country: Australia;";
-    auto match = my_regex::match(str);
-    if (match)
+    if (auto match = my_regex::match(str))
     {
         // The group<>() method returns a special object that contains the captured content
         auto name = match.group<1>();

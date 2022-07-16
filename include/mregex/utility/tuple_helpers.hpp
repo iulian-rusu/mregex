@@ -26,15 +26,15 @@ namespace meta
      *
      * @param tuple     The original tuple
      * @param func      The callable that generates elements for the new tuple
-     * @return          A new std::tuple with elements returned by mapper
+     * @return          A new std::tuple that contains the generated elements
      */
     template<typename Tuple, typename Func>
     constexpr auto generate_tuple(Tuple const &tuple, Func &&func)
     {
         return detail::generate_tuple(
-                tuple,
-                std::forward<Func>(func),
-                std::make_index_sequence<std::tuple_size_v<Tuple>>{}
+            tuple,
+            std::forward<Func>(func),
+            std::make_index_sequence<std::tuple_size_v<Tuple>>{}
         );
     }
 
@@ -48,9 +48,9 @@ namespace meta
     constexpr void iterate_tuple(Tuple &&tuple, Func &&func)
     {
         detail::iterate_tuple(
-                std::forward<Tuple>(tuple),
-                std::forward<Func>(func),
-                std::make_index_sequence<std::tuple_size_v<std::remove_reference_t<Tuple>>>{}
+            std::forward<Tuple>(tuple),
+            std::forward<Func>(func),
+            std::make_index_sequence<std::tuple_size_v<std::remove_reference_t<Tuple>>>{}
         );
     }
 }

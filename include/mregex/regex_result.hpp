@@ -40,10 +40,15 @@ namespace meta
         static constexpr std::size_t capture_count = std::tuple_size_v<storage_type> - 1;
 
         template<typename S>
-        constexpr basic_regex_result(bool m, S &&s)
+        constexpr basic_regex_result(bool matched, S &&captures)
         noexcept(std::is_nothrow_move_constructible_v<storage_type>)
-                : matched{m}, captures{std::forward<S>(s)}
+            : matched{matched}, captures{std::forward<S>(captures)}
         {}
+
+        [[nodiscard]] constexpr bool status() const noexcept
+        {
+            return matched;
+        }
 
         [[nodiscard]] constexpr std::size_t length() const noexcept
         {
@@ -154,9 +159,9 @@ namespace meta
             return std::get<ID + 1>(captures);
         }
 
-        constexpr bool operator==(bool b) const noexcept
+        constexpr bool operator==(bool value) const noexcept
         {
-            return matched == b;
+            return matched == value;
         }
 
         constexpr explicit operator bool() const noexcept

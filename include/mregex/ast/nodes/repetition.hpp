@@ -80,7 +80,7 @@ namespace meta::ast
         requires (is_trivially_matchable_v<Inner> && std::bidirectional_iterator<Iter>)
         {
             Iter const start = it;
-            for (std::size_t matched = 0; matched != N && it != end; ++matched, ++it)
+            for (std::size_t match_count = 0; match_count != N && it != end; ++match_count, ++it)
                 if (!Inner::match_one(it, ctx))
                     break;
             for (; it != start; --it)
@@ -114,11 +114,11 @@ namespace meta::ast
         -> match_result<Iter>
         requires is_trivially_matchable_v<Inner>
         {
-            for (std::size_t matched = 0;; ++matched, ++it)
+            for (std::size_t match_count = 0;; ++match_count, ++it)
             {
                 if (auto rest_match = cont(it))
                     return rest_match;
-                if (matched == N || it == end)
+                if (match_count == N || it == end)
                     break;
                 if (!Inner::match_one(it, ctx))
                     break;
@@ -131,7 +131,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires (!is_trivially_matchable_v<Inner>)
         {
-            for (std::size_t matched = 0; matched < N; ++matched)
+            for (std::size_t match_count = 0; match_count != N; ++match_count)
                 if (auto inner_match = Inner::match(begin, end, it, ctx, continuations<Iter>::epsilon))
                     it = inner_match.end;
                 else
@@ -144,7 +144,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires is_trivially_matchable_v<Inner>
         {
-            for (std::size_t matched = 0; matched != N && it != end; ++matched, ++it)
+            for (std::size_t match_count = 0; match_count != N && it != end; ++match_count, ++it)
                 if (!Inner::match_one(it, ctx))
                     break;
             return cont(it);
@@ -206,8 +206,8 @@ namespace meta::ast
     private:
         template<std::random_access_iterator Iter, typename Context, typename Continuation, std::size_t... Indices>
         static constexpr auto unrolled_trivial_match(
-                Iter it, Context &ctx, Continuation &&cont,
-                std::index_sequence<Indices ...> &&
+            Iter it, Context &ctx, Continuation &&cont,
+            std::index_sequence<Indices ...> &&
         ) noexcept -> match_result<Iter>
         {
             if ((Inner::match_one(it + Indices, ctx) && ...))
@@ -231,7 +231,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires (!std::random_access_iterator<Iter>)
         {
-            for (std::size_t matched = 0; matched != N; ++matched)
+            for (std::size_t match_count = 0; match_count != N; ++match_count)
                 if (!Inner::match_one(it++, ctx))
                     return {it, false};
             return cont(it);
@@ -239,9 +239,9 @@ namespace meta::ast
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto non_unrolled_generic_match(
-                Iter begin, Iter end, Iter it,
-                Context &ctx, Continuation &&cont,
-                std::size_t repeats = N
+            Iter begin, Iter end, Iter it,
+            Context &ctx, Continuation &&cont,
+            std::size_t repeats = N
         ) noexcept -> match_result<Iter>
         {
             if (repeats == 1)

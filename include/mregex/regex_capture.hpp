@@ -21,7 +21,7 @@ namespace meta
         constexpr regex_capture_view() = default;
 
         constexpr explicit regex_capture_view(Iter start, Iter stop) noexcept
-                : begin_iter{start}, end_iter{stop}
+            : begin_iter{start}, end_iter{stop}
         {}
 
         constexpr void clear() noexcept
@@ -92,7 +92,7 @@ namespace meta
 
         template<std::forward_iterator Iter>
         explicit regex_capture(regex_capture_view<Iter, Name> const &capture_view)
-                : captured{capture_view.begin(), capture_view.end()}
+            : captured{capture_view.begin(), capture_view.end()}
         {}
 
         [[nodiscard]] std::size_t length() const noexcept

@@ -64,33 +64,5 @@ namespace meta::ast
 
     template<typename First, typename... Rest>
     inline constexpr std::size_t max_capture_count_v = max_capture_count<First, Rest ...>::value;
-
-    /**
-     * Metafunction used to add a prefix node to an AST.
-     *
-     * @tparam AST  The Abstract Syntax Tree of the regular expression
-     * @tparam Node The prefix node to be added
-     */
-    template<typename AST, typename Node>
-    struct add_prefix
-    {
-        using type = sequence<Node, AST>;
-    };
-
-    template<typename Node, typename... Elems>
-    struct add_prefix<sequence<Elems ...>, Node>
-    {
-        using type = sequence<Node, Elems ...>;
-    };
-
-    template<typename AST, typename Node>
-    using add_prefix_t = typename add_prefix<AST, Node>::type;
-
-    /**
-     * Metafunction that transforms an AST to be suitable for searching.
-     * Such an AST has a prefix node which ignores any characters.
-     */
-    template<typename AST>
-    using make_search_ast = add_prefix_t<AST, ignore_prefix>;
 }
 #endif //MREGEX_AST_TRAITS_HPP

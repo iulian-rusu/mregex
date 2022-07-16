@@ -4,7 +4,6 @@
 #include <mregex/ast/nodes/terminals/anchors.hpp>
 #include <mregex/ast/nodes/terminals/backref.hpp>
 #include <mregex/ast/nodes/terminals/epsilon.hpp>
-#include <mregex/ast/nodes/terminals/ignore_prefix.hpp>
 #include <mregex/ast/nodes/terminals/literal.hpp>
 #include <mregex/ast/nodes/terminals/negated.hpp>
 #include <mregex/ast/nodes/terminals/nothing.hpp>

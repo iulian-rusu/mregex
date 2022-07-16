@@ -2,11 +2,8 @@
 #define MREGEX_REGEX_BASE_HPP
 
 #include <mregex/ast/ast.hpp>
-#include <mregex/utility/continuations.hpp>
 #include <mregex/utility/input_range_adapter.hpp>
-#include <mregex/regex_context.hpp>
 #include <mregex/regex_match_generator.hpp>
-#include <mregex/regex_result.hpp>
 
 namespace ranges = std::ranges;
 
@@ -45,16 +42,7 @@ namespace meta
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto match(Iter const begin, Iter const end) noexcept
         {
-            using context_type = regex_context<Iter, ast_type, Flags ...>;
-            using result_type = typename context_type::result_type;
-
-            context_type ctx{};
-            auto res = ast_type::match(begin, end, begin, ctx, continuations<Iter>::equals(end));
-            if (res.matched)
-                std::get<0>(ctx.captures) = regex_capture_view<Iter>{begin, end};
-            else
-                ctx.clear();
-            return result_type{res.matched, std::move(ctx.captures)};
+            return invoke<match_method<ast_type>>(begin, end);
         }
 
         /**
@@ -69,13 +57,7 @@ namespace meta
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto search(Iter const begin, Iter const end) noexcept
         {
-            using search_ast_type = ast::make_search_ast<ast_type>;
-            using context_type = regex_context<Iter, ast_type, Flags ...>;
-            using result_type = typename context_type::result_type;
-
-            context_type ctx{};
-            auto res = search_ast_type::match(begin, end, begin, ctx, continuations<Iter>::epsilon);
-            return result_type{res.matched, std::move(ctx.captures)};
+            return invoke<search_method<ast_type>>(begin, end);
         }
 
         /**
@@ -173,6 +155,18 @@ namespace meta
         [[nodiscard]] static constexpr auto range(R const &input) noexcept
         {
             return input_range_adapter{generator(input)};
+        }
+
+    private:
+        template<typename Method, std::forward_iterator Iter>
+        static constexpr auto invoke(Iter const begin, Iter const end) noexcept
+        {
+            using context_type = regex_context<Iter, ast_type, Flags ...>;
+            using result_type = typename context_type::result_type;
+
+            context_type ctx{};
+            auto res = Method::invoke(begin, end, begin, ctx);
+            return result_type{res.matched, std::move(ctx.captures)};
         }
     };
 }
