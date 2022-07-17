@@ -20,48 +20,48 @@ namespace meta
     {
         constexpr regex_capture_view() = default;
 
-        constexpr explicit regex_capture_view(Iter start, Iter stop) noexcept
-            : begin_iter{start}, end_iter{stop}
+        constexpr explicit regex_capture_view(Iter begin, Iter end) noexcept
+            : _begin{begin}, _end{end}
         {}
 
         constexpr void clear() noexcept
         {
-            end_iter = begin_iter;
+            _end = _begin;
         }
 
         [[nodiscard]] constexpr std::size_t length() const noexcept
         {
-            return std::distance(begin_iter, end_iter);
+            return std::distance(_begin, _end);
         }
 
         [[nodiscard]] constexpr auto begin() const noexcept
         {
-            return begin_iter;
+            return _begin;
         }
 
         [[nodiscard]] constexpr auto end() const noexcept
         {
-            return end_iter;
+            return _end;
         }
 
         [[nodiscard]] constexpr auto content() const noexcept(std::contiguous_iterator<Iter>)
         {
             if constexpr (std::contiguous_iterator<Iter>)
-                return std::string_view{begin_iter, end_iter};
+                return std::string_view{_begin, _end};
             else
-                return std::string{begin_iter, end_iter};
+                return std::string{_begin, _end};
         }
 
         [[nodiscard]] constexpr auto &operator[](std::size_t index)
         requires std::random_access_iterator<Iter>
         {
-            return *(begin_iter + index);
+            return *(_begin + index);
         }
 
         [[nodiscard]] constexpr auto const &operator[](std::size_t index) const
         requires std::random_access_iterator<Iter>
         {
-            return *(begin_iter + index);
+            return *(_begin + index);
         }
 
         constexpr explicit operator bool() const noexcept
@@ -72,12 +72,12 @@ namespace meta
         constexpr explicit(false) operator std::string_view() const noexcept
         requires std::contiguous_iterator<Iter>
         {
-            return {begin_iter, end_iter};
+            return {_begin, _end};
         }
 
     private:
-        Iter begin_iter{};
-        Iter end_iter{};
+        Iter _begin{};
+        Iter _end{};
     };
 
     /**
@@ -92,57 +92,57 @@ namespace meta
 
         template<std::forward_iterator Iter>
         explicit regex_capture(regex_capture_view<Iter, Name> const &capture_view)
-            : captured{capture_view.begin(), capture_view.end()}
+            : _capture{capture_view.begin(), capture_view.end()}
         {}
 
         [[nodiscard]] std::size_t length() const noexcept
         {
-            return captured.length();
+            return _capture.length();
         }
 
         [[nodiscard]] auto begin() noexcept
         {
-            return captured.begin();
+            return _capture.begin();
         }
 
         [[nodiscard]] auto begin() const noexcept
         {
-            return captured.cbegin();
+            return _capture.cbegin();
         }
 
         [[nodiscard]] auto end() noexcept
         {
-            return captured.end();
+            return _capture.end();
         }
 
         [[nodiscard]] auto end() const noexcept
         {
-            return captured.cend();
+            return _capture.cend();
         }
 
         [[nodiscard]] auto &content() & noexcept
         {
-            return captured;
+            return _capture;
         }
 
         [[nodiscard]] auto const &content() const & noexcept
         {
-            return captured;
+            return _capture;
         }
 
         [[nodiscard]] auto &&content() && noexcept
         {
-            return captured;
+            return _capture;
         }
 
         [[nodiscard]] auto &operator[](std::size_t index)
         {
-            return captured[index];
+            return _capture[index];
         }
 
         [[nodiscard]] auto const &operator[](std::size_t index) const
         {
-            return captured[index];
+            return _capture[index];
         }
 
         explicit operator bool() const noexcept
@@ -152,11 +152,11 @@ namespace meta
 
         explicit(false) operator std::string_view() const noexcept
         {
-            return captured;
+            return _capture;
         }
 
     private:
-        std::string captured;
+        std::string _capture;
     };
 
     /**

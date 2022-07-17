@@ -10,7 +10,7 @@ namespace meta::ast
     struct reverse_matcher
     {
         template<std::bidirectional_iterator Iter, typename Context>
-        static constexpr bool can_match(Iter begin, Iter end, Iter it, Context &ctx) noexcept
+        static constexpr bool match(Iter begin, Iter end, Iter it, Context &ctx) noexcept
         requires (!is_trivially_matchable_v<Inner>)
         {
             // For non-trivial nodes, the AST is inverted to match the regex backwards
@@ -20,16 +20,16 @@ namespace meta::ast
             auto rbegin = std::make_reverse_iterator(end); // Reversed end becomes new begin
             auto rend = std::make_reverse_iterator(begin); // Reversed begin becomes new end
             auto rit = std::make_reverse_iterator(it);
-            auto match = ast_type::match(rbegin, rend, rit, ctx, continuations<iterator_type>::epsilon);
-            return  match == true;
+            auto result = ast_type::match(rbegin, rend, rit, ctx, continuations<iterator_type>::epsilon);
+            return result.matched;
         }
 
         template<std::bidirectional_iterator Iter, typename Context>
-        static constexpr bool can_match(Iter begin, Iter, Iter it, Context &ctx) noexcept
+        static constexpr bool match(Iter begin, Iter, Iter it, Context &ctx) noexcept
         requires is_trivially_matchable_v<Inner>
         {
             // For trivially matchable nodes, a single step backwards is enough
-            return (it != begin && Inner::match_one(it - 1, ctx));
+            return (it != begin && Inner::match_one(std::prev(it), ctx));
         }
     };
 
@@ -44,7 +44,7 @@ namespace meta::ast
         {
             static_assert(std::bidirectional_iterator<Iter>, "lookbehinds require bidirectional iterators");
 
-            if (reverse_matcher<Inner>::can_match(begin, end, it, ctx))
+            if (reverse_matcher<Inner>::match(begin, end, it, ctx))
                 return cont(it);
             return {it, false};
         }
@@ -61,7 +61,7 @@ namespace meta::ast
         {
             static_assert(std::bidirectional_iterator<Iter>, "lookbehinds require bidirectional iterators");
 
-            if (reverse_matcher<Inner>::can_match(begin, end, it, ctx))
+            if (reverse_matcher<Inner>::match(begin, end, it, ctx))
                 return {it, false};
             return cont(it);
         }

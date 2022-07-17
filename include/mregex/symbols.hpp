@@ -1,5 +1,5 @@
-#ifndef MREGEX_SYMBOL_HPP
-#define MREGEX_SYMBOL_HPP
+#ifndef MREGEX_SYMBOLS_HPP
+#define MREGEX_SYMBOLS_HPP
 
 #include <mregex/ast/match_mode.hpp>
 #include <mregex/utility/static_string.hpp>
@@ -109,6 +109,8 @@ namespace meta::symbol
     template<ast::match_mode>
     struct make_plus : ast_update {};
 
+    struct make_epsilon : ast_update {};
+
     struct make_alpha : ast_update {};
 
     struct make_digit : ast_update {};
@@ -166,4 +168,4 @@ namespace meta::symbol
     template<typename Symbol>
     inline constexpr bool is_ast_update_v = std::is_base_of_v<ast_update, Symbol>;
 }
-#endif //MREGEX_SYMBOL_HPP
+#endif //MREGEX_SYMBOLS_HPP

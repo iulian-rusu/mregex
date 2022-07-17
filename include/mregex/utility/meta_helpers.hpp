@@ -2,7 +2,7 @@
 #define MREGEX_META_HELPERS_HPP
 
 #include <type_traits>
-#include <mregex/symbol.hpp>
+#include <mregex/symbols.hpp>
 
 namespace meta
 {

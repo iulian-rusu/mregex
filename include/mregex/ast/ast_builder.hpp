@@ -4,7 +4,7 @@
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/ast_traits.hpp>
 #include <mregex/utility/stack.hpp>
-#include <mregex/symbol.hpp>
+#include <mregex/symbols.hpp>
 
 namespace meta::ast
 {
@@ -32,6 +32,13 @@ namespace meta::ast
     {
         using type = push<Stack, literal<A>>;
     };
+
+    template<typename T, typename Stack>
+    struct build<symbol::make_epsilon, T, Stack>
+    {
+        using type = push<Stack, epsilon>;
+    };
+
 
     template<typename T, typename Stack>
     struct build<symbol::make_alpha, T, Stack>

@@ -15,12 +15,12 @@ namespace meta
         using ast_type = AST;
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr auto invoke(Iter begin, Iter end, Iter it, Context &ctx) noexcept -> ast::match_result<Iter>
+        static constexpr auto compute(Iter begin, Iter end, Iter it, Context &ctx) noexcept -> ast::match_result<Iter>
         {
-            if (auto res = ast_type::match(begin, end, it, ctx, continuations<Iter>::equals(end)))
+            if (auto result = ast_type::match(begin, end, it, ctx, continuations<Iter>::equals(end)))
             {
                 std::get<0>(ctx.captures) = regex_capture_view<Iter>{it, end};
-                return res;
+                return result;
             }
             return {it, false};
         }
@@ -35,14 +35,14 @@ namespace meta
         using ast_type = AST;
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr auto invoke(Iter begin, Iter end, Iter it, Context &ctx) noexcept -> ast::match_result<Iter>
+        static constexpr auto compute(Iter begin, Iter end, Iter it, Context &ctx) noexcept -> ast::match_result<Iter>
         {
             for (;; ++it)
             {
-                if (auto res = ast_type::match(begin, end, it, ctx, continuations<Iter>::epsilon))
+                if (auto result = ast_type::match(begin, end, it, ctx, continuations<Iter>::epsilon))
                 {
-                    std::get<0>(ctx.captures) = regex_capture_view<Iter>{it, res.end};
-                    return res;
+                    std::get<0>(ctx.captures) = regex_capture_view<Iter>{it, result.end};
+                    return result;
                 }
                 if (it == end)
                     break;

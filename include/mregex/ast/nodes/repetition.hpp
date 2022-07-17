@@ -220,7 +220,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires std::random_access_iterator<Iter>
         {
-            for (std::size_t offset = 0; offset < N; ++offset)
+            for (std::size_t offset = 0; offset != N; ++offset)
                 if (!Inner::match_one(it + offset, ctx))
                     return {it, false};
             return cont(it + N);
@@ -263,6 +263,12 @@ namespace meta::ast
     struct basic_repetition<Mode, symbol::quantifier_value<1>, symbol::quantifier_value<1>, Inner> : Inner {};
 
     template<match_mode Mode, typename Inner>
+    struct basic_repetition<Mode, symbol::quantifier_value<0>, symbol::quantifier_value<1>, Inner> : basic_optional<Mode, Inner> {};
+
+    template<match_mode Mode, typename Inner>
     struct basic_repetition<Mode, symbol::quantifier_value<0>, symbol::quantifier_inf, Inner> : basic_star<Mode, Inner> {};
+
+    template<match_mode Mode, typename Inner>
+    struct basic_repetition<Mode, symbol::quantifier_value<1>, symbol::quantifier_inf, Inner> : basic_plus<Mode, Inner> {};
 }
 #endif //MREGEX_NODES_REPETITION_HPP

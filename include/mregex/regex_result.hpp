@@ -42,27 +42,27 @@ namespace meta
         template<typename S>
         constexpr basic_regex_result(bool matched, S &&captures)
         noexcept(std::is_nothrow_move_constructible_v<storage_type>)
-            : matched{matched}, captures{std::forward<S>(captures)}
+            : _matched{matched}, _captures{std::forward<S>(captures)}
         {}
 
-        [[nodiscard]] constexpr bool status() const noexcept
+        [[nodiscard]] constexpr bool matched() const noexcept
         {
-            return matched;
+            return _matched;
         }
 
         [[nodiscard]] constexpr std::size_t length() const noexcept
         {
-            return std::get<0>(captures).length();
+            return std::get<0>(_captures).length();
         }
 
         [[nodiscard]] constexpr auto begin() const noexcept
         {
-            return  std::get<0>(captures).begin();
+            return std::get<0>(_captures).begin();
         }
 
         [[nodiscard]] constexpr auto end() const noexcept
         {
-            return  std::get<0>(captures).end();
+            return std::get<0>(_captures).end();
         }
 
         /**
@@ -74,10 +74,10 @@ namespace meta
         [[nodiscard]] auto own() const
         requires is_capture_view_v<capture_type>
         {
-            auto owning_captures = generate_tuple(captures, [](auto const &capture) {
+            auto owning_captures = generate_tuple(_captures, [](auto const &capture) {
                 return regex_capture{capture};
             });
-            return regex_result<NameSpec>{matched, std::move(owning_captures)};
+            return regex_result<NameSpec>{_matched, std::move(owning_captures)};
         }
 
         /**
@@ -92,7 +92,7 @@ namespace meta
         [[nodiscard]] constexpr auto &group() & noexcept
         {
             assert_valid_group<ID>();
-            return std::get<ID>(captures);
+            return std::get<ID>(_captures);
         }
 
         /**
@@ -106,7 +106,7 @@ namespace meta
         template<static_string Name>
         [[nodiscard]] constexpr auto &group() & noexcept
         {
-            return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(captures);
+            return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(_captures);
         }
 
         /**
@@ -119,26 +119,26 @@ namespace meta
         [[nodiscard]] constexpr auto const &group() const & noexcept
         {
             assert_valid_group<ID>();
-            return std::get<ID>(captures);
+            return std::get<ID>(_captures);
         }
 
         template<std::size_t ID>
         [[nodiscard]] constexpr auto &&group() && noexcept
         {
             assert_valid_group<ID>();
-            return std::get<ID>(captures);
+            return std::get<ID>(_captures);
         }
 
         template<static_string Name>
         [[nodiscard]] constexpr auto const &group() const & noexcept
         {
-            return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(captures);
+            return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(_captures);
         }
 
         template<static_string Name>
         [[nodiscard]] constexpr auto &&group() && noexcept
         {
-            return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(captures);
+            return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(_captures);
         }
 
         /**
@@ -149,24 +149,24 @@ namespace meta
         constexpr decltype(auto) get() noexcept
         {
             assert_valid_group<ID + 1>();
-            return std::get<ID + 1>(captures);
+            return std::get<ID + 1>(_captures);
         }
 
         template<std::size_t ID>
         constexpr decltype(auto) get() const noexcept
         {
             assert_valid_group<ID + 1>();
-            return std::get<ID + 1>(captures);
+            return std::get<ID + 1>(_captures);
         }
 
         constexpr bool operator==(bool value) const noexcept
         {
-            return matched == value;
+            return _matched == value;
         }
 
         constexpr explicit operator bool() const noexcept
         {
-            return matched;
+            return _matched;
         }
 
         constexpr explicit(false) operator std::string_view() const noexcept
@@ -176,8 +176,8 @@ namespace meta
         }
 
     private:
-        bool matched;
-        storage_type captures;
+        bool _matched;
+        storage_type _captures;
 
         template<std::size_t ID>
         static constexpr void assert_valid_group() noexcept

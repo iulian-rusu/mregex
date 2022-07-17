@@ -47,9 +47,20 @@ namespace meta
             return N;
         }
 
+        [[nodiscard]] constexpr auto begin() noexcept
+        {
+            return data;
+        }
+
+
         [[nodiscard]] constexpr auto begin() const noexcept
         {
             return data;
+        }
+
+        [[nodiscard]] constexpr auto end() noexcept
+        {
+            return data + N;
         }
 
         [[nodiscard]] constexpr auto end() const noexcept

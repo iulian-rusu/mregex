@@ -11,6 +11,18 @@ namespace meta::tests
     }
 
     static_assert(expected_ast<R"()", epsilon>);
+    static_assert(expected_ast<R"((?:))", epsilon>);
+    static_assert(expected_ast<R"((?:)+)", plus<epsilon>>);
+    static_assert(expected_ast<R"((?!))", negative_lookahead<epsilon>>);
+    static_assert(expected_ast<R"(())", unnamed_capture<1, epsilon>>);
+    static_assert(expected_ast<R"((?<group_name>))",
+        capture
+        <
+            1,
+            symbol::name<"group_name">,
+            epsilon
+        >
+    >);
     static_assert(expected_ast<R"(a)", literal<'a'>>);
     static_assert(expected_ast<R"(^ab)",
         sequence

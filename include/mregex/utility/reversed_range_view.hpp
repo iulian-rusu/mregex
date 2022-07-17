@@ -8,8 +8,8 @@ namespace meta
     namespace ranges = std::ranges;
 
     /**
-     * View that reverses the normal iteration direction on a given bidirectional range.
-     * This class is used as a workaround for std::views::reverse not working in libstdc++.
+     * Minimalist view that reverses the normal iteration direction on a given bidirectional range.
+     * This class is used as a workaround since std::views::reverse isn't working in libstdc++.
      *
      * @tparam Range    The type of the bidirectional range to be reversed
      */
@@ -19,34 +19,34 @@ namespace meta
         using value_type = ranges::range_value_t<Range>;
         using iterator = std::reverse_iterator<ranges::iterator_t<Range>>;
 
-        constexpr explicit reversed_range_view(Range &r) noexcept : range{r} {}
+        constexpr explicit reversed_range_view(Range &range) noexcept : _range{range} {}
+
+        constexpr auto begin() noexcept
+        {
+            auto it = std::end(_range);
+            return std::make_reverse_iterator(it);
+        }
 
         constexpr auto begin() const noexcept
         {
-            auto it = std::end(range);
+            auto it = std::cend(_range);
+            return std::make_reverse_iterator(it);
+        }
+
+        constexpr auto end() noexcept
+        {
+            auto it = std::begin(_range);
             return std::make_reverse_iterator(it);
         }
 
         constexpr auto end() const noexcept
         {
-            auto it = std::begin(range);
-            return std::make_reverse_iterator(it);
-        }
-
-        constexpr auto cbegin() const noexcept
-        {
-            auto it = std::cend(range);
-            return std::make_reverse_iterator(it);
-        }
-
-        constexpr auto cend() const noexcept
-        {
-            auto it = std::cbegin(range);
+            auto it = std::cbegin(_range);
             return std::make_reverse_iterator(it);
         }
 
     private:
-        Range &range;
+        Range &_range;
     };
 }
 #endif //MREGEX_REVERSED_RANGE_VIEW_HPP

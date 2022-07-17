@@ -11,7 +11,7 @@ int main()
     std::string_view message = "[ERROR]: Segmentation fault (core dumped)";
     std::forward_list<char> list{message.begin(), message.end()};
 
-    auto match = my_regex::match(list);
-    std::cout << "Log level: " << match.group<"level">() << '\n';
-    std::cout << "Message: '" << match.group<"msg">() << "'\n";
+    auto result = my_regex::match(list);
+    std::cout << "Log level: " << result.group<"level">() << '\n';
+    std::cout << "Message: '" << result.group<"msg">() << "'\n";
 }

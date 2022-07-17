@@ -18,35 +18,39 @@ namespace meta
         using ast_type = typename Context::ast_type;
         using iterator_type = typename Context::iterator_type;
         using result_type = typename Context::result_type;
-        using capture_type = typename result_type::capture_type;
         using continuation_category = continuations<iterator_type>;
         using method = search_method<ast_type>;
 
-        constexpr regex_match_generator(iterator_type start, iterator_type stop)
-            : begin_iter{start}, end_iter{stop}, current_iter{start}, active{true}
+        constexpr regex_match_generator(iterator_type begin, iterator_type end)
+            : _begin{begin}, _end{end}, _current{begin}, _active{true}
         {}
 
         [[nodiscard]] constexpr result_type operator()() noexcept
         {
-            if (active)
+            Context ctx{};
+            if (_active)
             {
-                Context ctx{};
-                if (auto res = method::invoke(begin_iter, end_iter, current_iter, ctx))
+                if (auto result = method::compute(_begin, _end, _current, ctx))
                 {
-                    active = res.end != current_iter;
-                    current_iter = res.end;
+                    _active = std::get<0>(ctx.captures).length() != 0;
+                    _current = result.end;
                     return result_type{true, std::move(ctx.captures)};
                 }
-                active = false;
+                _active = false;
             }
-            return result_type{false, Context{}.captures};
+            return result_type{false, ctx.captures};
+        }
+
+        [[nodiscard]] constexpr bool active() const noexcept
+        {
+            return _active;
         }
 
     private:
-        iterator_type const begin_iter;
-        iterator_type const end_iter;
-        iterator_type current_iter;
-        bool active;
+        iterator_type const _begin;
+        iterator_type const _end;
+        iterator_type _current;
+        bool _active;
     };
 }
 #endif //MREGEX_REGEX_MATCH_GENERATOR_HPP

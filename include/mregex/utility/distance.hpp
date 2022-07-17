@@ -9,12 +9,12 @@ namespace meta
     constexpr bool distance_less_than(Iter begin, Iter end) noexcept
     {
         std::ptrdiff_t offset = 0;
-        while (offset < N && begin != end)
+        while (offset != N && begin != end)
         {
             ++offset;
             ++begin;
         }
-        return offset < N;
+        return offset != N;
     }
 
     template<std::ptrdiff_t N, std::random_access_iterator Iter>
@@ -27,12 +27,12 @@ namespace meta
     constexpr bool distance_less_than(std::ptrdiff_t required_dist, Iter begin, Iter end) noexcept
     {
         std::ptrdiff_t offset = 0;
-        while (offset < required_dist && begin != end)
+        while (offset != required_dist && begin != end)
         {
             ++offset;
             ++begin;
         }
-        return offset < required_dist;
+        return offset != required_dist;
     }
 
     template<std::random_access_iterator Iter>

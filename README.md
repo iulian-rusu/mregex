@@ -19,7 +19,7 @@ an iterator compatible with `std::forward_iterator`
   * lookbehinds with arbitrary expressions (requires bidirectional iterators)
 * flags that modify the matching behaviour:
   * `icase` - enables case-insensitive matching
-  * `multiline` - enables multi-line mode, in which the anchors `^`/`$` will also match starts/ends of lines
+  * `multiline` - enables multi-line mode, in which the anchors `^`/`$` will also match line boundaries
   * `ungreedy` - swaps lazy and greedy quantifiers
   * `dotall` - allows the wildcard `.` to also match `\n` and `\r`
 * a flexible API that allows exact matching, searching or iterating over multiple results
@@ -55,9 +55,9 @@ iteration.
 ```cpp
 using word_regex = meta::regex<R"(\w+(?=\W))">;
 std::string words = "Find all word-like sequences in this string!";
-for (auto &&res : word_regex::range(words))
+for (auto &&word : word_regex::range(words))
 {
-    std::cout << res << '\n';
+    std::cout << word << '\n';
 }
 ```
 

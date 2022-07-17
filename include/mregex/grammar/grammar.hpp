@@ -191,7 +191,12 @@ namespace meta::grammar
     template<>
     struct rule<symbol::group_begin_or_mod, symbol::character<')'>>
     {
-        using type = reject;
+        using type =
+                stack
+                <
+                    symbol::make_epsilon,
+                    symbol::make_capture<symbol::unnamed>
+                >;
     };
 
     template<>
@@ -436,7 +441,7 @@ namespace meta::grammar
     template<>
     struct rule<symbol::group_begin, symbol::character<')'>>
     {
-        using type = reject;
+        using type = symbol::make_epsilon;
     };
 
     template<>

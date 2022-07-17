@@ -37,7 +37,7 @@ namespace meta
     };
 
     /**
-     * Concept used to constrain a functor type that can be invoked to generate
+     * Concept used to constrain a functor type that can be called to generate
      * values convertible to bool.
      */
     template<typename G>

@@ -27,16 +27,16 @@ namespace meta::ast
         static constexpr bool match_one(Iter current, Context &) noexcept
         {
             auto ch = *current;
-            bool res = A <= ch && ch <= B;
+            bool result = A <= ch && ch <= B;
             if constexpr (flags_of<Context>::icase)
             {
                 if (is_alpha(ch))
                 {
                     ch ^= 0x20;
-                    res |= A <= ch && ch <= B;
+                    result |= A <= ch && ch <= B;
                 }
             }
-            return res;
+            return result;
         }
     };
 

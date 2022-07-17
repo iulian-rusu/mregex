@@ -22,7 +22,7 @@ namespace meta
         template<typename G>
         constexpr explicit input_range_adapter(G &&generator)
         noexcept(std::is_nothrow_move_constructible_v<Gen> && noexcept(Gen::operator()()))
-            : Gen{std::forward<G>(generator)}, current_result{Gen::operator()()}
+            : Gen{std::forward<G>(generator)}, _current_result{Gen::operator()()}
         {}
 
         struct iterator
@@ -35,50 +35,50 @@ namespace meta
 
             constexpr iterator() noexcept = default;
 
-            constexpr iterator(input_range_adapter<Gen> *ptr) noexcept
-                : gen_ptr{ptr}
+            constexpr iterator(input_range_adapter<Gen> *generator) noexcept
+                : _target{generator}
             {}
 
             constexpr explicit operator bool() const noexcept
             {
-                return gen_ptr->active();
+                return _target->active();
             }
 
             constexpr value_type &operator*() const noexcept
             {
-                return gen_ptr->get();
+                return _target->get();
             }
 
             constexpr value_type *operator->() const noexcept
             {
-                return gen_ptr->get();
+                return _target->get();
             }
 
             constexpr iterator &operator++() noexcept
             {
-                gen_ptr->advance();
+                _target->compute_next();
                 return *this;
             }
 
             constexpr iterator operator++(int) noexcept
             {
-                iterator old_iter{gen_ptr};
+                iterator old_iter{_target};
                 this->operator++();
                 return old_iter;
             }
 
             constexpr bool operator==(iterator) const noexcept
             {
-                return !gen_ptr->active();
+                return !_target->active();
             }
 
             constexpr bool operator!=(iterator) const noexcept
             {
-                return gen_ptr->active();
+                return _target->active();
             }
 
         private:
-            input_range_adapter<Gen> *gen_ptr = nullptr;
+            input_range_adapter<Gen> *_target = nullptr;
         };
 
         /**
@@ -95,7 +95,7 @@ namespace meta
 
         /**
          * Returns a default constructed iterator which does not point to any object.
-         * This iterator is used to invoke operator!= while iterating and should never
+         * This iterator is used to call operator!= while iterating and should never
          * be dereferenced or incremented.
          *
          * @return  An empty end-of-range iterator
@@ -107,31 +107,31 @@ namespace meta
 
         [[nodiscard]] constexpr bool active() const noexcept
         {
-            return static_cast<bool>(current_result);
+            return static_cast<bool>(_current_result);
         }
 
         [[nodiscard]] constexpr auto &get() & noexcept
         {
-            return current_result;
+            return _current_result;
         }
 
         [[nodiscard]] constexpr auto const &get() const & noexcept
         {
-            return current_result;
+            return _current_result;
         }
 
         [[nodiscard]] constexpr auto &&get() && noexcept
         {
-            return current_result;
+            return _current_result;
         }
 
-        constexpr void advance() noexcept
+        constexpr void compute_next() noexcept
         {
-            current_result = this->operator()();
+            _current_result = Gen::operator()();
         }
 
     private:
-        result_type current_result;
+        result_type _current_result;
     };
 
     template<bool_testable_generator G>

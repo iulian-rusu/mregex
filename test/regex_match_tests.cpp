@@ -4,6 +4,7 @@ namespace meta::tests
 {
     // Test matching inputs
     static_assert(regex<R"()">::match(""));
+    static_assert(regex<R"(())">::match(""));
     static_assert(regex<R"(a)">::match("a"));
     static_assert(regex<R"(\a)">::match("b"));
     static_assert(regex<R"(\n)">::match("\n"));
@@ -28,6 +29,7 @@ namespace meta::tests
     static_assert(regex<R"(a?)">::match("a"));
     static_assert(regex<R"(a??)">::match("a"));
     static_assert(regex<R"(a?+)">::match("a"));
+    static_assert(regex<R"(a?+)">::match(""));
     static_assert(regex<R"((?:a?+)?a)">::match("a"));
     static_assert(regex<R"(a*)">::match(""));
     static_assert(regex<R"(a*)">::match("a"));
@@ -188,8 +190,9 @@ namespace meta::tests
 
     // Test non-matching inputs
     static_assert(regex<R"()">::match("t") == false);
+    static_assert(regex<R"((?!))">::match("") == false);
+    static_assert(regex<R"((?!))">::match("a") == false);
     static_assert(regex<R"(a)">::match("b") == false);
-    static_assert(regex<R"(a?+)">::match("") == false);
     static_assert(regex<R"(a?+a)">::match("a") == false);
     static_assert(regex<R"((a++)+aa)">::match("aaaaa") == false);
     static_assert(regex<R"(\a)">::match("1") == false);

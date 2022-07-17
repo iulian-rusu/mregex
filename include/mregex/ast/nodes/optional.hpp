@@ -17,7 +17,9 @@ namespace meta::ast
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            if constexpr ((Mode == match_mode::greedy) ^ flags_of<Context>::ungreedy)
+            if constexpr (Mode == match_mode::possessive)
+                return possessive_match(begin, end, it, ctx, cont);
+            else if constexpr ((Mode == match_mode::greedy) ^ flags_of<Context>::ungreedy)
                 return greedy_match(begin, end, it, ctx, cont);
             else
                 return lazy_match(begin, end, it, ctx, cont);
@@ -41,10 +43,15 @@ namespace meta::ast
                 return rest_match;
             return Inner::match(begin, end, it, ctx, cont);
         }
-    };
 
-    // An optional which doesn't backtrack is equivalent to a non-optional expression
-    template<typename Inner>
-    struct basic_optional<match_mode::possessive, Inner> : Inner {};
+        template<std::forward_iterator Iter, typename Context, typename Continuation>
+        static constexpr auto possessive_match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        -> match_result<Iter>
+        {
+            if (auto inner_match = Inner::match(begin, end, it, ctx, continuations<Iter>::epsilon))
+                return cont(inner_match.end);
+            return cont(it);
+        }
+    };
 }
 #endif //MREGEX_NODES_OPTIONAL_HPP
