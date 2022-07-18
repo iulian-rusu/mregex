@@ -93,7 +93,7 @@ namespace meta::tests
         sequence
         <
             literal<'x'>,
-            exact_repetition
+            fixed_repetition
             <
                 2,
                 negative_lookahead
@@ -267,6 +267,14 @@ namespace meta::tests
             symbol::quantifier_value<2>,
             symbol::quantifier_value<2>,
             literal<'c'>
+        >
+    >);
+    static_assert(expected_ast<R"(c{2}c{2}?c{2}+)",
+        sequence
+        <
+            fixed_repetition<2, literal<'c'>>,
+            lazy_fixed_repetition<2, literal<'c'>>,
+            possessive_fixed_repetition<2, literal<'c'>>
         >
     >);
     static_assert(expected_ast<R"(c{0})",

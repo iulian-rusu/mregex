@@ -4,12 +4,13 @@
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/ast_traits.hpp>
 #include <mregex/ast/match_result.hpp>
+#include <mregex/utility/continuations.hpp>
 #include <mregex/regex_context.hpp>
 
 namespace meta::ast
 {
     template<match_mode Mode, typename Inner>
-    struct basic_star
+    struct basic_repetition<Mode, symbol::quantifier_value<0>, symbol::quantifier_inf, Inner>
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
 

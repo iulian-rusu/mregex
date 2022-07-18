@@ -39,7 +39,6 @@ namespace meta::ast
         using type = push<Stack, epsilon>;
     };
 
-
     template<typename T, typename Stack>
     struct build<symbol::make_alpha, T, Stack>
     {
