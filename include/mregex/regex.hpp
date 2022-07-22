@@ -9,6 +9,8 @@ namespace meta
     template<static_string Pattern, typename... Flags>
     struct regex : regex_interface<ast_of<Pattern>, Flags ...>
     {
+        using base_type = regex_interface<ast_of<Pattern>, Flags ...>;
+
         static_assert(std::is_same_v<status_of<Pattern>, parsing::success>, "syntax error in regular expression");
     };
 }

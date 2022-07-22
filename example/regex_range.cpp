@@ -3,7 +3,7 @@
 
 int main()
 {
-    using word_regex = meta::regex<R"(\w+?(?=\W))">;
+    using word_regex = meta::regex<R"(\w+?(?!\w))">;
 
     // The range() method returns a range that lazily generates the results one-by-one
     // Old results are discarded after advancing the iterator

@@ -2,8 +2,8 @@
 #define MREGEX_NODES_REPETITION_HPP
 
 #include <mregex/ast/astfwd.hpp>
-#include <mregex/ast/ast_traits.hpp>
 #include <mregex/ast/match_result.hpp>
+#include <mregex/ast/traits.hpp>
 #include <mregex/utility/continuations.hpp>
 #include <mregex/utility/distance.hpp>
 #include <mregex/regex_context.hpp>
@@ -124,7 +124,7 @@ namespace meta::ast
         requires (!is_trivially_matchable_v<Inner>)
         {
             for (std::size_t match_count = 0; match_count != N; ++match_count)
-                if (auto inner_match = Inner::match(begin, end, it, ctx, continuations<Iter>::epsilon))
+                if (auto inner_match = Inner::match(begin, end, it, ctx, continuations<Iter>::success))
                     it = inner_match.end;
                 else
                     break;

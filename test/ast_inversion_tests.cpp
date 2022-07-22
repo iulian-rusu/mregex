@@ -25,10 +25,6 @@ namespace meta::tests
         alternation<wildcard, literal<'a'>>
     >);
     static_assert(expected_inversion<
-        disjunction<wildcard, literal<'a'>>,
-        disjunction<wildcard, literal<'a'>>
-    >);
-    static_assert(expected_inversion<
         repetition<symbol::quantifier_value<3>, symbol::quantifier_value<5>, literal<'a'>>,
         repetition<symbol::quantifier_value<3>, symbol::quantifier_value<5>, literal<'a'>>
     >);
@@ -45,16 +41,16 @@ namespace meta::tests
         sequence<literal<'d'>, literal<'c'>, literal<'b'>, literal<'a'>>
     >);
     static_assert(expected_inversion<
-        sequence<literal<'a'>, literal<'b'>, sequence<epsilon, literal<'c'>>>,
-        sequence<sequence<literal<'c'>, epsilon>, literal<'b'>, literal<'a'>>
+        sequence<literal<'a'>, literal<'b'>, sequence<empty, literal<'c'>>>,
+        sequence<sequence<literal<'c'>, empty>, literal<'b'>, literal<'a'>>
     >);
     static_assert(expected_inversion<
-        alternation<literal<'a'>, literal<'b'>, sequence<epsilon, literal<'c'>>>,
-        alternation<literal<'a'>, literal<'b'>, sequence<literal<'c'>, epsilon>>
+        alternation<literal<'a'>, literal<'b'>, sequence<empty, literal<'c'>>>,
+        alternation<literal<'a'>, literal<'b'>, sequence<literal<'c'>, empty>>
     >);
     static_assert(expected_inversion<
-        alternation<literal<'a'>, literal<'b'>, positive_lookahead<sequence<epsilon, literal<'c'>>>>,
-        alternation<literal<'a'>, literal<'b'>, positive_lookbehind<sequence<epsilon, literal<'c'>>>>
+        alternation<literal<'a'>, literal<'b'>, positive_lookahead<sequence<empty, literal<'c'>>>>,
+        alternation<literal<'a'>, literal<'b'>, positive_lookbehind<sequence<empty, literal<'c'>>>>
     >);
     static_assert(expected_inversion<
         sequence

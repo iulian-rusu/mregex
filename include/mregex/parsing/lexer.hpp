@@ -22,7 +22,7 @@ namespace meta
         template<std::size_t I>
         struct token<I, false>
         {
-            using type = symbol::epsilon;
+            using type = symbol::empty;
         };
 
         template<std::size_t I>

@@ -39,7 +39,7 @@ namespace meta
         {
             for (;; ++it)
             {
-                if (auto result = ast_type::match(begin, end, it, ctx, continuations<Iter>::epsilon))
+                if (auto result = ast_type::match(begin, end, it, ctx, continuations<Iter>::success))
                 {
                     std::get<0>(ctx.captures) = regex_capture_view<Iter>{it, result.end};
                     return result;

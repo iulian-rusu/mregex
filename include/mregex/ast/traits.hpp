@@ -24,8 +24,8 @@ namespace meta::ast
     template<typename T>
     inline constexpr bool is_trivially_matchable_v = is_trivially_matchable<T>::value;
 
-    template<typename... Elems>
-    inline constexpr bool are_trivially_matchable_v = (is_trivially_matchable_v<Elems> && ...);
+    template<typename... Nodes>
+    inline constexpr bool are_trivially_matchable_v = (is_trivially_matchable_v<Nodes> && ...);
 
     /**
      * Metafunction used to count the number of capturing groups in the regex AST.
@@ -41,28 +41,5 @@ namespace meta::ast
 
     template<typename First, typename... Rest>
     inline constexpr std::size_t capture_count_v = capture_count<First, Rest ...>::value;
-
-    /**
-     * Metafunction used to get the maximum number of capturing groups in any AST node.
-     *
-     * @tparam First    The first AST node
-     * @tparam Rest     The rest of AST nodes
-     */
-    template<typename First, typename... Rest>
-    struct max_capture_count
-    {
-        static constexpr std::size_t first_count = First::capture_count;
-        static constexpr std::size_t rest_count = max_capture_count<Rest ...>::value;
-        static constexpr std::size_t value = first_count > rest_count ? first_count : rest_count;
-    };
-
-    template<typename First>
-    struct max_capture_count<First>
-    {
-        static constexpr std::size_t value = First::capture_count;
-    };
-
-    template<typename First, typename... Rest>
-    inline constexpr std::size_t max_capture_count_v = max_capture_count<First, Rest ...>::value;
 }
 #endif //MREGEX_AST_TRAITS_HPP

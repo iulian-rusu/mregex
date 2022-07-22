@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace meta::ast
+namespace meta
 {
     /**
      * Enumerator which lists the possible match modes

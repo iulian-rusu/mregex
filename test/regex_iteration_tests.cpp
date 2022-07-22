@@ -7,8 +7,8 @@ namespace meta::tests
         template<static_string Pattern, typename... Flags>
         constexpr auto token_count(std::string_view sv)
         {
-            using re = regex<Pattern, Flags ...>;
-            return std::ranges::distance(re::range(sv));
+            using pattern = regex<Pattern, Flags ...>;
+            return std::ranges::distance(pattern::range(sv));
         }
     }
 

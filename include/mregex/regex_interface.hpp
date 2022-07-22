@@ -10,7 +10,7 @@ namespace ranges = std::ranges;
 namespace meta
 {
     /**
-     * Base for all regex-like types.
+     * Class that provides an interface for all regex-like types.
      *
      * @tparam AST      The Abstract Syntax Tree of the regex object
      * @tparam Flags    Optional flags for matching
@@ -73,7 +73,6 @@ namespace meta
         [[nodiscard]] static constexpr auto generator(Iter const begin, Iter const end) noexcept
         {
             using context_type = regex_context<Iter, ast_type, Flags ...>;
-
             return regex_match_generator<context_type>{begin, end};
         }
 

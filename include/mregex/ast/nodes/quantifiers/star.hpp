@@ -2,8 +2,8 @@
 #define MREGEX_NODES_STAR_HPP
 
 #include <mregex/ast/astfwd.hpp>
-#include <mregex/ast/ast_traits.hpp>
 #include <mregex/ast/match_result.hpp>
+#include <mregex/ast/traits.hpp>
 #include <mregex/utility/continuations.hpp>
 #include <mregex/regex_context.hpp>
 
@@ -94,7 +94,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires (!is_trivially_matchable_v<Inner>)
         {
-            while (auto inner_match = Inner::match(begin, end, it, ctx, continuations<Iter>::epsilon))
+            while (auto inner_match = Inner::match(begin, end, it, ctx, continuations<Iter>::success))
                 it = inner_match.end;
             return cont(it);
         }

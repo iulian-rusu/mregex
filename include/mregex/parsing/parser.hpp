@@ -1,7 +1,7 @@
 #ifndef MREGEX_PARSER_HPP
 #define MREGEX_PARSER_HPP
 
-#include <mregex/ast/ast_builder.hpp>
+#include <mregex/ast/builder.hpp>
 #include <mregex/ast/capture_indexer.hpp>
 #include <mregex/grammar/grammar.hpp>
 #include <mregex/parsing/lexer.hpp>
@@ -19,7 +19,7 @@ namespace meta
     struct parser
     {
         /**
-         * Metafunction used to extract tokens (characters or epsilon) from the input pattern.
+         * Metafunction used to extract tokens (characters or empty tokens) from the input pattern.
          */
         template<std::size_t I>
         using token_t = typename lexer<Pattern>::template token_t<I>;

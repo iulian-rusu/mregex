@@ -2,9 +2,8 @@
 #define MREGEX_AST_BUILDER_HPP
 
 #include <mregex/ast/astfwd.hpp>
-#include <mregex/ast/ast_traits.hpp>
+#include <mregex/ast/traits.hpp>
 #include <mregex/utility/stack.hpp>
-#include <mregex/symbols.hpp>
 
 namespace meta::ast
 {
@@ -34,9 +33,9 @@ namespace meta::ast
     };
 
     template<typename T, typename Stack>
-    struct build<symbol::make_epsilon, T, Stack>
+    struct build<symbol::make_empty, T, Stack>
     {
-        using type = push<Stack, epsilon>;
+        using type = push<Stack, empty>;
     };
 
     template<typename T, typename Stack>
@@ -202,16 +201,16 @@ namespace meta::ast
         using type = stack<capture<ID, Name, First>, Rest ...>;
     };
 
-    template<std::size_t ID, typename T, typename... Elems>
-    struct build<symbol::make_backref<ID>, T, stack<Elems ...>>
+    template<std::size_t ID, typename T, typename... Nodes>
+    struct build<symbol::make_backref<ID>, T, stack<Nodes ...>>
     {
-        using type = stack<backref<ID>, Elems ...>;
+        using type = stack<backref<ID>, Nodes ...>;
     };
 
-    template<typename Name, typename T, typename... Elems>
-    struct build<symbol::make_named_backref<Name>, T, stack<Elems ...>>
+    template<typename Name, typename T, typename... Nodes>
+    struct build<symbol::make_named_backref<Name>, T, stack<Nodes ...>>
     {
-        using type = stack<named_backref<Name>, Elems ...>;
+        using type = stack<named_backref<Name>, Nodes ...>;
     };
 
     template<match_mode Mode, typename A, typename B, typename T, typename First, typename... Rest>
@@ -221,16 +220,16 @@ namespace meta::ast
     };
 
     // Set building rules
-    template<typename T, typename... Elems>
-    struct build<symbol::make_set, T, stack<Elems ...>>
+    template<typename T, typename... Nodes>
+    struct build<symbol::make_set, T, stack<Nodes ...>>
     {
-        using type = stack<nothing, Elems ...>;
+        using type = stack<nothing, Nodes ...>;
     };
 
-    template<char C, typename... Elems>
-    struct build<symbol::make_set_from_current_char, symbol::character<C>, stack<Elems ...>>
+    template<char C, typename... Nodes>
+    struct build<symbol::make_set_from_current_char, symbol::character<C>, stack<Nodes ...>>
     {
-        using type = stack<set<literal<C>>, Elems ...>;
+        using type = stack<set<literal<C>>, Nodes ...>;
     };
 
     template<char C, typename... First, typename... Rest>
@@ -275,10 +274,22 @@ namespace meta::ast
         using type = stack<set<range<A, B>, Second ...>, Rest ...>;
     };
 
+    template<char B, typename First, typename... Second, typename... Rest>
+    struct build<symbol::make_range, symbol::character<B>, stack<set<First, Second ...>, Rest ...>>
+    {
+        using type = stack<set<literal<B>, literal<'-'>, First, Second ...>, Rest ...>;
+    };
+
     template<typename T, char B, char A, typename... Second, typename... Rest>
     struct build<symbol::make_range_from_stack, T, stack<set<literal<B>, literal<A>, Second ...>, Rest ...>>
     {
         using type = stack<set<range<A, B>, Second ...>, Rest ...>;
+    };
+
+    template<typename T, char B, typename First, typename... Second, typename... Rest>
+    struct build<symbol::make_range_from_stack, T, stack<set<literal<B>, First, Second ...>, Rest ...>>
+    {
+        using type = stack<set<literal<B>, literal<'-'>, First, Second ...>, Rest ...>;
     };
 }
 #endif //MREGEX_AST_BUILDER_HPP

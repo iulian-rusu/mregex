@@ -21,7 +21,7 @@ namespace meta::tests
     }
 
     // Top of an empty stack must be the type meta::empty_stack
-    static_assert(std::is_same_v<empty_stack_marker, stack<>::top>);
+    static_assert(std::is_same_v<symbol::empty, stack<>::top>);
     // Popping empty stack should do nothing
     static_assert(std::is_same_v<stack<>, pop<stack<>>>);
     // Push one type to the stack

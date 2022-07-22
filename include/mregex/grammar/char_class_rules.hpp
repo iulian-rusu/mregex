@@ -3,7 +3,6 @@
 
 #include <mregex/grammar/grammar_actions.hpp>
 #include <mregex/utility/stack.hpp>
-#include <mregex/symbols.hpp>
 
 namespace meta::grammar
 {

@@ -10,17 +10,17 @@ namespace meta::tests
         inline constexpr bool expected_ast = std::is_same_v<ast_of<Pattern>, AST>;
     }
 
-    static_assert(expected_ast<R"()", epsilon>);
-    static_assert(expected_ast<R"((?:))", epsilon>);
-    static_assert(expected_ast<R"((?:)+)", plus<epsilon>>);
-    static_assert(expected_ast<R"((?!))", negative_lookahead<epsilon>>);
-    static_assert(expected_ast<R"(())", unnamed_capture<1, epsilon>>);
+    static_assert(expected_ast<R"()", empty>);
+    static_assert(expected_ast<R"((?:))", empty>);
+    static_assert(expected_ast<R"((?:)+)", plus<empty>>);
+    static_assert(expected_ast<R"((?!))", negative_lookahead<empty>>);
+    static_assert(expected_ast<R"(())", unnamed_capture<1, empty>>);
     static_assert(expected_ast<R"((?<group_name>))",
         capture
         <
             1,
             symbol::name<"group_name">,
-            epsilon
+            empty
         >
     >);
     static_assert(expected_ast<R"(a)", literal<'a'>>);
@@ -417,7 +417,7 @@ namespace meta::tests
             >
         >
     >);
-    static_assert(expected_ast<R"(a(b(cd)*){15}?)",
+    static_assert(expected_ast<R"(a(b(c()d)*){15}?)",
         sequence
         <
             literal<'a'>,
@@ -439,6 +439,7 @@ namespace meta::tests
                                 sequence
                                 <
                                     literal<'c'>,
+                                    unnamed_capture<3, empty>,
                                     literal<'d'>
                                 >
                             >
@@ -602,7 +603,6 @@ namespace meta::tests
             >
         >
     >);
-    // alternation<optional<a>, b> simplifies to alternation<a, epsilon, b>
     static_assert(expected_ast<R"(a?|b|c)",
         alternation
         <
@@ -615,6 +615,30 @@ namespace meta::tests
     static_assert(expected_ast<R"([.])", set<literal<'.'>>>);
     static_assert(expected_ast<R"([])", nothing>);
     static_assert(expected_ast<R"([^])", negated<nothing>>);
+    static_assert(expected_ast<R"([-])", set<literal<'-'>>>);
+    static_assert(expected_ast<R"([a-])",
+        set
+        <
+            literal<'-'>,
+            literal<'a'>
+        >
+    >);
+
+    static_assert(expected_ast<R"([\w-])",
+        set
+        <
+            literal<'-'>,
+            word
+        >
+    >);
+    static_assert(expected_ast<R"([\w-a])",
+        set
+        <
+            literal<'a'>,
+            literal<'-'>,
+            word
+        >
+    >);
     static_assert(expected_ast<R"([a][b])",
         sequence
         <

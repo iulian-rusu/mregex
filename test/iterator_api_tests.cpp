@@ -7,8 +7,8 @@ namespace meta::tests
         template<static_string Pattern, typename... Flags>
         constexpr bool match_reverse(std::string_view sv)
         {
-            using re = regex<Pattern, Flags ...>;
-            return re::match(sv.crbegin(), sv.crend()) == true;
+            using pattern = regex<Pattern, Flags ...>;
+            return pattern::match(sv.crbegin(), sv.crend()) == true;
         }
     }
 

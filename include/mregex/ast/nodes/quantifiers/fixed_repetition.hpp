@@ -2,8 +2,8 @@
 #define MREGEX_NODES_FIXED_REPETITION_HPP
 
 #include <mregex/ast/astfwd.hpp>
-#include <mregex/ast/ast_traits.hpp>
 #include <mregex/ast/match_result.hpp>
+#include <mregex/ast/traits.hpp>
 #include <mregex/utility/continuations.hpp>
 #include <mregex/utility/distance.hpp>
 #include <mregex/regex_context.hpp>
@@ -30,7 +30,7 @@ namespace meta::ast
         static constexpr auto possessive_match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            if (auto result = backtracking_match(begin, end, it, ctx, continuations<Iter>::epsilon))
+            if (auto result = backtracking_match(begin, end, it, ctx, continuations<Iter>::success))
                 return cont(result.end);
             return {it, false};
         }

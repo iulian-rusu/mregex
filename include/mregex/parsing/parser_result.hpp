@@ -20,9 +20,9 @@ namespace meta
     };
 
     template<typename S>
-    struct parser_result<empty_stack_marker, S>
+    struct parser_result<symbol::empty, S>
     {
-        using ast_type = ast::epsilon;
+        using ast_type = ast::empty;
         using status_type = S;
     };
 }

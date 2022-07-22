@@ -1,0 +1,181 @@
+#ifndef MREGEX_EXPR_COMPONENTS_HPP
+#define MREGEX_EXPR_COMPONENTS_HPP
+
+#include <mregex/ast/traits.hpp>
+#include <mregex/expr/templates.hpp>
+#include <mregex/expr/utility.hpp>
+#include <mregex/regex_interface.hpp>
+
+namespace meta::expr
+{
+    // Sequences and alternations
+    template<typename... Nodes>
+    constexpr auto concat(regex_interface<Nodes>...) noexcept
+    {
+        return to_regex(flatten_wrapper_t<ast::sequence, Nodes ...>{});
+    }
+
+    template<typename... Nodes>
+    constexpr auto either(regex_interface<Nodes>...) noexcept
+    {
+        return to_regex(flatten_wrapper_t<ast::alternation, Nodes ...>{});
+    }
+
+    // Captures
+    template<std::size_t ID, static_string Name, typename... Nodes>
+    constexpr auto capture(regex_interface<Nodes>...) noexcept
+    {
+        using wrapper_type = capture_template<ID, symbol::name<Name>>;
+        return to_regex(wrap<wrapper_type::template type>(Nodes{} ...));
+    }
+
+    template<std::size_t ID, typename... Nodes>
+    constexpr auto capture(regex_interface<Nodes>...) noexcept
+    {
+        using wrapper_type = capture_template<ID, symbol::unnamed>;
+        return to_regex(wrap<wrapper_type::template type>(Nodes{} ...));
+    }
+
+    // Repetition
+    template<std::size_t A, std::size_t B, match_mode Mode, typename... Nodes>
+    constexpr auto between(regex_interface<Nodes>...) noexcept
+    {
+        using wrapper_type = repetition_template<Mode, symbol::quantifier_value<A>, symbol::quantifier_value<B>>;
+        return to_regex(wrap<wrapper_type::template type>(Nodes{} ...));
+    }
+
+    template<std::size_t A, std::size_t B, typename... Nodes>
+    constexpr auto between(regex_interface<Nodes>... nodes) noexcept
+    {
+        return between<A, B, match_mode::greedy>(nodes ...);
+    }
+
+    template<std::size_t N, match_mode Mode, typename... Nodes>
+    constexpr auto at_least(regex_interface<Nodes>...) noexcept
+    {
+        using wrapper_type = repetition_template<Mode, symbol::quantifier_value<N>, symbol::quantifier_inf>;
+        return to_regex(wrap<wrapper_type::template type>(Nodes{} ...));
+    }
+
+    template<std::size_t N, typename... Nodes>
+    constexpr auto at_least(regex_interface<Nodes>... nodes) noexcept
+    {
+        return at_least<N, match_mode::greedy>(nodes ...);
+    }
+
+    // Exact repetition
+    template<std::size_t N, typename... Nodes>
+    constexpr auto exactly(regex_interface<Nodes>... nodes) noexcept
+    {
+        return between<N, N>(nodes ...);
+    }
+
+    template<std::size_t N, match_mode Mode, typename... Nodes>
+    constexpr auto exactly(regex_interface<Nodes>... nodes) noexcept
+    {
+        return between<N, N, Mode>(nodes ...);
+    }
+
+    // Kleene star
+    template<match_mode Mode, typename... Nodes>
+    constexpr auto zero_or_more(regex_interface<Nodes>... nodes) noexcept
+    {
+        return at_least<0, Mode>(nodes ...);
+    }
+
+    template<typename... Nodes>
+    constexpr auto zero_or_more(regex_interface<Nodes>... nodes) noexcept
+    {
+        return at_least<0>(nodes ...);
+    }
+
+    // Plus
+    template<match_mode Mode, typename... Nodes>
+    constexpr auto one_or_more(regex_interface<Nodes>... nodes) noexcept
+    {
+        return at_least<1, Mode>(nodes ...);
+    }
+
+    template<typename... Nodes>
+    constexpr auto one_or_more(regex_interface<Nodes>... nodes) noexcept
+    {
+        return at_least<1>(nodes ...);
+    }
+
+    // Optional
+    template<match_mode Mode, typename... Nodes>
+    constexpr auto maybe(regex_interface<Nodes>... nodes) noexcept
+    {
+        return between<0, 1, Mode>(nodes ...);
+    }
+
+    template<typename... Nodes>
+    constexpr auto maybe(regex_interface<Nodes>... nodes) noexcept
+    {
+        return between<0, 1, match_mode::greedy>(nodes ...);
+    }
+
+    // Terminals
+    inline constexpr auto empty = regex_interface<ast::empty>{};
+    inline constexpr auto nothing = regex_interface<ast::nothing>{};
+    inline constexpr auto begin = regex_interface<ast::beginning>{};
+    inline constexpr auto end = regex_interface<ast::ending>{};
+    inline constexpr auto whitespace = regex_interface<ast::whitespace>{};
+    inline constexpr auto any = regex_interface<ast::wildcard>{};
+    inline constexpr auto digit = regex_interface<ast::digit>{};
+    inline constexpr auto lower = regex_interface<ast::lower>{};
+    inline constexpr auto upper = regex_interface<ast::upper>{};
+    inline constexpr auto alpha = regex_interface<ast::alpha>{};
+    inline constexpr auto word = regex_interface<ast::word>{};
+    inline constexpr auto hexa = regex_interface<ast::hexa>{};
+    inline constexpr auto endl = regex_interface<ast::linebreak>{};
+
+    template<char C>
+    inline constexpr auto chr = regex_interface<ast::literal<C>>{};
+
+    template<static_string String>
+    inline constexpr auto str = to_regex(to_sequence<String>());
+
+    template<char A, char B>
+    inline constexpr auto range = regex_interface<ast::range<A, B>>{};
+
+    template<std::size_t ID>
+    inline constexpr auto group = regex_interface<ast::backref<ID>>{};
+
+    template<static_string Name>
+    inline constexpr auto group_named = regex_interface<ast::named_backref<symbol::name<Name>>>{};
+
+    template<typename Node>
+    requires ast::is_trivially_matchable_v<Node>
+    constexpr auto neg(regex_interface<Node>) noexcept -> regex_interface<ast::negated<Node>> { return {}; }
+
+    // Lookarounds
+    template<typename... Nodes>
+    constexpr auto ahead(regex_interface<Nodes>...) noexcept
+    {
+        return to_regex(wrap<ast::positive_lookahead>(Nodes{} ...));
+    }
+
+    template<typename... Nodes>
+    constexpr auto behind(regex_interface<Nodes>...) noexcept
+    {
+        return to_regex(wrap<ast::positive_lookbehind>(Nodes{} ...));
+    }
+
+    template<typename Inner>
+    constexpr auto neg(regex_interface<ast::positive_lookahead<Inner>>) noexcept
+    {
+        return to_regex(ast::negative_lookahead<Inner>{});
+    }
+
+    template<typename Inner>
+    constexpr auto neg(regex_interface<ast::positive_lookbehind<Inner>>) noexcept
+    {
+        return to_regex(ast::negative_lookbehind<Inner>{});
+    }
+
+    // Builder that generates the AST from a regular expression
+    template<static_string Pattern>
+    inline constexpr auto regex = to_regex(typename meta::regex<Pattern>::ast_type{});
+}
+#endif //MREGEX_EXPR_COMPONENTS_HPP

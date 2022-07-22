@@ -2,11 +2,30 @@
 #define MREGEX_NODES_LOOKAHEADS_HPP
 
 #include <mregex/ast/astfwd.hpp>
-#include <mregex/ast/ast_traits.hpp>
+#include <mregex/ast/traits.hpp>
 #include <mregex/utility/continuations.hpp>
 
 namespace meta::ast
 {
+    template<typename Inner>
+    struct lookahead_matcher
+    {
+        template<std::bidirectional_iterator Iter, typename Context>
+        static constexpr bool match(Iter begin, Iter end, Iter it, Context &ctx) noexcept
+        requires (!is_trivially_matchable_v<Inner>)
+        {
+            auto result = Inner::match(begin, end, it, ctx, continuations<Iter>::success);
+            return result.matched;
+        }
+
+        template<std::bidirectional_iterator Iter, typename Context>
+        static constexpr bool match(Iter, Iter end, Iter it, Context &ctx) noexcept
+        requires is_trivially_matchable_v<Inner>
+        {
+            return it != end && Inner::match_one(it, ctx);
+        }
+    };
+
     template<typename Inner>
     struct positive_lookahead
     {
@@ -15,19 +34,8 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
-        requires (!is_trivially_matchable_v<Inner>)
         {
-            if (Inner::match(begin, end, it, ctx, continuations<Iter>::epsilon))
-                return cont(it);
-            return {it, false};
-        }
-
-        template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
-        -> match_result<Iter>
-        requires is_trivially_matchable_v<Inner>
-        {
-            if (it != end && Inner::match_one(it, ctx))
+            if (lookahead_matcher<Inner>::match(begin, end, it, ctx))
                 return cont(it);
             return {it, false};
         }
@@ -41,19 +49,8 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
-        requires (!is_trivially_matchable_v<Inner>)
         {
-            if (Inner::match(begin, end, it, ctx, continuations<Iter>::epsilon))
-                return {it, false};
-            return cont(it);
-        }
-
-        template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
-        -> match_result<Iter>
-        requires is_trivially_matchable_v<Inner>
-        {
-            if (it != end && Inner::match_one(it, ctx))
+            if (lookahead_matcher<Inner>::match(begin, end, it, ctx))
                 return {it, false};
             return cont(it);
         }

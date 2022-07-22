@@ -2,12 +2,12 @@
 #define MREGEX_NODES_LOOKBEHINDS_HPP
 
 #include <mregex/ast/astfwd.hpp>
-#include <mregex/ast/ast_inversion.hpp>
+#include <mregex/ast/inversion.hpp>
 
 namespace meta::ast
 {
     template<typename Inner>
-    struct reverse_matcher
+    struct lookbehind_matcher
     {
         template<std::bidirectional_iterator Iter, typename Context>
         static constexpr bool match(Iter begin, Iter end, Iter it, Context &ctx) noexcept
@@ -20,7 +20,7 @@ namespace meta::ast
             auto rbegin = std::make_reverse_iterator(end); // Reversed end becomes new begin
             auto rend = std::make_reverse_iterator(begin); // Reversed begin becomes new end
             auto rit = std::make_reverse_iterator(it);
-            auto result = ast_type::match(rbegin, rend, rit, ctx, continuations<iterator_type>::epsilon);
+            auto result = ast_type::match(rbegin, rend, rit, ctx, continuations<iterator_type>::success);
             return result.matched;
         }
 
@@ -29,7 +29,7 @@ namespace meta::ast
         requires is_trivially_matchable_v<Inner>
         {
             // For trivially matchable nodes, a single step backwards is enough
-            return (it != begin && Inner::match_one(std::prev(it), ctx));
+            return it != begin && Inner::match_one(std::prev(it), ctx);
         }
     };
 
@@ -44,7 +44,7 @@ namespace meta::ast
         {
             static_assert(std::bidirectional_iterator<Iter>, "lookbehinds require bidirectional iterators");
 
-            if (reverse_matcher<Inner>::match(begin, end, it, ctx))
+            if (lookbehind_matcher<Inner>::match(begin, end, it, ctx))
                 return cont(it);
             return {it, false};
         }
@@ -61,7 +61,7 @@ namespace meta::ast
         {
             static_assert(std::bidirectional_iterator<Iter>, "lookbehinds require bidirectional iterators");
 
-            if (reverse_matcher<Inner>::match(begin, end, it, ctx))
+            if (lookbehind_matcher<Inner>::match(begin, end, it, ctx))
                 return {it, false};
             return cont(it);
         }

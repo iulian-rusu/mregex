@@ -8,13 +8,13 @@ namespace meta
     namespace detail
     {
         template<typename Tuple, typename Func, std::size_t... Indices>
-        constexpr auto generate_tuple(Tuple const &tuple, Func &&func, std::index_sequence<Indices ...> &&)
+        constexpr auto generate_tuple(Tuple const &tuple, Func &&func, std::index_sequence<Indices ...>)
         {
             return std::tuple{func(std::get<Indices>(tuple)) ...};
         }
 
         template<typename Tuple, typename Func, std::size_t... Indices>
-        constexpr void iterate_tuple(Tuple &&tuple, Func &&func, std::index_sequence<Indices ...> &&)
+        constexpr void iterate_tuple(Tuple &&tuple, Func &&func, std::index_sequence<Indices ...>)
         {
             (func(std::get<Indices>(tuple)), ...);
         }

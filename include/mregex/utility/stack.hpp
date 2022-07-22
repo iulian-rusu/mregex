@@ -1,7 +1,7 @@
 #ifndef MREGEX_STACK_HPP
 #define MREGEX_STACK_HPP
 
-#include <type_traits>
+#include <mregex/symbols.hpp>
 
 namespace meta
 {
@@ -50,12 +50,10 @@ namespace meta
         using top = First;
     };
 
-    struct empty_stack_marker {};
-
     template<>
     struct stack<>
     {
-        using top = empty_stack_marker;
+        using top = symbol::empty;
     };
 
     /**
@@ -81,6 +79,6 @@ namespace meta
     using concat = decltype((Stacks{} >> ...));
 
     template<typename Stack>
-    inline constexpr bool is_empty_v = std::is_same_v<empty_stack_marker, typename Stack::top>;
+    inline constexpr bool is_empty_v = std::is_same_v<symbol::empty, typename Stack::top>;
 }
 #endif //MREGEX_STACK_HPP

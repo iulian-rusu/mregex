@@ -2,8 +2,7 @@
 [![build](https://github.com/iulian-rusu/mregex/actions/workflows/build.yml/badge.svg)](https://github.com/iulian-rusu/mregex/actions/workflows/build.yml)
 
 This is a compile-time implementation of regular expressions in C++20.
-The library parses a regex pattern and compiles it into a native C++
-type using template metaprogramming.
+The library parses a regex pattern and compiles it into a native C++ type using template metaprogramming.
 
 ## Features
 The library offers the following features:
@@ -23,42 +22,58 @@ an iterator compatible with `std::forward_iterator`
   * `ungreedy` - swaps lazy and greedy quantifiers
   * `dotall` - allows the wildcard `.` to also match `\n` and `\r`
 * a flexible API that allows exact matching, searching or iterating over multiple results
+* Ability to define the regex using a standard string-based API or using an [expression-based API](example/using_expressions.cpp)
     
 ## Installation
 The project is header-only and does not depend on any third-party libraries. 
-Currently, building is supported on GCC 10 and Clang 12, but any compiler that is C++20 compliant 
-will work.
+Currently, building is supported on GCC 10 and Clang 12, but any compiler that is C++20 compliant will work.
 
-To install the library, simply add the contents of the `include` directory 
-to your compiler's include paths. If you are using a build system like `CMake`, update your 
-target's include directories or add a library dependency to `mregex`.
+To install the library, simply add the contents of the `include` directory to your compiler's include paths.
+If you are using a build system like `CMake`, update your target's include directories or add a library dependency to `mregex`.
 
 ## Usage
 Below is an example of parsing a date.
-Notice that the generated regular expression is a type and not an object, since the library maps every
-valid regex pattern to a C++ type at compile-time. Invalid regular expression syntax will result
-in a compilation error.
+Notice that the generated regular expression is a type and not an object, since the library maps every valid regex pattern to a C++ type at compile-time. 
+Invalid regular expression syntax will result in a compilation error.
 
-The input can be any object that satisfies the `meta::char_range` concept, or a pair of iterators that
-satisfy `std::forward_iterator`.
+The input can be any object that satisfies the `meta::char_range` concept, or a pair of iterators that satisfy `std::forward_iterator`.
 ```cpp
 using date_regex = meta::regex<R"((\d{1,2})/(\d{1,2})/(\d{2,4}))">;
 constexpr std::string_view date = "07/08/2021";
 auto [day, month, year] = date_regex::match(date);
 ```
 
-The library supports searching for multiple matches in a string. In this case,
-the `meta::regex::range` method returns a type that satisfies `std::ranges::input_range`
-and can be iterated to lazily generate all matches in the string. Since the range only provides 
-input iterators, all results are discarded and cannot be visited again after the first
-iteration.
+The library supports searching for multiple matches in a string.
+In this case, the `meta::regex::range` method returns a type that satisfies `std::ranges::input_range` and can be iterated to lazily generate all matches in the string.
+Since the range only provides input iterators, all results are discarded and cannot be visited again after the first iteration.
 ```cpp
-using word_regex = meta::regex<R"(\w+(?=\W))">;
+using word_regex = meta::regex<R"(\w+(?!\w))">;
 std::string words = "Find all word-like sequences in this string!";
 for (auto &&word : word_regex::range(words))
 {
     std::cout << word << '\n';
 }
+```
+
+The [expression-based API](example/using_expressions.cpp) allows defining regular expressions as a composition of expression 
+(similar to [Boost.Xpressive](https://www.boost.org/doc/libs/1_65_1/doc/html/xpressive.html)). 
+The above example can be rewritten as follows:
+
+```cpp
+using namespace expr::operators;
+auto word_regex = (+expr::word >> !expr::ahead(expr::word));
+std::string words = "Find all word-like sequences in this string!";
+for (auto &&word : word_regex.range(words))
+{
+    std::cout << word << '\n';
+}
+```
+The generated type offers the same API as a `meta::regex`, but can be defined as a composition of C++ expressions:
+```cpp
+using namespace expr::operators;
+auto digits = +expr::digit;      // Matches one or more digits
+auto sep = expr::regex<"[-/.]">; // Matches '-', '/' or '.'
+auto date = (expr::exactly<2>(digits, sep) >> digits);
 ```
 
 More examples can be found in the `example/` directory.
@@ -102,7 +117,5 @@ Below is a complete list of the supported syntax constructs:
 |      `(?<!expr)`      |           (negative lookbehind) test the opposite of positive lookbehind           |
 
 ## Credits
-This project was inspired by other compile-time regex libraries
-like [Boost.Xpressive](https://www.boost.org/doc/libs/1_65_1/doc/html/xpressive.html)
-and especially [CTRE](https://github.com/hanickadot/compile-time-regular-expressions), 
-which served as a reference for the compile-time regex parser.
+This project was inspired by other compile-time regex libraries like [Boost.Xpressive](https://www.boost.org/doc/libs/1_65_1/doc/html/xpressive.html)
+and especially [CTRE](https://github.com/hanickadot/compile-time-regular-expressions), which served as a reference for the compile-time regex parser.

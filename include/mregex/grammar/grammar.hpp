@@ -150,7 +150,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::begin, symbol::epsilon>
+    struct rule<symbol::begin, symbol::empty>
     {
         using type = ignore;
     };
@@ -194,7 +194,7 @@ namespace meta::grammar
         using type =
                 stack
                 <
-                    symbol::make_epsilon,
+                    symbol::make_empty,
                     symbol::make_capture<symbol::unnamed>
                 >;
     };
@@ -291,7 +291,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::group_begin_or_mod, symbol::epsilon>
+    struct rule<symbol::group_begin_or_mod, symbol::empty>
     {
         using type = ignore;
     };
@@ -441,7 +441,7 @@ namespace meta::grammar
     template<>
     struct rule<symbol::group_begin, symbol::character<')'>>
     {
-        using type = symbol::make_epsilon;
+        using type = symbol::make_empty;
     };
 
     template<>
@@ -537,7 +537,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::group_begin, symbol::epsilon>
+    struct rule<symbol::group_begin, symbol::empty>
     {
         using type = ignore;
     };
@@ -568,7 +568,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::alt, symbol::epsilon>
+    struct rule<symbol::alt, symbol::empty>
     {
         using type = ignore;
     };
@@ -580,7 +580,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::esc, symbol::epsilon>
+    struct rule<symbol::esc, symbol::empty>
     {
         using type = reject;
     };
@@ -592,7 +592,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::action_mod<symbol::make_star<ast::match_mode::greedy>>
+                    symbol::action_mod<symbol::make_star<match_mode::greedy>>
                 >;
     };
 
@@ -603,7 +603,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::action_mod<symbol::make_plus<ast::match_mode::greedy>>
+                    symbol::action_mod<symbol::make_plus<match_mode::greedy>>
                 >;
     };
 
@@ -614,7 +614,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::action_mod<symbol::make_optional<ast::match_mode::greedy>>
+                    symbol::action_mod<symbol::make_optional<match_mode::greedy>>
                 >;
     };
 
@@ -636,7 +636,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::quantifier_begin, symbol::epsilon>
+    struct rule<symbol::quantifier_begin, symbol::empty>
     {
         using type = abort_quantifier_parsing_t<'{'>;
     };
@@ -648,7 +648,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::mod, symbol::epsilon>
+    struct rule<symbol::mod, symbol::empty>
     {
         using type = ignore;
     };
@@ -662,7 +662,7 @@ namespace meta::grammar
     template<std::size_t N>
     struct rule<symbol::quantifier_value<N>, symbol::character<'}'>>
     {
-        using action = symbol::make_repetition<ast::match_mode::greedy, symbol::quantifier_value<N>, symbol::quantifier_value<N>>;
+        using action = symbol::make_repetition<match_mode::greedy, symbol::quantifier_value<N>, symbol::quantifier_value<N>>;
         using type =
                 stack
                 <
@@ -695,29 +695,29 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::action_mod<symbol::make_repetition<ast::match_mode::greedy, A, B>>
+                    symbol::action_mod<symbol::make_repetition<match_mode::greedy, A, B>>
                 >;
     };
 
-    template<template<ast::match_mode, typename...> typename Action, ast::match_mode Mode, typename... Inner>
+    template<template<match_mode, typename...> typename Action, match_mode Mode, typename... Inner>
     struct rule<symbol::action_mod<Action<Mode, Inner ...>>, symbol::character<'?'>>
     {
         using type =
                 stack
                 <
                     advance,
-                    Action<ast::match_mode::lazy, Inner ...>
+                    Action<match_mode::lazy, Inner ...>
                 >;
     };
 
-    template<template<ast::match_mode, typename...> typename Action, ast::match_mode Mode, typename... Inner>
+    template<template<match_mode, typename...> typename Action, match_mode Mode, typename... Inner>
     struct rule<symbol::action_mod<Action<Mode, Inner ...>>, symbol::character<'+'>>
     {
         using type =
                 stack
                 <
                     advance,
-                    Action<ast::match_mode::possessive, Inner ...>
+                    Action<match_mode::possessive, Inner ...>
                 >;
     };
 
@@ -728,7 +728,7 @@ namespace meta::grammar
     };
 
     template<typename Action>
-    struct rule<symbol::action_mod<Action>, symbol::epsilon>
+    struct rule<symbol::action_mod<Action>, symbol::empty>
     {
         using type = Action;
     };
@@ -856,7 +856,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::alt_seq, symbol::epsilon>
+    struct rule<symbol::alt_seq, symbol::empty>
     {
         using type = reject;
     };
@@ -991,7 +991,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::seq, symbol::epsilon>
+    struct rule<symbol::seq, symbol::empty>
     {
         using type = ignore;
     };
@@ -1129,7 +1129,12 @@ namespace meta::grammar
     template<>
     struct rule<symbol::set_range_begin, symbol::character<']'>>
     {
-        using type = reject;
+        using type =
+                stack
+                <
+                    symbol::push_literal<'-'>,
+                    symbol::make_set_from_stack
+                >;
     };
 
     template<>
@@ -1208,7 +1213,7 @@ namespace meta::grammar
     };
 
     template<std::size_t ID>
-    struct rule<symbol::backref_id<ID>, symbol::epsilon>
+    struct rule<symbol::backref_id<ID>, symbol::empty>
     {
         using type = symbol::make_backref<ID>;
     };
@@ -1244,7 +1249,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<empty_stack_marker, symbol::epsilon>
+    struct rule<symbol::empty, symbol::empty>
     {
         using type = accept;
     };

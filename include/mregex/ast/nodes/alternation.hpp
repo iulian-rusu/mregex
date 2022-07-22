@@ -2,8 +2,8 @@
 #define MREGEX_NODES_ALTERNATION_HPP
 
 #include <mregex/ast/astfwd.hpp>
-#include <mregex/ast/ast_traits.hpp>
 #include <mregex/ast/match_result.hpp>
+#include <mregex/ast/traits.hpp>
 
 namespace meta::ast
 {

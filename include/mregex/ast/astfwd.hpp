@@ -11,9 +11,6 @@ namespace meta::ast
     template<typename, typename...>
     struct alternation;
 
-    template<typename, typename...>
-    struct disjunction;
-
     template<std::size_t, typename, typename>
     struct capture;
 
@@ -43,7 +40,7 @@ namespace meta::ast
     template<std::size_t N, typename Inner>
     using possessive_fixed_repetition = basic_fixed_repetition<match_mode::possessive, N, Inner>;
 
-    // Star
+    // Kleene star
     template<match_mode Mode, typename Inner>
     using basic_star = basic_repetition<Mode, symbol::quantifier_value<0>, symbol::quantifier_inf, Inner>;
 
@@ -85,7 +82,7 @@ namespace meta::ast
     // Terminals
     struct terminal;
 
-    struct epsilon;
+    struct empty;
 
     struct nothing;
 

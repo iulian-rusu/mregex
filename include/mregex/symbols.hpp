@@ -1,8 +1,8 @@
 #ifndef MREGEX_SYMBOLS_HPP
 #define MREGEX_SYMBOLS_HPP
 
-#include <mregex/ast/match_mode.hpp>
 #include <mregex/utility/static_string.hpp>
+#include <mregex/match_mode.hpp>
 
 namespace meta::symbol
 {
@@ -26,7 +26,7 @@ namespace meta::symbol
     template<char>
     struct character {};
 
-    struct epsilon {};
+    struct empty {};
 
     template<char>
     struct expect {};
@@ -97,19 +97,19 @@ namespace meta::symbol
 
     struct make_alternation : ast_update {};
 
-    template<ast::match_mode>
+    template<match_mode>
     struct make_star : ast_update {};
 
-    template<ast::match_mode, typename, typename>
+    template<match_mode, typename, typename>
     struct make_repetition : ast_update {};
 
-    template<ast::match_mode>
+    template<match_mode>
     struct make_optional : ast_update {};
 
-    template<ast::match_mode>
+    template<match_mode>
     struct make_plus : ast_update {};
 
-    struct make_epsilon : ast_update {};
+    struct make_empty : ast_update {};
 
     struct make_alpha : ast_update {};
 
@@ -117,11 +117,11 @@ namespace meta::symbol
 
     struct make_word : ast_update {};
 
-    struct make_whitespace : ast_update  {};
+    struct make_whitespace : ast_update {};
 
-    struct make_lower : ast_update  {};
+    struct make_lower : ast_update {};
 
-    struct make_upper : ast_update  {};
+    struct make_upper : ast_update {};
 
     struct make_hexa : ast_update {};
 

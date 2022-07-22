@@ -13,7 +13,7 @@ namespace meta
     template<std::forward_iterator Iter>
     struct continuations
     {
-        static constexpr auto epsilon = [](Iter it) noexcept -> ast::match_result<Iter> {
+        static constexpr auto success = [](Iter it) noexcept -> ast::match_result<Iter> {
             return {it, true};
         };
 
