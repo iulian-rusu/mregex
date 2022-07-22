@@ -24,7 +24,6 @@ namespace meta::tests
     static_assert(is_trivially_matchable_v<set<wildcard, literal<'b'>, whitespace>>);
     static_assert(is_trivially_matchable_v<sequence<wildcard>>);
     static_assert(is_trivially_matchable_v<alternation<wildcard>>);
-    static_assert(is_trivially_matchable_v<disjunction<wildcard>>);
     static_assert(is_trivially_matchable_v<alternation<whitespace, literal<'a'>, literal<'b'>>>);
     static_assert(is_trivially_matchable_v<epsilon> == false);
     static_assert(is_trivially_matchable_v<beginning> == false);

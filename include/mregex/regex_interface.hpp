@@ -1,5 +1,5 @@
-#ifndef MREGEX_REGEX_BASE_HPP
-#define MREGEX_REGEX_BASE_HPP
+#ifndef MREGEX_REGEX_INTERFACE_HPP
+#define MREGEX_REGEX_INTERFACE_HPP
 
 #include <mregex/ast/ast.hpp>
 #include <mregex/utility/input_range_adapter.hpp>
@@ -16,19 +16,19 @@ namespace meta
      * @tparam Flags    Optional flags for matching
      */
     template<typename AST, typename... Flags>
-    struct regex_base
+    struct regex_interface
     {
         /**
          * Metafunction used to add flags to the current regex type.
          */
         template<typename... ExtraFlags>
-        using with = regex_base<AST, Flags ..., ExtraFlags ...>;
+        using with = regex_interface<AST, Flags ..., ExtraFlags ...>;
 
         using ast_type = AST;
 
         static constexpr std::size_t capture_count = ast_type::capture_count;
 
-        constexpr regex_base() noexcept = default;
+        constexpr regex_interface() noexcept = default;
 
         /**
          * Matches a given input sequence against the regex pattern.
@@ -170,4 +170,4 @@ namespace meta
         }
     };
 }
-#endif //MREGEX_REGEX_BASE_HPP
+#endif //MREGEX_REGEX_INTERFACE_HPP
