@@ -1,9 +1,9 @@
-#ifndef MREGEX_EXPR_TEMPLATES_HPP
-#define MREGEX_EXPR_TEMPLATES_HPP
+#ifndef MREGEX_XPR_TEMPLATES_HPP
+#define MREGEX_XPR_TEMPLATES_HPP
 
 #include <mregex/ast/astfwd.hpp>
 
-namespace meta::expr
+namespace meta::xpr
 {
     /**
      * Adapter metafunctions for partially evaluating some AST nodes.
@@ -23,4 +23,4 @@ namespace meta::expr
         using type = ast::basic_repetition<Mode, A, B, Inner>;
     };
 }
-#endif //MREGEX_EXPR_TEMPLATES_HPP
+#endif //MREGEX_XPR_TEMPLATES_HPP

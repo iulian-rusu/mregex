@@ -39,12 +39,6 @@ namespace meta::ast
     };
 
     template<typename T, typename Stack>
-    struct build<symbol::make_alpha, T, Stack>
-    {
-        using type = push<Stack, alpha>;
-    };
-
-    template<typename T, typename Stack>
     struct build<symbol::make_digit, T, Stack>
     {
         using type = push<Stack, digit>;
@@ -54,6 +48,12 @@ namespace meta::ast
     struct build<symbol::make_word, T, Stack>
     {
         using type = push<Stack, word>;
+    };
+
+    template<typename T, typename Stack>
+    struct build<symbol::make_word_boundary, T, Stack>
+    {
+        using type = push<Stack, word_boundary>;
     };
 
     template<typename T, typename Stack>
@@ -99,9 +99,21 @@ namespace meta::ast
     };
 
     template<typename T, typename Stack>
-    struct build<symbol::make_ending, T, Stack>
+    struct build<symbol::make_end, T, Stack>
     {
-        using type = push<Stack, ending>;
+        using type = push<Stack, end>;
+    };
+
+    template<typename T, typename Stack>
+    struct build<symbol::make_beginning_of_input, T, Stack>
+    {
+        using type = push<Stack, beginning_of_input>;
+    };
+
+    template<typename T, typename Stack>
+    struct build<symbol::make_end_of_input, T, Stack>
+    {
+        using type = push<Stack, end_of_input>;
     };
 
     template<typename T, typename First, typename... Rest>

@@ -1,36 +1,37 @@
 #include <iostream>
 #include <mregex.hpp>
 
+// Alias for convenience
+namespace xpr = meta::xpr;
+
 int main()
 {
     /**
      * Instead of defining the entire regex as a string, we can build it from smaller components, like a C++ expression.
      *
      * This example will use overloaded operators to replace standard regex operators.
-     * You can also use functions like expr::concat() or expr::either() to achieve the same effect.
+     * You can also use functions like xpr::concat() or xpr::either() to achieve the same effect.
      *
      * Concatenation is done with the >> operator.
      * Alternation is done with the | operator.
      * The Kleene star and plus quantifiers are achieved with unary * and + operators.
      * Negation of character classes and lookarounds is done with the ! operator.
      * Flags can be added after defining the regex using the / operator.
+     *
+     * Once an expression has been modified by flags, it cannot be composed with other expressions!
      */
 
-    // Opting in for operators is done by importing the namespace expr::operators
-    using namespace expr::operators;
+    // Opting in for operators is done by importing the namespace xpr::operators
+    using namespace xpr::operators;
 
     // Equivalent to (?:ftp|ssh|https?)://(?:[-.a-z])+.com(?:/\S*)?
-    auto pattern = (
-        (expr::str<"ftp"> | expr::str<"ssh"> | expr::regex<"https?">) >>
-        expr::str<"://"> >> +expr::regex<"[-.a-z]"> >> expr::str<".com"> >>
-        expr::maybe(
-            expr::chr<'/'>,
-            *!expr::whitespace
-        )
-    ) / expr::flag::icase;
+    auto schema = xpr::str<"ftp"> | xpr::str<"ssh"> | xpr::regex<"https?">;
+    auto domain = +xpr::regex<"[-.a-z]"> >> xpr::str<".com">;
+    auto path = xpr::chr<'/'> >> *!xpr::whitespace;
+    auto url = schema >> xpr::str<"://"> >> domain >> xpr::maybe(path);
 
-    // The pattern object has the same interface as a meta::regex type
-    if (auto match = pattern.match("hTtPs://GoOgLe.CoM"))
+    // The resulting object has the same interface as a meta::regex type
+    if (auto match = url.match("https://google.com"))
         std::cout << "Matched!\n";
     else
         std::cout << "Not matched :(\n";

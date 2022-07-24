@@ -91,7 +91,13 @@ namespace meta::ast
 
     struct beginning;
 
-    struct ending;
+    struct beginning_of_input;
+
+    struct end;
+
+    struct end_of_input;
+
+    struct word_boundary;
 
     template<char>
     struct literal;
@@ -108,8 +114,6 @@ namespace meta::ast
     using lower = range<'a', 'z'>;
 
     using upper = range<'A', 'Z'>;
-
-    using alpha = set<lower, upper>;
 
     using word = set<lower, upper, digit, literal<'_'>>;
 

@@ -13,16 +13,16 @@ namespace meta::ast
      * for a static member function match_one<A, B>, where A satisfies std::forward_iterator
      * and B can be any generic type.
      */
-    template<typename T>
+    template<typename Node>
     struct is_trivially_matchable
     {
         using iterator_type = std::string_view::iterator;
 
-        static constexpr bool value = requires { &T::template match_one<iterator_type, int>; };
+        static constexpr bool value = requires { &Node::template match_one<iterator_type, int>; };
     };
 
-    template<typename T>
-    inline constexpr bool is_trivially_matchable_v = is_trivially_matchable<T>::value;
+    template<typename Node>
+    inline constexpr bool is_trivially_matchable_v = is_trivially_matchable<Node>::value;
 
     template<typename... Nodes>
     inline constexpr bool are_trivially_matchable_v = (is_trivially_matchable_v<Nodes> && ...);

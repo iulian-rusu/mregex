@@ -111,11 +111,11 @@ namespace meta::symbol
 
     struct make_empty : ast_update {};
 
-    struct make_alpha : ast_update {};
-
     struct make_digit : ast_update {};
 
     struct make_word : ast_update {};
+
+    struct make_word_boundary : ast_update {};
 
     struct make_whitespace : ast_update {};
 
@@ -131,7 +131,11 @@ namespace meta::symbol
 
     struct make_beginning : ast_update {};
 
-    struct make_ending : ast_update {};
+    struct make_end : ast_update {};
+
+    struct make_beginning_of_input : ast_update {};
+
+    struct make_end_of_input : ast_update {};
 
     struct make_positive_lookahead : ast_update {};
 

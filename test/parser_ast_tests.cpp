@@ -37,7 +37,7 @@ namespace meta::tests
         <
             literal<'a'>,
             literal<'b'>,
-            ending
+            end
         >
     >);
     static_assert(expected_ast<R"(^ab$)",
@@ -46,7 +46,7 @@ namespace meta::tests
             beginning,
             literal<'a'>,
             literal<'b'>,
-            ending
+            end
         >
     >);
     static_assert(expected_ast<R"(x(?=ab)x)",
@@ -138,8 +138,12 @@ namespace meta::tests
     static_assert(expected_ast<R"(\v)", literal<'\v'>>);
     static_assert(expected_ast<R"(\R)", linebreak>);
     static_assert(expected_ast<R"(\N)", negated<linebreak>>);
-    static_assert(expected_ast<R"(\a)", alpha>);
+    static_assert(expected_ast<R"(\a)", literal<'\a'>>);
     static_assert(expected_ast<R"(\D)", negated<digit>>);
+    static_assert(expected_ast<R"(\b)", word_boundary>);
+    static_assert(expected_ast<R"(\B)", negated<word_boundary>>);
+    static_assert(expected_ast<R"(\A)", beginning_of_input>);
+    static_assert(expected_ast<R"(\Z)", end_of_input>);
     static_assert(expected_ast<R"(a.?b)",
         sequence
         <

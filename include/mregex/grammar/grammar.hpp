@@ -143,7 +143,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_ending,
+                    symbol::make_end,
                     symbol::seq,
                     symbol::alt
                 >;
@@ -283,7 +283,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_ending,
+                    symbol::make_end,
                     symbol::seq,
                     symbol::alt,
                     symbol::make_capture<symbol::unnamed>
@@ -530,7 +530,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_ending,
+                    symbol::make_end,
                     symbol::seq,
                     symbol::alt
                 >;
@@ -850,7 +850,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_ending,
+                    symbol::make_end,
                     symbol::seq
                 >;
     };
@@ -984,7 +984,7 @@ namespace meta::grammar
                 stack
                 <
                     advance,
-                    symbol::make_ending,
+                    symbol::make_end,
                     symbol::make_sequence,
                     symbol::seq
                 >;

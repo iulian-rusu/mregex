@@ -1,9 +1,10 @@
-#ifndef MREGEX_EXPR_UTILITY_HPP
-#define MREGEX_EXPR_UTILITY_HPP
+#ifndef MREGEX_XPR_UTILITY_HPP
+#define MREGEX_XPR_UTILITY_HPP
 
 #include <mregex/ast/astfwd.hpp>
+#include <mregex/regex_interface.hpp>
 
-namespace meta::expr
+namespace meta::xpr
 {
     namespace detail
     {
@@ -68,4 +69,4 @@ namespace meta::expr
     template<typename AST>
     constexpr auto to_regex(AST) noexcept -> regex_interface<AST> { return {}; }
 }
-#endif //MREGEX_EXPR_UTILITY_HPP
+#endif //MREGEX_XPR_UTILITY_HPP

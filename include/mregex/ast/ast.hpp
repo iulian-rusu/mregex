@@ -4,16 +4,15 @@
 #include <mregex/ast/nodes/quantifiers/fixed_repetition.hpp>
 #include <mregex/ast/nodes/quantifiers/repetition.hpp>
 #include <mregex/ast/nodes/quantifiers/star.hpp>
-#include <mregex/ast/nodes/terminals/anchors.hpp>
 #include <mregex/ast/nodes/terminals/backref.hpp>
 #include <mregex/ast/nodes/terminals/empty.hpp>
 #include <mregex/ast/nodes/terminals/literal.hpp>
 #include <mregex/ast/nodes/terminals/negated.hpp>
 #include <mregex/ast/nodes/terminals/nothing.hpp>
 #include <mregex/ast/nodes/terminals/range.hpp>
-#include <mregex/ast/nodes/terminals/set.hpp>
 #include <mregex/ast/nodes/terminals/whitespace.hpp>
 #include <mregex/ast/nodes/terminals/wildcard.hpp>
+#include <mregex/ast/nodes/terminals/anchors.hpp>
 #include <mregex/ast/nodes/alternation.hpp>
 #include <mregex/ast/nodes/capture.hpp>
 #include <mregex/ast/nodes/lookaheads.hpp>

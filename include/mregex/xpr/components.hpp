@@ -1,13 +1,17 @@
-#ifndef MREGEX_EXPR_COMPONENTS_HPP
-#define MREGEX_EXPR_COMPONENTS_HPP
+#ifndef MREGEX_XPR_COMPONENTS_HPP
+#define MREGEX_XPR_COMPONENTS_HPP
 
 #include <mregex/ast/traits.hpp>
-#include <mregex/expr/templates.hpp>
-#include <mregex/expr/utility.hpp>
-#include <mregex/regex_interface.hpp>
+#include <mregex/xpr/templates.hpp>
+#include <mregex/xpr/utility.hpp>
+#include <mregex/regex.hpp>
 
-namespace meta::expr
+namespace meta::xpr
 {
+    /**
+     * Expression-based API for constructing a regular expression.
+     */
+
     // Sequences and alternations
     template<typename... Nodes>
     constexpr auto concat(regex_interface<Nodes>...) noexcept
@@ -119,13 +123,15 @@ namespace meta::expr
     inline constexpr auto empty = regex_interface<ast::empty>{};
     inline constexpr auto nothing = regex_interface<ast::nothing>{};
     inline constexpr auto begin = regex_interface<ast::beginning>{};
-    inline constexpr auto end = regex_interface<ast::ending>{};
+    inline constexpr auto end = regex_interface<ast::end>{};
+    inline constexpr auto begin_input = regex_interface<ast::beginning_of_input>{};
+    inline constexpr auto end_input = regex_interface<ast::end_of_input>{};
+    inline constexpr auto boundary = regex_interface<ast::word_boundary>{};
     inline constexpr auto whitespace = regex_interface<ast::whitespace>{};
     inline constexpr auto any = regex_interface<ast::wildcard>{};
     inline constexpr auto digit = regex_interface<ast::digit>{};
     inline constexpr auto lower = regex_interface<ast::lower>{};
     inline constexpr auto upper = regex_interface<ast::upper>{};
-    inline constexpr auto alpha = regex_interface<ast::alpha>{};
     inline constexpr auto word = regex_interface<ast::word>{};
     inline constexpr auto hexa = regex_interface<ast::hexa>{};
     inline constexpr auto endl = regex_interface<ast::linebreak>{};
@@ -147,7 +153,7 @@ namespace meta::expr
 
     template<typename Node>
     requires ast::is_trivially_matchable_v<Node>
-    constexpr auto neg(regex_interface<Node>) noexcept -> regex_interface<ast::negated<Node>> { return {}; }
+    constexpr auto negate(regex_interface<Node>) noexcept -> regex_interface<ast::negated<Node>> { return {}; }
 
     // Lookarounds
     template<typename... Nodes>
@@ -163,19 +169,19 @@ namespace meta::expr
     }
 
     template<typename Inner>
-    constexpr auto neg(regex_interface<ast::positive_lookahead<Inner>>) noexcept
+    constexpr auto negate(regex_interface<ast::positive_lookahead<Inner>>) noexcept
     {
         return to_regex(ast::negative_lookahead<Inner>{});
     }
 
     template<typename Inner>
-    constexpr auto neg(regex_interface<ast::positive_lookbehind<Inner>>) noexcept
+    constexpr auto negate(regex_interface<ast::positive_lookbehind<Inner>>) noexcept
     {
         return to_regex(ast::negative_lookbehind<Inner>{});
     }
 
     // Builder that generates the AST from a regular expression
     template<static_string Pattern>
-    inline constexpr auto regex = to_regex(typename meta::regex<Pattern>::ast_type{});
+    inline constexpr auto regex = typename meta::regex<Pattern>::base_type{};
 }
-#endif //MREGEX_EXPR_COMPONENTS_HPP
+#endif //MREGEX_XPR_COMPONENTS_HPP

@@ -14,6 +14,10 @@ namespace meta::tests
     static_assert(accepted<R"(\\)">);
     static_assert(accepted<R"(\\a)">);
     static_assert(accepted<R"(\\D)">);
+    static_assert(accepted<R"(\n)">);
+    static_assert(accepted<R"(\N)">);
+    static_assert(accepted<R"(\b)">);
+    static_assert(accepted<R"(\B)">);
     static_assert(accepted<R"(abcdefg)">);
     static_assert(accepted<R"((c))">);
     static_assert(accepted<R"((c)\1)">);

@@ -24,29 +24,6 @@ namespace meta::grammar
     };
 
     template<>
-    struct char_class_rule<'a'>
-    {
-        using type =
-                stack
-                <
-                    advance,
-                    symbol::make_alpha
-                >;
-    };
-
-    template<>
-    struct char_class_rule<'A'>
-    {
-        using type =
-                stack
-                <
-                    advance,
-                    symbol::make_alpha,
-                    symbol::make_negated
-                >;
-    };
-
-    template<>
     struct char_class_rule<'d'>
     {
         using type =
@@ -203,6 +180,51 @@ namespace meta::grammar
                     advance,
                     symbol::make_linebreak,
                     symbol::make_negated
+                >;
+    };
+
+    template<>
+    struct char_class_rule<'b'>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::make_word_boundary
+                >;
+    };
+
+    template<>
+    struct char_class_rule<'B'>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::make_word_boundary,
+                    symbol::make_negated
+                >;
+    };
+
+    template<>
+    struct char_class_rule<'A'>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::make_beginning_of_input
+                >;
+    };
+
+    template<>
+    struct char_class_rule<'Z'>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::make_end_of_input
                 >;
     };
 }

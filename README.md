@@ -55,25 +55,26 @@ for (auto &&word : word_regex::range(words))
 }
 ```
 
-The [expression-based API](example/using_expressions.cpp) allows defining regular expressions as a composition of expression 
+The [expression-based API](example/using_expressions.cpp) allows defining a regex as a composition of C++ expressions 
 (similar to [Boost.Xpressive](https://www.boost.org/doc/libs/1_65_1/doc/html/xpressive.html)). 
-The above example can be rewritten as follows:
-
+The previous example can be rewritten as follows:
 ```cpp
-using namespace expr::operators;
-auto word_regex = (+expr::word >> !expr::ahead(expr::word));
+namespace xpr = meta::xpr;
+using namespace xpr::operators;
+
+auto word_regex = +xpr::word >> not xpr::ahead(xpr::word);
 std::string words = "Find all word-like sequences in this string!";
 for (auto &&word : word_regex.range(words))
 {
     std::cout << word << '\n';
 }
 ```
-The generated type offers the same API as a `meta::regex`, but can be defined as a composition of C++ expressions:
+
+The main advantage of this approach is the ability to construct complex expressions from simpler components:
 ```cpp
-using namespace expr::operators;
-auto digits = +expr::digit;      // Matches one or more digits
-auto sep = expr::regex<"[-/.]">; // Matches '-', '/' or '.'
-auto date = (expr::exactly<2>(digits, sep) >> digits);
+auto digits = +xpr::digit;      // Matches one or more digits
+auto sep = xpr::regex<"[-/.]">; // Matches '-', '/' or '.'
+auto date = xpr::exactly<2>(digits, sep) >> digits;
 ```
 
 More examples can be found in the `example/` directory.
@@ -86,13 +87,15 @@ Below is a complete list of the supported syntax constructs:
 |          `.`          |     match any character except `\n` and `\r`, unless the `dotall` flag is set      |
 |          `^`          | match the beginning of the input (or of the line when the `multiline` flag is set) |
 |          `$`          |    match the end of the input (or of the line when the `multiline` flag is set)    |
+|      `\A`, `\Z`       |                   match only the beginning and end of the input                    |
+|         `\b`          |     (word-boundary) match the position between a word and a non-word character     |
+|         `\B`          |                    match everything that is not a word-boundary                    |
 |        `[abc]`        |                           match any character in the set                           |
 |        `[a-z]`        |                          match any character in the range                          |
 |       `[^abc]`        |                       match any character **not** in the set                       |
 |         `\d`          |                             match any digit character                              |
 |         `\l`          |                             match any lowercase letter                             |
 |         `\u`          |                             match any uppercase letter                             |
-|         `\a`          |                                  match any letter                                  |
 |         `\w`          |                 match any word character (letters, digits and `_`)                 |
 |         `\x`          |                          match any hexadecimal character                           |
 | `\D`, `\W`, `\U` etc. |                match any character **not** in the respective class                 |

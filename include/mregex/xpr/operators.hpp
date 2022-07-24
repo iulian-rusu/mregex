@@ -1,10 +1,9 @@
-#ifndef MREGEX_EXPR_OPERATORS_HPP
-#define MREGEX_EXPR_OPERATORS_HPP
+#ifndef MREGEX_XPR_OPERATORS_HPP
+#define MREGEX_XPR_OPERATORS_HPP
 
-#include <mregex/expr/components.hpp>
-#include <mregex/expr/flags.hpp>
+#include <mregex/xpr/components.hpp>
 
-namespace meta::expr::operators
+namespace meta::xpr::operators
 {
     // Operators for defining the AST
     template<typename T, typename U>
@@ -22,7 +21,7 @@ namespace meta::expr::operators
     template<typename Node>
     constexpr auto operator!(regex_interface<Node> node) noexcept
     {
-        return neg(node);
+        return negate(node);
     }
 
     template<typename Node>
@@ -44,4 +43,4 @@ namespace meta::expr::operators
         return regex_interface<Ts ..., Flag>{};
     }
 }
-#endif //MREGEX_EXPR_OPERATORS_HPP
+#endif //MREGEX_XPR_OPERATORS_HPP

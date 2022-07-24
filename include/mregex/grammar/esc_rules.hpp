@@ -101,6 +101,28 @@ namespace meta::grammar
                 >;
     };
 
+    template<>
+    struct esc_rule<'a', false>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::push_literal<'\a'>
+                >;
+    };
+
+    template<>
+    struct esc_rule<'e', false>
+    {
+        using type =
+                stack
+                <
+                    advance,
+                    symbol::push_literal<0x1b>
+                >;
+    };
+
     /**
      * If none of the rules from above match, parse the escaped sequence
      * as a special character class.

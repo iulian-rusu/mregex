@@ -3,6 +3,7 @@
 
 #include <mregex/ast/nodes/terminals/terminal.hpp>
 #include <mregex/ast/match_result.hpp>
+#include <mregex/utility/char_traits.hpp>
 #include <mregex/regex_context.hpp>
 
 namespace meta::ast
