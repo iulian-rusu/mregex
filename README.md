@@ -87,9 +87,10 @@ Below is a complete list of the supported syntax constructs:
 |          `.`          |     match any character except `\n` and `\r`, unless the `dotall` flag is set      |
 |          `^`          | match the beginning of the input (or of the line when the `multiline` flag is set) |
 |          `$`          |    match the end of the input (or of the line when the `multiline` flag is set)    |
-|      `\A`, `\Z`       |                   match only the beginning and end of the input                    |
-|         `\b`          |     (word-boundary) match the position between a word and a non-word character     |
-|         `\B`          |                    match everything that is not a word-boundary                    |
+|         `\A`          |                       match only the beginning of the input                        |
+|         `\Z`          |                          match only the end of the input                           |
+|         `\b`          |     (word boundary) match the position between a word and a non-word character     |
+|         `\B`          |                    match everything that is not a word boundary                    |
 |        `[abc]`        |                           match any character in the set                           |
 |        `[a-z]`        |                          match any character in the range                          |
 |       `[^abc]`        |                       match any character **not** in the set                       |

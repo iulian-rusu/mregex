@@ -14,16 +14,16 @@ namespace meta::xpr
 
     // Sequences
     template<typename... Nodes>
-    constexpr auto concat(regex_interface<Nodes>... elems) noexcept
+    constexpr auto concat(regex_interface<Nodes>...) noexcept
     {
-        return flat_combine<ast::sequence>(elems ...);
+        return to_regex(flat_wrap<ast::sequence>(Nodes{} ...));
     }
 
     // Alternations
     template<typename... Nodes>
-    constexpr auto either(regex_interface<Nodes>... elems) noexcept
+    constexpr auto either(regex_interface<Nodes>...) noexcept
     {
-        return flat_combine<ast::alternation>(elems ...);
+        return to_regex(flat_wrap<ast::alternation>(Nodes{} ...));
     }
 
     // Captures
@@ -31,14 +31,14 @@ namespace meta::xpr
     constexpr auto capture(regex_interface<Nodes>...) noexcept
     {
         using wrapper_type = capture_template<ID, symbol::name<Name>>;
-        return to_regex(wrap<wrapper_type::template type>(Nodes{} ...));
+        return to_regex(pack<wrapper_type::template type>(Nodes{} ...));
     }
 
     template<std::size_t ID, typename... Nodes>
     constexpr auto capture(regex_interface<Nodes>...) noexcept
     {
         using wrapper_type = capture_template<ID, symbol::unnamed>;
-        return to_regex(wrap<wrapper_type::template type>(Nodes{} ...));
+        return to_regex(pack<wrapper_type::template type>(Nodes{} ...));
     }
 
     // Repetition
@@ -46,7 +46,7 @@ namespace meta::xpr
     constexpr auto between(regex_interface<Nodes>...) noexcept
     {
         using wrapper_type = repetition_template<Mode, symbol::quantifier_value<A>, symbol::quantifier_value<B>>;
-        return to_regex(wrap<wrapper_type::template type>(Nodes{} ...));
+        return to_regex(pack<wrapper_type::template type>(Nodes{} ...));
     }
 
     template<std::size_t A, std::size_t B, typename... Nodes>
@@ -59,7 +59,7 @@ namespace meta::xpr
     constexpr auto at_least(regex_interface<Nodes>...) noexcept
     {
         using wrapper_type = repetition_template<Mode, symbol::quantifier_value<N>, symbol::quantifier_inf>;
-        return to_regex(wrap<wrapper_type::template type>(Nodes{} ...));
+        return to_regex(pack<wrapper_type::template type>(Nodes{} ...));
     }
 
     template<std::size_t N, typename... Nodes>
@@ -68,7 +68,7 @@ namespace meta::xpr
         return at_least<N, match_mode::greedy>(nodes ...);
     }
 
-    // Exact repetition
+    // Fixed repetition
     template<std::size_t N, typename... Nodes>
     constexpr auto exactly(regex_interface<Nodes>... nodes) noexcept
     {
@@ -153,20 +153,19 @@ namespace meta::xpr
     inline constexpr auto group_named = regex_interface<ast::named_backref<symbol::name<Name>>>{};
 
     template<typename Node>
-    requires ast::is_trivially_matchable_v<Node>
     constexpr auto negate(regex_interface<Node>) noexcept -> regex_interface<ast::negated<Node>> { return {}; }
 
     // Lookarounds
     template<typename... Nodes>
     constexpr auto ahead(regex_interface<Nodes>...) noexcept
     {
-        return to_regex(wrap<ast::positive_lookahead>(Nodes{} ...));
+        return to_regex(pack<ast::positive_lookahead>(Nodes{} ...));
     }
 
     template<typename... Nodes>
     constexpr auto behind(regex_interface<Nodes>...) noexcept
     {
-        return to_regex(wrap<ast::positive_lookbehind>(Nodes{} ...));
+        return to_regex(pack<ast::positive_lookbehind>(Nodes{} ...));
     }
 
     template<typename Inner>

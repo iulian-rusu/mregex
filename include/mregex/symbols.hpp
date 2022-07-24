@@ -6,22 +6,6 @@
 
 namespace meta::symbol
 {
-    // Symbols for basic operators
-    struct begin {};
-
-    struct esc {};
-
-    struct mod {};
-
-    template<typename>
-    struct action_mod {};
-
-    struct seq {};
-
-    struct alt {};
-
-    struct alt_seq {};
-
     // Symbols for parsing tokens
     template<char>
     struct character {};
@@ -31,28 +15,30 @@ namespace meta::symbol
     template<char>
     struct expect {};
 
+    // Symbols for parsing basic operators
+    struct begin {};
+    struct esc {};
+    struct seq {};
+    struct alt {};
+    struct alt_seq {};
+    struct mod {};
+
+    template<typename>
+    struct action_mod {};
+
     // Symbols for parsing groups
     struct group_begin_or_mod {};
-
     struct group_mod {};
-
     struct group_mod_less {};
-
     struct group_begin {};
 
     // Symbols for parsing sets
     struct set_begin_or_neg {};
-
     struct set_begin {};
-
     struct set_seq {};
-
     struct set_esc {};
-
     struct set_range_begin {};
-
     struct set_range_seq {};
-
     struct set_range_esc {};
 
     // Symbols for parsing quantifiers
@@ -85,91 +71,66 @@ namespace meta::symbol
     template<char...>
     struct capture_name_seq {};
 
-    // Symbols that indicate an action which updates the AST structure
-    struct ast_update {};
+    // Tag type for symbols which require a semantic action
+    struct semantic_action {};
 
-    struct make_literal : ast_update {};
+    struct make_sequence : semantic_action {};
+    struct make_alternation : semantic_action {};
+    struct make_set : semantic_action {};
+    struct make_set_from_current_char : semantic_action {};
+    struct make_set_from_stack : semantic_action {};
+    struct make_range : semantic_action {};
+    struct make_range_from_stack : semantic_action {};
+    struct make_digit : semantic_action {};
+    struct make_lower : semantic_action {};
+    struct make_upper : semantic_action {};
+    struct make_word : semantic_action {};
+    struct make_hexa : semantic_action {};
+    struct make_linebreak : semantic_action {};
+    struct make_negated : semantic_action {};
+    struct make_empty : semantic_action {};
+    struct make_beginning : semantic_action {};
+    struct make_beginning_of_input : semantic_action {};
+    struct make_end : semantic_action {};
+    struct make_end_of_input : semantic_action {};
+    struct make_word_boundary : semantic_action {};
+    struct make_whitespace : semantic_action {};
+    struct make_wildcard : semantic_action {};
+    struct make_literal : semantic_action {};
 
     template<char>
-    struct push_literal : ast_update {};
+    struct push_literal : semantic_action {};
 
-    struct make_sequence : ast_update {};
-
-    struct make_alternation : ast_update {};
-
-    template<match_mode>
-    struct make_star : ast_update {};
+    template<typename>
+    struct make_capture : semantic_action {};
 
     template<match_mode, typename, typename>
-    struct make_repetition : ast_update {};
+    struct make_repetition : semantic_action {};
 
     template<match_mode>
-    struct make_optional : ast_update {};
+    struct make_star : semantic_action {};
 
     template<match_mode>
-    struct make_plus : ast_update {};
+    struct make_plus : semantic_action {};
 
-    struct make_empty : ast_update {};
-
-    struct make_digit : ast_update {};
-
-    struct make_word : ast_update {};
-
-    struct make_word_boundary : ast_update {};
-
-    struct make_whitespace : ast_update {};
-
-    struct make_lower : ast_update {};
-
-    struct make_upper : ast_update {};
-
-    struct make_hexa : ast_update {};
-
-    struct make_linebreak : ast_update {};
-
-    struct make_wildcard : ast_update {};
-
-    struct make_beginning : ast_update {};
-
-    struct make_end : ast_update {};
-
-    struct make_beginning_of_input : ast_update {};
-
-    struct make_end_of_input : ast_update {};
-
-    struct make_positive_lookahead : ast_update {};
-
-    struct make_negative_lookahead : ast_update {};
-
-    struct make_positive_lookbehind : ast_update {};
-
-    struct make_negative_lookbehind : ast_update {};
-
-    struct make_negated : ast_update {};
-
-    struct make_set : ast_update {};
-
-    struct make_set_from_current_char : ast_update {};
-
-    struct make_set_from_stack : ast_update {};
-
-    struct make_range : ast_update {};
-
-    struct make_range_from_stack : ast_update {};
-
-    template<typename>
-    struct make_capture : ast_update {};
+    template<match_mode>
+    struct make_optional : semantic_action {};
 
     template<std::size_t>
-    struct make_backref : ast_update {};
+    struct make_backref : semantic_action {};
 
     template<typename>
-    struct make_named_backref : ast_update {};
+    struct make_named_backref : semantic_action {};
+
+    struct make_positive_lookahead : semantic_action {};
+    struct make_negative_lookahead : semantic_action {};
+    struct make_positive_lookbehind : semantic_action {};
+    struct make_negative_lookbehind : semantic_action {};
 
     /**
-     * Type trait to distinguish AST update symbols from other symbols.
+     * Type trait used to distinguish semantic action symbols from other symbols.
      */
     template<typename Symbol>
-    inline constexpr bool is_ast_update_v = std::is_base_of_v<ast_update, Symbol>;
+    inline constexpr bool is_semantic_action = std::is_base_of_v<semantic_action, Symbol>;
 }
 #endif //MREGEX_SYMBOLS_HPP

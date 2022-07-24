@@ -27,7 +27,7 @@ namespace meta::ast
     template<typename A, typename B, typename Inner>
     using possessive_repetition = basic_repetition<match_mode::possessive, A, B, Inner>;
 
-    // Exact repetition
+    // Fixed repetition
     template<match_mode Mode, std::size_t N, typename Inner>
     using basic_fixed_repetition = basic_repetition<Mode, symbol::quantifier_value<N>, symbol::quantifier_value<N>, Inner>;
 
@@ -81,54 +81,40 @@ namespace meta::ast
 
     // Terminals
     struct terminal;
-
     struct empty;
-
     struct nothing;
-
-    template<typename, typename...>
-    struct set;
-
     struct beginning;
-
     struct beginning_of_input;
-
     struct end;
-
     struct end_of_input;
-
     struct word_boundary;
+    struct whitespace;
+    struct wildcard;
 
     template<char>
     struct literal;
 
-    struct whitespace;
-
-    struct wildcard;
+    template<typename, typename...>
+    struct set;
 
     template<char, char>
     struct range;
 
     using digit = range<'0', '9'>;
-
     using lower = range<'a', 'z'>;
-
     using upper = range<'A', 'Z'>;
-
     using word = set<lower, upper, digit, literal<'_'>>;
-
     using hexa = set<digit, range<'a', 'f'>, range<'A', 'F'>>;
-
     using linebreak = set<literal<'\n'>, literal<'\r'>>;
+
+    template<typename>
+    struct negated;
 
     template<std::size_t>
     struct backref;
 
     template<typename>
     struct named_backref;
-
-    template<typename>
-    struct negated;
 
     // Lookarounds
     template<typename>

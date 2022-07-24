@@ -2,7 +2,7 @@
 #define MREGEX_PARSER_RESULT_HPP
 
 #include <mregex/ast/astfwd.hpp>
-#include <mregex/utility/stack.hpp>
+#include <mregex/utility/type_sequence.hpp>
 
 namespace meta
 {

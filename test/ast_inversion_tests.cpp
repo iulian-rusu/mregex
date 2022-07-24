@@ -33,8 +33,8 @@ namespace meta::tests
         sequence<literal<'a'>, wildcard>
     >);
     static_assert(expected_inversion<
-        sequence<literal<'a'>, literal<'b'>, literal<'c'>>,
-        sequence<literal<'c'>, literal<'b'>, literal<'a'>>
+        sequence<literal<'a'>, star<literal<'b'>>, literal<'c'>>,
+        sequence<literal<'c'>, star<literal<'b'>>, literal<'a'>>
     >);
     static_assert(expected_inversion<
         sequence<literal<'a'>, literal<'b'>, literal<'c'>, literal<'d'>>,
@@ -56,7 +56,7 @@ namespace meta::tests
         sequence
         <
             literal<'x'>,
-            star
+            optional
             <
                 sequence
                 <
@@ -70,7 +70,7 @@ namespace meta::tests
         sequence
         <
             literal<'y'>,
-            star
+            optional
             <
                 sequence
                 <

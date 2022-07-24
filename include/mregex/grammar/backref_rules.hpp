@@ -3,7 +3,7 @@
 
 #include <mregex/grammar/grammar_actions.hpp>
 #include <mregex/utility/char_traits.hpp>
-#include <mregex/utility/stack.hpp>
+#include <mregex/utility/type_sequence.hpp>
 
 namespace meta::grammar
 {
@@ -18,7 +18,7 @@ namespace meta::grammar
     struct backref_rule
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::backref_id<10 * ID + C - '0'>

@@ -3,7 +3,7 @@
 
 #include <mregex/grammar/grammar_actions.hpp>
 #include <mregex/utility/char_traits.hpp>
-#include <mregex/utility/stack.hpp>
+#include <mregex/utility/type_sequence.hpp>
 
 namespace meta::grammar
 {
@@ -18,7 +18,7 @@ namespace meta::grammar
     struct abort_quantifier_parsing
     {
         using type =
-                stack
+                type_sequence
                 <
                     symbol::push_literal<C>,
                     symbol::mod,
@@ -41,7 +41,7 @@ namespace meta::grammar
     struct begin_quantifier_value
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::quantifier_value<C - '0'>
@@ -70,7 +70,7 @@ namespace meta::grammar
     struct update_quantifier_value<symbol::quantifier_value<N>, C, true>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::quantifier_value<10 * N + C - '0'>
@@ -81,7 +81,7 @@ namespace meta::grammar
     struct update_quantifier_value<symbol::quantifier_values<T, symbol::quantifier_value<N>>, C, true>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::quantifier_values<T, symbol::quantifier_value<10 * N + C - '0'>>
@@ -92,7 +92,7 @@ namespace meta::grammar
     struct update_quantifier_value<symbol::quantifier_values<T, symbol::quantifier_inf>, C, true>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::quantifier_values<T, symbol::quantifier_value<C - '0'>>

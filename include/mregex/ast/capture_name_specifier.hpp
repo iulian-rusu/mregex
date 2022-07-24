@@ -2,7 +2,7 @@
 #define MREGEX_CAPTURE_NAME_SPECIFIER_HPP
 
 #include <mregex/ast/astfwd.hpp>
-#include <mregex/utility/stack.hpp>
+#include <mregex/utility/type_sequence.hpp>
 
 namespace meta::ast
 {
@@ -15,7 +15,7 @@ namespace meta::ast
     template<typename Node>
     struct capture_name_spec
     {
-        using type = stack<>;
+        using type = type_sequence<>;
     };
 
     template<typename Node>

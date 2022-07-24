@@ -24,7 +24,7 @@ namespace meta::grammar
     struct rule<symbol::begin, symbol::character<'['>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_set,
@@ -40,7 +40,7 @@ namespace meta::grammar
     struct rule<symbol::begin, symbol::character<'('>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::group_begin_or_mod,
@@ -79,7 +79,7 @@ namespace meta::grammar
     struct rule<symbol::begin, symbol::character<'\\'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::esc,
@@ -99,7 +99,7 @@ namespace meta::grammar
     struct rule<symbol::begin, symbol::character<C>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_literal,
@@ -113,7 +113,7 @@ namespace meta::grammar
     struct rule<symbol::begin, symbol::character<'.'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_wildcard,
@@ -127,7 +127,7 @@ namespace meta::grammar
     struct rule<symbol::begin, symbol::character<'^'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_beginning,
@@ -140,7 +140,7 @@ namespace meta::grammar
     struct rule<symbol::begin, symbol::character<'$'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_end,
@@ -159,7 +159,7 @@ namespace meta::grammar
     struct rule<symbol::group_begin_or_mod, symbol::character<'['>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_set,
@@ -176,7 +176,7 @@ namespace meta::grammar
     struct rule<symbol::group_begin_or_mod, symbol::character<'('>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::group_begin_or_mod,
@@ -192,7 +192,7 @@ namespace meta::grammar
     struct rule<symbol::group_begin_or_mod, symbol::character<')'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     symbol::make_empty,
                     symbol::make_capture<symbol::unnamed>
@@ -215,7 +215,7 @@ namespace meta::grammar
     struct rule<symbol::group_begin_or_mod, symbol::character<'\\'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::esc,
@@ -236,7 +236,7 @@ namespace meta::grammar
     struct rule<symbol::group_begin_or_mod, symbol::character<C>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_literal,
@@ -251,7 +251,7 @@ namespace meta::grammar
     struct rule<symbol::group_begin_or_mod, symbol::character<'.'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_wildcard,
@@ -266,7 +266,7 @@ namespace meta::grammar
     struct rule<symbol::group_begin_or_mod, symbol::character<'^'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_beginning,
@@ -280,7 +280,7 @@ namespace meta::grammar
     struct rule<symbol::group_begin_or_mod, symbol::character<'$'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_end,
@@ -300,7 +300,7 @@ namespace meta::grammar
     struct rule<symbol::group_begin_or_mod, symbol::character<'?'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::group_mod
@@ -311,7 +311,7 @@ namespace meta::grammar
     struct rule<symbol::group_mod, symbol::character<':'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::group_begin
@@ -322,7 +322,7 @@ namespace meta::grammar
     struct rule<symbol::group_mod, symbol::character<'<'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::group_mod_less
@@ -333,7 +333,7 @@ namespace meta::grammar
     struct rule<symbol::group_mod, symbol::character<'='>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::group_begin,
@@ -345,7 +345,7 @@ namespace meta::grammar
     struct rule<symbol::group_mod, symbol::character<'!'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::group_begin,
@@ -357,7 +357,7 @@ namespace meta::grammar
     struct rule<symbol::group_mod_less, symbol::character<'='>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::group_begin,
@@ -369,7 +369,7 @@ namespace meta::grammar
     struct rule<symbol::group_mod_less, symbol::character<'!'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::group_begin,
@@ -393,7 +393,7 @@ namespace meta::grammar
     struct rule<symbol::capture_name_seq<Chars ...>, symbol::character<'>'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::group_begin,
@@ -411,7 +411,7 @@ namespace meta::grammar
     struct rule<symbol::group_begin, symbol::character<'['>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_set,
@@ -427,7 +427,7 @@ namespace meta::grammar
     struct rule<symbol::group_begin, symbol::character<'('>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::group_begin_or_mod,
@@ -466,7 +466,7 @@ namespace meta::grammar
     struct rule<symbol::group_begin, symbol::character<'\\'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::esc,
@@ -486,7 +486,7 @@ namespace meta::grammar
     struct rule<symbol::group_begin, symbol::character<C>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_literal,
@@ -500,7 +500,7 @@ namespace meta::grammar
     struct rule<symbol::group_begin, symbol::character<'.'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_wildcard,
@@ -514,7 +514,7 @@ namespace meta::grammar
     struct rule<symbol::group_begin, symbol::character<'^'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_beginning,
@@ -527,7 +527,7 @@ namespace meta::grammar
     struct rule<symbol::group_begin, symbol::character<'$'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_end,
@@ -552,7 +552,7 @@ namespace meta::grammar
     struct rule<symbol::alt, symbol::character<'|'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::alt_seq,
@@ -589,7 +589,7 @@ namespace meta::grammar
     struct rule<symbol::mod, symbol::character<'*'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::action_mod<symbol::make_star<match_mode::greedy>>
@@ -600,7 +600,7 @@ namespace meta::grammar
     struct rule<symbol::mod, symbol::character<'+'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::action_mod<symbol::make_plus<match_mode::greedy>>
@@ -611,7 +611,7 @@ namespace meta::grammar
     struct rule<symbol::mod, symbol::character<'?'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::action_mod<symbol::make_optional<match_mode::greedy>>
@@ -622,7 +622,7 @@ namespace meta::grammar
     struct rule<symbol::mod, symbol::character<'{'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::quantifier_begin
@@ -664,7 +664,7 @@ namespace meta::grammar
     {
         using action = symbol::make_repetition<match_mode::greedy, symbol::quantifier_value<N>, symbol::quantifier_value<N>>;
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::action_mod<action>
@@ -675,7 +675,7 @@ namespace meta::grammar
     struct rule<symbol::quantifier_value<N>, symbol::character<','>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::quantifier_values<symbol::quantifier_value<N>, symbol::quantifier_inf>
@@ -692,7 +692,7 @@ namespace meta::grammar
     struct rule<symbol::quantifier_values<A, B>, symbol::character<'}'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::action_mod<symbol::make_repetition<match_mode::greedy, A, B>>
@@ -703,7 +703,7 @@ namespace meta::grammar
     struct rule<symbol::action_mod<Action<Mode, Inner ...>>, symbol::character<'?'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     Action<match_mode::lazy, Inner ...>
@@ -714,7 +714,7 @@ namespace meta::grammar
     struct rule<symbol::action_mod<Action<Mode, Inner ...>>, symbol::character<'+'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     Action<match_mode::possessive, Inner ...>
@@ -737,7 +737,7 @@ namespace meta::grammar
     struct rule<symbol::alt_seq, symbol::character<'['>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_set,
@@ -752,7 +752,7 @@ namespace meta::grammar
     struct rule<symbol::alt_seq, symbol::character<'('>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::group_begin_or_mod,
@@ -790,7 +790,7 @@ namespace meta::grammar
     struct rule<symbol::alt_seq, symbol::character<'\\'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::esc,
@@ -809,7 +809,7 @@ namespace meta::grammar
     struct rule<symbol::alt_seq, symbol::character<C>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_literal,
@@ -822,7 +822,7 @@ namespace meta::grammar
     struct rule<symbol::alt_seq, symbol::character<'.'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_wildcard,
@@ -835,7 +835,7 @@ namespace meta::grammar
     struct rule<symbol::alt_seq, symbol::character<'^'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_beginning,
@@ -847,7 +847,7 @@ namespace meta::grammar
     struct rule<symbol::alt_seq, symbol::character<'$'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_end,
@@ -865,7 +865,7 @@ namespace meta::grammar
     struct rule<symbol::seq, symbol::character<'['>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_set,
@@ -881,7 +881,7 @@ namespace meta::grammar
     struct rule<symbol::seq, symbol::character<'('>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::group_begin_or_mod,
@@ -920,7 +920,7 @@ namespace meta::grammar
     struct rule<symbol::seq, symbol::character<'\\'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::esc,
@@ -940,7 +940,7 @@ namespace meta::grammar
     struct rule<symbol::seq, symbol::character<C>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_literal,
@@ -954,7 +954,7 @@ namespace meta::grammar
     struct rule<symbol::seq, symbol::character<'.'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_wildcard,
@@ -968,7 +968,7 @@ namespace meta::grammar
     struct rule<symbol::seq, symbol::character<'^'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_beginning,
@@ -981,7 +981,7 @@ namespace meta::grammar
     struct rule<symbol::seq, symbol::character<'$'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_end,
@@ -1001,7 +1001,7 @@ namespace meta::grammar
     struct rule<symbol::set_begin_or_neg, symbol::character<'^'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::set_begin,
@@ -1013,7 +1013,7 @@ namespace meta::grammar
     struct rule<symbol::set_begin_or_neg, symbol::character<'\\'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::set_esc,
@@ -1032,7 +1032,7 @@ namespace meta::grammar
     struct rule<symbol::set_begin_or_neg, symbol::character<C>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_set_from_current_char,
@@ -1050,7 +1050,7 @@ namespace meta::grammar
     struct rule<symbol::set_begin, symbol::character<'\\'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::set_esc,
@@ -1063,7 +1063,7 @@ namespace meta::grammar
     struct rule<symbol::set_begin, symbol::character<C>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_set_from_current_char,
@@ -1081,7 +1081,7 @@ namespace meta::grammar
     struct rule<symbol::set_seq, symbol::character<'\\'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::set_esc,
@@ -1094,7 +1094,7 @@ namespace meta::grammar
     struct rule<symbol::set_seq, symbol::character<'-'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::set_range_begin,
@@ -1106,7 +1106,7 @@ namespace meta::grammar
     struct rule<symbol::set_seq, symbol::character<C>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_set_from_current_char,
@@ -1118,7 +1118,7 @@ namespace meta::grammar
     struct rule<symbol::set_range_begin, symbol::character<C>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_range,
@@ -1130,7 +1130,7 @@ namespace meta::grammar
     struct rule<symbol::set_range_begin, symbol::character<']'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     symbol::push_literal<'-'>,
                     symbol::make_set_from_stack
@@ -1141,7 +1141,7 @@ namespace meta::grammar
     struct rule<symbol::set_range_begin, symbol::character<'\\'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::set_range_esc,
@@ -1155,7 +1155,7 @@ namespace meta::grammar
     struct rule<symbol::set_range_seq, symbol::character<'\\'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::set_esc,
@@ -1174,7 +1174,7 @@ namespace meta::grammar
     struct rule<symbol::set_range_seq, symbol::character<C>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_set_from_current_char,
@@ -1192,7 +1192,7 @@ namespace meta::grammar
     struct rule<symbol::set_range_esc, symbol::character<C>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_literal
@@ -1235,7 +1235,7 @@ namespace meta::grammar
     struct rule<symbol::backref_name_seq<Chars ...>, symbol::character<'>'>>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_named_backref<make_name<Chars ...>>

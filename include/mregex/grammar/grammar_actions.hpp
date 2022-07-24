@@ -5,12 +5,16 @@
 
 namespace meta::grammar
 {
-    struct ignore {}; // Ignore the current symbol on top of the stack and continue
+    // Ignore the current symbol on top of the stack and continue
+    struct ignore {};
 
-    struct advance {}; // Move to the next token in the input sequence
+    // Move to the next token in the input sequence
+    struct advance {};
 
-    struct accept : std::true_type {}; // Accept the input sequence
+    // Accept the input sequence
+    struct accept : std::true_type {};
 
-    struct reject : std::false_type {}; // Reject the input sequence
+    // Reject the input sequence
+    struct reject : std::false_type {};
 }
 #endif //MREGEX_GRAMMAR_ACTIONS_HPP

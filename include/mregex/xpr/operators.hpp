@@ -2,6 +2,7 @@
 #define MREGEX_XPR_OPERATORS_HPP
 
 #include <mregex/xpr/components.hpp>
+#include <mregex/xpr/flags.hpp>
 
 namespace meta::xpr::operators
 {

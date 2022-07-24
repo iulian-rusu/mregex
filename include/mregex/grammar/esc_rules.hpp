@@ -16,7 +16,7 @@ namespace meta::grammar
     struct esc_rule
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::backref_id<C - '0'>
@@ -27,7 +27,7 @@ namespace meta::grammar
     struct esc_rule<'k', false>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::expect<'<'>,
@@ -39,7 +39,7 @@ namespace meta::grammar
     struct esc_rule<'0', false>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::push_literal<'\0'>
@@ -50,7 +50,7 @@ namespace meta::grammar
     struct esc_rule<'n', false>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::push_literal<'\n'>
@@ -61,7 +61,7 @@ namespace meta::grammar
     struct esc_rule<'r', false>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::push_literal<'\r'>
@@ -72,7 +72,7 @@ namespace meta::grammar
     struct esc_rule<'t', false>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::push_literal<'\t'>
@@ -83,7 +83,7 @@ namespace meta::grammar
     struct esc_rule<'f', false>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::push_literal<'\f'>
@@ -94,7 +94,7 @@ namespace meta::grammar
     struct esc_rule<'v', false>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::push_literal<'\v'>
@@ -105,7 +105,7 @@ namespace meta::grammar
     struct esc_rule<'a', false>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::push_literal<'\a'>
@@ -116,7 +116,7 @@ namespace meta::grammar
     struct esc_rule<'e', false>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::push_literal<0x1b>

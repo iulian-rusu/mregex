@@ -179,7 +179,7 @@ namespace meta
     struct regex_capture_view_allocator;
 
     template<std::forward_iterator Iter, typename... Names>
-    struct regex_capture_view_allocator<stack<Names ...>, Iter>
+    struct regex_capture_view_allocator<type_sequence<Names ...>, Iter>
     {
         using type = std::tuple<regex_capture_view<Iter>, regex_capture_view<Iter, Names> ...>;
     };
@@ -194,7 +194,7 @@ namespace meta
     struct regex_capture_allocator;
 
     template<typename... Names>
-    struct regex_capture_allocator<stack<Names ...>>
+    struct regex_capture_allocator<type_sequence<Names ...>>
     {
         using type = std::tuple<regex_capture<>, regex_capture<Names> ...>;
     };

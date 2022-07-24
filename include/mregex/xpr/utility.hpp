@@ -16,38 +16,6 @@ namespace meta::xpr
     }
 
     /**
-     * Metafunction that wraps a pack of types into a metacontainer and flattens
-     * the result if it containts a single type.
-     *
-     * @tparam Wrapper  The type of the wrapper
-     * @tparam Nodes    The variadic parameter pack of elements to be wrapped
-     */
-    template<template<typename...> typename Wrapper, typename... Nodes>
-    struct flatten_wrapper
-    {
-        using type = Wrapper<Nodes ...>;
-    };
-
-    template<template<typename...> typename Wrapper, typename Node>
-    struct flatten_wrapper<Wrapper, Node>
-    {
-        using type = Node;
-    };
-
-    template<template<typename...> typename Wrapper, typename... Nodes>
-    using flatten_wrapper_t = typename flatten_wrapper<Wrapper, Nodes ...>::type;
-
-    /**
-     * Wraps a pack of elements into a sequence and passes them to a wrapper template.
-     *
-     * @tparam Wrapper  The type of the wrapper
-     * @tparam Nodes    The variadic parameter pack of elements to be wrapped
-     * @return          An object of the wrapped type
-     */
-    template<template<typename> typename Wrapper, typename... Nodes>
-    constexpr auto wrap(Nodes...) -> Wrapper<flatten_wrapper_t<ast::sequence, Nodes ...>> { return {}; }
-
-    /**
      * Transforms a static string into an instance of ast::sequence.
      *
      * @tparam Str  The static string to be transform
@@ -70,31 +38,36 @@ namespace meta::xpr
     constexpr auto to_regex(AST) noexcept -> regex_interface<AST> { return {}; }
 
     /**
+     * Packs a list of elements into a wrapper that holds a single type.
+     * If the list contains more than one type, it is wrapped into a sequence.
+     *
+     * @tparam Wrapper  The type of the wrapper
+     * @tparam Nodes    The list of elements to be wrapped
+     * @return          An instance of the wrapper type
+     */
+    template<template<typename> typename Wrapper, typename Node>
+    constexpr auto pack(Node) -> Wrapper<Node> { return {}; }
+
+    template<template<typename> typename Wrapper, typename... Nodes>
+    constexpr auto pack(Nodes...) -> Wrapper<ast::sequence<Nodes ...>> { return {}; }
+
+    /**
      * Function that combines multiple AST nodes into a wrapper metacontainer
      * and flattens the resulting structure to obtain a single nesting level.
      */
     template<template<typename...> typename Wrapper, typename... Nodes>
-    constexpr auto flat_combine(regex_interface<Nodes>...) noexcept
-    {
-        return to_regex(flatten_wrapper_t<Wrapper, Nodes ...>{});
-    }
+    constexpr auto flat_wrap(Nodes...) noexcept -> Wrapper<Nodes ...> { return {}; }
+
+    template<template<typename...> typename, typename Node>
+    constexpr auto flat_wrap(Node) noexcept -> Node { return {}; }
 
     template<template<typename...> typename Wrapper, typename First, typename... Second>
-    constexpr auto flat_combine(regex_interface<First>, regex_interface<Wrapper<Second ...>>) noexcept
-    {
-        return to_regex(Wrapper<First, Second ...>{});
-    }
+    constexpr auto flat_wrap(First, Wrapper<Second ...>) noexcept -> Wrapper<First, Second ...> { return {}; }
 
     template<template<typename...> typename Wrapper, typename... First, typename Second>
-    constexpr auto flat_combine(regex_interface<Wrapper<First ...>>, regex_interface<Second>) noexcept
-    {
-        return to_regex(Wrapper<First ..., Second>{});
-    }
+    constexpr auto flat_wrap(Wrapper<First ...>, Second) noexcept -> Wrapper<First ..., Second> { return {}; }
 
     template<template<typename...> typename Wrapper, typename... First, typename... Second>
-    constexpr auto flat_combine(regex_interface<Wrapper<First ...>>, regex_interface<Wrapper<Second ...>>) noexcept
-    {
-        return to_regex(Wrapper<First ..., Second ...>{});
-    }
+    constexpr auto flat_wrap(Wrapper<First ...>, Wrapper<Second ...>) noexcept -> Wrapper<First ..., Second ...> { return {}; }
 }
 #endif //MREGEX_XPR_UTILITY_HPP

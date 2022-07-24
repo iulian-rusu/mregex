@@ -3,8 +3,7 @@ set(
     test_sources
     tests.cpp
     capture_name_specifier_tests.cpp
-    xpr_ast_tests.cpp
-    stack_tests.cpp
+    type_sequence_tests.cpp
     traits_tests.cpp
     parser_ast_tests.cpp
     parser_accept_tests.cpp
@@ -15,6 +14,7 @@ set(
     regex_iteration_tests.cpp
     iterator_api_tests.cpp
     ast_inversion_tests.cpp
+    xpr_ast_tests.cpp
 )
 
 # Add target to run all tests

@@ -7,7 +7,7 @@
 namespace meta::ast
 {
     template<bool Strict>
-    struct beginning_base : terminal
+    struct beginning_impl : terminal
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter begin, Iter, Iter it, Context &ctx, Continuation &&cont) noexcept
@@ -22,8 +22,11 @@ namespace meta::ast
         }
     };
 
+    struct beginning : beginning_impl<false> {};
+    struct beginning_of_input : beginning_impl<true> {};
+
     template<bool Strict>
-    struct end_base : terminal
+    struct end_impl : terminal
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
@@ -38,13 +41,8 @@ namespace meta::ast
         }
     };
 
-    struct beginning : beginning_base<false> {};
-
-    struct beginning_of_input : beginning_base<true> {};
-
-    struct end : end_base<false> {};
-
-    struct end_of_input : end_base<true> {};
+    struct end : end_impl<false> {};
+    struct end_of_input : end_impl<true> {};
 
     struct word_boundary : terminal
     {
@@ -62,6 +60,10 @@ namespace meta::ast
         }
     };
 
+    /**
+     * The generic implementation only allows negating trivially matchable nodes.
+     * Since anchors are not trivially matchable, this template specialization is required.
+     */
     template<>
     struct negated<word_boundary> : terminal
     {

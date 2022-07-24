@@ -2,7 +2,7 @@
 #define MREGEX_CHAR_CLASS_RULES_HPP
 
 #include <mregex/grammar/grammar_actions.hpp>
-#include <mregex/utility/stack.hpp>
+#include <mregex/utility/type_sequence.hpp>
 
 namespace meta::grammar
 {
@@ -16,7 +16,7 @@ namespace meta::grammar
     struct char_class_rule
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_literal
@@ -27,7 +27,7 @@ namespace meta::grammar
     struct char_class_rule<'d'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_digit
@@ -38,7 +38,7 @@ namespace meta::grammar
     struct char_class_rule<'D'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_digit,
@@ -49,7 +49,7 @@ namespace meta::grammar
     struct char_class_rule<'w'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_word
@@ -60,7 +60,7 @@ namespace meta::grammar
     struct char_class_rule<'W'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_word,
@@ -72,7 +72,7 @@ namespace meta::grammar
     struct char_class_rule<'s'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_whitespace
@@ -83,7 +83,7 @@ namespace meta::grammar
     struct char_class_rule<'S'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_whitespace,
@@ -95,7 +95,7 @@ namespace meta::grammar
     struct char_class_rule<'l'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_lower
@@ -106,7 +106,7 @@ namespace meta::grammar
     struct char_class_rule<'L'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_lower,
@@ -118,7 +118,7 @@ namespace meta::grammar
     struct char_class_rule<'u'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_upper
@@ -129,7 +129,7 @@ namespace meta::grammar
     struct char_class_rule<'U'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_upper,
@@ -141,7 +141,7 @@ namespace meta::grammar
     struct char_class_rule<'x'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_hexa
@@ -152,7 +152,7 @@ namespace meta::grammar
     struct char_class_rule<'X'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_hexa,
@@ -164,7 +164,7 @@ namespace meta::grammar
     struct char_class_rule<'R'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_linebreak
@@ -175,7 +175,7 @@ namespace meta::grammar
     struct char_class_rule<'N'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_linebreak,
@@ -187,7 +187,7 @@ namespace meta::grammar
     struct char_class_rule<'b'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_word_boundary
@@ -198,7 +198,7 @@ namespace meta::grammar
     struct char_class_rule<'B'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_word_boundary,
@@ -210,7 +210,7 @@ namespace meta::grammar
     struct char_class_rule<'A'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_beginning_of_input
@@ -221,7 +221,7 @@ namespace meta::grammar
     struct char_class_rule<'Z'>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     symbol::make_end_of_input

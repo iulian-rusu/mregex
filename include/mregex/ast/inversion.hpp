@@ -2,22 +2,22 @@
 #define MREGEX_AST_INVERSION_HPP
 
 #include <mregex/ast/astfwd.hpp>
-#include <mregex/utility/stack.hpp>
+#include <mregex/utility/type_sequence.hpp>
 
 namespace meta::ast
 {
     namespace detail
     {
         template<typename... Ts>
-        constexpr auto to_sequence(stack<Ts ...>) noexcept -> sequence<Ts ...>
+        constexpr auto to_sequence(type_sequence<Ts ...>) noexcept -> sequence<Ts ...>
         {
             return {};
         }
 
         template<typename... Ts>
-        constexpr auto invert_stack(stack<Ts ...>) noexcept
+        constexpr auto invert(type_sequence<Ts ...>) noexcept
         {
-            return (stack<>{}  << ... << Ts{});
+            return (type_sequence<>{}  << ... << Ts{});
         }
     }
 
@@ -39,19 +39,13 @@ namespace meta::ast
     template<typename... Ts>
     struct invert<sequence<Ts ...>>
     {
-        using type = decltype(detail::to_sequence(detail::invert_stack(stack<invert_t<Ts> ...>{})));
+        using type = decltype(detail::to_sequence(detail::invert(type_sequence<invert_t<Ts> ...>{})));
     };
 
     template<template<typename...> typename Wrapper, typename... Inner>
     struct invert<Wrapper<Inner ...>>
     {
         using type = Wrapper<invert_t<Inner> ...>;
-    };
-
-    template<template<match_mode, typename> typename Wrapper, match_mode Mode, typename Inner>
-    struct invert<Wrapper<Mode, Inner>>
-    {
-        using type = Wrapper<Mode, invert_t<Inner>>;
     };
 
     template<match_mode Mode, typename A, typename B, typename Inner>

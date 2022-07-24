@@ -3,7 +3,7 @@
 
 #include <mregex/grammar/grammar_actions.hpp>
 #include <mregex/utility/char_traits.hpp>
-#include <mregex/utility/stack.hpp>
+#include <mregex/utility/type_sequence.hpp>
 
 namespace meta::grammar
 {
@@ -11,7 +11,7 @@ namespace meta::grammar
     struct begin_name
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     Name<C>
@@ -37,7 +37,7 @@ namespace meta::grammar
     struct update_name<Name<Chars ...>, C, true>
     {
         using type =
-                stack
+                type_sequence
                 <
                     advance,
                     Name<Chars ..., C>
