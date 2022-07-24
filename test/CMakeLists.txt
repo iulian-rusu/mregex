@@ -3,7 +3,7 @@ set(
     test_sources
     tests.cpp
     capture_name_specifier_tests.cpp
-    expr_ast_tests.cpp
+    xpr_ast_tests.cpp
     stack_tests.cpp
     traits_tests.cpp
     parser_ast_tests.cpp

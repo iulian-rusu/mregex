@@ -68,5 +68,33 @@ namespace meta::xpr
      */
     template<typename AST>
     constexpr auto to_regex(AST) noexcept -> regex_interface<AST> { return {}; }
+
+    /**
+     * Function that combines multiple AST nodes into a wrapper metacontainer
+     * and flattens the resulting structure to obtain a single nesting level.
+     */
+    template<template<typename...> typename Wrapper, typename... Nodes>
+    constexpr auto flat_combine(regex_interface<Nodes>...) noexcept
+    {
+        return to_regex(flatten_wrapper_t<Wrapper, Nodes ...>{});
+    }
+
+    template<template<typename...> typename Wrapper, typename First, typename... Second>
+    constexpr auto flat_combine(regex_interface<First>, regex_interface<Wrapper<Second ...>>) noexcept
+    {
+        return to_regex(Wrapper<First, Second ...>{});
+    }
+
+    template<template<typename...> typename Wrapper, typename... First, typename Second>
+    constexpr auto flat_combine(regex_interface<Wrapper<First ...>>, regex_interface<Second>) noexcept
+    {
+        return to_regex(Wrapper<First ..., Second>{});
+    }
+
+    template<template<typename...> typename Wrapper, typename... First, typename... Second>
+    constexpr auto flat_combine(regex_interface<Wrapper<First ...>>, regex_interface<Wrapper<Second ...>>) noexcept
+    {
+        return to_regex(Wrapper<First ..., Second ...>{});
+    }
 }
 #endif //MREGEX_XPR_UTILITY_HPP

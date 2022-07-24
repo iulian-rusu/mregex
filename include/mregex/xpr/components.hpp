@@ -12,17 +12,18 @@ namespace meta::xpr
      * Expression-based API for constructing a regular expression.
      */
 
-    // Sequences and alternations
+    // Sequences
     template<typename... Nodes>
-    constexpr auto concat(regex_interface<Nodes>...) noexcept
+    constexpr auto concat(regex_interface<Nodes>... elems) noexcept
     {
-        return to_regex(flatten_wrapper_t<ast::sequence, Nodes ...>{});
+        return flat_combine<ast::sequence>(elems ...);
     }
 
+    // Alternations
     template<typename... Nodes>
-    constexpr auto either(regex_interface<Nodes>...) noexcept
+    constexpr auto either(regex_interface<Nodes>... elems) noexcept
     {
-        return to_regex(flatten_wrapper_t<ast::alternation, Nodes ...>{});
+        return flat_combine<ast::alternation>(elems ...);
     }
 
     // Captures
