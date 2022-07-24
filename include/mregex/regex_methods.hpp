@@ -15,7 +15,7 @@ namespace meta
         using ast_type = AST;
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr auto compute(Iter begin, Iter end, Iter it, Context &ctx) noexcept -> ast::match_result<Iter>
+        static constexpr auto invoke(Iter begin, Iter end, Iter it, Context &ctx) noexcept -> ast::match_result<Iter>
         {
             if (auto result = ast_type::match(begin, end, it, ctx, continuations<Iter>::equals(end)))
             {
@@ -35,7 +35,7 @@ namespace meta
         using ast_type = AST;
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr auto compute(Iter begin, Iter end, Iter it, Context &ctx) noexcept -> ast::match_result<Iter>
+        static constexpr auto invoke(Iter begin, Iter end, Iter it, Context &ctx) noexcept -> ast::match_result<Iter>
         {
             for (;; ++it)
             {

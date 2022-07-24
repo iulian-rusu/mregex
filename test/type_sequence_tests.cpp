@@ -34,8 +34,8 @@ namespace meta::tests
     static_assert(std::is_same_v<type_sequence<int>, pop<pop<push<push<push<type_sequence<>, int>, char>, double>>>>);
     // Pushing a sequence must be equivalent to concatenation
     static_assert(std::is_same_v<
-            type_sequence<double, int, long, char>,
-            push<type_sequence<long, char>, type_sequence<double, int>>
+        type_sequence<double, int, long, char>,
+        push<type_sequence<long, char>, type_sequence<double, int>>
     >);
     // Pushing multiple elements to the sequence
     static_assert(std::is_same_v<

@@ -164,7 +164,7 @@ namespace meta
             using result_type = typename context_type::result_type;
 
             context_type ctx{};
-            auto result = Method::compute(begin, end, begin, ctx);
+            auto result = Method::invoke(begin, end, begin, ctx);
             return result_type{result.matched, std::move(ctx.captures)};
         }
     };

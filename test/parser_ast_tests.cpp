@@ -627,27 +627,28 @@ namespace meta::tests
             literal<'a'>
         >
     >);
-
-    static_assert(expected_ast<R"([\w-])",
+    static_assert(expected_ast<R"([\x-])",
         set
         <
             literal<'-'>,
-            word
+            digit,
+            range<'a', 'f'>,
+            range<'A', 'F'>
         >
     >);
-    static_assert(expected_ast<R"([\w-a])",
+    static_assert(expected_ast<R"([\d-a])",
         set
         <
             literal<'a'>,
             literal<'-'>,
-            word
+            digit
         >
     >);
-    static_assert(expected_ast<R"([a][b])",
+    static_assert(expected_ast<R"([a][b\w])",
         sequence
         <
             set<literal<'a'>>,
-            set<literal<'b'>>
+            set<lower, upper, digit, literal<'_'>, literal<'b'>>
         >
     >);
     static_assert(expected_ast<R"([][b])",

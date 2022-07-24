@@ -83,7 +83,7 @@ namespace meta
             using type = parse_t<I + 1, Nodes, Symbols>;
         };
 
-        // Advance and also push the rest of the rules on the stack
+        // Advance and also push the remaining symbols on the stack
         template<std::size_t I, typename Nodes, typename... Symbols, typename... Rest>
         struct transition<I, type_sequence<grammar::advance, Symbols ...>, Nodes, type_sequence<Rest ...>>
         {

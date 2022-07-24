@@ -580,12 +580,6 @@ namespace meta::grammar
     };
 
     template<>
-    struct rule<symbol::esc, symbol::empty>
-    {
-        using type = reject;
-    };
-
-    template<>
     struct rule<symbol::mod, symbol::character<'*'>>
     {
         using type =
@@ -1016,7 +1010,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::set_esc,
+                    symbol::esc,
                     symbol::make_set_from_stack,
                     symbol::set_seq
                 >;
@@ -1053,7 +1047,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::set_esc,
+                    symbol::esc,
                     symbol::make_set_from_stack,
                     symbol::set_seq
                 >;
@@ -1084,7 +1078,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::set_esc,
+                    symbol::esc,
                     symbol::make_set_from_stack,
                     symbol::set_seq
                 >;
@@ -1158,7 +1152,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::set_esc,
+                    symbol::esc,
                     symbol::make_set_from_stack,
                     symbol::set_seq
                 >;
@@ -1180,12 +1174,6 @@ namespace meta::grammar
                     symbol::make_set_from_current_char,
                     symbol::set_seq
                 >;
-    };
-
-    template<char C>
-    struct rule<symbol::set_esc, symbol::character<C>>
-    {
-        using type = esc_rule_t<C>;
     };
 
     template<char C>

@@ -238,6 +238,13 @@ namespace meta::ast
         using type = type_sequence<nothing, Nodes ...>;
     };
 
+    // Create set from current character
+    template<char C, typename... Rest>
+    struct build<symbol::make_set_from_current_char, symbol::character<C>, type_sequence<nothing, Rest ...>>
+    {
+        using type = type_sequence<set<literal<C>>, Rest ...>;
+    };
+
     template<char C, typename... Nodes>
     struct build<symbol::make_set_from_current_char, symbol::character<C>, type_sequence<Nodes ...>>
     {
@@ -250,10 +257,17 @@ namespace meta::ast
         using type = type_sequence<set<literal<C>, First ...>, Rest ...>;
     };
 
-    template<char C, typename... Rest>
-    struct build<symbol::make_set_from_current_char, symbol::character<C>, type_sequence<nothing, Rest ...>>
+    // Create set from the last generated AST node
+    template<typename T, typename First, typename... Rest>
+    struct build<symbol::make_set_from_stack, T, type_sequence<First, nothing, Rest ...>>
     {
-        using type = type_sequence<set<literal<C>>, Rest ...>;
+        using type = type_sequence<set<First>, Rest ...>;
+    };
+
+    template<typename T, typename... First, typename... Rest>
+    struct build<symbol::make_set_from_stack, T, type_sequence<set<First ...>, nothing, Rest ...>>
+    {
+        using type = type_sequence<set<First ...>, Rest ...>;
     };
 
     template<typename T, typename First, typename... Rest>
@@ -268,18 +282,13 @@ namespace meta::ast
         using type = type_sequence<set<First, Second ...>, Rest ...>;
     };
 
-    template<typename T, typename First, typename... Rest>
-    struct build<symbol::make_set_from_stack, T, type_sequence<First, nothing, Rest ...>>
-    {
-        using type = type_sequence<set<First>, Rest ...>;
-    };
-
     template<typename T, typename... First, typename... Second, typename... Rest>
     struct build<symbol::make_set_from_stack, T, type_sequence<set<First ...>, set<Second ...>, Rest ...>>
     {
         using type = type_sequence<set<First ..., Second ...>, Rest ...>;
     };
 
+    // Create a range inside the set
     template<char B, char A, typename... Second, typename... Rest>
     struct build<symbol::make_range, symbol::character<B>, type_sequence<set<literal<A>, Second ...>, Rest ...>>
     {
@@ -292,6 +301,7 @@ namespace meta::ast
         using type = type_sequence<set<literal<B>, literal<'-'>, First, Second ...>, Rest ...>;
     };
 
+    // Create a range from two last generated AST nodes in the set
     template<typename T, char B, char A, typename... Second, typename... Rest>
     struct build<symbol::make_range_from_stack, T, type_sequence<set<literal<B>, literal<A>, Second ...>, Rest ...>>
     {

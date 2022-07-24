@@ -200,6 +200,7 @@ namespace meta::tests
     static_assert(accepted<R"(|a)"> == false);
     static_assert(accepted<R"(\)"> == false);
     static_assert(accepted<R"([\])"> == false);
+    static_assert(accepted<R"([\)"> == false);
     static_assert(accepted<R"([][)"> == false);
     static_assert(accepted<R"([)"> == false);
     static_assert(accepted<R"([a][)"> == false);

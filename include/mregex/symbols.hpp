@@ -36,7 +36,6 @@ namespace meta::symbol
     struct set_begin_or_neg {};
     struct set_begin {};
     struct set_seq {};
-    struct set_esc {};
     struct set_range_begin {};
     struct set_range_seq {};
     struct set_range_esc {};

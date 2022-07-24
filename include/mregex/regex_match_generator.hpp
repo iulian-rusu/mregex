@@ -30,7 +30,7 @@ namespace meta
             Context ctx{};
             if (_active)
             {
-                if (auto result = method::compute(_begin, _end, _current, ctx))
+                if (auto result = method::invoke(_begin, _end, _current, ctx))
                 {
                     _active = std::get<0>(ctx.captures).length() != 0;
                     _current = result.end;
