@@ -10,6 +10,7 @@ namespace meta
 
     static_assert(error_position<R"(()", 1>);
     static_assert(error_position<R"())", 0>);
+    static_assert(error_position<R"([)", 1>);
     static_assert(error_position<R"(+)", 0>);
     static_assert(error_position<R"(|)", 0>);
     static_assert(error_position<R"(?)", 0>);

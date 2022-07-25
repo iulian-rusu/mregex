@@ -1,5 +1,5 @@
-#ifndef MREGEX_CAPTURE_NAME_SPECIFIER_HPP
-#define MREGEX_CAPTURE_NAME_SPECIFIER_HPP
+#ifndef MREGEX_AST_CAPTURE_NAME_SPECIFIER_HPP
+#define MREGEX_AST_CAPTURE_NAME_SPECIFIER_HPP
 
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/utility/type_sequence.hpp>
@@ -45,4 +45,4 @@ namespace meta::ast
         using type = push<capture_name_spec_t<Inner>, Name>;
     };
 }
-#endif //MREGEX_CAPTURE_NAME_SPECIFIER_HPP
+#endif //MREGEX_AST_CAPTURE_NAME_SPECIFIER_HPP

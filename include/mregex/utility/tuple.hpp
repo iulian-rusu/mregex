@@ -1,5 +1,5 @@
-#ifndef MREGEX_TUPLE_HELPERS_HPP
-#define MREGEX_TUPLE_HELPERS_HPP
+#ifndef MREGEX_UTILITY_TUPLE_HPP
+#define MREGEX_UTILITY_TUPLE_HPP
 
 #include <tuple>
 
@@ -54,4 +54,4 @@ namespace meta
         );
     }
 }
-#endif //MREGEX_TUPLE_HELPERS_HPP
+#endif //MREGEX_UTILITY_TUPLE_HPP

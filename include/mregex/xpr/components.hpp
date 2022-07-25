@@ -3,7 +3,7 @@
 
 #include <mregex/ast/traits.hpp>
 #include <mregex/xpr/templates.hpp>
-#include <mregex/xpr/utility.hpp>
+#include <mregex/xpr/transform.hpp>
 #include <mregex/regex.hpp>
 
 namespace meta::xpr

@@ -1,7 +1,7 @@
 #ifndef MREGEX_REGEX_FLAGS_HPP
 #define MREGEX_REGEX_FLAGS_HPP
 
-#include <mregex/utility/meta_helpers.hpp>
+#include <mregex/utility/type_traits.hpp>
 
 namespace meta
 {

@@ -1,10 +1,10 @@
 #ifndef MREGEX_GRAMMAR_HPP
 #define MREGEX_GRAMMAR_HPP
 
-#include <mregex/grammar/esc_rules.hpp>
-#include <mregex/grammar/name_rules.hpp>
-#include <mregex/grammar/quantifier_rules.hpp>
-#include <mregex/utility/meta_helpers.hpp>
+#include <mregex/grammar/escapes.hpp>
+#include <mregex/grammar/names.hpp>
+#include <mregex/grammar/quantifiers.hpp>
+#include <mregex/utility/type_traits.hpp>
 
 namespace meta::grammar
 {

@@ -1,5 +1,5 @@
-#ifndef MREGEX_MATCH_RESULT_HPP
-#define MREGEX_MATCH_RESULT_HPP
+#ifndef MREGEX_AST_MATCH_RESULT_HPP
+#define MREGEX_AST_MATCH_RESULT_HPP
 
 #include <concepts>
 
@@ -25,4 +25,4 @@ namespace meta::ast
         }
     };
 }
-#endif //MREGEX_MATCH_RESULT_HPP
+#endif //MREGEX_AST_MATCH_RESULT_HPP

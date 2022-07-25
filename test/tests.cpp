@@ -2,6 +2,5 @@
 
 int main()
 {
-    // Most tests run at compile-time
-    std::cout << "All tests were built successfully.\n";
+    std::cout << "All compile-time tests were successful.\n";
 }

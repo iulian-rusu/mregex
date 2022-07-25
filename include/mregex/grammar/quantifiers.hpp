@@ -1,7 +1,7 @@
-#ifndef MREGEX_QUANTIFIER_RULES_HPP
-#define MREGEX_QUANTIFIER_RULES_HPP
+#ifndef MREGEX_GRAMMAR_QUANTIFIERS_HPP
+#define MREGEX_GRAMMAR_QUANTIFIERS_HPP
 
-#include <mregex/grammar/grammar_actions.hpp>
+#include <mregex/grammar/actions.hpp>
 #include <mregex/utility/char_traits.hpp>
 #include <mregex/utility/type_sequence.hpp>
 
@@ -108,4 +108,4 @@ namespace meta::grammar
     template<typename T, char C>
     using update_quantifier_value_t = typename update_quantifier_value<T, C>::type;
 }
-#endif //MREGEX_QUANTIFIER_RULES_HPP
+#endif //MREGEX_GRAMMAR_QUANTIFIERS_HPP

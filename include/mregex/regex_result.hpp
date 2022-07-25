@@ -3,7 +3,7 @@
 
 #include <iosfwd>
 #include <tuple>
-#include <mregex/utility/tuple_helpers.hpp>
+#include <mregex/utility/tuple.hpp>
 #include <mregex/regex_capture.hpp>
 
 namespace meta

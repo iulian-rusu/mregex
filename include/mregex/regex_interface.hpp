@@ -5,8 +5,6 @@
 #include <mregex/utility/input_range_adapter.hpp>
 #include <mregex/regex_match_generator.hpp>
 
-namespace ranges = std::ranges;
-
 namespace meta
 {
     /**

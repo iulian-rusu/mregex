@@ -1,7 +1,7 @@
-#ifndef MREGEX_BACKREF_RULES_HPP
-#define MREGEX_BACKREF_RULES_HPP
+#ifndef MREGEX_GRAMMAR_BACKREFS_HPP
+#define MREGEX_GRAMMAR_BACKREFS_HPP
 
-#include <mregex/grammar/grammar_actions.hpp>
+#include <mregex/grammar/actions.hpp>
 #include <mregex/utility/char_traits.hpp>
 #include <mregex/utility/type_sequence.hpp>
 
@@ -34,4 +34,4 @@ namespace meta::grammar
     template<std::size_t ID, char C>
     using backref_rule_t = typename backref_rule<ID, C>::type;
 }
-#endif //MREGEX_BACKREF_RULES_HPP
+#endif //MREGEX_GRAMMAR_BACKREFS_HPP

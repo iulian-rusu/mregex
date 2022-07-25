@@ -1,5 +1,5 @@
-#ifndef MREGEX_CAPTURE_INDEXER_HPP
-#define MREGEX_CAPTURE_INDEXER_HPP
+#ifndef MREGEX_AST_CAPTURE_INDEXER_HPP
+#define MREGEX_AST_CAPTURE_INDEXER_HPP
 
 #include <mregex/ast/astfwd.hpp>
 
@@ -50,4 +50,4 @@ namespace meta::ast
         using type = capture<I + Offset - capture_count, Name, preorder_indexing_t<Offset + 1, Inner>>;
     };
 }
-#endif //MREGEX_CAPTURE_INDEXER_HPP
+#endif //MREGEX_AST_CAPTURE_INDEXER_HPP

@@ -2,15 +2,22 @@
 
 namespace meta::tests
 {
-    // Test matching inputs
+    /**
+     * Matching tests
+     */
+
+    // Basic patterns
     static_assert(regex<R"()">::match(""));
     static_assert(regex<R"(())">::match(""));
     static_assert(regex<R"(a)">::match("a"));
+    static_assert(regex<R"(abcd)">::match("abcd"));
+    // Escaped characters
     static_assert(regex<R"(\a)">::match("\a"));
     static_assert(regex<R"(\n)">::match("\n"));
     static_assert(regex<R"(\N)">::match("N"));
     static_assert(regex<R"(\R)">::match("\r"));
     static_assert(regex<R"(\R)">::match("\n"));
+    // Anchors
     static_assert(regex<R"(\btest)">::match("test"));
     static_assert(regex<R"(test\b)">::match("test"));
     static_assert(regex<R"(\btest\b)">::match("test"));
@@ -19,13 +26,24 @@ namespace meta::tests
     static_assert(regex<R"(test \B)">::match("test "));
     static_assert(regex<R"(test\Btest)">::match("testtest"));
     static_assert(regex<R"(test \B test)">::match("test  test"));
-    static_assert(regex<R"([a-zA-Z]+)">::match("aBcDefghijklmnopqrstuvqXyZ"));
     static_assert(regex<R"(^a)">::match("a"));
     static_assert(regex<R"(a$)">::match("a"));
     static_assert(regex<R"(^abcd$)">::match("abcd"));
     static_assert(regex<R"(abcdef)">::match("abcdef"));
+    static_assert(regex<R"(^\nabcd$\n.+$)", flag::m>::match("\nabcd\nabc"));
+    static_assert(regex<R"(^abcd$\n.+$\n)">::with<flag::m>::match("abcd\nabc\n"));
+    static_assert(regex<R"(^\nabcd$\n.+$\n)">::with<flag::m>::match("\nabcd\nabc\n"));
+    static_assert(regex<R"(^abcd$)", flag::multiline>::match("abcd"));
+    static_assert(regex<R"(^abcd$\n)">::with<flag::multiline>::match("abcd\n"));
+    static_assert(regex<R"(^\nabcd$)">::with<flag::multiline>::match("\nabcd"));
+    static_assert(regex<R"(\n^abcd$\n)">::with<flag::multiline>::match("\nabcd\n"));
+    static_assert(regex<R"(\A\nabcd\n\Z)">::with<flag::multiline>::match("\nabcd\n"));
+    // Sets
     static_assert(regex<R"(abc[]?def)">::match("abcdef"));
     static_assert(regex<R"([a])">::match("a"));
+    static_assert(regex<R"([a-zA-Z]+)">::match("aBcDefghijklmnopqrstuvqXyZ"));
+    static_assert(regex<R"([0-Z]+)", flag::i>::match("1234abczABCZ"));
+    static_assert(regex<R"([A-Z]+)", flag::icase>::match("aBcDeFiOyZ"));
     static_assert(regex<R"([\^a]+)">::match("^a"));
     static_assert(regex<R"([^]+)">::match("aA01-^*@#(){}[]\n"));
     static_assert(regex<R"([^\^a]+)">::match("b$"));
@@ -33,18 +51,32 @@ namespace meta::tests
     static_assert(regex<R"([A-Z]+)">::match("AAABBBCCEEFFZZZ"));
     static_assert(regex<R"([0-9]+)">::match("123123123123"));
     static_assert(regex<R"([(|)][^0-9]+[a-z]+)">::match("(xy"));
+    // Optional, Kleene star and plus
     static_assert(regex<R"(a?)">::match(""));
     static_assert(regex<R"(a?)">::match("a"));
     static_assert(regex<R"(a??)">::match("a"));
     static_assert(regex<R"(a?+)">::match("a"));
     static_assert(regex<R"(a?+)">::match(""));
     static_assert(regex<R"((?:a?+)?a)">::match("a"));
+    static_assert(regex<R"(a?b?c?)">::match("abc"));
+    static_assert(regex<R"(a?b?c?)">::match("a"));
+    static_assert(regex<R"(a?b?c?)">::match("b"));
+    static_assert(regex<R"(a?b?c?)">::match("c"));
+    static_assert(regex<R"(a??b?c?)">::match("ac"));
     static_assert(regex<R"(a*)">::match(""));
     static_assert(regex<R"(a*)">::match("a"));
     static_assert(regex<R"(a*)">::match("aa"));
     static_assert(regex<R"(a*)">::match("aaaaaaaaaaa"));
     static_assert(regex<R"(a*a)">::match("aaaaaaaaaaa"));
     static_assert(regex<R"(a*+)">::match("aaaaaaaaaaa"));
+    static_assert(regex<R"(a*)", flag::U>::match(""));
+    static_assert(regex<R"(a*)", flag::U>::match("a"));
+    static_assert(regex<R"(a*)", flag::U>::match("aa"));
+    static_assert(regex<R"(a*)", flag::U>::match("aaaaaaaaaaa"));
+    static_assert(regex<R"(.+)">::match("this regex will match any input!"));
+    static_assert(regex<R"(.+)">::with<flag::dotall>::match("this regex will match any input!?"));
+    static_assert(regex<R"(.+)", flag::s>::match("\neven new lines!\r\n"));
+    // Compositions of previous quantifiers
     static_assert(regex<R"((a*)+)">::match("a"));
     static_assert(regex<R"((a+)*)">::match("a"));
     static_assert(regex<R"((a*)*)">::match("a"));
@@ -61,10 +93,6 @@ namespace meta::tests
     static_assert(regex<R"((a*)+)">::match(""));
     static_assert(regex<R"((a+)*)">::match(""));
     static_assert(regex<R"((a*)*)">::match(""));
-    static_assert(regex<R"(a*)", flag::U>::match(""));
-    static_assert(regex<R"(a*)", flag::U>::match("a"));
-    static_assert(regex<R"(a*)", flag::U>::match("aa"));
-    static_assert(regex<R"(a*)", flag::U>::match("aaaaaaaaaaa"));
     static_assert(regex<R"((a*)+)", flag::U>::match("a"));
     static_assert(regex<R"((a+)*)", flag::U>::match("a"));
     static_assert(regex<R"((a*)*)", flag::U>::match("a"));
@@ -80,7 +108,13 @@ namespace meta::tests
     static_assert(regex<R"((a*?)+)", flag::ungreedy>::match(""));
     static_assert(regex<R"((a+)*)", flag::ungreedy>::match(""));
     static_assert(regex<R"((a*)*)", flag::ungreedy>::match(""));
-    static_assert(regex<R"(abc)">::match("abc"));
+    static_assert(regex<R"(a+b+c+)">::match("abc"));
+    static_assert(regex<R"(a+b+?c+)">::match("aaabbcccccc"));
+    static_assert(regex<R"(a*aa)">::match("aa"));
+    static_assert(regex<R"(a*aab+bb)">::match("aaaaabbb"));
+    static_assert(regex<R"((abc)+)">::match("abcabcabc"));
+    static_assert(regex<R"((x|y|z)+)">::match("xyzxzyxyzxyzyxyxxxzxxzyxyzx"));
+    // Repetitions
     static_assert(regex<R"(a{1})">::match("a"));
     static_assert(regex<R"(a\{1})">::match("a{1}"));
     static_assert(regex<R"(a{5})">::match("aaaaa"));
@@ -92,10 +126,24 @@ namespace meta::tests
     static_assert(regex<R"(a{3,6}a)">::match("aaaaaa"));
     static_assert(regex<R"(a{3,6}a)">::match("aaaaaaa"));
     static_assert(regex<R"(a{1,5}?)">::match("aaa"));
+    static_assert(regex<R"((abc){0,})">::match("abcabc"));
+    static_assert(regex<R"(\w{2}-\w{3}-\w{4})">::match("ab-abc-xyzt"));
+    static_assert(regex<R"([a-z]{2})">::match("xy"));
+    static_assert(regex<R"(a{0}?)">::match(""));
+    static_assert(regex<R"((_x){7,17}y)">::match("_x_x_x_x_x_x_xy"));
+    static_assert(regex<R"((_x){7,17}y)">::match("_x_x_x_x_x_x_x_xy"));
+    static_assert(regex<R"((_x){7,17}+y)">::match("_x_x_x_x_x_x_x_xy"));
+    static_assert(regex<R"((_x){7,17}?y)">::match("_x_x_x_x_x_x_x_xy"));
+    static_assert(regex<R"((_x){7,17}y)">::match("_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_xy"));
+    static_assert(regex<R"((_x){7,17}y)">::match("_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_xy"));
+    static_assert(regex<R"((_x){7,17}+y)">::match("_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_xy"));
+    static_assert(regex<R"((_x){7,17}?y)">::match("_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_xy"));
+    // Repetitions composed with other operators
     static_assert(regex<R"((a?){4,5})">::match("aaa"));
     static_assert(regex<R"((a|bc){0,5})">::match("abcbcbc"));
     static_assert(regex<R"((a|bc){0,5}?)">::match("abcbcbc"));
     static_assert(regex<R"((a|bc){0,5}+)">::match("abcbcbc"));
+    static_assert(regex<R"((a|b|c){3})">::match("abc"));
     static_assert(regex<R"((ab+){3})">::match("ababbbbbab"));
     static_assert(regex<R"(^(a|b|ab){3}b$)">::match("aabab"));
     static_assert(regex<R"(^(a|b|ab){3}?b$)">::match("aabab"));
@@ -108,41 +156,35 @@ namespace meta::tests
     static_assert(regex<R"(^(a|ab|aab){3}+b$)">::match("aabab"));
     static_assert(regex<R"(^(a|ab|aab){3}b$)">::match("aabaab"));
     static_assert(regex<R"(^(a|ab|aab){3}?b$)">::match("aabaab"));
-    static_assert(regex<R"((_x){7,17}y)">::match("_x_x_x_x_x_x_xy"));
-    static_assert(regex<R"((_x){7,17}y)">::match("_x_x_x_x_x_x_x_xy"));
-    static_assert(regex<R"((_x){7,17}+y)">::match("_x_x_x_x_x_x_x_xy"));
-    static_assert(regex<R"((_x){7,17}?y)">::match("_x_x_x_x_x_x_x_xy"));
-    static_assert(regex<R"((_x){7,17}y)">::match("_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_xy"));
-    static_assert(regex<R"((_x){7,17}y)">::match("_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_xy"));
-    static_assert(regex<R"((_x){7,17}+y)">::match("_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_xy"));
-    static_assert(regex<R"((_x){7,17}?y)">::match("_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_x_xy"));
-    static_assert(regex<R"((abc){0,})">::match("abcabc"));
-    static_assert(regex<R"(\w{2}-\w{3}-\w{4})">::match("ab-abc-xyzt"));
-    static_assert(regex<R"([a-z]{2})">::match("xy"));
-    static_assert(regex<R"(a{0}?)">::match(""));
-    static_assert(regex<R"(a{})">::match("a{}"));
-    static_assert(regex<R"(a{x})">::match("a{x}"));
-    static_assert(regex<R"((a|b|c){3})">::match("abc"));
-    static_assert(regex<R"(a?b?c?)">::match("abc"));
-    static_assert(regex<R"(a?b?c?)">::match("a"));
-    static_assert(regex<R"(a?b?c?)">::match("b"));
-    static_assert(regex<R"(a?b?c?)">::match("c"));
-    static_assert(regex<R"(a??b?c?)">::match("ac"));
-    static_assert(regex<R"(a+b+c+)">::match("abc"));
-    static_assert(regex<R"(a+b+?c+)">::match("aaabbcccccc"));
-    static_assert(regex<R"((x|y|z)+)">::match("xyzxzyxyzxyzyxyxxxzxxzyxyzx"));
+    // Alternations
     static_assert(regex<R"(a|ab|abc)">::match("a"));
     static_assert(regex<R"((a|ab)xd)">::match("abxd"));
     static_assert(regex<R"((a|ab)+?x)">::match("aaaababx"));
     static_assert(regex<R"(abc|ab|a)">::match("a"));
     static_assert(regex<R"(abc|ab|a)">::match("ab"));
     static_assert(regex<R"(abc|ab|a)">::match("abc"));
-    static_assert(regex<R"((abc)+)">::match("abcabcabc"));
+    static_assert(regex<R"((a|ab|abc)+x)">::match("abx"));
+    static_assert(regex<R"((a|ab|abc)+x)">::match("abcx"));
+    static_assert(regex<R"((a|ab|abc)+x)">::match("aabcaaabababcx"));
+    static_assert(regex<R"((a|ab|abc){3}x)", flag::unroll>::match("aabcabx"));
+    static_assert(regex<R"((a|ab|abc){3,}bc)", flag::unroll>::match("aabaabcabcabaaabc"));
+    static_assert(regex<R"((ab?c??d){3})">::match("abcdacdad"));
+    static_assert(regex<R"((a|ab|abc){3,10}bc)">::match("aabaabcabcabaaabc"));
+    static_assert(regex<R"(a|ab|abc)">::match("a"));
+    static_assert(regex<R"(a|ab|abc)">::match("ab"));
+    static_assert(regex<R"(a|ab|abc)">::match("abc"));
+    static_assert(regex<R"(abc|ab|a)">::match("abc"));
+    static_assert(regex<R"(abc|ab|a)">::match("ab"));
+    static_assert(regex<R"(abc|ab|a)">::match("a"));
+    static_assert(regex<R"((a|ab)+x)">::match("aaaababx"));
+    static_assert(regex<R"((a|ab|abc)+?x)">::match("ax"));
+    static_assert(regex<R"(hello|salut|bonjour)">::with<flag::icase>::match("SaLuT"));
+    // Backreferences
     static_assert(regex<R"((a+|b+?)x\1)">::match("aaaxaaa"));
     static_assert(regex<R"(.*(.).*\1)">::match("abcdefd"));
     static_assert(regex<R"(.*(.).*\1)", flag::U>::match("abcdefd"));
-    static_assert(regex<R"(a*aa)">::match("aa"));
-    static_assert(regex<R"(a*aab+bb)">::match("aaaaabbb"));
+    static_assert(regex<R"((.)(?:(x)|y)\1)">::match("aya"));
+    // Other random patterns
     static_assert(regex<R"((abc)+|tu ?(xyz)+)">::match("abcabcabc"));
     static_assert(regex<R"((abc)+|tu ?(xyz)+)">::match("tuxyz"));
     static_assert(regex<R"((abc)+|tu ?(xyz ?)+)">::match("tuxyzxyz"));
@@ -152,41 +194,16 @@ namespace meta::tests
     static_assert(regex<R"(\w+?(\.\w+)?@\w+(\.\w+)?)">::match("example.test@gmail.com"));
     static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("cpp@regex"));
     static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+?)?)">::match("abc123_321bca@gmail.com"));
-    static_assert(regex<R"(\(.+\))">::match("(aaabb)"));
-    static_assert(regex<R"(\(\.+\))">::match("(...)"));
     static_assert(regex<R"(0(x|X)(\x+?)(h|H)?)">::match("0x1234F"));
-    static_assert(regex<R"(.+)">::match("this regex will match any input"));
     static_assert(regex<R"((x{2,})\1+)">::match("xxxxxxxxx"));
     static_assert(regex<R"((a*(x|axx))e)">::match("aaaxxe"));
-    static_assert(regex<R"((a|ab|abc){3,}bc)", flag::unroll>::match("aabaabcabcabaaabc"));
-    static_assert(regex<R"((ab?c??d){3})">::match("abcdacdad"));
-    static_assert(regex<R"((a|ab|abc){3,10}bc)">::match("aabaabcabcabaaabc"));
-    static_assert(regex<R"([0-Z]+)", flag::i>::match("1234abczABCZ"));
-    static_assert(regex<R"([A-Z]+)", flag::icase>::match("aBcDeFiOyZ"));
-    static_assert(regex<R"(hello|salut|bonjour)">::with<flag::icase>::match("SaLuT"));
     static_assert(regex<R"(0(x)(\x+?)(h)?)">::with<flag::icase>::match("0X0h"));
-    static_assert(regex<R"(.+)", flag::s>::match("\neven new lines!"));
-    static_assert(regex<R"(.+)">::with<flag::dotall>::match("this regex will match any input"));
-    static_assert(regex<R"((a|ab|abc)+x)">::match("abx"));
-    static_assert(regex<R"((a|ab|abc)+x)">::match("abcx"));
-    static_assert(regex<R"((a|ab|abc)+x)">::match("aabcaaabababcx"));
-    static_assert(regex<R"((a|ab|abc){3}x)", flag::unroll>::match("aabcabx"));
-    static_assert(regex<R"(a|ab|abc)">::match("a"));
-    static_assert(regex<R"(a|ab|abc)">::match("ab"));
-    static_assert(regex<R"(a|ab|abc)">::match("abc"));
-    static_assert(regex<R"(abc|ab|a)">::match("abc"));
-    static_assert(regex<R"(abc|ab|a)">::match("ab"));
-    static_assert(regex<R"(abc|ab|a)">::match("a"));
-    static_assert(regex<R"((a|ab)+x)">::match("aaaababx"));
-    static_assert(regex<R"((a|ab|abc)+?x)">::match("ax"));
-    static_assert(regex<R"(^\nabcd$\n.+$)", flag::m>::match("\nabcd\nabc"));
-    static_assert(regex<R"(^abcd$\n.+$\n)">::with<flag::m>::match("abcd\nabc\n"));
-    static_assert(regex<R"(^\nabcd$\n.+$\n)">::with<flag::m>::match("\nabcd\nabc\n"));
-    static_assert(regex<R"(^abcd$)", flag::multiline>::match("abcd"));
-    static_assert(regex<R"(^abcd$\n)">::with<flag::multiline>::match("abcd\n"));
-    static_assert(regex<R"(^\nabcd$)">::with<flag::multiline>::match("\nabcd"));
-    static_assert(regex<R"(\n^abcd$\n)">::with<flag::multiline>::match("\nabcd\n"));
-    static_assert(regex<R"(\A\nabcd\n\Z)">::with<flag::multiline>::match("\nabcd\n"));
+    static_assert(regex<R"(a{})">::match("a{}"));
+    static_assert(regex<R"(a{x})">::match("a{x}"));
+    static_assert(regex<R"(\(.+\))">::match("(aaabb)"));
+    static_assert(regex<R"(\(\.+\))">::match("(...)"));
+    // Lookarounds
+    static_assert(regex<R"((?=))">::match(""));
     static_assert(regex<R"(a(?=b)\w)">::match("ab"));
     static_assert(regex<R"(.(?!b).{2})">::match("xxx"));
     static_assert(regex<R"(a(?=(\w))\w\1)">::match("abb"));
@@ -205,21 +222,28 @@ namespace meta::tests
     static_assert(regex<R"(abc(?<=(abc)))">::match(R"(abc)"));
     static_assert(regex<R"(.{3}(?<=(.{3}?))\1)">::match(R"(abcabc)"));
     static_assert(regex<R"((.*?)x(?<=\1x))">::match(R"(abcx)"));
-    static_assert(regex<R"((.)(?:(x)|y)\1)">::match("aya"));
+    //Named groups and named backreferences
     static_assert(regex<R"((?:(?<grp_name>x)x|xy)\k<grp_name>)">::match("xy"));
     static_assert(regex<R"((?:(?<grp_name>x)x|xy)\k<grp_name>)">::match("xxx"));
+    static_assert(regex<R"((?<name>a+|b+?)x\k<name>)">::match("aaaxaaa"));
+    static_assert(regex<R"(.*(?<blah>.).*\1)">::match("abcdefd"));
+    static_assert(regex<R"(.*(?<blah>.).*\k<blah>)", flag::U>::match("abcdefd"));
 
-    // Test non-matching inputs
-    static_assert(regex<R"()">::match("t") == false);
-    static_assert(regex<R"((?!))">::match("") == false);
-    static_assert(regex<R"((?!))">::match("a") == false);
+    /**
+     * Non matching tests
+     */
+
+    // Basic pattenrs
+    static_assert(regex<R"()">::match("x") == false);
+    static_assert(regex<R"(())">::match(".") == false);
     static_assert(regex<R"(a)">::match("b") == false);
-    static_assert(regex<R"(a?+a)">::match("a") == false);
-    static_assert(regex<R"((a++)+aa)">::match("aaaaa") == false);
+    static_assert(regex<R"(abc)">::match("cba") == false);
+    // Escaped characters
     static_assert(regex<R"(\a)">::match("1") == false);
     static_assert(regex<R"(\n)">::match("n") == false);
     static_assert(regex<R"(\N)">::match("\r") == false);
     static_assert(regex<R"(\N)">::match("\n") == false);
+    // Anchors
     static_assert(regex<R"(\b test)">::match(" test") == false);
     static_assert(regex<R"(test \b)">::match("test ") == false);
     static_assert(regex<R"(\b@test@\b)">::match("@test@") == false);
@@ -232,6 +256,12 @@ namespace meta::tests
     static_assert(regex<R"(^a)">::match(" a") == false);
     static_assert(regex<R"(a$)">::match("a ") == false);
     static_assert(regex<R"(^abcd$)">::match(" abcd") == false);
+    static_assert(regex<R"(^abcd$)", flag::m>::match("\nabcd\n\n") == false);
+    static_assert(regex<R"(^abcd$.+$)">::with<flag::m>::match("\n\nabcd\n") == false);
+    static_assert(regex<R"(^\nabcd$\n)">::with<flag::multiline>::match("\nabcd\ne") == false);
+    static_assert(regex<R"(^abcd$\n)">::with<flag::multiline>::match("a\nbcd\n") == false);
+    static_assert(regex<R"(abcd\Z\nabcd)">::with<flag::multiline>::match("abcd\nabcd") == false);
+    // Sets
     static_assert(regex<R"(abc[]def)">::match("abcdef") == false);
     static_assert(regex<R"(abcdef[^x])">::match("abcdef") == false);
     static_assert(regex<R"([\^a]+)">::match("^ca") == false);
@@ -243,18 +273,34 @@ namespace meta::tests
     static_assert(regex<R"([0-9]+)">::match("123123f123123") == false);
     static_assert(regex<R"([0-3]+)">::match("1231243123123") == false);
     static_assert(regex<R"([(|)][^0-9]+[a-z]+)">::match("(x") == false);
+    // Optional, Kleene star and plus
+    static_assert(regex<R"(a?+a)">::match("a") == false);
     static_assert(regex<R"(a??)">::match("b") == false);
     static_assert(regex<R"(a?)">::match("ab") == false);
+    static_assert(regex<R"(a+)">::match("") == false);
+    static_assert(regex<R"(.+)", flag::s>::match("") == false);
+    static_assert(regex<R"(.+x)">::with<flag::dotall>::match("xy") == false);
+    static_assert(regex<R"([^a-z]+)">::with<flag::icase>::match("AABBBDBDBDBBSABBDBDBABBA") == false);
     static_assert(regex<R"(a*)">::match("aaaaaaaaabaaaa") == false);
+    static_assert(regex<R"(a*aa)">::match("a") == false);
+    static_assert(regex<R"(a*aab+?bb)">::match("aaabb") == false);
     static_assert(regex<R"(a*+a)">::match("aaaaaaaaaaa") == false);
+    static_assert(regex<R"((a*)*)">::match("aaaab") == false);
     static_assert(regex<R"(a++a)">::match("aaaaaaaaaaa") == false);
-    static_assert(regex<R"(a{3,10}+a)">::match("aaaaa") == false);
+    static_assert(regex<R"((a++)+aa)">::match("aaaaa") == false);
     static_assert(regex<R"((a*)+)">::match("aaab") == false);
     static_assert(regex<R"((a+)*)">::match("aaab") == false);
-    static_assert(regex<R"((a*)*)">::match("aaaab") == false);
     static_assert(regex<R"((a+)+)">::match("aaab") == false);
     static_assert(regex<R"((a+)+?)">::match("aaab") == false);
     static_assert(regex<R"((a+?)+)">::match("") == false);
+    static_assert(regex<R"(a?b?c?)">::match("abbc") == false);
+    static_assert(regex<R"(a+b+c+)">::match("ab") == false);
+    static_assert(regex<R"((abc)+)">::match("abcabcbc") == false);
+    static_assert(regex<R"(a.+?)">::match("this regex will match any input") == false);
+    static_assert(regex<R"(.+)">::match("\nexcept new lines") == false);
+    static_assert(regex<R"(a?   b?? c?)">::match("abc") == false);
+    // Repetitions
+    static_assert(regex<R"(a{3,10}+a)">::match("aaaaa") == false);
     static_assert(regex<R"(a{1})">::match("a{1}") == false);
     static_assert(regex<R"(a{1})">::match("aa") == false);
     static_assert(regex<R"(a{1})">::match("b") == false);
@@ -282,40 +328,10 @@ namespace meta::tests
     static_assert(regex<R"([a-z]{2})">::match("0y") == false);
     static_assert(regex<R"(a{0})">::match("a") == false);
     static_assert(regex<R"((a|b|c){3})">::match("abc"));
+    // Alternations
     static_assert(regex<R"((a|ab)*x)">::match("aaaabbabx") == false);
-    static_assert(regex<R"(a+)">::match("") == false);
-    static_assert(regex<R"(abc)">::match("cba") == false);
-    static_assert(regex<R"(a?b?c?)">::match("abbc") == false);
-    static_assert(regex<R"(a+b+c+)">::match("ab") == false);
     static_assert(regex<R"((x|y|z)+)">::match("xyzxzyxyzxyzyxyqxxxzxxzyxyzx") == false);
-    static_assert(regex<R"((abc)+)">::match("abcabcbc") == false);
-    static_assert(regex<R"((a+|b+)x\1)">::match("aaaxbbb") == false);
-    static_assert(regex<R"(.*(.).*\1)">::match("abcdef") == false);
-    static_assert(regex<R"(a*aa)">::match("a") == false);
-    static_assert(regex<R"(a*aab+?bb)">::match("aaabb") == false);
-    static_assert(regex<R"((abc)+|tu ?(xyz)+)">::match("xyz") == false);
-    static_assert(regex<R"((abc)+|tu ?(xyz ?)+)">::match("tuxyxyz") == false);
-    static_assert(regex<R"((abc)+|tu ?(xyz ?)+)">::match("tu xyz  xyz ") == false);
-    static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("exa.mp.le@gmail.com") == false);
-    static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("example.test@gm.ail.com") == false);
-    static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("cpp..@regex") == false);
-    static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("abc123_321bca.gmail.com") == false);
-    static_assert(regex<R"(0(x|X)(\x+)(h|H)?)">::match("01234F") == false);
-    static_assert(regex<R"(0(x|X)(\x+)(h|H)?)">::match("X0h") == false);
-    static_assert(regex<R"(a.+?)">::match("this regex will match any input") == false);
-    static_assert(regex<R"(.+)">::match("\nexcept new lines") == false);
-    static_assert(regex<R"(a?   b?? c?)">::match("abc") == false);
-    static_assert(regex<R"((?<grp1>x{2,})\k<grp1>+)">::match("xxxxxxxxxxx") == false);
-    static_assert(regex<R"(0x(\x+)h?)", flag::i>::match("0X012323EJH") == false);
-    static_assert(regex<R"([^a-z]+)">::with<flag::icase>::match("AABBBDBDBDBBSABBDBDBABBA") == false);
-    static_assert(regex<R"(^abcd$)", flag::m>::match("\nabcd\n\n") == false);
-    static_assert(regex<R"(^abcd$.+$)">::with<flag::m>::match("\n\nabcd\n") == false);
     static_assert(regex<R"((a|ab|abc)+x)", flag::multiline>::match("aaaabcbabx") == false);
-    static_assert(regex<R"(^\nabcd$\n)">::with<flag::multiline>::match("\nabcd\ne") == false);
-    static_assert(regex<R"(^abcd$\n)">::with<flag::multiline>::match("a\nbcd\n") == false);
-    static_assert(regex<R"(abcd\Z\nabcd)">::with<flag::multiline>::match("abcd\nabcd") == false);
-    static_assert(regex<R"(.+)", flag::s>::match("") == false);
-    static_assert(regex<R"(.+x)">::with<flag::dotall>::match("xy") == false);
     static_assert(regex<R"((a|ab|abc)+x)">::match("ab") == false);
     static_assert(regex<R"((a|ab|abc)+)">::match("abcx") == false);
     static_assert(regex<R"((a|ab|abc){2}x)">::match("aabcabx") == false);
@@ -328,6 +344,23 @@ namespace meta::tests
     static_assert(regex<R"(^(a|ab|aab){3}+b$)">::match("aabaab") == false);
     static_assert(regex<R"(^(a|b|ab){3}+b$)">::match("aabab") == false);
     static_assert(regex<R"(^(a|ab){3}+b$)">::match("abababb") == false);
+    // Backreferences
+    static_assert(regex<R"((a+|b+)x\1)">::match("aaaxbbb") == false);
+    static_assert(regex<R"(.*(.).*\1)">::match("abcdef") == false);
+    // Other random patterns
+    static_assert(regex<R"((abc)+|tu ?(xyz)+)">::match("xyz") == false);
+    static_assert(regex<R"((abc)+|tu ?(xyz ?)+)">::match("tuxyxyz") == false);
+    static_assert(regex<R"((abc)+|tu ?(xyz ?)+)">::match("tu xyz  xyz ") == false);
+    static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("exa.mp.le@gmail.com") == false);
+    static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("example.test@gm.ail.com") == false);
+    static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("cpp..@regex") == false);
+    static_assert(regex<R"(\w+(\.\w+)?@\w+(\.\w+)?)">::match("abc123_321bca.gmail.com") == false);
+    static_assert(regex<R"(0(x|X)(\x+)(h|H)?)">::match("01234F") == false);
+    static_assert(regex<R"(0(x|X)(\x+)(h|H)?)">::match("X0h") == false);
+    static_assert(regex<R"(0x(\x+)h?)", flag::i>::match("0X012323EJH") == false);
+    // Lookarounds
+    static_assert(regex<R"((?!))">::match("") == false);
+    static_assert(regex<R"((?!))">::match("a") == false);
     static_assert(regex<R"(a(?=b))">::match("ab") == false);
     static_assert(regex<R"(.(?!b).{2})">::match("xbx") == false);
     static_assert(regex<R"(a(?!b)|cb)">::match("ab") == false);
@@ -342,4 +375,8 @@ namespace meta::tests
     static_assert(regex<R"(.{2}(?<!a(?=t))test)">::match("atest") == false);
     static_assert(regex<R"((.*)(?<!\1))">::match(R"(abc)") == false);
     static_assert(regex<R"((.*?)x(?<!\1x))">::match(R"(abcx)") == false);
+    // Named groups and named backreferences
+    static_assert(regex<R"((?<grp1>x{2,})\k<grp1>+)">::match("xxxxxxxxxxx") == false);
+    static_assert(regex<R"((?<name1>a+|b+)x\k<name1>)">::match("aaaxbbb") == false);
+    static_assert(regex<R"(.*(?<test_name>.).*\k<test_name>)">::match("abcdef") == false);
 }

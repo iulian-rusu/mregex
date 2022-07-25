@@ -1,5 +1,5 @@
-#ifndef MREGEX_META_HELPERS_HPP
-#define MREGEX_META_HELPERS_HPP
+#ifndef MREGEX_UTILITY_TYPE_TRAITS_HPP
+#define MREGEX_UTILITY_TYPE_TRAITS_HPP
 
 #include <type_traits>
 #include <mregex/symbols.hpp>
@@ -53,4 +53,4 @@ namespace meta
     template<char... Chars>
     using make_name = symbol::name<static_string<sizeof... (Chars)>{{Chars ..., '\0'}}>;
 }
-#endif //MREGEX_META_HELPERS_HPP
+#endif //MREGEX_UTILITY_TYPE_TRAITS_HPP

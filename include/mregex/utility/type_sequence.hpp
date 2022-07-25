@@ -1,5 +1,5 @@
-#ifndef MREGEX_TYPE_SEQUENCE_HPP
-#define MREGEX_TYPE_SEQUENCE_HPP
+#ifndef MREGEX_UTILITY_TYPE_SEQUENCE_HPP
+#define MREGEX_UTILITY_TYPE_SEQUENCE_HPP
 
 #include <mregex/symbols.hpp>
 
@@ -81,4 +81,4 @@ namespace meta
     template<typename Sequence>
     inline constexpr bool is_empty_v = std::is_same_v<symbol::empty, typename Sequence::top>;
 }
-#endif //MREGEX_TYPE_SEQUENCE_HPP
+#endif //MREGEX_UTILITY_TYPE_SEQUENCE_HPP

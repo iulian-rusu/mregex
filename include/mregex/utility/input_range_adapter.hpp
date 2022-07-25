@@ -1,8 +1,8 @@
-#ifndef MREGEX_INPUT_RANGE_ADAPTER_HPP
-#define MREGEX_INPUT_RANGE_ADAPTER_HPP
+#ifndef MREGEX_UTILITY_INPUT_RANGE_ADAPTER_HPP
+#define MREGEX_UTILITY_INPUT_RANGE_ADAPTER_HPP
 
 #include <mregex/utility/concepts.hpp>
-#include <mregex/utility/meta_helpers.hpp>
+#include <mregex/utility/type_traits.hpp>
 
 namespace meta
 {
@@ -137,4 +137,4 @@ namespace meta
     template<bool_testable_generator G>
     input_range_adapter(G &&) -> input_range_adapter<std::remove_reference_t<G>>;
 }
-#endif //MREGEX_INPUT_RANGE_ADAPTER_HPP
+#endif //MREGEX_UTILITY_INPUT_RANGE_ADAPTER_HPP

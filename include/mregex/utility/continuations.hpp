@@ -1,5 +1,5 @@
-#ifndef MREGEX_CONTINUATIONS_HPP
-#define MREGEX_CONTINUATIONS_HPP
+#ifndef MREGEX_UTILITY_CONTINUATIONS_HPP
+#define MREGEX_UTILITY_CONTINUATIONS_HPP
 
 #include <mregex/ast/match_result.hpp>
 
@@ -24,4 +24,4 @@ namespace meta
         };
     };
 }
-#endif //MREGEX_CONTINUATIONS_HPP
+#endif //MREGEX_UTILITY_CONTINUATIONS_HPP

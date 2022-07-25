@@ -1,5 +1,5 @@
-#ifndef MREGEX_DISTANCE_HPP
-#define MREGEX_DISTANCE_HPP
+#ifndef MREGEX_UTILITY_DISTANCE_HPP
+#define MREGEX_UTILITY_DISTANCE_HPP
 
 #include <iterator>
 
@@ -41,4 +41,4 @@ namespace meta
         return std::distance(begin, end) < required_dist;
     }
 }
-#endif //MREGEX_DISTANCE_HPP
+#endif //MREGEX_UTILITY_DISTANCE_HPP

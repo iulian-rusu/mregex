@@ -1,7 +1,7 @@
-#ifndef MREGEX_NAME_RULES_HPP
-#define MREGEX_NAME_RULES_HPP
+#ifndef MREGEX_GRAMMAR_NAMES_HPP
+#define MREGEX_GRAMMAR_NAMES_HPP
 
-#include <mregex/grammar/grammar_actions.hpp>
+#include <mregex/grammar/actions.hpp>
 #include <mregex/utility/char_traits.hpp>
 #include <mregex/utility/type_sequence.hpp>
 
@@ -47,4 +47,4 @@ namespace meta::grammar
     template<typename Name, char C>
     using update_name_t = typename update_name<Name, C>::type;
 }
-#endif //MREGEX_NAME_RULES_HPP
+#endif //MREGEX_GRAMMAR_NAMES_HPP

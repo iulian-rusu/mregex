@@ -24,10 +24,18 @@ namespace meta::tests
     static_assert(expected_name_spec<"(a?)(?<x>b+)c*", type_sequence<unnamed, name<"x">>>);
     static_assert(expected_name_spec<"(a?)(?<x>b+b(b))c*", type_sequence<unnamed, name<"x">, unnamed>>);
     static_assert(expected_name_spec<"(?<z>a?)(?<x>b+b(b))c*", type_sequence<name<"z">, name<"x">, unnamed>>);
-    static_assert(expected_name_spec<"((?<a>.)(?<b>(.))((.)(?<c>.)(.)))",
-        type_sequence<unnamed, name<"a">, name<"b">, unnamed, unnamed, unnamed, name<"c">, unnamed>
-    >);
-    static_assert(expected_name_spec<"(?<a>.){5}(?<b>.){5,10}(?<c>.){5,}",
-        type_sequence<name<"a">, name<"b">, name<"c">>
-    >);
+    static_assert(
+        expected_name_spec
+        <
+            "((?<a>.)(?<bb>(.))((.)(?<ccc>.)(.)))",
+            type_sequence<unnamed, name<"a">, name<"bb">, unnamed, unnamed, unnamed, name<"ccc">, unnamed>
+        >
+    );
+    static_assert(
+        expected_name_spec
+        <
+            "(?<a>.){5}(?<bb>.){5,10}(?<ccc>.){5,}",
+            type_sequence<name<"a">, name<"bb">, name<"ccc">>
+        >
+    );
 }

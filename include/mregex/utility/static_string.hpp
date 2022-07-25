@@ -1,5 +1,5 @@
-#ifndef MREGEX_STATIC_STRING_HPP
-#define MREGEX_STATIC_STRING_HPP
+#ifndef MREGEX_UTILITY_STATIC_STRING_HPP
+#define MREGEX_UTILITY_STATIC_STRING_HPP
 
 #include <array>
 #include <iosfwd>
@@ -98,4 +98,4 @@ std::ostream &operator<<(std::ostream &os, meta::static_string<N> const &str)
 {
     return os << static_cast<std::string_view>(str);
 }
-#endif //MREGEX_STATIC_STRING_HPP
+#endif //MREGEX_UTILITY_STATIC_STRING_HPP

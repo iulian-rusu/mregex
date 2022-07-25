@@ -1,8 +1,8 @@
-#ifndef MREGEX_ESC_RULES_HPP
-#define MREGEX_ESC_RULES_HPP
+#ifndef MREGEX_GRAMMAR_ESCAPES_HPP
+#define MREGEX_GRAMMAR_ESCAPES_HPP
 
-#include <mregex/grammar/backref_rules.hpp>
-#include <mregex/grammar/char_class_rules.hpp>
+#include <mregex/grammar/backrefs.hpp>
+#include <mregex/grammar/char_classes.hpp>
 
 namespace meta::grammar
 {
@@ -133,4 +133,4 @@ namespace meta::grammar
     template<char C>
     using esc_rule_t = typename esc_rule<C>::type;
 }
-#endif //MREGEX_ESC_RULES_HPP
+#endif //MREGEX_GRAMMAR_ESCAPES_HPP

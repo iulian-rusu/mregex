@@ -17,19 +17,19 @@ namespace meta::tests
             }
         };
 
-        template<typename AST>
-        inline constexpr auto ast_type = comparable<AST>{};
+        template<typename T>
+        inline constexpr auto make_comparable = comparable<T>{};
 
         template<typename AST>
         constexpr auto ast_of(regex_interface<AST>) noexcept -> comparable<AST> { return {}; }
     }
 
-    static_assert(ast_of(xpr::nothing) == ast_type<nothing>);
-    static_assert(ast_of(xpr::chr<'a'>) == ast_type<literal<'a'>>);
-    static_assert(ast_of(xpr::concat(xpr::chr<'a'>)) == ast_type<literal<'a'>>);
+    static_assert(ast_of(xpr::nothing) == make_comparable<nothing>);
+    static_assert(ast_of(xpr::chr<'a'>) == make_comparable<literal<'a'>>);
+    static_assert(ast_of(xpr::concat(xpr::chr<'a'>)) == make_comparable<literal<'a'>>);
     static_assert(
         ast_of(xpr::chr<'a'> >> xpr::chr<'b'>) ==
-        ast_type
+        make_comparable
         <
             sequence
             <
@@ -40,7 +40,7 @@ namespace meta::tests
     );
     static_assert(
         ast_of(xpr::chr<'a'> >> xpr::chr<'b'> >> xpr::chr<'c'>) ==
-        ast_type
+        make_comparable
         <
             sequence
             <
@@ -58,7 +58,7 @@ namespace meta::tests
                 xpr::chr<'c'>
             )
         ) ==
-        ast_type
+        make_comparable
         <
             sequence
             <
@@ -68,8 +68,9 @@ namespace meta::tests
             >
         >
     );
-    static_assert(ast_of(xpr::str<"abc">) ==
-        ast_type
+    static_assert(
+        ast_of(xpr::str<"abc">) ==
+        make_comparable
         <
             sequence
             <
@@ -79,8 +80,9 @@ namespace meta::tests
             >
         >
     );
-    static_assert(ast_of(not xpr::word >> xpr::str<"abc">) ==
-        ast_type
+    static_assert(
+        ast_of(not xpr::word >> xpr::str<"abc">) ==
+        make_comparable
         <
             sequence
             <
@@ -91,8 +93,9 @@ namespace meta::tests
             >
         >
     );
-    static_assert(ast_of(xpr::str<"ab"> >> xpr::zero_or_more(!xpr::digit) >> xpr::str<"xy">) ==
-        ast_type
+    static_assert(
+        ast_of(xpr::str<"ab"> >> xpr::zero_or_more(!xpr::digit) >> xpr::str<"xy">) ==
+        make_comparable
         <
             sequence
             <
@@ -104,8 +107,9 @@ namespace meta::tests
             >
         >
     );
-    static_assert(ast_of(xpr::regex<"ab?c+"> >> xpr::regex<".*">) ==
-        ast_type
+    static_assert(
+        ast_of(xpr::regex<"ab?c+"> >> xpr::regex<".*">) ==
+        make_comparable
         <
             sequence
             <
@@ -116,8 +120,9 @@ namespace meta::tests
             >
         >
     );
-    static_assert(ast_of(xpr::chr<'a'> | xpr::chr<'b'>) ==
-        ast_type
+    static_assert(
+        ast_of(xpr::chr<'a'> | xpr::chr<'b'>) ==
+        make_comparable
         <
             alternation
             <
@@ -126,8 +131,9 @@ namespace meta::tests
             >
         >
     );
-    static_assert(ast_of(xpr::chr<'a'> | xpr::chr<'b'> | xpr::chr<'c'>) ==
-        ast_type
+    static_assert(
+        ast_of(xpr::chr<'a'> | xpr::chr<'b'> | xpr::chr<'c'>) ==
+        make_comparable
         <
             alternation
             <
@@ -137,8 +143,9 @@ namespace meta::tests
             >
         >
     );
-    static_assert(ast_of(xpr::either(xpr::chr<'a'>, xpr::chr<'b'>, xpr::chr<'c'>)) ==
-        ast_type
+    static_assert(
+        ast_of(xpr::either(xpr::chr<'a'>, xpr::chr<'b'>, xpr::chr<'c'>)) ==
+        make_comparable
         <
             alternation
             <
@@ -148,8 +155,9 @@ namespace meta::tests
             >
         >
     );
-    static_assert(ast_of(xpr::str<"ab"> >> (xpr::chr<'c'> | xpr::chr<'d'>)) ==
-        ast_type
+    static_assert(
+        ast_of(xpr::str<"ab"> >> (xpr::chr<'c'> | xpr::chr<'d'>)) ==
+        make_comparable
         <
             sequence
             <
@@ -163,8 +171,9 @@ namespace meta::tests
             >
         >
     );
-    static_assert(ast_of(xpr::begin >> xpr::str<"ab"> >> +(xpr::chr<'c'> | xpr::chr<'d'>) >> xpr::end) ==
-        ast_type
+    static_assert(
+        ast_of(xpr::begin >> xpr::str<"ab"> >> +(xpr::chr<'c'> | xpr::chr<'d'>) >> xpr::end) ==
+        make_comparable
         <
             sequence
             <
@@ -194,7 +203,7 @@ namespace meta::tests
                 )
             )
         ) ==
-        ast_type
+        make_comparable
         <
             fixed_repetition
             <
@@ -232,7 +241,7 @@ namespace meta::tests
                 )
             )
         ) ==
-        ast_type
+        make_comparable
         <
             sequence
             <

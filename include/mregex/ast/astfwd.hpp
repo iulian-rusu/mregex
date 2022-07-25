@@ -1,5 +1,5 @@
-#ifndef MREGEX_ASTFWD_HPP
-#define MREGEX_ASTFWD_HPP
+#ifndef MREGEX_AST_ASTFWD_HPP
+#define MREGEX_AST_ASTFWD_HPP
 
 #include <mregex/symbols.hpp>
 
@@ -129,4 +129,4 @@ namespace meta::ast
     template<typename>
     struct negative_lookbehind;
 }
-#endif //MREGEX_ASTFWD_HPP
+#endif //MREGEX_AST_AST_ASTFWD_HPP

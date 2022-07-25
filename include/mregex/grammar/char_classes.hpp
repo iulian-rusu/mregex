@@ -1,7 +1,7 @@
-#ifndef MREGEX_CHAR_CLASS_RULES_HPP
-#define MREGEX_CHAR_CLASS_RULES_HPP
+#ifndef MREGEX_GRAMMAR_CHAR_CLASSES_HPP
+#define MREGEX_GRAMMAR_CHAR_CLASSES_HPP
 
-#include <mregex/grammar/grammar_actions.hpp>
+#include <mregex/grammar/actions.hpp>
 #include <mregex/utility/type_sequence.hpp>
 
 namespace meta::grammar
@@ -228,4 +228,4 @@ namespace meta::grammar
                 >;
     };
 }
-#endif //MREGEX_CHAR_CLASS_RULES_HPP
+#endif //MREGEX_GRAMMAR_CHAR_CLASSES_HPP

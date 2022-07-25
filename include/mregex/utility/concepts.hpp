@@ -1,5 +1,5 @@
-#ifndef MREGEX_CONCEPTS_HPP
-#define MREGEX_CONCEPTS_HPP
+#ifndef MREGEX_UTILITY_CONCEPTS_HPP
+#define MREGEX_UTILITY_CONCEPTS_HPP
 
 #include <concepts>
 #include <tuple>
@@ -46,4 +46,4 @@ namespace meta
         static_cast<bool>(gen());
     };
 }
-#endif //MREGEX_CONCEPTS_HPP
+#endif //MREGEX_UTILITY_CONCEPTS_HPP
