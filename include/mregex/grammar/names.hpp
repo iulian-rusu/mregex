@@ -7,6 +7,10 @@
 
 namespace meta::grammar
 {
+    /**
+     * Metafunction that begins the parsing of a name sequence.
+     * Name sequences are used to identity named captures and named backreferences.
+     */
     template<template<char...> typename Name, char C, bool = is_word<C> && !is_numeric_v<C>>
     struct begin_name
     {
@@ -27,6 +31,10 @@ namespace meta::grammar
     template<template<char...> typename Name, char C>
     using begin_name_t = typename begin_name<Name, C>::type;
 
+    /**
+     * Metafunction that updates a name sequence.
+     * This update can add more characters or finish parsing the name sequence.
+     */
     template<typename, char C, bool = is_word<C>>
     struct update_name
     {

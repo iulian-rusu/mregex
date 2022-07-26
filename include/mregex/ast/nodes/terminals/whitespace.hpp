@@ -23,9 +23,8 @@ namespace meta::ast
         static constexpr bool match_one(Iter current, Context &) noexcept
         {
             auto ch = *current;
-            return ch == ' ' || ch == '\t' ||
-                   ch == '\n' || ch == '\r' ||
-                   ch == '\f' || ch == '\x0B';
+            return ch == ' ' || ch == '\t' || ch == '\v' ||
+                   ch == '\n' || ch == '\r' || ch == '\f';
         }
     };
 }

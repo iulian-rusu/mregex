@@ -576,7 +576,7 @@ namespace meta::grammar
     template<char C>
     struct rule<symbol::esc, symbol::character<C>>
     {
-        using type = esc_rule_t<C>;
+        using type = begin_escape_sequence_t<C>;
     };
 
     template<>
@@ -1197,7 +1197,7 @@ namespace meta::grammar
     template<std::size_t ID, char C>
     struct rule<symbol::backref_id<ID>, symbol::character<C>>
     {
-        using type = backref_rule_t<ID, C>;
+        using type = update_backref_t<ID, C>;
     };
 
     template<std::size_t ID>
