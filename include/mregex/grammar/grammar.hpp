@@ -76,6 +76,12 @@ namespace meta::grammar
     };
 
     template<>
+    struct rule<symbol::begin, symbol::character<'{'>>
+    {
+        using type = reject;
+    };
+
+    template<>
     struct rule<symbol::begin, symbol::character<'\\'>>
     {
         using type =
@@ -207,6 +213,12 @@ namespace meta::grammar
 
     template<>
     struct rule<symbol::group_begin_or_mod, symbol::character<'+'>>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct rule<symbol::group_begin_or_mod, symbol::character<'{'>>
     {
         using type = reject;
     };
@@ -463,6 +475,12 @@ namespace meta::grammar
     };
 
     template<>
+    struct rule<symbol::group_begin, symbol::character<'{'>>
+    {
+        using type = reject;
+    };
+
+    template<>
     struct rule<symbol::group_begin, symbol::character<'\\'>>
     {
         using type =
@@ -586,7 +604,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::action_mod<symbol::make_star<match_mode::greedy>>
+                    symbol::quantifier_mod<symbol::make_star<match_mode::greedy>>
                 >;
     };
 
@@ -597,7 +615,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::action_mod<symbol::make_plus<match_mode::greedy>>
+                    symbol::quantifier_mod<symbol::make_plus<match_mode::greedy>>
                 >;
     };
 
@@ -608,7 +626,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::action_mod<symbol::make_optional<match_mode::greedy>>
+                    symbol::quantifier_mod<symbol::make_optional<match_mode::greedy>>
                 >;
     };
 
@@ -623,6 +641,36 @@ namespace meta::grammar
                 >;
     };
 
+    template<typename Token>
+    struct rule<symbol::unquantifiable, Token>
+    {
+        using type = ignore;
+    };
+
+    template<>
+    struct rule<symbol::unquantifiable, symbol::character<'*'>>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct rule<symbol::unquantifiable, symbol::character<'+'>>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct rule<symbol::unquantifiable, symbol::character<'?'>>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct rule<symbol::unquantifiable, symbol::character<'{'>>
+    {
+        using type = reject;
+    };
+
     template<char C>
     struct rule<symbol::quantifier_begin, symbol::character<C>>
     {
@@ -635,14 +683,8 @@ namespace meta::grammar
         using type = abort_quantifier_parsing_t<'{'>;
     };
 
-    template<char C>
-    struct rule<symbol::mod, symbol::character<C>>
-    {
-        using type = ignore;
-    };
-
-    template<>
-    struct rule<symbol::mod, symbol::empty>
+    template<typename Token>
+    struct rule<symbol::mod, Token>
     {
         using type = ignore;
     };
@@ -661,7 +703,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::action_mod<action>
+                    symbol::quantifier_mod<action>
                 >;
     };
 
@@ -689,12 +731,12 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::action_mod<symbol::make_repetition<match_mode::greedy, A, B>>
+                    symbol::quantifier_mod<symbol::make_repetition<match_mode::greedy, A, B>>
                 >;
     };
 
     template<template<match_mode, typename...> typename Action, match_mode Mode, typename... Inner>
-    struct rule<symbol::action_mod<Action<Mode, Inner ...>>, symbol::character<'?'>>
+    struct rule<symbol::quantifier_mod<Action<Mode, Inner ...>>, symbol::character<'?'>>
     {
         using type =
                 type_sequence
@@ -705,7 +747,7 @@ namespace meta::grammar
     };
 
     template<template<match_mode, typename...> typename Action, match_mode Mode, typename... Inner>
-    struct rule<symbol::action_mod<Action<Mode, Inner ...>>, symbol::character<'+'>>
+    struct rule<symbol::quantifier_mod<Action<Mode, Inner ...>>, symbol::character<'+'>>
     {
         using type =
                 type_sequence
@@ -715,14 +757,8 @@ namespace meta::grammar
                 >;
     };
 
-    template<typename Action, char C>
-    struct rule<symbol::action_mod<Action>, symbol::character<C>>
-    {
-        using type = Action;
-    };
-
-    template<typename Action>
-    struct rule<symbol::action_mod<Action>, symbol::empty>
+    template<typename Action, typename Token>
+    struct rule<symbol::quantifier_mod<Action>, Token>
     {
         using type = Action;
     };
@@ -776,6 +812,12 @@ namespace meta::grammar
 
     template<>
     struct rule<symbol::alt_seq, symbol::character<'?'>>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct rule<symbol::alt_seq, symbol::character<'{'>>
     {
         using type = reject;
     };
@@ -911,6 +953,12 @@ namespace meta::grammar
     };
 
     template<>
+    struct rule<symbol::seq, symbol::character<'{'>>
+    {
+        using type = reject;
+    };
+
+    template<>
     struct rule<symbol::seq, symbol::character<'\\'>>
     {
         using type =
@@ -1010,7 +1058,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::esc,
+                    symbol::set_esc,
                     symbol::make_set_from_stack,
                     symbol::set_seq
                 >;
@@ -1047,7 +1095,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::esc,
+                    symbol::set_esc,
                     symbol::make_set_from_stack,
                     symbol::set_seq
                 >;
@@ -1078,7 +1126,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::esc,
+                    symbol::set_esc,
                     symbol::make_set_from_stack,
                     symbol::set_seq
                 >;
@@ -1106,6 +1154,12 @@ namespace meta::grammar
                     symbol::make_set_from_current_char,
                     symbol::set_seq
                 >;
+    };
+
+    template<char C>
+    struct rule<symbol::set_esc, symbol::character<C>>
+    {
+        using type = begin_set_escape_sequence_t<C>;
     };
 
     template<char C>
@@ -1152,7 +1206,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::esc,
+                    symbol::set_esc,
                     symbol::make_set_from_stack,
                     symbol::set_seq
                 >;
@@ -1179,16 +1233,11 @@ namespace meta::grammar
     template<char C>
     struct rule<symbol::set_range_esc, symbol::character<C>>
     {
-        using type =
-                type_sequence
-                <
-                    advance,
-                    symbol::make_literal
-                >;
+        using type = begin_set_range_escape_sequence_t<C>;
     };
 
-    template<typename Token>
-    struct rule<symbol::set_range_esc, Token>
+    template<>
+    struct rule<symbol::set_range_esc, symbol::empty>
     {
         using type = reject;
     };

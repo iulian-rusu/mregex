@@ -13,6 +13,7 @@ namespace meta::tests
     static_assert(expected_ast<R"()", empty>);
     static_assert(expected_ast<R"((?:))", empty>);
     static_assert(expected_ast<R"((?:)+)", plus<empty>>);
+    static_assert(expected_ast<R"((?:^)+)", plus<beginning>>);
     static_assert(expected_ast<R"((?!))", negative_lookahead<empty>>);
     static_assert(expected_ast<R"(())", unnamed_capture<1, empty>>);
     static_assert(
@@ -479,7 +480,7 @@ namespace meta::tests
     static_assert(
         expected_ast
         <
-            R"(c*{012})",
+            R"(c*\{012})",
             sequence
             <
                 star<literal<'c'>>,
@@ -494,7 +495,46 @@ namespace meta::tests
     static_assert(
         expected_ast
         <
-            R"((c*?{012}){3})",
+            R"(\b\{)",
+            sequence
+            <
+                word_boundary,
+                literal<'{'>
+            >
+        >
+    );
+    static_assert(
+        expected_ast
+        <
+            R"(\b\{012})",
+            sequence
+            <
+                word_boundary,
+                literal<'{'>,
+                literal<'0'>,
+                literal<'1'>,
+                literal<'2'>,
+                literal<'}'>
+            >
+        >
+    );
+    static_assert(
+        expected_ast
+        <
+            R"(x\A\{+x?)",
+            sequence
+            <
+                literal<'x'>,
+                beginning_of_input,
+                plus<literal<'{'>>,
+                optional<literal<'x'>>
+            >
+        >
+    );
+    static_assert(
+        expected_ast
+        <
+            R"((c*?\{012}){3})",
             repetition
             <
                 symbol::quantifier_value<3>,
@@ -734,6 +774,25 @@ namespace meta::tests
     static_assert(expected_ast<R"([])", nothing>);
     static_assert(expected_ast<R"([^])", negated<nothing>>);
     static_assert(expected_ast<R"([-])", set<literal<'-'>>>);
+    static_assert(expected_ast<R"([\0])", set<literal<'\0'>>>);
+    static_assert(expected_ast<R"([\1])", set<literal<'1'>>>);
+    static_assert(expected_ast<R"([\k])", set<literal<'k'>>>);
+    static_assert(
+        expected_ast
+        <
+            R"([\k<test>])",
+            set
+            <
+                literal<'>'>,
+                literal<'t'>,
+                literal<'s'>,
+                literal<'e'>,
+                literal<'t'>,
+                literal<'<'>,
+                literal<'k'>
+            >
+        >
+    );
     static_assert(
         expected_ast
         <
@@ -767,6 +826,16 @@ namespace meta::tests
                 literal<'a'>,
                 literal<'-'>,
                 digit
+            >
+        >
+    );
+    static_assert(
+        expected_ast
+        <
+            R"([a-\n])",
+            set
+            <
+                range<'a', '\n'>
             >
         >
     );
@@ -912,17 +981,6 @@ namespace meta::tests
                     range<'0', ']'>,
                     range<'a', '['>
                 >
-            >
-        >
-    );
-    static_assert(
-        expected_ast
-        <
-            R"([a-[0-\]])",
-            set
-            <
-                range<'0', ']'>,
-                range<'a', '['>
             >
         >
     );

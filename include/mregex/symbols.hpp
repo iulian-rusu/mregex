@@ -23,9 +23,6 @@ namespace meta::symbol
     struct alt_seq {};
     struct mod {};
 
-    template<typename>
-    struct action_mod {};
-
     // Symbols for parsing groups
     struct group_begin_or_mod {};
     struct group_mod {};
@@ -36,12 +33,16 @@ namespace meta::symbol
     struct set_begin_or_neg {};
     struct set_begin {};
     struct set_seq {};
+    struct set_esc {};
     struct set_range_begin {};
     struct set_range_seq {};
     struct set_range_esc {};
 
     // Symbols for parsing quantifiers
     struct quantifier_begin {};
+
+    template<typename>
+    struct quantifier_mod {};
 
     template<std::size_t>
     struct quantifier_value {};
@@ -50,6 +51,8 @@ namespace meta::symbol
 
     template<typename, typename>
     struct quantifier_values {};
+
+    struct unquantifiable {};
 
     // Symbols for named AST nodes
     template<static_string>
