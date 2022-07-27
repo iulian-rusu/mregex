@@ -39,20 +39,18 @@ namespace meta::symbol
     struct set_range_esc {};
 
     // Symbols for parsing quantifiers
+    struct unquantifiable {};
     struct quantifier_begin {};
-
-    template<typename>
-    struct quantifier_mod {};
+    struct quantifier_inf {};
 
     template<std::size_t>
     struct quantifier_value {};
 
-    struct quantifier_inf {};
-
     template<typename, typename>
     struct quantifier_values {};
 
-    struct unquantifiable {};
+    template<typename>
+    struct quantifier_mod {};
 
     // Symbols for named AST nodes
     template<static_string>

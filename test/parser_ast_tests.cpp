@@ -11,6 +11,7 @@ namespace meta::tests
     }
 
     static_assert(expected_ast<R"()", empty>);
+    static_assert(expected_ast<R"(a)", literal<'a'>>);
     static_assert(expected_ast<R"((?:))", empty>);
     static_assert(expected_ast<R"((?:)+)", plus<empty>>);
     static_assert(expected_ast<R"((?:^)+)", plus<beginning>>);
@@ -19,16 +20,15 @@ namespace meta::tests
     static_assert(
         expected_ast
         <
-            R"((?<group_name>))",
-            capture
+            R"(a.?b)",
+            sequence
             <
-                1,
-                symbol::name<"group_name">,
-                empty
+                literal<'a'>,
+                optional<wildcard>,
+                literal<'b'>
             >
         >
     );
-    static_assert(expected_ast<R"(a)", literal<'a'>>);
     static_assert(
         expected_ast
         <
@@ -181,18 +181,6 @@ namespace meta::tests
     static_assert(expected_ast<R"(\B)", negated<word_boundary>>);
     static_assert(expected_ast<R"(\A)", beginning_of_input>);
     static_assert(expected_ast<R"(\Z)", end_of_input>);
-    static_assert(
-        expected_ast
-        <
-            R"(a.?b)",
-            sequence
-            <
-                literal<'a'>,
-                optional<wildcard>,
-                literal<'b'>
-            >
-        >
-    );
     static_assert(expected_ast<R"((c))", unnamed_capture<1, literal<'c'>>>);
     static_assert(expected_ast<R"((?:c))", literal<'c'>>);
     static_assert(expected_ast<R"(\1)", backref<1>>);
@@ -1092,6 +1080,18 @@ namespace meta::tests
                     literal<'x'>,
                     literal<'y'>
                 >
+            >
+        >
+    );
+    static_assert(
+        expected_ast
+        <
+            R"((?<group_name>))",
+            capture
+            <
+                1,
+                symbol::name<"group_name">,
+                empty
             >
         >
     );

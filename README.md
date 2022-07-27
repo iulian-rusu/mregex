@@ -87,20 +87,20 @@ Below is a complete list of the supported syntax constructs:
 |          `.`          |     match any character except `\n` and `\r`, unless the `dotall` flag is set      |
 |          `^`          | match the beginning of the input (or of the line when the `multiline` flag is set) |
 |          `$`          |    match the end of the input (or of the line when the `multiline` flag is set)    |
-|         `\A`          |                       match only the beginning of the input                        |
-|         `\Z`          |                          match only the end of the input                           |
+|         `\A`          |                     match strictly the beginning of the input                      |
+|         `\Z`          |       match strictly the end of the input (does not allow trailing newlines)       |
 |         `\b`          |     (word boundary) match the position between a word and a non-word character     |
 |         `\B`          |                    match everything that is not a word boundary                    |
-|        `[abc]`        |                           match any character in the set                           |
-|        `[a-z]`        |                          match any character in the range                          |
-|       `[^abc]`        |                       match any character **not** in the set                       |
 |         `\d`          |                             match any digit character                              |
 |         `\l`          |                             match any lowercase letter                             |
 |         `\u`          |                             match any uppercase letter                             |
 |         `\w`          |                 match any word character (letters, digits and `_`)                 |
 |         `\x`          |                          match any hexadecimal character                           |
 | `\D`, `\W`, `\U` etc. |                match any character **not** in the respective class                 |
-|         `\ `          |   remove any special meaning from the next token (ex. `\.` will only match `.`)    |
+|         `\ `          |    remove any special meaning from the next token (except ones mentioned above)    |
+|        `[abc]`        |                           match any character in the set                           |
+|        `[a-z]`        |                    match any character in the ASCII code range                     |
+|       `[^abc]`        |                       match any character **not** in the set                       |
 |  <code>&#124;</code>  |                         match the left or right expression                         |
 |          `*`          |                             match any number of times                              |
 |          `+`          |                                match at least once                                 |
@@ -111,8 +111,8 @@ Below is a complete list of the supported syntax constructs:
 | `??`, `*?`, `{N,M}?`  |                    match as few characters as possible (lazily)                    |
 | `?+`, `*+`, `{N,M}+`  |                     match without backtracking (possessively)                      |
 |       `(expr)`        |                       capture the result of matching `expr`                        |
-|    `(?<name>expr)`    |                   capture by name the result of matching `expr`                    |
 |         `\N`          |                  backreference to the capturing group number `N`                   |
+|    `(?<name>expr)`    |                   capture by name the result of matching `expr`                    |
 |      `\k<name>`       |                      backreference to a named capturing group                      |
 |      `(?:expr)`       |                             make a non-capturing group                             |
 |      `(?=expr)`       |       (positive lookahead) test if `expr` will match from the current point        |

@@ -208,9 +208,9 @@ namespace meta::ast
     template<typename T, typename Name, typename First,  typename... Rest>
     struct build<symbol::make_capture<Name>, T, type_sequence<First, Rest ...>>
     {
-        static constexpr auto ID = capture_count_v<First, Rest ...> + 1;
+        static constexpr auto capture_count = capture_count_v<First, Rest ...>;
 
-        using type = type_sequence<capture<ID, Name, First>, Rest ...>;
+        using type = type_sequence<capture<capture_count + 1, Name, First>, Rest ...>;
     };
 
     template<std::size_t ID, typename T, typename... Nodes>
