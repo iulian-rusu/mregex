@@ -4,42 +4,29 @@
 #include <array>
 #include <iosfwd>
 #include <string_view>
-#include <type_traits>
 
 namespace meta
 {
-    template<std::size_t N>
-    struct static_string_base
-    {
-        char data[N]{};
-    };
-
-    template<>
-    struct static_string_base<0>
-    {
-        char *data = nullptr;
-    };
-
     /**
      * Helper class that implements a constexpr string as a literal type.
      *
      * @tparam N    The length of the string (excluding '\0')
      */
     template<std::size_t N>
-    struct static_string : static_string_base<N>
+    struct static_string
     {
-        using static_string_base<N>::data;
+        std::array<char, N> data{};
 
         constexpr static_string(char const (&str)[N + 1]) noexcept
         {
             if constexpr (N > 0)
-                std::copy(str, str + N, data);
+                std::copy(str, str + N, std::begin(data));
         }
 
         constexpr static_string(static_string const &other) noexcept
         {
             if constexpr (N > 0)
-                std::copy(other.data, other.data + N, data);
+                std::copy(std::cbegin(other.data), std::cend(other.data), std::begin(data));
         }
 
         [[nodiscard]] constexpr auto length() const noexcept
@@ -49,29 +36,28 @@ namespace meta
 
         [[nodiscard]] constexpr auto begin() noexcept
         {
-            return data;
+            return std::begin(data);
         }
-
 
         [[nodiscard]] constexpr auto begin() const noexcept
         {
-            return data;
+            return std::cbegin(data);
         }
 
         [[nodiscard]] constexpr auto end() noexcept
         {
-            return data + N;
+            return std::end(data);
         }
 
         [[nodiscard]] constexpr auto end() const noexcept
         {
-            return data + N;
+            return std::cend(data);
         }
 
         constexpr explicit operator std::string_view() const noexcept
         requires (N > 0)
         {
-            return std::string_view(data, N);
+            return std::string_view(std::cbegin(data), N);
         }
 
         constexpr explicit operator std::string_view() const noexcept

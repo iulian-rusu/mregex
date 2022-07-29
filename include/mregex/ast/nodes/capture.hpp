@@ -17,8 +17,9 @@ namespace meta::ast
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
+            using base_iterator_type = typename Context::iterator_type;
+
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
-                using base_iterator_type = typename Context::iterator_type;
                 // Iterator types might be different if matching inside lookbehind
                 if constexpr (!std::is_same_v<Iter, base_iterator_type>)
                     std::get<ID>(ctx.captures) = regex_capture_view<base_iterator_type, Name>{new_it.base(), it.base()};

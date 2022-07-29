@@ -1,11 +1,11 @@
-#ifndef MREGEX_PARSING_PARSER_HPP
-#define MREGEX_PARSING_PARSER_HPP
+#ifndef MREGEX_PARSER_HPP
+#define MREGEX_PARSER_HPP
 
 #include <mregex/ast/builder.hpp>
 #include <mregex/ast/capture_indexer.hpp>
 #include <mregex/grammar/grammar.hpp>
-#include <mregex/parsing/lexer.hpp>
-#include <mregex/parsing/parser_result.hpp>
+#include <mregex/parser/lexer.hpp>
+#include <mregex/parser/parser_result.hpp>
 
 namespace meta
 {
@@ -116,4 +116,4 @@ namespace meta
     template<static_string Pattern>
     using status_of = typename parser<Pattern>::status_type;
 }
-#endif //MREGEX_PARSING_PARSER_HPP
+#endif //MREGEX_PARSER_HPP

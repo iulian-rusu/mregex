@@ -1,7 +1,7 @@
 #ifndef MREGEX_REGEX_HPP
 #define MREGEX_REGEX_HPP
 
-#include <mregex/parsing/parser.hpp>
+#include <mregex/parser/parser.hpp>
 #include <mregex/regex_interface.hpp>
 
 namespace meta

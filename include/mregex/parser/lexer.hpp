@@ -1,5 +1,5 @@
-#ifndef MREGEX_PARSING_LEXER_HPP
-#define MREGEX_PARSING_LEXER_HPP
+#ifndef MREGEX_PARSER_LEXER_HPP
+#define MREGEX_PARSER_LEXER_HPP
 
 #include <mregex/symbols.hpp>
 
@@ -29,4 +29,4 @@ namespace meta
         using token_t = typename token<I>::type;
     };
 }
-#endif //MREGEX_PARSING_LEXER_HPP
+#endif //MREGEX_PARSER_LEXER_HPP
