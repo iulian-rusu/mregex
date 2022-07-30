@@ -16,7 +16,7 @@ namespace meta
         template<typename Tuple, typename Func, std::size_t... Indices>
         constexpr void iterate_tuple(Tuple &&tuple, Func &&func, std::index_sequence<Indices ...>)
         {
-            (func(std::get<Indices>(tuple)), ...);
+            (func(std::get<Indices>(std::forward<Tuple>(tuple))), ...);
         }
     }
 

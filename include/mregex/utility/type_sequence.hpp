@@ -14,33 +14,63 @@ namespace meta
     namespace detail
     {
         template<typename Sequence, typename T>
-        struct push_impl;
+        struct push;
 
-        template<typename... Elems, typename T>
-        struct push_impl<type_sequence<Elems ...>, T>
+        template<typename... Elems, typename NewElem>
+        struct push<type_sequence<Elems ...>, NewElem>
         {
-            using type = type_sequence<T, Elems ...>;
+            using type = type_sequence<NewElem, Elems ...>;
         };
 
-        template<typename... Elems, typename... Ts>
-        struct push_impl<type_sequence<Elems ...>, type_sequence<Ts ...>>
+        template<typename... Elems, typename... NewElems>
+        struct push<type_sequence<Elems ...>, type_sequence<NewElems ...>>
         {
-            using type = type_sequence<Ts ..., Elems ...>;
+            using type = type_sequence<NewElems ..., Elems ...>;
         };
 
         template<typename Sequence>
-        struct pop_impl;
+        struct pop;
 
         template<typename First, typename... Rest>
-        struct pop_impl<type_sequence<First, Rest ...>>
+        struct pop<type_sequence<First, Rest ...>>
         {
             using type = type_sequence<Rest ...>;
         };
 
         template<>
-        struct pop_impl<type_sequence<>>
+        struct pop<type_sequence<>>
         {
             using type = type_sequence<>;
+        };
+
+        template<typename... Sequences>
+        struct concat
+        {
+            using type = type_sequence<>;
+        };
+
+        template<typename Sequence>
+        struct concat<Sequence>
+        {
+            using type = Sequence;
+        };
+
+        template<typename... First, typename... Second>
+        struct concat<type_sequence<First ...>, type_sequence<Second ...>>
+        {
+            using type = type_sequence<First ..., Second ...>;
+        };
+
+        template<typename... First, typename... Second, typename... Third>
+        struct concat<type_sequence<First ...>, type_sequence<Second ...>, type_sequence<Third ...>>
+        {
+            using type = type_sequence<First ..., Second ..., Third ...>;
+        };
+
+        template<typename... As, typename... Bs, typename... Cs, typename... Ds, typename... Sequences>
+        struct concat<type_sequence<As ...>, type_sequence<Bs ...>, type_sequence<Cs ...>, type_sequence<Ds ...>, Sequences ...>
+        {
+            using type = typename detail::concat<type_sequence<As ..., Bs ..., Cs ..., Ds ...>, Sequences ...>::type;
         };
     }
 
@@ -61,22 +91,16 @@ namespace meta
      */
 
     template<typename Sequence, typename T>
-    using push = typename detail::push_impl<Sequence, T>::type;
+    using push = typename detail::push<Sequence, T>::type;
 
     template<typename Sequence>
-    using pop = typename detail::pop_impl<Sequence>::type;
+    using pop = typename detail::pop<Sequence>::type;
 
     template<typename Sequence>
     using top = typename Sequence::top;
 
-    template<typename T, typename... Ts>
-    constexpr auto operator<<(type_sequence<Ts ...>, T) -> push<type_sequence<Ts ...>, T> { return {}; }
-
-    template<typename T, typename... Ts>
-    constexpr auto operator>>(T, type_sequence<Ts ...>) -> push<type_sequence<Ts ...>, T> { return {}; }
-
     template<typename... Sequences>
-    using concat = decltype((Sequences{} >> ...));
+    using concat = typename detail::concat<Sequences ...>::type;
 
     template<typename Sequence>
     inline constexpr bool is_empty_v = std::is_same_v<symbol::empty, typename Sequence::top>;

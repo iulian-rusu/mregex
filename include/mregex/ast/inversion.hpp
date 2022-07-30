@@ -8,17 +8,20 @@ namespace meta::ast
 {
     namespace detail
     {
-        template<typename... Ts>
-        constexpr auto to_sequence(type_sequence<Ts ...>) noexcept -> sequence<Ts ...>
+        template<typename NewElem, typename... Elems>
+        constexpr auto operator<<(type_sequence<Elems ...>, NewElem) noexcept
         {
-            return {};
+            return type_sequence<NewElem, Elems ...>{};
         }
 
-        template<typename... Ts>
-        constexpr auto invert(type_sequence<Ts ...>) noexcept
+        template<typename... Elems>
+        constexpr auto reverse(type_sequence<Elems ...>) noexcept
         {
-            return (type_sequence<>{}  << ... << Ts{});
+            return (type_sequence<>{}  << ... << Elems{});
         }
+
+        template<typename... Elems>
+        constexpr auto to_sequence(type_sequence<Elems ...>) noexcept -> sequence<Elems ...> { return {}; }
     }
 
     /**
@@ -36,10 +39,10 @@ namespace meta::ast
     template<typename Node>
     using invert_t = typename invert<Node>::type;
 
-    template<typename... Ts>
-    struct invert<sequence<Ts ...>>
+    template<typename... Inner>
+    struct invert<sequence<Inner ...>>
     {
-        using type = decltype(detail::to_sequence(detail::invert(type_sequence<invert_t<Ts> ...>{})));
+        using type = decltype(detail::to_sequence(detail::reverse(type_sequence<invert_t<Inner> ...>{})));
     };
 
     template<template<typename...> typename Wrapper, typename... Inner>

@@ -11,7 +11,7 @@ namespace meta::grammar
      * Metafunction that begins the parsing of a name sequence.
      * Name sequences are used to identity named captures and named backreferences.
      */
-    template<template<char...> typename Name, char C, bool = is_word<C> && !is_numeric_v<C>>
+    template<template<char...> typename Name, char C, bool = is_word_v<C> && !is_numeric_v<C>>
     struct begin_name
     {
         using type =
@@ -35,7 +35,7 @@ namespace meta::grammar
      * Metafunction that updates a name sequence.
      * This update can add more characters or finish parsing the name sequence.
      */
-    template<typename, char C, bool = is_word<C>>
+    template<typename, char C, bool = is_word_v<C>>
     struct update_name
     {
         using type = reject;

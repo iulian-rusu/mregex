@@ -3,9 +3,8 @@
 
 #include <mregex/ast/builder.hpp>
 #include <mregex/ast/capture_indexer.hpp>
-#include <mregex/grammar/grammar.hpp>
 #include <mregex/parser/lexer.hpp>
-#include <mregex/parser/parser_result.hpp>
+#include <mregex/parser/state.hpp>
 
 namespace meta
 {
@@ -17,6 +16,12 @@ namespace meta
     template<static_string Pattern>
     struct parser
     {
+        /**
+         * Metafunction used to capture the current state of the parser.
+         */
+        template<std::size_t I, typename Nodes, typename Symbols>
+        using state_t = parser_state<parser<Pattern>, I, Nodes, Symbols>;
+
         /**
          * Metafunction used to extract tokens (characters or empty tokens) from the input pattern.
          */
@@ -44,12 +49,8 @@ namespace meta
          * @tparam Nodes    The stack with the AST nodes
          * @tparam Symbols  The stack with the current parsing symbols
          */
-        template<std::size_t I, typename Nodes, typename Symbols, bool = symbol::is_semantic_action<top<Symbols>>>
-        struct parse
-        {
-            using next_symbols = grammar::rule_t<top<Symbols>,  token_t<I>>;
-            using type = transition_t<I, next_symbols, Nodes, pop<Symbols>>;
-        };
+        template<std::size_t I, typename Nodes, typename Symbols, bool = symbol::is_semantic_action_v<top<Symbols>>>
+        struct parse;
 
         template<std::size_t I, typename Nodes, typename Symbols>
         using parse_t = typename parse<I, Nodes, Symbols>::type;
@@ -59,6 +60,13 @@ namespace meta
         {
             using next_nodes = ast::build_t<top<Symbols>, token_t<I - 1>, Nodes>;
             using type = parse_t<I, next_nodes, pop<Symbols>>;
+        };
+
+        template<std::size_t I, typename Nodes, typename Symbols>
+        struct parse<I, Nodes, Symbols, false>
+        {
+            using next_symbols = grammar::rule_t<top<Symbols>,  token_t<I>>;
+            using type = transition_t<I, next_symbols, Nodes, pop<Symbols>>;
         };
 
         // Base case - push the symbols on the stack
@@ -79,14 +87,14 @@ namespace meta
         template<std::size_t I, typename Nodes, typename Symbols>
         struct transition<I, grammar::advance, Nodes, Symbols>
         {
-            using type = parse_t<I + 1, Nodes, Symbols>;
+            using type = state_t<I + 1, Nodes, Symbols>;
         };
 
         // Advance and also push the remaining symbols on the stack
         template<std::size_t I, typename Nodes, typename... Symbols, typename... Rest>
         struct transition<I, type_sequence<grammar::advance, Symbols ...>, Nodes, type_sequence<Rest ...>>
         {
-            using type = parse_t<I + 1, Nodes, type_sequence<Symbols ..., Rest ...>>;
+            using type = state_t<I + 1, Nodes, type_sequence<Symbols ..., Rest ...>>;
         };
 
         // Reject the input pattern
@@ -103,9 +111,9 @@ namespace meta
             using type = parser_result<ast::preorder_indexing_t<0, top<Nodes>>, parsing::success>;
         };
 
-        using result = parse_t<0, type_sequence<>, type_sequence<symbol::begin>>;
-        using ast_type = typename result::ast_type;
-        using status_type = typename result::status_type;
+        using result_type = next_state_t<state_t<0, type_sequence<>, type_sequence<symbol::begin>>, Pattern.length()>;
+        using ast_type = typename result_type::ast_type;
+        using status_type = typename result_type::status_type;
 
         static constexpr bool accepted = std::is_same_v<status_type, parsing::success>;
     };

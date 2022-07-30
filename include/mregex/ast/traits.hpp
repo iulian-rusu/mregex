@@ -17,7 +17,6 @@ namespace meta::ast
     struct is_trivially_matchable
     {
         using iterator_type = std::string_view::iterator;
-
         static constexpr bool value = requires { &Node::template match_one<iterator_type, int>; };
     };
 

@@ -820,10 +820,10 @@ namespace meta::tests
     static_assert(
         expected_ast
         <
-            R"([a-\n])",
+            R"([\0-\n])",
             set
             <
-                range<'a', '\n'>
+                range<'\0', '\n'>
             >
         >
     );
@@ -950,24 +950,24 @@ namespace meta::tests
     static_assert(
         expected_ast
         <
-            R"([a-[0-\]])",
+            R"([A-[0-\]])",
             set
             <
                 range<'0', ']'>,
-                range<'a', '['>
+                range<'A', '['>
             >
         >
     );
     static_assert(
         expected_ast
         <
-            R"([^a-[0-\]])",
+            R"([^A-[0-\]])",
             negated
             <
                 set
                 <
                     range<'0', ']'>,
-                    range<'a', '['>
+                    range<'A', '['>
                 >
             >
         >
@@ -975,11 +975,11 @@ namespace meta::tests
     static_assert(
         expected_ast
         <
-            R"([-a-[0-\]])",
+            R"([-A-[0-\]])",
             set
             <
                 range<'0', ']'>,
-                range<'a', '['>,
+                range<'A', '['>,
                 literal<'-'>
             >
         >
