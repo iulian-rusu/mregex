@@ -129,4 +129,4 @@ namespace meta::ast
     template<typename>
     struct negative_lookbehind;
 }
-#endif //MREGEX_AST_AST_ASTFWD_HPP
+#endif //MREGEX_AST_ASTFWD_HPP

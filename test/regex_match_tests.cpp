@@ -127,7 +127,7 @@ namespace meta::tests
     static_assert(regex<R"(a{3,6}a)">::match("aaaaaaa"));
     static_assert(regex<R"(a{1,5}?)">::match("aaa"));
     static_assert(regex<R"((abc){0,})">::match("abcabc"));
-    static_assert(regex<R"(\w{2}-\w{3}-\w{4})">::match("ab-abc-xyzt"));
+    static_assert(regex<R"(\w{2}-\w{3}-\w{4})", flag::unroll>::match("ab-abc-xyzt"));
     static_assert(regex<R"([a-z]{2})">::match("xy"));
     static_assert(regex<R"(a{0}?)">::match(""));
     static_assert(regex<R"((_x){7,17}y)">::match("_x_x_x_x_x_x_xy"));
@@ -154,8 +154,8 @@ namespace meta::tests
     static_assert(regex<R"(^(a|ab|aab){3}b$)">::match("aabab"));
     static_assert(regex<R"(^(a|ab|aab){3}?b$)">::match("aabab"));
     static_assert(regex<R"(^(a|ab|aab){3}+b$)">::match("aabab"));
-    static_assert(regex<R"(^(a|ab|aab){3}b$)">::match("aabaab"));
-    static_assert(regex<R"(^(a|ab|aab){3}?b$)">::match("aabaab"));
+    static_assert(regex<R"(^(a|ab|aab){3}b$)", flag::unroll>::match("aabaab"));
+    static_assert(regex<R"(^(a|ab|aab){3}?b$)", flag::unroll>::match("aabaab"));
     // Alternations
     static_assert(regex<R"(a|ab|abc)">::match("a"));
     static_assert(regex<R"((a|ab)xd)">::match("abxd"));

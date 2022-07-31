@@ -18,7 +18,7 @@ namespace meta
     template<std::forward_iterator Iter, typename Name = symbol::unnamed>
     struct regex_capture_view
     {
-        constexpr regex_capture_view() = default;
+        constexpr regex_capture_view() noexcept = default;
 
         constexpr explicit regex_capture_view(Iter begin, Iter end) noexcept
             : _begin{begin}, _end{end}
@@ -55,13 +55,13 @@ namespace meta
         [[nodiscard]] constexpr auto &operator[](std::size_t index)
         requires std::random_access_iterator<Iter>
         {
-            return *(_begin + index);
+            return _begin[index];
         }
 
         [[nodiscard]] constexpr auto const &operator[](std::size_t index) const
         requires std::random_access_iterator<Iter>
         {
-            return *(_begin + index);
+            return _begin[index];
         }
 
         constexpr explicit operator bool() const noexcept
@@ -88,7 +88,7 @@ namespace meta
     template<typename Name = symbol::unnamed>
     struct regex_capture
     {
-        regex_capture() = default;
+        regex_capture() noexcept = default;
 
         template<std::forward_iterator Iter>
         explicit regex_capture(regex_capture_view<Iter, Name> const &capture_view)
