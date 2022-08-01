@@ -13,7 +13,7 @@ namespace meta
 
     namespace detail
     {
-        template<typename Sequence, typename T>
+        template<typename, typename>
         struct push;
 
         template<typename... Elems, typename NewElem>
@@ -28,7 +28,7 @@ namespace meta
             using type = type_sequence<NewElems ..., Elems ...>;
         };
 
-        template<typename Sequence>
+        template<typename>
         struct pop;
 
         template<typename First, typename... Rest>
@@ -61,16 +61,49 @@ namespace meta
             using type = type_sequence<First ..., Second ...>;
         };
 
-        template<typename... First, typename... Second, typename... Third>
-        struct concat<type_sequence<First ...>, type_sequence<Second ...>, type_sequence<Third ...>>
+        template<typename... T0, typename... T1, typename... T2>
+        struct concat<type_sequence<T0 ...>, type_sequence<T1 ...>, type_sequence<T2 ...>>
         {
-            using type = type_sequence<First ..., Second ..., Third ...>;
+            using type = type_sequence<T0 ..., T1 ..., T2 ...>;
         };
 
-        template<typename... As, typename... Bs, typename... Cs, typename... Ds, typename... Sequences>
-        struct concat<type_sequence<As ...>, type_sequence<Bs ...>, type_sequence<Cs ...>, type_sequence<Ds ...>, Sequences ...>
+        template<typename... T0, typename... T1, typename... T2, typename... T3, typename... Sequences>
+        struct concat<type_sequence<T0 ...>, type_sequence<T1 ...>, type_sequence<T2 ...>, type_sequence<T3 ...>, Sequences ...>
         {
-            using type = typename detail::concat<type_sequence<As ..., Bs ..., Cs ..., Ds ...>, Sequences ...>::type;
+            using type = typename detail::concat<type_sequence<T0 ..., T1 ..., T2 ..., T3 ...>, Sequences ...>::type;
+        };
+
+        template<typename... Elems>
+        struct reverse_sequence
+        {
+            using type = type_sequence<Elems ...>;
+        };
+
+        template<typename First, typename Second>
+        struct reverse_sequence<First, Second>
+        {
+            using type = type_sequence<Second, First>;
+        };
+
+        template<typename T0, typename T1, typename T2>
+        struct reverse_sequence<T0, T1, T2>
+        {
+            using type = type_sequence<T2, T1, T0>;
+        };
+
+        template<typename T0, typename T1, typename T2, typename T3, typename... Rest>
+        struct reverse_sequence<T0, T1, T2, T3, Rest ...>
+        {
+            using type = typename concat<typename reverse_sequence<Rest ...>::type, type_sequence<T3, T2, T1, T0>>::type;
+        };
+
+        template<typename>
+        struct reverse;
+
+        template<typename... Elems>
+        struct reverse<type_sequence<Elems ...>>
+        {
+            using type = typename reverse_sequence<Elems ...>::type;
         };
     }
 
@@ -101,6 +134,9 @@ namespace meta
 
     template<typename... Sequences>
     using concat = typename detail::concat<Sequences ...>::type;
+
+    template<typename Sequence>
+    using reverse = typename detail::reverse<Sequence>::type;
 
     template<typename Sequence>
     inline constexpr bool is_empty_v = std::is_same_v<symbol::empty, typename Sequence::top>;
