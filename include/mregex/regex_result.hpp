@@ -11,7 +11,7 @@ namespace meta
     /**
      * Class returned by all regex matching/searching functions.
      *
-     * @tparam NameSpec The type that contains the capture name specification
+     * @tparam NameSpec A type that contains the capture name specification
      * @tparam Storage  The storage type used to hold the captures
      */
     template<typename NameSpec, capture_storage Storage>

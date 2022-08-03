@@ -10,7 +10,7 @@ namespace meta
     /**
      * Class that provides an interface for all regex-like types.
      *
-     * @tparam AST      The Abstract Syntax Tree of the regex object
+     * @tparam AST      The Abstract Syntax Tree of the regex
      * @tparam Flags    Optional flags for matching
      */
     template<typename AST, typename... Flags>

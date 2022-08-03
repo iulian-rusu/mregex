@@ -43,9 +43,9 @@ namespace meta
      * Type that captures the state of the parser at a given parsing step.
      *
      * @tparam Parser   The parser metafunction type
-     * @tparam I            The current position in the input
-     * @tparam Nodes        The stack with the AST nodes
-     * @tparam Symbols      The stack with the current parsing symbols
+     * @tparam I        The current position in the input
+     * @tparam Nodes    The stack with the AST nodes
+     * @tparam Symbols  The stack with the current parsing symbols
      */
     template<typename Parser, std::size_t I, typename Nodes, typename Symbols>
     struct parser_state {};
@@ -58,28 +58,28 @@ namespace meta
          */
 
         template<typename Parser, std::size_t I, typename Nodes, typename Symbols>
-        constexpr auto operator>>(parser_state<Parser, I, Nodes, Symbols>, grammar::advance) noexcept
+        constexpr auto operator<<(parser_state<Parser, I, Nodes, Symbols>, grammar::advance) noexcept
         {
             return typename Parser::template parse_t<I, Nodes, Symbols>{};
         }
 
         template<typename AST, typename S>
-        constexpr auto operator>>(parser_result<AST, S>, grammar::advance) noexcept
+        constexpr auto operator<<(parser_result<AST, S>, grammar::advance) noexcept
         {
             return parser_result<AST, S>{};
         }
 
         template<std::size_t>
-        using make_advance = grammar::advance;
+        using make_transition = grammar::advance;
 
         template<typename State, std::size_t... Indices>
-        static constexpr auto next_state(State initial_state, std::index_sequence<Indices ...>) noexcept
+        static constexpr auto transition_state(State initial_state, std::index_sequence<Indices ...>) noexcept
         {
-            return (initial_state >> ... >> make_advance<Indices>{});
+            return (initial_state << ... << make_transition<Indices>{});
         }
     }
 
     template<typename State, std::size_t N>
-    using next_state_t = decltype(detail::next_state(State{}, std::make_index_sequence<N + 1>{}));
+    using transition_state_t = decltype(detail::transition_state(State{}, std::make_index_sequence<N + 1>{}));
 }
 #endif //MREGEX_PARSER_STATE_HPP

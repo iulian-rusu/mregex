@@ -111,9 +111,10 @@ namespace meta
             using type = parser_result<ast::preorder_indexing_t<0, top<Nodes>>, parsing::success>;
         };
 
-        using result_type = next_state_t<state_t<0, type_sequence<>, type_sequence<symbol::begin>>, Pattern.length()>;
-        using ast_type = typename result_type::ast_type;
-        using status_type = typename result_type::status_type;
+        using initial_state = state_t<0, type_sequence<>, type_sequence<symbol::begin>>;
+        using result = transition_state_t<initial_state, Pattern.length()>;
+        using ast_type = typename result::ast_type;
+        using status_type = typename result::status_type;
 
         static constexpr bool accepted = std::is_same_v<status_type, parsing::success>;
     };

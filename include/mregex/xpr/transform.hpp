@@ -18,7 +18,7 @@ namespace meta::xpr
     /**
      * Converts a static string into an instance of ast::sequence.
      *
-     * @tparam Str  The static string to be transform
+     * @tparam Str  The static string to be converted
      * @return      An instance of ast::sequence equivalent to the original string
      */
     template<static_string Str>
@@ -30,7 +30,7 @@ namespace meta::xpr
     /**
      * Converts an Abstract Syntax Tree to a type which provides a regex interface.
      *
-     * @tparam AST  The Abstract Syntax Tree type
+     * @tparam AST  The Abstract Syntax Tree of the regex
      * @return      An object with the interface of a regular expression
      */
     template<typename AST>

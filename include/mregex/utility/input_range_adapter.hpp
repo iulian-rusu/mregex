@@ -11,7 +11,7 @@ namespace meta
      * The generator is required to return a boolean-convertible value to signal
      * its iteration state. A false value implies the end of the iteration.
      *
-     * @tparam Gen   The type of callable used to produce the desired data
+     * @tparam Gen   The callable type used to generate the data
      */
     template<bool_testable_generator Gen>
     struct input_range_adapter : private Gen
