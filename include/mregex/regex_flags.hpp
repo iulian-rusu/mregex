@@ -46,14 +46,11 @@ namespace meta
         using r = unroll;
     }
 
-    template<typename T>
-    struct is_flag : std::false_type {};
+    template<typename>
+    inline constexpr bool is_flag_v = false;
 
     template<std::size_t ID>
-    struct is_flag<regex_flag<ID>> : std::true_type {};
-
-    template<typename T>
-    inline constexpr bool is_flag_v = is_flag<T>::value;
+    inline constexpr bool is_flag_v<regex_flag<ID>> = true;
 
     template<typename Flag, typename... Flags>
     inline constexpr bool is_flag_enabled_v = is_any_of_v<Flag, Flags ...>;

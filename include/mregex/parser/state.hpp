@@ -54,7 +54,7 @@ namespace meta
     {
         /**
          * To minimize template recursion depth, parsing is done by advancing
-         * the parser state using a fold-expression.
+         * the parser state using a fold expression.
          */
 
         template<typename Parser, std::size_t I, typename Nodes, typename Symbols>

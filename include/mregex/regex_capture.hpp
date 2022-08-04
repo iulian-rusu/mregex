@@ -163,14 +163,11 @@ namespace meta
      * Type trait used to check if a given type is an instance of
      * the regex_capture_view template class.
      */
-    template<typename T>
-    struct is_capture_view : std::false_type {};
+    template<typename>
+    inline constexpr bool is_capture_view_v = false;
 
     template<std::forward_iterator Iter, typename Name>
-    struct is_capture_view<regex_capture_view<Iter, Name>> : std::true_type {};
-
-    template<typename T>
-    inline constexpr bool is_capture_view_v = is_capture_view<T>::value;
+    inline constexpr bool is_capture_view_v<regex_capture_view<Iter, Name>> = true;
 
     /**
      * Defines a std::tuple used to store views into regex captures.
