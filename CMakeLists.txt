@@ -22,16 +22,9 @@ else()
     endif()
 endif()
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    add_compile_options(-fconcepts-diagnostics-depth=3)
-endif()
-
 # Main library target
 add_library(mregex INTERFACE)
 target_include_directories(mregex INTERFACE include/)
-
-# Installation
-install(DIRECTORY include/mregex DESTINATION include FILES_MATCHING PATTERN *.hpp)
 
 # Building tests
 option(MREGEX_BUILD_TESTS "build tests" ON)

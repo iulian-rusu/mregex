@@ -50,9 +50,7 @@ Since the range only provides input iterators, all results are discarded and can
 using word_regex = meta::regex<R"(\w+(?!\w))">;
 std::string words = "Find all word-like sequences in this string!";
 for (auto &&word : word_regex::range(words))
-{
     std::cout << word << '\n';
-}
 ```
 
 The [expression-based API](example/using_expressions.cpp) allows defining a regex as a composition of C++ expressions 
@@ -65,9 +63,7 @@ using namespace xpr::operators;
 auto word_regex = +xpr::word >> not xpr::ahead(xpr::word);
 std::string words = "Find all word-like sequences in this string!";
 for (auto &&word : word_regex.range(words))
-{
     std::cout << word << '\n';
-}
 ```
 
 The main advantage of this approach is the ability to construct complex expressions from simpler components:

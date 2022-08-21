@@ -8,28 +8,28 @@ namespace meta::tests
     namespace
     {
         template<typename T>
-        struct comparable
+        struct type_wrapper
         {
             template<typename U>
-            constexpr bool operator==(comparable<U>) const noexcept
+            constexpr bool operator==(type_wrapper<U>) const noexcept
             {
                 return std::is_same_v<T, U>;
             }
         };
 
         template<typename T>
-        inline constexpr auto make_comparable = comparable<T>{};
+        inline constexpr auto type = type_wrapper<T>{};
 
         template<typename AST>
-        constexpr auto ast_of(regex_interface<AST>) noexcept -> comparable<AST> { return {}; }
+        constexpr auto ast_of(regex_interface<AST>) noexcept -> type_wrapper<AST> { return {}; }
     }
 
-    static_assert(ast_of(xpr::nothing) == make_comparable<nothing>);
-    static_assert(ast_of(xpr::chr<'a'>) == make_comparable<literal<'a'>>);
-    static_assert(ast_of(xpr::concat(xpr::chr<'a'>)) == make_comparable<literal<'a'>>);
+    static_assert(ast_of(xpr::nothing) == type<nothing>);
+    static_assert(ast_of(xpr::chr<'a'>) == type<literal<'a'>>);
+    static_assert(ast_of(xpr::concat(xpr::chr<'a'>)) == type<literal<'a'>>);
     static_assert(
         ast_of(xpr::chr<'a'> >> xpr::chr<'b'>) ==
-        make_comparable
+        type
         <
             sequence
             <
@@ -40,7 +40,7 @@ namespace meta::tests
     );
     static_assert(
         ast_of(xpr::chr<'a'> >> xpr::chr<'b'> >> xpr::chr<'c'>) ==
-        make_comparable
+        type
         <
             sequence
             <
@@ -58,7 +58,7 @@ namespace meta::tests
                 xpr::chr<'c'>
             )
         ) ==
-        make_comparable
+        type
         <
             sequence
             <
@@ -70,7 +70,7 @@ namespace meta::tests
     );
     static_assert(
         ast_of(xpr::str<"abc">) ==
-        make_comparable
+        type
         <
             sequence
             <
@@ -82,7 +82,7 @@ namespace meta::tests
     );
     static_assert(
         ast_of(not xpr::word >> xpr::str<"abc">) ==
-        make_comparable
+        type
         <
             sequence
             <
@@ -95,7 +95,7 @@ namespace meta::tests
     );
     static_assert(
         ast_of(xpr::str<"ab"> >> xpr::zero_or_more(!xpr::digit) >> xpr::str<"xy">) ==
-        make_comparable
+        type
         <
             sequence
             <
@@ -109,7 +109,7 @@ namespace meta::tests
     );
     static_assert(
         ast_of(xpr::regex<"ab?c+"> >> xpr::regex<".*">) ==
-        make_comparable
+        type
         <
             sequence
             <
@@ -122,7 +122,7 @@ namespace meta::tests
     );
     static_assert(
         ast_of(xpr::chr<'a'> | xpr::chr<'b'>) ==
-        make_comparable
+        type
         <
             alternation
             <
@@ -133,7 +133,7 @@ namespace meta::tests
     );
     static_assert(
         ast_of(xpr::chr<'a'> | xpr::chr<'b'> | xpr::chr<'c'>) ==
-        make_comparable
+        type
         <
             alternation
             <
@@ -145,7 +145,7 @@ namespace meta::tests
     );
     static_assert(
         ast_of(xpr::either(xpr::chr<'a'>, xpr::chr<'b'>, xpr::chr<'c'>)) ==
-        make_comparable
+        type
         <
             alternation
             <
@@ -157,7 +157,7 @@ namespace meta::tests
     );
     static_assert(
         ast_of(xpr::str<"ab"> >> (xpr::chr<'c'> | xpr::chr<'d'>)) ==
-        make_comparable
+        type
         <
             sequence
             <
@@ -173,7 +173,7 @@ namespace meta::tests
     );
     static_assert(
         ast_of(xpr::begin >> xpr::str<"ab"> >> +(xpr::chr<'c'> | xpr::chr<'d'>) >> xpr::end) ==
-        make_comparable
+        type
         <
             sequence
             <
@@ -203,7 +203,7 @@ namespace meta::tests
                 )
             )
         ) ==
-        make_comparable
+        type
         <
             fixed_repetition
             <
@@ -241,7 +241,7 @@ namespace meta::tests
                 )
             )
         ) ==
-        make_comparable
+        type
         <
             sequence
             <

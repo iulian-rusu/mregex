@@ -3,6 +3,7 @@
 
 #include <mregex/ast/builder.hpp>
 #include <mregex/ast/capture_indexer.hpp>
+#include <mregex/grammar/grammar.hpp>
 #include <mregex/parser/lexer.hpp>
 #include <mregex/parser/state.hpp>
 
@@ -112,7 +113,7 @@ namespace meta
         };
 
         using initial_state = state_t<0, type_sequence<>, type_sequence<symbol::begin>>;
-        using result = transition_state_t<initial_state, Pattern.length()>;
+        using result = next_state_t<initial_state, Pattern.length()>;
         using ast_type = typename result::ast_type;
         using status_type = typename result::status_type;
 

@@ -2,7 +2,6 @@
 #define MREGEX_PARSER_STATE_HPP
 
 #include <mregex/ast/astfwd.hpp>
-#include <mregex/grammar/grammar.hpp>
 
 namespace meta
 {
@@ -58,28 +57,25 @@ namespace meta
          */
 
         template<typename Parser, std::size_t I, typename Nodes, typename Symbols>
-        constexpr auto operator<<(parser_state<Parser, I, Nodes, Symbols>, grammar::advance) noexcept
+        constexpr auto operator<<(parser_state<Parser, I, Nodes, Symbols>, std::size_t) noexcept
         {
             return typename Parser::template parse_t<I, Nodes, Symbols>{};
         }
 
         template<typename AST, typename S>
-        constexpr auto operator<<(parser_result<AST, S>, grammar::advance) noexcept
+        constexpr auto operator<<(parser_result<AST, S>, std::size_t) noexcept
         {
             return parser_result<AST, S>{};
         }
 
-        template<std::size_t>
-        using make_transition = grammar::advance;
-
         template<typename State, std::size_t... Indices>
-        static constexpr auto transition_state(State initial_state, std::index_sequence<Indices ...>) noexcept
+        static constexpr auto next_state(State initial_state, std::index_sequence<Indices ...>) noexcept
         {
-            return (initial_state << ... << make_transition<Indices>{});
+            return (initial_state << ... << Indices);
         }
     }
 
     template<typename State, std::size_t N>
-    using transition_state_t = decltype(detail::transition_state(State{}, std::make_index_sequence<N + 1>{}));
+    using next_state_t = decltype(detail::next_state(State{}, std::make_index_sequence<N + 1>{}));
 }
 #endif //MREGEX_PARSER_STATE_HPP
