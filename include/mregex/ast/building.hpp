@@ -1,5 +1,5 @@
-#ifndef MREGEX_AST_BUILDER_HPP
-#define MREGEX_AST_BUILDER_HPP
+#ifndef MREGEX_AST_BUILDING_HPP
+#define MREGEX_AST_BUILDING_HPP
 
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/traits.hpp>
@@ -26,10 +26,10 @@ namespace meta::ast
         using type = push<Nodes, literal<C>>;
     };
 
-    template<char A, typename T, typename Nodes>
-    struct build<symbol::push_literal<A>, T, Nodes>
+    template<char C, typename T, typename Nodes>
+    struct build<symbol::push_literal<C>, T, Nodes>
     {
-        using type = push<Nodes, literal<A>>;
+        using type = push<Nodes, literal<C>>;
     };
 
     template<typename T, typename Nodes>
@@ -164,7 +164,6 @@ namespace meta::ast
         using type = type_sequence<basic_plus<Mode, First>, Rest ...>;
     };
 
-
     // Combine any two non-sequence symbols into a sequence
     template<typename T, typename First, typename Second, typename... Rest>
     struct build<symbol::make_sequence, T, type_sequence<First, Second, Rest ...>>
@@ -289,29 +288,29 @@ namespace meta::ast
     };
 
     // Create a range inside the set
-    template<char B, char A, typename... Second, typename... Rest>
-    struct build<symbol::make_range, symbol::character<B>, type_sequence<set<literal<A>, Second ...>, Rest ...>>
+    template<char A, char B, typename... Second, typename... Rest>
+    struct build<symbol::make_range, symbol::character<A>, type_sequence<set<literal<B>, Second ...>, Rest ...>>
     {
-        using type = type_sequence<set<range<A, B>, Second ...>, Rest ...>;
+        using type = type_sequence<set<range<B, A>, Second ...>, Rest ...>;
     };
 
-    template<char B, typename First, typename... Second, typename... Rest>
-    struct build<symbol::make_range, symbol::character<B>, type_sequence<set<First, Second ...>, Rest ...>>
+    template<char C, typename First, typename... Second, typename... Rest>
+    struct build<symbol::make_range, symbol::character<C>, type_sequence<set<First, Second ...>, Rest ...>>
     {
-        using type = type_sequence<set<literal<B>, literal<'-'>, First, Second ...>, Rest ...>;
+        using type = type_sequence<set<literal<C>, literal<'-'>, First, Second ...>, Rest ...>;
     };
 
     // Create a range from two last generated AST nodes in the set
-    template<typename T, char B, char A, typename... Second, typename... Rest>
-    struct build<symbol::make_range_from_stack, T, type_sequence<set<literal<B>, literal<A>, Second ...>, Rest ...>>
+    template<typename T, char A, char B, typename... Second, typename... Rest>
+    struct build<symbol::make_range_from_stack, T, type_sequence<set<literal<A>, literal<B>, Second ...>, Rest ...>>
     {
-        using type = type_sequence<set<range<A, B>, Second ...>, Rest ...>;
+        using type = type_sequence<set<range<B, A>, Second ...>, Rest ...>;
     };
 
-    template<typename T, char B, typename First, typename... Second, typename... Rest>
-    struct build<symbol::make_range_from_stack, T, type_sequence<set<literal<B>, First, Second ...>, Rest ...>>
+    template<typename T, char C, typename First, typename... Second, typename... Rest>
+    struct build<symbol::make_range_from_stack, T, type_sequence<set<literal<C>, First, Second ...>, Rest ...>>
     {
-        using type = type_sequence<set<literal<B>, literal<'-'>, First, Second ...>, Rest ...>;
+        using type = type_sequence<set<literal<C>, literal<'-'>, First, Second ...>, Rest ...>;
     };
 }
-#endif //MREGEX_AST_BUILDER_HPP
+#endif //MREGEX_AST_BUILDING_HPP

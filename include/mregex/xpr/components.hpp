@@ -2,8 +2,8 @@
 #define MREGEX_XPR_COMPONENTS_HPP
 
 #include <mregex/ast/traits.hpp>
-#include <mregex/xpr/templates.hpp>
-#include <mregex/xpr/transform.hpp>
+#include <mregex/xpr/adapters.hpp>
+#include <mregex/xpr/providers.hpp>
 #include <mregex/regex.hpp>
 
 namespace meta::xpr
@@ -30,23 +30,23 @@ namespace meta::xpr
     template<std::size_t ID, static_string Name, typename... Nodes>
     constexpr auto capture(regex_interface<Nodes>...) noexcept
     {
-        using wrapper_type = capture_template<ID, symbol::name<Name>>;
-        return to_regex(pack<wrapper_type::template type>(Nodes{} ...));
+        using wrapper_provider = capture_provider<ID, symbol::name<Name>>;
+        return to_regex(pack<wrapper_provider::template type>(Nodes{} ...));
     }
 
     template<std::size_t ID, typename... Nodes>
     constexpr auto capture(regex_interface<Nodes>...) noexcept
     {
-        using wrapper_type = capture_template<ID, symbol::unnamed>;
-        return to_regex(pack<wrapper_type::template type>(Nodes{} ...));
+        using wrapper_provider = capture_provider<ID, symbol::unnamed>;
+        return to_regex(pack<wrapper_provider::template type>(Nodes{} ...));
     }
 
     // Repetition
     template<std::size_t A, std::size_t B, match_mode Mode, typename... Nodes>
     constexpr auto between(regex_interface<Nodes>...) noexcept
     {
-        using wrapper_type = repetition_template<Mode, symbol::quantifier_value<A>, symbol::quantifier_value<B>>;
-        return to_regex(pack<wrapper_type::template type>(Nodes{} ...));
+        using wrapper_provider = repetition_provider<Mode, symbol::quantifier_value<A>, symbol::quantifier_value<B>>;
+        return to_regex(pack<wrapper_provider::template type>(Nodes{} ...));
     }
 
     template<std::size_t A, std::size_t B, typename... Nodes>
@@ -58,8 +58,8 @@ namespace meta::xpr
     template<std::size_t N, match_mode Mode, typename... Nodes>
     constexpr auto at_least(regex_interface<Nodes>...) noexcept
     {
-        using wrapper_type = repetition_template<Mode, symbol::quantifier_value<N>, symbol::quantifier_inf>;
-        return to_regex(pack<wrapper_type::template type>(Nodes{} ...));
+        using wrapper_provider = repetition_provider<Mode, symbol::quantifier_value<N>, symbol::quantifier_inf>;
+        return to_regex(pack<wrapper_provider::template type>(Nodes{} ...));
     }
 
     template<std::size_t N, typename... Nodes>

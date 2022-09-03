@@ -1,26 +1,26 @@
-#ifndef MREGEX_XPR_TEMPLATES_HPP
-#define MREGEX_XPR_TEMPLATES_HPP
+#ifndef MREGEX_XPR_PROVIDERS_HPP
+#define MREGEX_XPR_PROVIDERS_HPP
 
 #include <mregex/ast/astfwd.hpp>
 
 namespace meta::xpr
 {
     /**
-     * Adapter metafunctions for partially evaluating some AST nodes.
+     * Provider metafunctions used to partially evaluate the declaration of AST nodes.
      */
 
     template<std::size_t ID, typename Name>
-    struct capture_template
+    struct capture_provider
     {
         template<typename Inner>
         using type = ast::capture<ID, Name, Inner>;
     };
 
     template<match_mode Mode, typename A, typename B>
-    struct repetition_template
+    struct repetition_provider
     {
         template<typename Inner>
         using type = ast::basic_repetition<Mode, A, B, Inner>;
     };
 }
-#endif //MREGEX_XPR_TEMPLATES_HPP
+#endif //MREGEX_XPR_PROVIDERS_HPP

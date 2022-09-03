@@ -1,5 +1,5 @@
-#ifndef MREGEX_XPR_TRANSFORM_HPP
-#define MREGEX_XPR_TRANSFORM_HPP
+#ifndef MREGEX_XPR_ADAPTERS_HPP
+#define MREGEX_XPR_ADAPTERS_HPP
 
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/regex_interface.hpp>
@@ -73,4 +73,4 @@ namespace meta::xpr
     template<template<typename...> typename Wrapper, typename... First, typename... Second>
     constexpr auto flat_wrap(Wrapper<First ...>, Wrapper<Second ...>) noexcept -> Wrapper<First ..., Second ...> { return {}; }
 }
-#endif //MREGEX_XPR_TRANSFORM_HPP
+#endif //MREGEX_XPR_ADAPTERS_HPP

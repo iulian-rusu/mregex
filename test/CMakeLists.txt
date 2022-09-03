@@ -2,18 +2,18 @@
 set(
     test_sources
     tests.cpp
-    capture_name_specifier_tests.cpp
-    type_sequence_tests.cpp
-    traits_tests.cpp
-    parser_ast_tests.cpp
-    parser_accept_tests.cpp
-    parser_error_tests.cpp
+    ast_inversion_tests.cpp
+    ast_traits_tests.cpp
     flag_tests.cpp
+    iterator_api_tests.cpp
+    parser_accept_tests.cpp
+    parser_ast_tests.cpp
+    parser_error_tests.cpp
+    regex_iteration_tests.cpp
     regex_match_tests.cpp
     regex_search_tests.cpp
-    regex_iteration_tests.cpp
-    iterator_api_tests.cpp
-    ast_inversion_tests.cpp
+    traits_tests.cpp
+    type_sequence_tests.cpp
     xpr_ast_tests.cpp
 )
 

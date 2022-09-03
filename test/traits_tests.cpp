@@ -2,8 +2,6 @@
 
 namespace meta::tests
 {
-    using namespace ast;
-
     static_assert(is_any_of_v<int, int>);
     static_assert(is_any_of_v<int, float, int>);
     static_assert(is_any_of_v<int, int, long int, double>);
@@ -15,23 +13,25 @@ namespace meta::tests
     static_assert(is_any_of_v<int, float, long int> == false);
     static_assert(is_any_of_v<int> == false);
 
-    static_assert(is_trivially_matchable_v<nothing>);
-    static_assert(is_trivially_matchable_v<negated<nothing>>);
-    static_assert(is_trivially_matchable_v<literal<'a'>>);
-    static_assert(is_trivially_matchable_v<whitespace>);
-    static_assert(is_trivially_matchable_v<wildcard>);
-    static_assert(is_trivially_matchable_v<range<'a', 'z'>>);
-    static_assert(is_trivially_matchable_v<set<wildcard, literal<'b'>, whitespace>>);
-    static_assert(is_trivially_matchable_v<sequence<wildcard>>);
-    static_assert(is_trivially_matchable_v<alternation<wildcard>>);
-    static_assert(is_trivially_matchable_v<alternation<whitespace, literal<'a'>, literal<'b'>>>);
-    static_assert(is_trivially_matchable_v<empty> == false);
-    static_assert(is_trivially_matchable_v<beginning> == false);
-    static_assert(is_trivially_matchable_v<sequence<wildcard, whitespace>> == false);
-    static_assert(is_trivially_matchable_v<alternation<wildcard, beginning>> == false);
-    static_assert(is_trivially_matchable_v<capture<1, symbol::name<"a">, wildcard>> == false);
-    static_assert(is_trivially_matchable_v<backref<1>> == false);
-    static_assert(is_trivially_matchable_v<named_backref<symbol::name<"a">>> == false);
-    static_assert(is_trivially_matchable_v<star<literal<'a'>>> == false);
-    static_assert(is_trivially_matchable_v<alternation<star<whitespace>, literal<'a'>, literal<'b'>>> == false);
+    static_assert(is_expiring_memory_owner_v<std::string> == false);
+    static_assert(is_expiring_memory_owner_v<std::string const> == false);
+    static_assert(is_expiring_memory_owner_v<std::string &> == false);
+    static_assert(is_expiring_memory_owner_v<std::string  const &> == false);
+    static_assert(is_expiring_memory_owner_v<std::string &&>);
+    static_assert(is_expiring_memory_owner_v<std::string const &&>);
+    static_assert(is_expiring_memory_owner_v<std::string_view> == false);
+    static_assert(is_expiring_memory_owner_v<std::string_view const> == false);
+    static_assert(is_expiring_memory_owner_v<std::string_view &> == false);
+    static_assert(is_expiring_memory_owner_v<std::string_view  const &> == false);
+    static_assert(is_expiring_memory_owner_v<std::string_view &&> == false);
+    static_assert(is_expiring_memory_owner_v<std::string_view const &&> == false);
+
+    static_assert(std::is_same_v<forward_result_t<std::string>, std::string>);
+    static_assert(std::is_same_v<forward_result_t<std::string &&>, std::string>);
+    static_assert(std::is_same_v<forward_result_t<std::string &>, std::string &>);
+
+    static_assert(std::is_same_v<make_name<>, symbol::name<"">>);
+    static_assert(std::is_same_v<make_name<'a'>, symbol::name<"a">>);
+    static_assert(std::is_same_v<make_name<'a', 'b'>, symbol::name<"ab">>);
+    static_assert(std::is_same_v<make_name<'a', 'b', 'c'>, symbol::name<"abc">>);
 }

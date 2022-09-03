@@ -1,8 +1,8 @@
 #ifndef MREGEX_PARSER_HPP
 #define MREGEX_PARSER_HPP
 
-#include <mregex/ast/builder.hpp>
-#include <mregex/ast/capture_indexer.hpp>
+#include <mregex/ast/building.hpp>
+#include <mregex/ast/indexing.hpp>
 #include <mregex/grammar/grammar.hpp>
 #include <mregex/parser/lexer.hpp>
 #include <mregex/parser/state.hpp>
@@ -109,7 +109,7 @@ namespace meta
         template<std::size_t I, typename Nodes, typename Symbols>
         struct transition<I, grammar::accept, Nodes, Symbols>
         {
-            using type = parser_result<ast::preorder_indexing_t<0, top<Nodes>>, parsing::success>;
+            using type = parser_result<ast::preorder_index_t<0, top<Nodes>>, parsing::success>;
         };
 
         using initial_state = state_t<0, type_sequence<>, type_sequence<symbol::begin>>;

@@ -16,16 +16,16 @@ namespace meta
         template<typename, typename>
         struct push;
 
-        template<typename... Elems, typename NewElem>
-        struct push<type_sequence<Elems ...>, NewElem>
+        template<typename... Elems, typename T>
+        struct push<type_sequence<Elems ...>, T>
         {
-            using type = type_sequence<NewElem, Elems ...>;
+            using type = type_sequence<T, Elems ...>;
         };
 
-        template<typename... Elems, typename... NewElems>
-        struct push<type_sequence<Elems ...>, type_sequence<NewElems ...>>
+        template<typename... Elems, typename... Ts>
+        struct push<type_sequence<Elems ...>, type_sequence<Ts ...>>
         {
-            using type = type_sequence<NewElems ..., Elems ...>;
+            using type = type_sequence<Ts ..., Elems ...>;
         };
 
         template<typename>

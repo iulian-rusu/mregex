@@ -4,7 +4,7 @@
 #include <string>
 #include <iterator>
 #include <string_view>
-#include <mregex/ast/capture_name_specifier.hpp>
+#include <mregex/ast/traits.hpp>
 #include <mregex/utility/concepts.hpp>
 
 namespace meta

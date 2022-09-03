@@ -21,21 +21,21 @@ namespace meta
     /**
     * Data type returned by the compile-time parser.
     *
-    * @tparam AST  The generated Abstract Syntax Tree
-    * @tparam S    A type that holds information about the exit status of the parser
+    * @tparam AST       The generated Abstract Syntax Tree
+    * @tparam Status    A type that holds information about the exit status of the parser
     */
-    template<typename AST, typename S>
+    template<typename AST, typename Status>
     struct parser_result
     {
         using ast_type = AST;
-        using status_type = S;
+        using status_type = Status;
     };
 
-    template<typename S>
-    struct parser_result<symbol::empty, S>
+    template<typename Status>
+    struct parser_result<symbol::empty, Status>
     {
         using ast_type = ast::empty;
-        using status_type = S;
+        using status_type = Status;
     };
 
     /**
@@ -62,10 +62,10 @@ namespace meta
             return typename Parser::template parse_t<I, Nodes, Symbols>{};
         }
 
-        template<typename AST, typename S>
-        constexpr auto operator<<(parser_result<AST, S>, std::size_t) noexcept
+        template<typename AST, typename Status>
+        constexpr auto operator<<(parser_result<AST, Status>, std::size_t) noexcept
         {
-            return parser_result<AST, S>{};
+            return parser_result<AST, Status>{};
         }
 
         template<typename State, std::size_t... Indices>

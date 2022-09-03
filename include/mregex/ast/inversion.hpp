@@ -2,6 +2,7 @@
 #define MREGEX_AST_INVERSION_HPP
 
 #include <mregex/ast/astfwd.hpp>
+#include <mregex/ast/traversal.hpp>
 #include <mregex/utility/type_sequence.hpp>
 
 namespace meta::ast
@@ -19,10 +20,7 @@ namespace meta::ast
      * @tparam Node The AST node type being inverted
      */
     template<typename Node>
-    struct invert
-    {
-        using type = Node;
-    };
+    struct invert : traverse<invert, Node> {};
 
     template<typename Node>
     using invert_t = typename invert<Node>::type;
@@ -31,24 +29,6 @@ namespace meta::ast
     struct invert<sequence<Inner ...>>
     {
         using type = decltype(detail::to_sequence(reverse<type_sequence<invert_t<Inner> ...>>{}));
-    };
-
-    template<template<typename...> typename Wrapper, typename... Inner>
-    struct invert<Wrapper<Inner ...>>
-    {
-        using type = Wrapper<invert_t<Inner> ...>;
-    };
-
-    template<match_mode Mode, typename A, typename B, typename Inner>
-    struct invert<basic_repetition<Mode, A, B, Inner>>
-    {
-        using type = basic_repetition<Mode, A, B, invert_t<Inner>>;
-    };
-
-    template<std::size_t I, typename Name, typename Inner>
-    struct invert<capture<I, Name, Inner>>
-    {
-        using type = capture<I, Name, invert_t<Inner>>;
     };
 
     template<typename Inner>
