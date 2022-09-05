@@ -91,9 +91,6 @@ namespace meta
 
         /**
          * Overloads for working with string-like ranges directly.
-         * Some overloads have a specialized version for temporary objects
-         * that are not trivially destructible. In this case, the method returns
-         * an owning regex_result type to avoid invalid pointers.
          */
 
         [[nodiscard]] static constexpr auto match(std::string_view input) noexcept

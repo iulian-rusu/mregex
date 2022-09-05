@@ -9,7 +9,7 @@
 namespace meta::grammar
 {
     /**
-     * Metafunction defining a grammar rule based on two parameters.
+     * Metafunction that defines grammar rules based on input symbols.
      *
      * @tparam Symbol  The current symbol on the stack
      * @tparam Token   The current token being parsed

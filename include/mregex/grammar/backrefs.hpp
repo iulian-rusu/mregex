@@ -8,7 +8,7 @@
 namespace meta::grammar
 {
     /**
-     * Metafunction that handles escaped sequences which mark the beginning
+     * Metafunction that handles any escape sequence which marks the beginning
      * of a backreference or a named backreference.
      *
      * @tparam C    The current character in the input pattern

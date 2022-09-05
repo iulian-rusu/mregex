@@ -6,7 +6,7 @@
 namespace meta::grammar
 {
     /**
-     * Metafunction that handles any escape sequence that are not a backreference.
+     * Metafunction that handles any escape sequence that is not a backreference.
      *
      * @tparam C    The current character in the input pattern
      */

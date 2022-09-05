@@ -126,7 +126,7 @@ namespace meta
         [[nodiscard]] constexpr auto &&group() && noexcept
         {
             assert_valid_group<ID>();
-            return std::get<ID>(std::forward<Storage>(_captures));
+            return std::get<ID>(std::move(_captures));
         }
 
         template<static_string Name>
@@ -138,7 +138,7 @@ namespace meta
         template<static_string Name>
         [[nodiscard]] constexpr auto &&group() && noexcept
         {
-            return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(std::forward<Storage>(_captures));
+            return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(std::move(_captures));
         }
 
         /**
@@ -163,7 +163,7 @@ namespace meta
         constexpr auto &&get() && noexcept
         {
             assert_valid_group<ID + 1>();
-            return std::get<ID + 1>(std::forward<Storage>(_captures));
+            return std::get<ID + 1>(std::move(_captures));
         }
 
         constexpr bool operator==(bool value) const noexcept

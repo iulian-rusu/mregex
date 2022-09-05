@@ -5,7 +5,7 @@
 
 namespace meta
 {
-    /*
+    /**
      * Metacontainer for a sequence of types.
      */
     template<typename...>
@@ -120,24 +120,38 @@ namespace meta
     };
 
     /**
-     * Metafunctions and operators for working with the container
+     * Pushes a type to the front of the sequence.
      */
-
     template<typename Sequence, typename T>
     using push = typename detail::push<Sequence, T>::type;
 
+    /**
+     * Removes a type from the front of the sequence.
+     */
     template<typename Sequence>
     using pop = typename detail::pop<Sequence>::type;
 
+    /**
+     * Queries the type at the front of the sequence.
+     */
     template<typename Sequence>
     using top = typename Sequence::top;
 
+    /**
+     * Concatenates multiple sequences.
+     */
     template<typename... Sequences>
     using concat = typename detail::concat<Sequences ...>::type;
 
+    /**
+     * Reverses the order of elements in a sequence.
+     */
     template<typename Sequence>
     using reverse = typename detail::reverse<Sequence>::type;
 
+    /**
+     * Checks if a given sequence has no elements.
+     */
     template<typename Sequence>
     inline constexpr bool is_empty_v = std::is_same_v<symbol::empty, typename Sequence::top>;
 }

@@ -1,8 +1,8 @@
 #ifndef MREGEX_PARSER_HPP
 #define MREGEX_PARSER_HPP
 
-#include <mregex/ast/building.hpp>
-#include <mregex/ast/indexing.hpp>
+#include <mregex/ast/build.hpp>
+#include <mregex/ast/index.hpp>
 #include <mregex/grammar/grammar.hpp>
 #include <mregex/parser/lexer.hpp>
 #include <mregex/parser/state.hpp>
@@ -92,10 +92,10 @@ namespace meta
         };
 
         // Advance and also push the remaining symbols on the stack
-        template<std::size_t I, typename Nodes, typename... Symbols, typename... Rest>
-        struct transition<I, type_sequence<grammar::advance, Symbols ...>, Nodes, type_sequence<Rest ...>>
+        template<std::size_t I, typename Nodes, typename... NewSymbols, typename... Symbols>
+        struct transition<I, type_sequence<grammar::advance, NewSymbols ...>, Nodes, type_sequence<Symbols ...>>
         {
-            using type = state_t<I + 1, Nodes, type_sequence<Symbols ..., Rest ...>>;
+            using type = state_t<I + 1, Nodes, type_sequence<NewSymbols ..., Symbols ...>>;
         };
 
         // Reject the input pattern

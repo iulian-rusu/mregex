@@ -1,5 +1,5 @@
-#ifndef MREGEX_AST_BUILDING_HPP
-#define MREGEX_AST_BUILDING_HPP
+#ifndef MREGEX_AST_BUILD_HPP
+#define MREGEX_AST_BUILD_HPP
 
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/traits.hpp>
@@ -313,4 +313,4 @@ namespace meta::ast
         using type = type_sequence<set<literal<C>, literal<'-'>, First, Second ...>, Rest ...>;
     };
 }
-#endif //MREGEX_AST_BUILDING_HPP
+#endif //MREGEX_AST_BUILD_HPP

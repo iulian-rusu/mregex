@@ -31,7 +31,7 @@ namespace meta
     template<typename T>
     inline constexpr bool is_expiring_memory_owner_v = is_expiring_memory_owner<T>::value;
 
-    /*
+    /**
      * Metafunction that deduces the type required to perfectly forward the result of a function.
      * Return types that are lvalue references are forwarded to a reference.
      * Other value categories are forwarded (moved or copy elided) to a value type.

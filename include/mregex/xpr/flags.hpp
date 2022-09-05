@@ -19,12 +19,12 @@ namespace meta::xpr
      */
     template<typename... Ts, typename... Flags>
     requires (is_flag_v<Flags> && ...)
-    constexpr auto set(regex_interface<Ts ...>, Flags...) noexcept -> regex_interface<Ts ..., Flags ...> { return {}; }
+    constexpr auto set_flags(regex_interface<Ts ...>, Flags...) noexcept -> regex_interface<Ts ..., Flags ...> { return {}; }
 
     /**
-     * Unsets all flags on a given regular expression.
+     * Clears all flags on a given regular expression.
      */
     template<typename AST, typename... Flags>
-    constexpr auto unset(regex_interface<AST, Flags ...>) noexcept -> regex_interface<AST> { return {}; }
+    constexpr auto clear_flags(regex_interface<AST, Flags ...>) noexcept -> regex_interface<AST> { return {}; }
 }
 #endif //MREGEX_XPR_FLAGS_HPP
