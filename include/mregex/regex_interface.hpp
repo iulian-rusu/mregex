@@ -160,7 +160,7 @@ namespace meta
 
             context_type ctx{};
             auto result = Method::invoke(begin, end, begin, ctx);
-            return result_type{result.matched, std::move(ctx.captures)};
+            return result_type{std::move(ctx.captures), result.matched};
         }
     };
 }

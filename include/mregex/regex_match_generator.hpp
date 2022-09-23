@@ -34,11 +34,11 @@ namespace meta
                 {
                     _active = std::get<0>(ctx.captures).length() != 0;
                     _current = result.end;
-                    return result_type{true, std::move(ctx.captures)};
+                    return result_type{std::move(ctx.captures), true};
                 }
                 _active = false;
             }
-            return result_type{false, ctx.captures};
+            return result_type{ctx.captures, false};
         }
 
         [[nodiscard]] constexpr bool active() const noexcept

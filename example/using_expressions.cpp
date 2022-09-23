@@ -28,11 +28,11 @@ int main()
     auto schema = xpr::str<"ftp"> | xpr::str<"ssh"> | xpr::regex<"https?">;
     auto domain = +xpr::regex<"[-.a-z]"> >> xpr::str<".com">;
     auto path = xpr::chr<'/'> >> *!xpr::whitespace;
-    auto url = schema >> xpr::str<"://"> >> domain >> xpr::maybe(path);
+    auto url = schema >> xpr::str<"://"> >> xpr::capture<1, "domain">(domain) >> xpr::maybe(path);
 
     // The resulting object has the same interface as a meta::regex type
     if (auto match = url.match("https://google.com"))
-        std::cout << "Matched!\n";
+        std::cout << "Matched domain: " << match.group<"domain">() << '\n';
     else
         std::cout << "Not matched :(\n";
 }

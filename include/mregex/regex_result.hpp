@@ -40,9 +40,9 @@ namespace meta
         static constexpr std::size_t capture_count = std::tuple_size_v<storage_type> - 1;
 
         template<typename S>
-        constexpr basic_regex_result(bool matched, S &&captures)
+        constexpr basic_regex_result(S &&captures, bool matched)
         noexcept(std::is_nothrow_move_constructible_v<storage_type>)
-            : _matched{matched}, _captures{std::forward<S>(captures)}
+            : _captures{std::forward<S>(captures)}, _matched{matched}
         {}
 
         [[nodiscard]] constexpr bool matched() const noexcept
@@ -77,7 +77,7 @@ namespace meta
             auto owning_captures = generate_tuple(_captures, [](auto const &capture) {
                 return regex_capture{capture};
             });
-            return regex_result<NameSpec>{_matched, std::move(owning_captures)};
+            return regex_result<NameSpec>{std::move(owning_captures), _matched};
         }
 
         /**
@@ -183,8 +183,8 @@ namespace meta
         }
 
     private:
-        bool _matched;
         storage_type _captures;
+        bool _matched;
 
         template<std::size_t ID>
         static constexpr void assert_valid_group() noexcept

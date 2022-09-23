@@ -12,7 +12,7 @@ int main()
     std::cout << "Matched: " << result.matched() << '\n';
     // Captured content can be accessed with the group<>() method
     // Group 0 is the entire regex, other captures are indexed from 1
-    std::cout << "Scheme:  " << result.group<1>() << '\n';
+    std::cout << "Schema:  " << result.group<1>() << '\n';
     std::cout << "User:    " << result.group<2>() << '\n';
     std::cout << "Pass:    " << result.group<3>() << '\n';
     std::cout << "Host:    " << result.group<4>() << '\n';

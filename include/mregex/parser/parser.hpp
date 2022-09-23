@@ -66,7 +66,7 @@ namespace meta
         template<std::size_t I, typename Nodes, typename Symbols>
         struct parse<I, Nodes, Symbols, false>
         {
-            using next_symbols = grammar::rule_t<top<Symbols>,  token_t<I>>;
+            using next_symbols = grammar::rule_t<top<Symbols>, token_t<I>>;
             using type = transition_t<I, next_symbols, Nodes, pop<Symbols>>;
         };
 
