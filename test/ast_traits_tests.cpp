@@ -8,7 +8,7 @@ namespace meta::tests
     namespace
     {
         template<static_string Pattern, typename Sequence>
-        inline constexpr bool matching_name_spec = std::is_same_v<capture_name_spec_t<ast_of<Pattern>>, Sequence>;
+        inline constexpr bool matching_name_spec = std::is_same_v<capture_name_spec_t<ast_for<Pattern>>, Sequence>;
     }
 
     static_assert(is_trivially_matchable_v<nothing>);

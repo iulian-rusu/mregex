@@ -6,7 +6,7 @@
 namespace meta
 {
     /**
-     * Types that define the possible outcomes after parsing is finished.
+     * Types that define the possible verdicts after parsing is finished.
      */
     namespace parsing
     {
@@ -22,20 +22,20 @@ namespace meta
     * Data type returned by the compile-time parser.
     *
     * @tparam AST       The generated Abstract Syntax Tree
-    * @tparam Status    A type that holds information about the exit status of the parser
+    * @tparam Verdict   Type that holds information about the verdict of the parser
     */
-    template<typename AST, typename Status>
+    template<typename AST, typename Verdict>
     struct parser_result
     {
         using ast_type = AST;
-        using status_type = Status;
+        using verdict_type = Verdict;
     };
 
-    template<typename Status>
-    struct parser_result<symbol::empty, Status>
+    template<typename Verdict>
+    struct parser_result<symbol::empty, Verdict>
     {
         using ast_type = ast::empty;
-        using status_type = Status;
+        using verdict_type = Verdict;
     };
 
     /**
@@ -62,10 +62,10 @@ namespace meta
             return typename Parser::template parse_t<I, Nodes, Symbols>{};
         }
 
-        template<typename AST, typename Status>
-        constexpr auto operator<<(parser_result<AST, Status>, std::size_t) noexcept
+        template<typename AST, typename Verdict>
+        constexpr auto operator<<(parser_result<AST, Verdict>, std::size_t) noexcept
         {
-            return parser_result<AST, Status>{};
+            return parser_result<AST, Verdict>{};
         }
 
         template<typename State, std::size_t... Indices>

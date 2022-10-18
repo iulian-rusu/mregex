@@ -115,15 +115,15 @@ namespace meta
         using initial_state = state_t<0, type_sequence<>, type_sequence<symbol::begin>>;
         using result = next_state_t<initial_state, Pattern.length()>;
         using ast_type = typename result::ast_type;
-        using status_type = typename result::status_type;
+        using verdict_type = typename result::verdict_type;
 
-        static constexpr bool accepted = std::is_same_v<status_type, parsing::success>;
+        static constexpr bool accepted = std::is_same_v<verdict_type, parsing::success>;
     };
 
     template<static_string Pattern>
-    using ast_of = typename parser<Pattern>::ast_type;
+    using ast_for = typename parser<Pattern>::ast_type;
 
     template<static_string Pattern>
-    using status_of = typename parser<Pattern>::status_type;
+    using parser_verdict_for = typename parser<Pattern>::verdict_type;
 }
 #endif //MREGEX_PARSER_HPP

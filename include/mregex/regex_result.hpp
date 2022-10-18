@@ -91,8 +91,7 @@ namespace meta
         template<std::size_t ID>
         [[nodiscard]] constexpr auto &group() & noexcept
         {
-            assert_valid_group<ID>();
-            return std::get<ID>(_captures);
+            return get_with_bounds_check<ID>(_captures);
         }
 
         /**
@@ -118,15 +117,13 @@ namespace meta
         template<std::size_t ID>
         [[nodiscard]] constexpr auto const &group() const & noexcept
         {
-            assert_valid_group<ID>();
-            return std::get<ID>(_captures);
+            return get_with_bounds_check<ID>(_captures);
         }
 
         template<std::size_t ID>
         [[nodiscard]] constexpr auto &&group() && noexcept
         {
-            assert_valid_group<ID>();
-            return std::get<ID>(std::move(_captures));
+            return get_with_bounds_check<ID>(std::move(_captures));
         }
 
         template<static_string Name>
@@ -148,22 +145,19 @@ namespace meta
         template<std::size_t ID>
         constexpr auto &get() & noexcept
         {
-            assert_valid_group<ID + 1>();
-            return std::get<ID + 1>(_captures);
+            return get_with_bounds_check<ID + 1>(_captures);
         }
 
         template<std::size_t ID>
         constexpr auto const &get() const & noexcept
         {
-            assert_valid_group<ID + 1>();
-            return std::get<ID + 1>(_captures);
+            return get_with_bounds_check<ID + 1>(_captures);
         }
 
         template<std::size_t ID>
         constexpr auto &&get() && noexcept
         {
-            assert_valid_group<ID + 1>();
-            return std::get<ID + 1>(std::move(_captures));
+            return get_with_bounds_check<ID + 1>(std::move(_captures));
         }
 
         constexpr bool operator==(bool value) const noexcept
@@ -186,10 +180,11 @@ namespace meta
         storage_type _captures;
         bool _matched;
 
-        template<std::size_t ID>
-        static constexpr void assert_valid_group() noexcept
+        template<std::size_t ID, typename Captures>
+        static constexpr decltype(auto) get_with_bounds_check(Captures &&captures) noexcept
         {
             static_assert(ID <= capture_count, "capturing group does not exist");
+            return std::get<ID>(std::forward<Captures>(captures));
         }
     };
 }

@@ -6,12 +6,18 @@
 
 namespace meta
 {
-    template<static_string Pattern, typename... Flags>
-    struct regex : regex_interface<ast_of<Pattern>, Flags ...>
+    template<static_string Pattern>
+    constexpr bool assert_correct_syntax() noexcept
     {
-        using base_type = regex_interface<ast_of<Pattern>, Flags ...>;
+        static_assert(std::is_same_v<parser_verdict_for<Pattern>, parsing::success>, "syntax error in regular expression");
+        return true;
+    }
 
-        static_assert(std::is_same_v<status_of<Pattern>, parsing::success>, "syntax error in regular expression");
+    template<static_string Pattern, typename... Flags>
+    requires (assert_correct_syntax<Pattern>())
+    struct regex : regex_interface<ast_for<Pattern>, Flags ...>
+    {
+        using base_type = regex_interface<ast_for<Pattern>, Flags ...>;
     };
 }
 #endif //MREGEX_REGEX_HPP
