@@ -7,9 +7,10 @@ int main()
     using my_regex = meta::regex<"ab+">;
 
     std::string_view str = "abbbb";
-    // The match result is contextually convertible to bool
-    if (my_regex::match(str))
-        std::cout << "Matched!\n";
-    else
-        std::cout << "Not matched :(\n";
+    auto match = my_regex::match(str);
+    std::cout << (match ? "Matched!" : "Not matched") << '\n';
+
+    // The result type can be named explicitly, although it is pretty verbose
+    my_regex::result_type<std::string_view::iterator> res = my_regex::match(str);
+    std::cout << res.matched() << '\n';
 }

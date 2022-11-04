@@ -12,6 +12,6 @@ int main()
     // Fills the vector with the generated matches
     // When using contiguous iterators, captures can be implicitly converted to std::string_view
     std::generate(words.begin(), words.end(), my_regex::generator(text));
-    for (auto &&word: words)
+    for (auto &&word : words)
         std::cout << word << '\n';
 }

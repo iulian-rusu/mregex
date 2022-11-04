@@ -24,6 +24,12 @@ namespace meta
 
         using ast_type = AST;
 
+        template<std::forward_iterator Iter>
+        using context_type = regex_context<Iter, ast_type, Flags ...>;
+
+        template<std::forward_iterator Iter>
+        using result_type = typename context_type<Iter>::result_type ;
+
         static constexpr std::size_t capture_count = ast_type::capture_count;
 
         constexpr regex_interface() noexcept = default;
@@ -70,8 +76,7 @@ namespace meta
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto generator(Iter const begin, Iter const end) noexcept
         {
-            using context_type = regex_context<Iter, ast_type, Flags ...>;
-            return regex_match_generator<context_type>{begin, end};
+            return regex_match_generator<context_type<Iter>>{begin, end};
         }
 
         /**
@@ -155,13 +160,13 @@ namespace meta
         template<typename Method, std::forward_iterator Iter>
         static constexpr auto invoke(Iter const begin, Iter const end) noexcept
         {
-            using context_type = regex_context<Iter, ast_type, Flags ...>;
-            using result_type = typename context_type::result_type;
-
-            context_type ctx{};
+            context_type<Iter> ctx{};
             auto result = Method::invoke(begin, end, begin, ctx);
-            return result_type{std::move(ctx.captures), result.matched};
+            return result_type<Iter>{std::move(ctx.captures), result.matched};
         }
     };
+
+    template<typename Regex, std::forward_iterator Iter>
+    using result_type_for = typename Regex::template result_type<Iter>;
 }
 #endif //MREGEX_REGEX_INTERFACE_HPP

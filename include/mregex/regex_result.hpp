@@ -39,6 +39,8 @@ namespace meta
 
         static constexpr std::size_t capture_count = std::tuple_size_v<storage_type> - 1;
 
+        constexpr basic_regex_result() noexcept = default;
+
         template<typename S>
         constexpr basic_regex_result(S &&captures, bool matched)
         noexcept(std::is_nothrow_move_constructible_v<storage_type>)

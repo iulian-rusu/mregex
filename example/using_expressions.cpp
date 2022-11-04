@@ -24,7 +24,7 @@ int main()
     // Opting in for operators is done by importing the namespace xpr::operators
     using namespace xpr::operators;
 
-    // Equivalent to (?:ftp|ssh|https?)://(?:[-.a-z])+.com(?:/\S*)?
+    // Constructing a regex equivalent to '(?:ftp|ssh|https?)://(?<domain>:[-.a-z])+.com(?:/\S*)?'
     auto schema = xpr::str<"ftp"> | xpr::str<"ssh"> | xpr::regex<"https?">;
     auto domain = +xpr::regex<"[-.a-z]"> >> xpr::str<".com">;
     auto path = xpr::chr<'/'> >> *!xpr::whitespace;
