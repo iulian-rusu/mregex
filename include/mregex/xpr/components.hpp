@@ -123,8 +123,8 @@ namespace meta::xpr
     // Terminals
     inline constexpr auto empty = regex_interface<ast::empty>{};
     inline constexpr auto nothing = regex_interface<ast::nothing>{};
-    inline constexpr auto begin = regex_interface<ast::beginning>{};
-    inline constexpr auto end = regex_interface<ast::end>{};
+    inline constexpr auto begin_line = regex_interface<ast::beginning_of_line>{};
+    inline constexpr auto end_line = regex_interface<ast::end_of_line>{};
     inline constexpr auto begin_input = regex_interface<ast::beginning_of_input>{};
     inline constexpr auto end_input = regex_interface<ast::end_of_input>{};
     inline constexpr auto boundary = regex_interface<ast::word_boundary>{};

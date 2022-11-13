@@ -93,15 +93,15 @@ namespace meta::ast
     };
 
     template<typename T, typename Nodes>
-    struct build<symbol::make_beginning, T, Nodes>
+    struct build<symbol::make_beginning_of_line, T, Nodes>
     {
-        using type = push<Nodes, beginning>;
+        using type = push<Nodes, beginning_of_line>;
     };
 
     template<typename T, typename Nodes>
-    struct build<symbol::make_end, T, Nodes>
+    struct build<symbol::make_end_of_line, T, Nodes>
     {
-        using type = push<Nodes, end>;
+        using type = push<Nodes, end_of_line>;
     };
 
     template<typename T, typename Nodes>

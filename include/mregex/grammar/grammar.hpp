@@ -136,7 +136,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::make_beginning,
+                    symbol::make_beginning_of_line,
                     symbol::seq,
                     symbol::alt
                 >;
@@ -149,7 +149,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::make_end,
+                    symbol::make_end_of_line,
                     symbol::seq,
                     symbol::alt
                 >;
@@ -281,7 +281,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::make_beginning,
+                    symbol::make_beginning_of_line,
                     symbol::seq,
                     symbol::alt,
                     symbol::make_capture<symbol::unnamed>
@@ -295,7 +295,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::make_end,
+                    symbol::make_end_of_line,
                     symbol::seq,
                     symbol::alt,
                     symbol::make_capture<symbol::unnamed>
@@ -535,7 +535,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::make_beginning,
+                    symbol::make_beginning_of_line,
                     symbol::seq,
                     symbol::alt
                 >;
@@ -548,7 +548,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::make_end,
+                    symbol::make_end_of_line,
                     symbol::seq,
                     symbol::alt
                 >;
@@ -874,7 +874,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::make_beginning,
+                    symbol::make_beginning_of_line,
                     symbol::seq
                 >;
     };
@@ -886,7 +886,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::make_end,
+                    symbol::make_end_of_line,
                     symbol::seq
                 >;
     };
@@ -1013,7 +1013,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::make_beginning,
+                    symbol::make_beginning_of_line,
                     symbol::make_sequence,
                     symbol::seq
                 >;
@@ -1026,7 +1026,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::make_end,
+                    symbol::make_end_of_line,
                     symbol::make_sequence,
                     symbol::seq
                 >;

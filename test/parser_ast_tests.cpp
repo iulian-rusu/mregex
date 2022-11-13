@@ -14,7 +14,7 @@ namespace meta::tests
     static_assert(matching_ast<R"(a)", literal<'a'>>);
     static_assert(matching_ast<R"((?:))", empty>);
     static_assert(matching_ast<R"((?:)+)", plus<empty>>);
-    static_assert(matching_ast<R"((?:^)+)", plus<beginning>>);
+    static_assert(matching_ast<R"((?:^)+)", plus<beginning_of_line>>);
     static_assert(matching_ast<R"((?!))", negative_lookahead<empty>>);
     static_assert(matching_ast<R"(())", unnamed_capture<1, empty>>);
     static_assert(
@@ -35,7 +35,7 @@ namespace meta::tests
             R"(^ab)",
             sequence
             <
-                beginning,
+                beginning_of_line,
                 literal<'a'>,
                 literal<'b'>
             >
@@ -49,7 +49,7 @@ namespace meta::tests
             <
                 literal<'a'>,
                 literal<'b'>,
-                end
+                end_of_line
             >
         >
     );
@@ -59,10 +59,10 @@ namespace meta::tests
             R"(^ab$)",
             sequence
             <
-                beginning,
+                beginning_of_line,
                 literal<'a'>,
                 literal<'b'>,
-                end
+                end_of_line
             >
         >
     );

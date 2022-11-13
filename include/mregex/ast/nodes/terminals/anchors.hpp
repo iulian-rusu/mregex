@@ -6,8 +6,8 @@
 
 namespace meta::ast
 {
-    template<bool Strict>
-    struct beginning_impl : terminal
+    template<bool AllowMultiline>
+    struct beginning_anchor_impl : terminal
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter begin, Iter, Iter it, Context &ctx, Continuation &&cont) noexcept
@@ -15,18 +15,18 @@ namespace meta::ast
         {
             if (it == begin)
                 return cont(it);
-            if constexpr (!Strict && flags_of<Context>::multiline)
+            if constexpr (AllowMultiline && flags_of<Context>::multiline)
                 if (linebreak::match_one(std::prev(it), ctx))
                     return cont(it);
             return {it, false};
         }
     };
 
-    struct beginning : beginning_impl<false> {};
-    struct beginning_of_input : beginning_impl<true> {};
+    struct beginning_of_line : beginning_anchor_impl<true> {};
+    struct beginning_of_input : beginning_anchor_impl<false> {};
 
-    template<bool Strict>
-    struct end_impl : terminal
+    template<bool AllowMultiline>
+    struct end_anchor_impl : terminal
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
@@ -34,15 +34,15 @@ namespace meta::ast
         {
             if (it == end)
                 return cont(it);
-            if constexpr (!Strict && flags_of<Context>::multiline)
+            if constexpr (AllowMultiline && flags_of<Context>::multiline)
                 if (linebreak::match_one(it, ctx))
                     return cont(it);
             return {it, false};
         }
     };
 
-    struct end : end_impl<false> {};
-    struct end_of_input : end_impl<true> {};
+    struct end_of_line : end_anchor_impl<true> {};
+    struct end_of_input : end_anchor_impl<false> {};
 
     struct word_boundary : terminal
     {

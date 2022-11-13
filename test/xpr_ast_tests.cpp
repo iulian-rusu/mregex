@@ -172,12 +172,12 @@ namespace meta::tests
         >
     );
     static_assert(
-        ast_for(xpr::begin >> xpr::str<"ab"> >> +(xpr::chr<'c'> | xpr::chr<'d'>) >> xpr::end) ==
+        ast_for(xpr::begin_line >> xpr::str<"ab"> >> +(xpr::chr<'c'> | xpr::chr<'d'>) >> xpr::end_line) ==
         type
         <
             sequence
             <
-                beginning,
+                beginning_of_line,
                 literal<'a'>,
                 literal<'b'>,
                 plus
@@ -188,7 +188,7 @@ namespace meta::tests
                         literal<'d'>
                     >
                 >,
-                end
+                end_of_line
             >
         >
     );
@@ -196,10 +196,10 @@ namespace meta::tests
         ast_for(
             xpr::exactly<5>(
                 xpr::either(
-                    xpr::begin,
+                    xpr::begin_line,
                     (xpr::chr<'a'> >> xpr::maybe(xpr::chr<'b'>)),
                     *(xpr::str<"cd">),
-                    xpr::end
+                    xpr::end_line
                 )
             )
         ) ==
@@ -210,7 +210,7 @@ namespace meta::tests
                 5,
                 alternation
                 <
-                    beginning,
+                    beginning_of_line,
                     sequence
                     <
                         literal<'a'>,
@@ -224,7 +224,7 @@ namespace meta::tests
                             literal<'d'>
                         >
                     >,
-                    end
+                    end_of_line
                 >
             >
         >

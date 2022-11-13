@@ -83,9 +83,9 @@ namespace meta::ast
     struct terminal;
     struct empty;
     struct nothing;
-    struct beginning;
+    struct beginning_of_line;
     struct beginning_of_input;
-    struct end;
+    struct end_of_line;
     struct end_of_input;
     struct word_boundary;
     struct whitespace;

@@ -89,9 +89,9 @@ namespace meta::symbol
     struct make_linebreak : semantic_action {};
     struct make_negated : semantic_action {};
     struct make_empty : semantic_action {};
-    struct make_beginning : semantic_action {};
+    struct make_beginning_of_line : semantic_action {};
     struct make_beginning_of_input : semantic_action {};
-    struct make_end : semantic_action {};
+    struct make_end_of_line : semantic_action {};
     struct make_end_of_input : semantic_action {};
     struct make_word_boundary : semantic_action {};
     struct make_whitespace : semantic_action {};
