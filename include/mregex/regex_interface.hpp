@@ -113,7 +113,7 @@ namespace meta
         [[nodiscard]] static constexpr auto match(R &&input) noexcept
         requires is_expiring_memory_owner_v<R &&>
         {
-            return match(std::cbegin(input), std::cend(input)).own();
+            return match(std::cbegin(input), std::cend(input)).as_memory_owner();
         }
 
         [[nodiscard]] static constexpr auto search(std::string_view input) noexcept
@@ -131,7 +131,7 @@ namespace meta
         [[nodiscard]] static constexpr auto search(R &&input) noexcept
         requires is_expiring_memory_owner_v<R &&>
         {
-            return search(std::cbegin(input), std::cend(input)).own();
+            return search(std::cbegin(input), std::cend(input)).as_memory_owner();
         }
 
         [[nodiscard]] static constexpr auto generator(std::string_view input) noexcept

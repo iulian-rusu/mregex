@@ -69,11 +69,11 @@ namespace meta
 
         /**
          * Performs a deep copy of all regex captures and returns
-         * a regex result container that owns them.
+         * a regex result container that owns the memory.
          *
-         * @return  A new regex_result object that holds ownership of captures
+         * @return  A new regex result object that holds ownership of captures
          */
-        [[nodiscard]] auto own() const
+        [[nodiscard]] auto as_memory_owner() const
         requires is_capture_view_v<capture_type>
         {
             auto owning_captures = generate_tuple(_captures, [](auto const &capture) {
