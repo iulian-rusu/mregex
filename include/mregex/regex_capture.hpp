@@ -135,6 +135,11 @@ namespace meta
             return _capture;
         }
 
+        [[nodiscard]] auto const &&content() const && noexcept
+        {
+            return _capture;
+        }
+
         [[nodiscard]] auto &operator[](std::size_t index)
         {
             return _capture[index];

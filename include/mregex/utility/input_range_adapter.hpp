@@ -125,6 +125,11 @@ namespace meta
             return _current_result;
         }
 
+        [[nodiscard]] constexpr auto const &&get() const && noexcept
+        {
+            return _current_result;
+        }
+
         constexpr void compute_next() noexcept
         {
             _current_result = Gen::operator()();

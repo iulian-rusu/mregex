@@ -2,6 +2,7 @@
 #define MREGEX_REGEX_RESULT_HPP
 
 #include <iosfwd>
+#include <optional>
 #include <tuple>
 #include <mregex/utility/tuple.hpp>
 #include <mregex/regex_capture.hpp>
@@ -83,6 +84,17 @@ namespace meta
         }
 
         /**
+         * Converts the regex result object to an instance of std::optional.
+         * The returned optional will be empty if the regex did not match.
+         *
+         * @return A new instance of std::optional that contains the regex result object
+         */
+        [[nodiscard]] constexpr auto as_optional() & noexcept(is_capture_view_v<capture_type>)
+        {
+            return forward_self_as_optional(*this);
+        }
+
+        /**
          * Returns the capturing group with the specified number.
          * The method is specialized to move the captures if this object
          * is an expiring value.
@@ -93,7 +105,7 @@ namespace meta
         template<std::size_t ID>
         [[nodiscard]] constexpr auto &group() & noexcept
         {
-            return get_with_bounds_check<ID>(_captures);
+            return get_group_checked<ID>(_captures);
         }
 
         /**
@@ -116,16 +128,37 @@ namespace meta
          * @see https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p0847r4.html
          */
 
+        [[nodiscard]] constexpr auto as_optional() const & noexcept(is_capture_view_v<capture_type>)
+        {
+            return forward_self_as_optional(*this);
+        }
+
+        [[nodiscard]] constexpr auto as_optional() && noexcept
+        {
+            return forward_self_as_optional(std::move(*this));
+        }
+
+        [[nodiscard]] constexpr auto as_optional() const && noexcept
+        {
+            return forward_self_as_optional(std::move(*this));
+        }
+
         template<std::size_t ID>
         [[nodiscard]] constexpr auto const &group() const & noexcept
         {
-            return get_with_bounds_check<ID>(_captures);
+            return get_group_checked<ID>(_captures);
         }
 
         template<std::size_t ID>
         [[nodiscard]] constexpr auto &&group() && noexcept
         {
-            return get_with_bounds_check<ID>(std::move(_captures));
+            return get_group_checked<ID>(std::move(_captures));
+        }
+
+        template<std::size_t ID>
+        [[nodiscard]] constexpr auto const &&group() const && noexcept
+        {
+            return get_group_checked<ID>(std::move(_captures));
         }
 
         template<static_string Name>
@@ -140,6 +173,12 @@ namespace meta
             return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(std::move(_captures));
         }
 
+        template<static_string Name>
+        [[nodiscard]] constexpr auto const &&group() const && noexcept
+        {
+            return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(std::move(_captures));
+        }
+
         /**
          * Tuple-like interface for structured binding decomposition.
          * Use the group() method for extracting captures.
@@ -147,19 +186,25 @@ namespace meta
         template<std::size_t ID>
         constexpr auto &get() & noexcept
         {
-            return get_with_bounds_check<ID + 1>(_captures);
+            return get_group_checked<ID + 1>(_captures);
         }
 
         template<std::size_t ID>
         constexpr auto const &get() const & noexcept
         {
-            return get_with_bounds_check<ID + 1>(_captures);
+            return get_group_checked<ID + 1>(_captures);
         }
 
         template<std::size_t ID>
         constexpr auto &&get() && noexcept
         {
-            return get_with_bounds_check<ID + 1>(std::move(_captures));
+            return get_group_checked<ID + 1>(std::move(_captures));
+        }
+
+        template<std::size_t ID>
+        constexpr auto const &&get() const && noexcept
+        {
+            return get_group_checked<ID + 1>(std::move(_captures));
         }
 
         constexpr bool operator==(bool value) const noexcept
@@ -179,22 +224,46 @@ namespace meta
         }
 
     private:
-        storage_type _captures;
-        bool _matched;
+        template<typename Self>
+        static constexpr auto forward_self_as_optional(Self &&self)
+        noexcept(is_capture_view_v<capture_type> || !std::is_lvalue_reference_v<Self>)
+        -> std::optional<std::remove_cvref_t<Self>>
+        {
+            if (self.matched())
+                return std::optional{std::forward<Self>(self)};
+            return std::nullopt;
+        }
 
         template<std::size_t ID, typename Captures>
-        static constexpr decltype(auto) get_with_bounds_check(Captures &&captures) noexcept
+        static constexpr decltype(auto) get_group_checked(Captures &&captures) noexcept
         {
             static_assert(ID <= capture_count, "capturing group does not exist");
             return std::get<ID>(std::forward<Captures>(captures));
         }
+
+        storage_type _captures;
+        bool _matched;
+    };
+
+    /**
+     * Functors used to project a regex result to one of its capture groups.
+     */
+
+    template<std::size_t ID>
+    inline constexpr auto get_group = []<typename Result>(Result &&res) noexcept -> decltype(auto) {
+        return std::forward<Result>(res).template group<ID>();
+    };
+
+    template<static_string Name>
+    inline constexpr auto get_group_named = []<typename Result>(Result &&res) noexcept -> decltype(auto) {
+        return std::forward<Result>(res).template group<Name>();
     };
 }
 
 template<typename NameSpec, typename Storage>
 std::ostream &operator<<(std::ostream &os, meta::basic_regex_result<NameSpec, Storage> const &result)
 {
-    return os << result.template group<0>();
+    return os << meta::get_group<0>(result);
 }
 
 namespace std
