@@ -14,10 +14,10 @@ namespace meta::ast
      * template match_one<A, B>, where A satisfies std::forward_iterator and B is any generic type.
      */
     template<typename Node>
-    inline constexpr bool is_trivially_matchable_v = requires { &Node::template match_one<const char *, int>; };
+    inline constexpr bool is_trivially_matchable = requires { &Node::template match_one<const char *, int>; };
 
     template<typename... Nodes>
-    inline constexpr bool are_trivially_matchable_v = (is_trivially_matchable_v<Nodes> && ...);
+    inline constexpr bool are_trivially_matchable = (is_trivially_matchable<Nodes> && ...);
 
     /**
      * Metafunction used to count the number of capturing groups in the regex AST.
@@ -26,7 +26,7 @@ namespace meta::ast
      * @tparam Rest     The rest of AST nodes
      */
     template<typename First, typename... Rest>
-    inline constexpr std::size_t capture_count_v = First::capture_count + (Rest::capture_count + ... + 0);
+    inline constexpr std::size_t count_captures = First::capture_count + (Rest::capture_count + ... + 0);
 
     /**
     * Metafunction that builds a specification for the names of all capturing groups in the AST.

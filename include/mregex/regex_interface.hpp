@@ -111,7 +111,7 @@ namespace meta
 
         template<char_range R>
         [[nodiscard]] static constexpr auto match(R &&input) noexcept
-        requires is_expiring_memory_owner_v<R &&>
+        requires is_expiring_memory_owner<R &&>
         {
             return match(std::cbegin(input), std::cend(input)).as_memory_owner();
         }
@@ -129,7 +129,7 @@ namespace meta
 
         template<char_range R>
         [[nodiscard]] static constexpr auto search(R &&input) noexcept
-        requires is_expiring_memory_owner_v<R &&>
+        requires is_expiring_memory_owner<R &&>
         {
             return search(std::cbegin(input), std::cend(input)).as_memory_owner();
         }

@@ -7,18 +7,18 @@ namespace meta::tests
     namespace
     {
         template<static_string Pattern, typename AST>
-        inline constexpr bool matching_ast = std::is_same_v<ast_for<Pattern>, AST>;
+        inline constexpr bool has_ast = std::is_same_v<ast_for<Pattern>, AST>;
     }
 
-    static_assert(matching_ast<R"()", empty>);
-    static_assert(matching_ast<R"(a)", literal<'a'>>);
-    static_assert(matching_ast<R"((?:))", empty>);
-    static_assert(matching_ast<R"((?:)+)", plus<empty>>);
-    static_assert(matching_ast<R"((?:^)+)", plus<beginning_of_line>>);
-    static_assert(matching_ast<R"((?!))", negative_lookahead<empty>>);
-    static_assert(matching_ast<R"(())", unnamed_capture<1, empty>>);
+    static_assert(has_ast<R"()", empty>);
+    static_assert(has_ast<R"(a)", literal<'a'>>);
+    static_assert(has_ast<R"((?:))", empty>);
+    static_assert(has_ast<R"((?:)+)", plus<empty>>);
+    static_assert(has_ast<R"((?:^)+)", plus<beginning_of_line>>);
+    static_assert(has_ast<R"((?!))", negative_lookahead<empty>>);
+    static_assert(has_ast<R"(())", unnamed_capture<1, empty>>);
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(a.?b)",
             sequence
@@ -30,7 +30,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(^ab)",
             sequence
@@ -42,7 +42,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(ab$)",
             sequence
@@ -54,7 +54,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(^ab$)",
             sequence
@@ -67,7 +67,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(x(?=ab)x)",
             sequence
@@ -86,7 +86,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(.+(?<=a+)a)",
             sequence
@@ -101,7 +101,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(.*(?<!a|b))",
             sequence
@@ -119,7 +119,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(x(?!ab){2}x)",
             sequence
@@ -142,7 +142,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(x(?<=a(?<!c*d?)b)x)",
             sequence
@@ -168,31 +168,31 @@ namespace meta::tests
             >
         >
     );
-    static_assert(matching_ast<R"(\n)", literal<'\n'>>);
-    static_assert(matching_ast<R"(\r)", literal<'\r'>>);
-    static_assert(matching_ast<R"(\t)", literal<'\t'>>);
-    static_assert(matching_ast<R"(\f)", literal<'\f'>>);
-    static_assert(matching_ast<R"(\v)", literal<'\v'>>);
-    static_assert(matching_ast<R"(\R)", linebreak>);
-    static_assert(matching_ast<R"(\N)", negated<linebreak>>);
-    static_assert(matching_ast<R"(\a)", literal<'\a'>>);
-    static_assert(matching_ast<R"(\D)", negated<digit>>);
-    static_assert(matching_ast<R"(\b)", word_boundary>);
-    static_assert(matching_ast<R"(\B)", negated<word_boundary>>);
-    static_assert(matching_ast<R"(\A)", beginning_of_input>);
-    static_assert(matching_ast<R"(\Z)", end_of_input>);
-    static_assert(matching_ast<R"((c))", unnamed_capture<1, literal<'c'>>>);
-    static_assert(matching_ast<R"((?:c))", literal<'c'>>);
-    static_assert(matching_ast<R"(\1)", backref<1>>);
-    static_assert(matching_ast<R"(\31)", backref<31>>);
-    static_assert(matching_ast<R"(\1+)", plus<backref<1>>>);
-    static_assert(matching_ast<R"(\42?)", optional<backref<42>>>);
-    static_assert(matching_ast<R"(\1+?)", lazy_plus<backref<1>>>);
-    static_assert(matching_ast<R"(\1++)", possessive_plus<backref<1>>>);
-    static_assert(matching_ast<R"(\42??)", lazy_optional<backref<42>>>);
-    static_assert(matching_ast<R"(\42?+)", possessive_optional<backref<42>>>);
+    static_assert(has_ast<R"(\n)", literal<'\n'>>);
+    static_assert(has_ast<R"(\r)", literal<'\r'>>);
+    static_assert(has_ast<R"(\t)", literal<'\t'>>);
+    static_assert(has_ast<R"(\f)", literal<'\f'>>);
+    static_assert(has_ast<R"(\v)", literal<'\v'>>);
+    static_assert(has_ast<R"(\R)", linebreak>);
+    static_assert(has_ast<R"(\N)", negated<linebreak>>);
+    static_assert(has_ast<R"(\a)", literal<'\a'>>);
+    static_assert(has_ast<R"(\D)", negated<digit>>);
+    static_assert(has_ast<R"(\b)", word_boundary>);
+    static_assert(has_ast<R"(\B)", negated<word_boundary>>);
+    static_assert(has_ast<R"(\A)", beginning_of_input>);
+    static_assert(has_ast<R"(\Z)", end_of_input>);
+    static_assert(has_ast<R"((c))", unnamed_capture<1, literal<'c'>>>);
+    static_assert(has_ast<R"((?:c))", literal<'c'>>);
+    static_assert(has_ast<R"(\1)", backref<1>>);
+    static_assert(has_ast<R"(\31)", backref<31>>);
+    static_assert(has_ast<R"(\1+)", plus<backref<1>>>);
+    static_assert(has_ast<R"(\42?)", optional<backref<42>>>);
+    static_assert(has_ast<R"(\1+?)", lazy_plus<backref<1>>>);
+    static_assert(has_ast<R"(\1++)", possessive_plus<backref<1>>>);
+    static_assert(has_ast<R"(\42??)", lazy_optional<backref<42>>>);
+    static_assert(has_ast<R"(\42?+)", possessive_optional<backref<42>>>);
     static_assert(
-        matching_ast
+        has_ast
         <
             R"((c)\1)",
             sequence
@@ -203,7 +203,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"((c)\0)",
             sequence
@@ -214,7 +214,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"((c)\12)",
             sequence
@@ -225,7 +225,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"((c)\01)",
             sequence
@@ -237,7 +237,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"((c)\12?x)",
             sequence
@@ -249,7 +249,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(((c))(e))",
             sequence
@@ -264,7 +264,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(((?:c))(e))",
             sequence
@@ -274,14 +274,14 @@ namespace meta::tests
             >
         >
     );
-    static_assert(matching_ast<R"(c?)", optional<literal<'c'>>>);
-    static_assert(matching_ast<R"(c*)", star<literal<'c'>>>);
-    static_assert(matching_ast<R"(c+)", plus<literal<'c'>>>);
-    static_assert(matching_ast<R"(c??)", lazy_optional<literal<'c'>>>);
-    static_assert(matching_ast<R"(c*?)", lazy_star<literal<'c'>>>);
-    static_assert(matching_ast<R"(c+?)", lazy_plus<literal<'c'>>>);
+    static_assert(has_ast<R"(c?)", optional<literal<'c'>>>);
+    static_assert(has_ast<R"(c*)", star<literal<'c'>>>);
+    static_assert(has_ast<R"(c+)", plus<literal<'c'>>>);
+    static_assert(has_ast<R"(c??)", lazy_optional<literal<'c'>>>);
+    static_assert(has_ast<R"(c*?)", lazy_star<literal<'c'>>>);
+    static_assert(has_ast<R"(c+?)", lazy_plus<literal<'c'>>>);
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(c{2})",
             repetition
@@ -293,7 +293,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(c{2}c{2}?c{2}+)",
             sequence
@@ -305,7 +305,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(c{0})",
             repetition
@@ -317,7 +317,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(c{)",
             sequence
@@ -328,7 +328,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(c{})",
             sequence
@@ -340,7 +340,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(c{*})",
             sequence
@@ -352,7 +352,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(c{22})",
             repetition
@@ -364,7 +364,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(c{22,})",
             repetition
@@ -376,7 +376,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(c{22,0}?)", // Parsable syntax, but will not compile when trying to match
             lazy_repetition
@@ -388,7 +388,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(c{984,7644}+)",
             possessive_repetition
@@ -400,7 +400,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(c{0,22})",
             repetition
@@ -412,7 +412,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(c{,22})",
             sequence
@@ -427,7 +427,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(c\{22})",
             sequence
@@ -441,7 +441,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(c{012})",
             repetition
@@ -453,7 +453,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(c{x})",
             sequence
@@ -466,7 +466,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(c*\{012})",
             sequence
@@ -481,7 +481,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(\b\{)",
             sequence
@@ -492,7 +492,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(\b\{012})",
             sequence
@@ -507,7 +507,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(x\A\{+x?)",
             sequence
@@ -520,7 +520,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"((c*?\{012}){3})",
             repetition
@@ -544,7 +544,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(a(b(c()d)*){15}?)",
             sequence
@@ -580,7 +580,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"((\(+)*)",
             star
@@ -594,7 +594,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"((\++)*)",
             star
@@ -608,7 +608,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"((?:\++)*?)",
             lazy_star
@@ -618,7 +618,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(x(?:abc)*x)",
             sequence
@@ -638,7 +638,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(x(?:abc)*+x)",
             sequence
@@ -658,7 +658,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(()()((()())()))",
             sequence
@@ -685,9 +685,9 @@ namespace meta::tests
             >
         >
     );
-    static_assert(matching_ast<R"(\\)", literal<'\\'>>);
+    static_assert(has_ast<R"(\\)", literal<'\\'>>);
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(\(??x+)",
             sequence
@@ -698,7 +698,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(abc)",
             sequence
@@ -710,7 +710,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(a|b|c)",
             alternation
@@ -722,7 +722,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(aa|bb|cc)",
             alternation
@@ -746,7 +746,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(a?|b|c)",
             alternation
@@ -757,16 +757,16 @@ namespace meta::tests
             >
         >
     );
-    static_assert(matching_ast<R"([a])", set<literal<'a'>>>);
-    static_assert(matching_ast<R"([.])", set<literal<'.'>>>);
-    static_assert(matching_ast<R"([])", nothing>);
-    static_assert(matching_ast<R"([^])", negated<nothing>>);
-    static_assert(matching_ast<R"([-])", set<literal<'-'>>>);
-    static_assert(matching_ast<R"([\0])", set<literal<'\0'>>>);
-    static_assert(matching_ast<R"([\1])", set<literal<'1'>>>);
-    static_assert(matching_ast<R"([\k])", set<literal<'k'>>>);
+    static_assert(has_ast<R"([a])", set<literal<'a'>>>);
+    static_assert(has_ast<R"([.])", set<literal<'.'>>>);
+    static_assert(has_ast<R"([])", nothing>);
+    static_assert(has_ast<R"([^])", negated<nothing>>);
+    static_assert(has_ast<R"([-])", set<literal<'-'>>>);
+    static_assert(has_ast<R"([\0])", set<literal<'\0'>>>);
+    static_assert(has_ast<R"([\1])", set<literal<'1'>>>);
+    static_assert(has_ast<R"([\k])", set<literal<'k'>>>);
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([\k<test>])",
             set
@@ -782,7 +782,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([a-])",
             set
@@ -793,7 +793,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([\x-])",
             set
@@ -806,7 +806,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([\d-a])",
             set
@@ -818,7 +818,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([\0-\n])",
             set
@@ -828,7 +828,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([a][b\w])",
             sequence
@@ -846,7 +846,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([][b])",
             sequence
@@ -857,7 +857,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([a]?[b])",
             sequence
@@ -871,7 +871,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([a]??[b]?)",
             sequence
@@ -888,7 +888,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([abc])",
             set
@@ -899,9 +899,9 @@ namespace meta::tests
             >
         >
     );
-    static_assert(matching_ast<R"([a-z])", set<range<'a', 'z'>>>);
+    static_assert(has_ast<R"([a-z])", set<range<'a', 'z'>>>);
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([a\-z])",
             set
@@ -913,7 +913,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([a-z-])",
             set
@@ -924,7 +924,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([a-z-A])",
             set
@@ -936,7 +936,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([a-z0-9A-Z])",
             set
@@ -948,7 +948,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([A-[0-\]])",
             set
@@ -959,7 +959,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([^A-[0-\]])",
             negated
@@ -973,7 +973,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([-A-[0-\]])",
             set
@@ -985,7 +985,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"([^-aA-Z])",
             negated
@@ -1000,7 +1000,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(a[^-a-z\WA-Z])",
             sequence
@@ -1020,7 +1020,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(\h\X[^a^[\]b\c]yy)",
             sequence
@@ -1045,7 +1045,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(((?<_t3st1ng>tuv)?b+?)*|xy)",
             alternation
@@ -1084,7 +1084,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"((?<group_name>))",
             capture
@@ -1096,7 +1096,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"((?<test>x+))",
             capture
@@ -1108,7 +1108,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"((?<group_name>x+?)\k<group_name>)",
             sequence
@@ -1124,7 +1124,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"(x(?<_capture_name>abc)+)",
             sequence
@@ -1148,7 +1148,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        matching_ast
+        has_ast
         <
             R"((?<grp_1>abc)? \k<grp_1> (?<grp_2>xyz){2,})",
             sequence

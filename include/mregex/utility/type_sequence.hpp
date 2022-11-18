@@ -153,6 +153,6 @@ namespace meta
      * Checks if a given sequence has no elements.
      */
     template<typename Sequence>
-    inline constexpr bool is_empty_v = std::is_same_v<symbol::empty, typename Sequence::top>;
+    inline constexpr bool is_empty = std::is_same_v<symbol::empty, typename Sequence::top>;
 }
 #endif //MREGEX_UTILITY_TYPE_SEQUENCE_HPP

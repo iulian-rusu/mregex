@@ -11,7 +11,7 @@ namespace meta::ast
     {
         template<std::bidirectional_iterator Iter, typename Context>
         static constexpr bool match(Iter begin, Iter end, Iter it, Context &ctx) noexcept
-        requires (!is_trivially_matchable_v<Inner>)
+        requires (!is_trivially_matchable<Inner>)
         {
             // For non-trivial nodes, the AST is inverted to match the regex backwards
             using ast_type = invert_t<Inner>;
@@ -26,7 +26,7 @@ namespace meta::ast
 
         template<std::bidirectional_iterator Iter, typename Context>
         static constexpr bool match(Iter begin, Iter, Iter it, Context &ctx) noexcept
-        requires is_trivially_matchable_v<Inner>
+        requires is_trivially_matchable<Inner>
         {
             // For trivially matchable nodes, a single step backwards is enough
             return it != begin && Inner::match_one(std::prev(it), ctx);

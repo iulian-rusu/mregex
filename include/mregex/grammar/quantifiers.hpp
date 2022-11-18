@@ -37,7 +37,7 @@ namespace meta::grammar
      *
      * @tparam C    The current character being parsed
      */
-    template<char C, bool = is_numeric_v<C>>
+    template<char C, bool = is_numeric<C>>
     struct begin_quantifier_value
     {
         using type =
@@ -63,7 +63,7 @@ namespace meta::grammar
      * @tparam T    The quantifier value symbol being updated
      * @tparam C    The current character being parsed
      */
-    template<typename T, char C, bool = is_numeric_v<C>>
+    template<typename T, char C, bool = is_numeric<C>>
     struct update_quantifier_value;
 
     template<auto N, char C>

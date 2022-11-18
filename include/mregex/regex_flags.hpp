@@ -47,12 +47,12 @@ namespace meta
     }
 
     template<typename>
-    inline constexpr bool is_flag_v = false;
+    inline constexpr bool is_flag = false;
 
     template<std::size_t ID>
-    inline constexpr bool is_flag_v<regex_flag<ID>> = true;
+    inline constexpr bool is_flag<regex_flag<ID>> = true;
 
     template<typename Flag, typename... Flags>
-    inline constexpr bool is_flag_enabled_v = is_any_of_v<Flag, Flags ...>;
+    inline constexpr bool is_flag_enabled = is_any_of<Flag, Flags ...>;
 }
 #endif //MREGEX_REGEX_FLAGS_HPP

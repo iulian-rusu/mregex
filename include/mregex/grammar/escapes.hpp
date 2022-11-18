@@ -325,7 +325,7 @@ namespace meta::grammar
      *
      * @tparam C    The current character in the input pattern
      */
-    template<char C, bool = C != '0' && is_numeric_v<C>>
+    template<char C, bool = C != '0' && is_numeric<C>>
     struct begin_escape_sequence : begin_backref<C> {};
 
     template<char C>

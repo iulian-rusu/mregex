@@ -207,7 +207,7 @@ namespace meta::ast
     template<typename T, typename Name, typename First,  typename... Rest>
     struct build<symbol::make_capture<Name>, T, type_sequence<First, Rest ...>>
     {
-        static constexpr auto capture_count = capture_count_v<First, Rest ...>;
+        static constexpr auto capture_count = count_captures<First, Rest ...>;
 
         using type = type_sequence<capture<capture_count + 1, Name, First>, Rest ...>;
     };

@@ -75,7 +75,7 @@ namespace meta
          * @return  A new regex result object that holds ownership of captures
          */
         [[nodiscard]] auto as_memory_owner() const
-        requires is_capture_view_v<capture_type>
+        requires is_capture_view<capture_type>
         {
             auto owning_captures = generate_tuple(_captures, [](auto const &capture) {
                 return regex_capture{capture};
@@ -89,7 +89,7 @@ namespace meta
          *
          * @return A new instance of std::optional that contains the regex result object
          */
-        [[nodiscard]] constexpr auto as_optional() & noexcept(is_capture_view_v<capture_type>)
+        [[nodiscard]] constexpr auto as_optional() & noexcept(is_capture_view<capture_type>)
         {
             return forward_self_as_optional(*this);
         }
@@ -128,7 +128,7 @@ namespace meta
          * @see https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p0847r4.html
          */
 
-        [[nodiscard]] constexpr auto as_optional() const & noexcept(is_capture_view_v<capture_type>)
+        [[nodiscard]] constexpr auto as_optional() const & noexcept(is_capture_view<capture_type>)
         {
             return forward_self_as_optional(*this);
         }
@@ -226,7 +226,7 @@ namespace meta
     private:
         template<typename Self>
         static constexpr auto forward_self_as_optional(Self &&self)
-        noexcept(is_capture_view_v<capture_type> || !std::is_lvalue_reference_v<Self>)
+        noexcept(is_capture_view<capture_type> || !std::is_lvalue_reference_v<Self>)
         -> std::optional<std::remove_cvref_t<Self>>
         {
             if (self.matched())

@@ -30,7 +30,7 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto greedy_match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
-        requires (!is_trivially_matchable_v<Inner> || !std::bidirectional_iterator<Iter>)
+        requires (!is_trivially_matchable<Inner> || !std::bidirectional_iterator<Iter>)
         {
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept -> match_result<Iter> {
                 if (new_it == it)
@@ -45,7 +45,7 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto greedy_match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
-        requires (is_trivially_matchable_v<Inner> && std::bidirectional_iterator<Iter>)
+        requires (is_trivially_matchable<Inner> && std::bidirectional_iterator<Iter>)
         {
             Iter const start = it;
             for (; it != end; ++it)
@@ -60,7 +60,7 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto lazy_match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
-        requires (!is_trivially_matchable_v<Inner>)
+        requires (!is_trivially_matchable<Inner>)
         {
             if (auto rest_match = cont(it))
                 return rest_match;
@@ -75,7 +75,7 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto lazy_match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
-        requires is_trivially_matchable_v<Inner>
+        requires is_trivially_matchable<Inner>
         {
             for (;; ++it)
             {
@@ -92,7 +92,7 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto possessive_match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
-        requires (!is_trivially_matchable_v<Inner>)
+        requires (!is_trivially_matchable<Inner>)
         {
             while (auto inner_match = Inner::match(begin, end, it, ctx, continuations<Iter>::success))
                 it = inner_match.end;
@@ -102,7 +102,7 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto possessive_match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
-        requires is_trivially_matchable_v<Inner>
+        requires is_trivially_matchable<Inner>
         {
             for (; it != end; ++it)
                 if (!Inner::match_one(it, ctx))

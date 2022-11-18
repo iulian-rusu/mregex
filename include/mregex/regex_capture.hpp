@@ -169,10 +169,10 @@ namespace meta
      * the regex_capture_view template class.
      */
     template<typename>
-    inline constexpr bool is_capture_view_v = false;
+    inline constexpr bool is_capture_view = false;
 
     template<std::forward_iterator Iter, typename Name>
-    inline constexpr bool is_capture_view_v<regex_capture_view<Iter, Name>> = true;
+    inline constexpr bool is_capture_view<regex_capture_view<Iter, Name>> = true;
 
     /**
      * Defines a std::tuple used to store views into regex captures.

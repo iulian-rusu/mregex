@@ -42,7 +42,7 @@ namespace meta::grammar
      * @tparam ID   The current backreference ID on the stack
      * @tparam C    The current character in the input pattern
      */
-    template<std::size_t ID, char C, bool = is_numeric_v<C>>
+    template<std::size_t ID, char C, bool = is_numeric<C>>
     struct update_backref
     {
         using type =

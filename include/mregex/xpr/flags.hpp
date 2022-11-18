@@ -18,7 +18,7 @@ namespace meta::xpr
      * Sets a sequence of flags for a given regular expression.
      */
     template<typename... Ts, typename... Flags>
-    requires (is_flag_v<Flags> && ...)
+    requires (is_flag<Flags> && ...)
     constexpr auto set_flags(regex_interface<Ts ...>, Flags...) noexcept -> regex_interface<Ts ..., Flags ...> { return {}; }
 
     /**

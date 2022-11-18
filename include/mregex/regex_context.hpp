@@ -14,7 +14,7 @@ namespace meta
     template<std::forward_iterator Iter, typename AST, typename... Flags>
     struct regex_context
     {
-        static_assert((is_flag_v<Flags> && ...), "invalid flag");
+        static_assert((is_flag<Flags> && ...), "invalid flag");
 
         using ast_type = AST;
         using iterator_type = Iter;
@@ -23,11 +23,11 @@ namespace meta
 
         struct flags
         {
-            static constexpr bool icase = is_flag_enabled_v<flag::icase, Flags ...>;
-            static constexpr bool dotall = is_flag_enabled_v<flag::dotall, Flags ...>;
-            static constexpr bool multiline = is_flag_enabled_v<flag::multiline, Flags ...>;
-            static constexpr bool ungreedy = is_flag_enabled_v<flag::ungreedy, Flags ...>;
-            static constexpr bool unroll = is_flag_enabled_v<flag::unroll, Flags ...>;
+            static constexpr bool icase = is_flag_enabled<flag::icase, Flags ...>;
+            static constexpr bool dotall = is_flag_enabled<flag::dotall, Flags ...>;
+            static constexpr bool multiline = is_flag_enabled<flag::multiline, Flags ...>;
+            static constexpr bool ungreedy = is_flag_enabled<flag::ungreedy, Flags ...>;
+            static constexpr bool unroll = is_flag_enabled<flag::unroll, Flags ...>;
         };
 
         storage_type captures{};

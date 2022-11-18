@@ -50,7 +50,7 @@ namespace meta
          * @tparam Nodes    The stack with the AST nodes
          * @tparam Symbols  The stack with the current parsing symbols
          */
-        template<std::size_t I, typename Nodes, typename Symbols, bool = symbol::is_semantic_action_v<top<Symbols>>>
+        template<std::size_t I, typename Nodes, typename Symbols, bool = symbol::is_semantic_action<top<Symbols>>>
         struct parse;
 
         template<std::size_t I, typename Nodes, typename Symbols>

@@ -27,7 +27,7 @@ namespace meta::ast
         {
             bool result = C == *current;
             if constexpr (flags_of<Context>::icase)
-                result |= toggle_case_v<C> == *current;
+                result |= toggle_case<C> == *current;
             return result;
         }
     };

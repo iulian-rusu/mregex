@@ -10,7 +10,7 @@ namespace meta::ast
     template<bool, typename First, typename... Rest>
     struct alternation_impl
     {
-        static constexpr std::size_t capture_count = capture_count_v<First, Rest ...>;
+        static constexpr std::size_t capture_count = count_captures<First, Rest ...>;
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
@@ -26,7 +26,7 @@ namespace meta::ast
     struct alternation_impl<true, First, Rest ...> : set<First, Rest ...> {};
 
     template<typename First, typename... Rest>
-    struct alternation : alternation_impl<are_trivially_matchable_v<First, Rest ...>, First, Rest ...> {};
+    struct alternation : alternation_impl<are_trivially_matchable<First, Rest ...>, First, Rest ...> {};
 
     template<typename First>
     struct alternation<First> : First {};

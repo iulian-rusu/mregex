@@ -131,6 +131,6 @@ namespace meta::symbol
      * Type trait used to distinguish semantic action symbols from other symbols.
      */
     template<typename Symbol>
-    inline constexpr bool is_semantic_action_v = std::is_base_of_v<semantic_action, Symbol>;
+    inline constexpr bool is_semantic_action = std::is_base_of_v<semantic_action, Symbol>;
 }
 #endif //MREGEX_SYMBOLS_HPP

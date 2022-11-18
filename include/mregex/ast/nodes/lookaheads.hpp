@@ -12,7 +12,7 @@ namespace meta::ast
     {
         template<std::bidirectional_iterator Iter, typename Context>
         static constexpr bool match(Iter begin, Iter end, Iter it, Context &ctx) noexcept
-        requires (!is_trivially_matchable_v<Inner>)
+        requires (!is_trivially_matchable<Inner>)
         {
             auto inner_match = Inner::match(begin, end, it, ctx, continuations<Iter>::success);
             return inner_match.matched;
@@ -20,7 +20,7 @@ namespace meta::ast
 
         template<std::bidirectional_iterator Iter, typename Context>
         static constexpr bool match(Iter, Iter end, Iter it, Context &ctx) noexcept
-        requires is_trivially_matchable_v<Inner>
+        requires is_trivially_matchable<Inner>
         {
             return it != end && Inner::match_one(it, ctx);
         }

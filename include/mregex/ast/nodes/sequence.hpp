@@ -12,7 +12,7 @@ namespace meta::ast
     template<typename First, typename... Rest>
     struct sequence
     {
-        static constexpr std::size_t capture_count = capture_count_v<First, Rest ...>;
+        static constexpr std::size_t capture_count = count_captures<First, Rest ...>;
         static constexpr std::size_t size = 1 + sizeof... (Rest);
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
@@ -28,7 +28,7 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
-        requires (is_trivially_matchable_v<First> && !are_trivially_matchable_v<Rest ...>)
+        requires (is_trivially_matchable<First> && !are_trivially_matchable<Rest ...>)
         {
             if (it == end)
                 return {it, false};
@@ -40,7 +40,7 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
-        requires are_trivially_matchable_v<First, Rest ...>
+        requires are_trivially_matchable<First, Rest ...>
         {
             if (distance_less_than<size>(it, end))
                 return {it, false};

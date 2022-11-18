@@ -10,10 +10,7 @@ namespace meta
      * Metafunction used to detect if a type is present inside a type pack.
      */
     template<typename Test, typename... Elems>
-    struct is_any_of : std::bool_constant<(std::is_same_v<Test, Elems> || ...)> {};
-
-    template<typename Test, typename... Elems>
-    inline constexpr bool is_any_of_v = is_any_of<Test, Elems ...>::value;
+    inline constexpr bool is_any_of = (std::is_same_v<Test, Elems> || ...);
 
     /**
      * Type trait that checks if T is an rvalue reference to an object that is non-trivially destructible.
@@ -21,15 +18,8 @@ namespace meta
      * Although this does not guarantee that T has dynamically allocated memory, it is a good heuristic.
      */
     template<typename T>
-    struct is_expiring_memory_owner
-    {
-        using raw_type = std::remove_reference_t<T>;
-
-        static constexpr bool value = !std::is_trivially_destructible_v<raw_type> && std::is_rvalue_reference_v<T>;
-    };
-
-    template<typename T>
-    inline constexpr bool is_expiring_memory_owner_v = is_expiring_memory_owner<T>::value;
+    inline constexpr bool is_expiring_memory_owner = std::is_rvalue_reference_v<T> &&
+                                                     !std::is_trivially_destructible_v<std::remove_reference_t<T>>;
 
     /**
      * Metafunction that deduces the type required to perfectly forward the result of a function.
