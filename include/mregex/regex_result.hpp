@@ -35,16 +35,16 @@ namespace meta
     template<typename NameSpec, capture_storage Storage>
     struct basic_regex_result
     {
-        using storage_type = Storage;
-        using capture_type = std::tuple_element_t<0, storage_type>;
+        using capture_storage_type = Storage;
+        using capture_type = std::tuple_element_t<0, capture_storage_type>;
 
-        static constexpr std::size_t capture_count = std::tuple_size_v<storage_type> - 1;
+        static constexpr std::size_t capture_count = std::tuple_size_v<capture_storage_type> - 1;
 
         constexpr basic_regex_result() noexcept = default;
 
         template<typename S>
         constexpr basic_regex_result(S &&captures, bool matched)
-        noexcept(std::is_nothrow_move_constructible_v<storage_type>)
+        noexcept(std::is_nothrow_move_constructible_v<capture_storage_type>)
             : _captures{std::forward<S>(captures)}, _matched{matched}
         {}
 
@@ -77,10 +77,10 @@ namespace meta
         [[nodiscard]] auto as_memory_owner() const
         requires is_capture_view<capture_type>
         {
-            auto owning_captures = generate_tuple(_captures, [](auto const &capture) {
+            auto copied_captures = generate_tuple(_captures, [](auto const &capture) {
                 return regex_capture{capture};
             });
-            return regex_result<NameSpec>{std::move(owning_captures), _matched};
+            return regex_result<NameSpec>{std::move(copied_captures), _matched};
         }
 
         /**
@@ -119,7 +119,7 @@ namespace meta
         template<static_string Name>
         [[nodiscard]] constexpr auto &group() & noexcept
         {
-            return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(_captures);
+            return std::get<named_capture_type_for<capture_storage_type, symbol::name<Name>>>(_captures);
         }
 
         /**
@@ -164,19 +164,19 @@ namespace meta
         template<static_string Name>
         [[nodiscard]] constexpr auto const &group() const & noexcept
         {
-            return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(_captures);
+            return std::get<named_capture_type_for<capture_storage_type, symbol::name<Name>>>(_captures);
         }
 
         template<static_string Name>
         [[nodiscard]] constexpr auto &&group() && noexcept
         {
-            return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(std::move(_captures));
+            return std::get<named_capture_type_for<capture_storage_type, symbol::name<Name>>>(std::move(_captures));
         }
 
         template<static_string Name>
         [[nodiscard]] constexpr auto const &&group() const && noexcept
         {
-            return std::get<named_capture_type_for<storage_type, symbol::name<Name>>>(std::move(_captures));
+            return std::get<named_capture_type_for<capture_storage_type, symbol::name<Name>>>(std::move(_captures));
         }
 
         /**
@@ -226,7 +226,7 @@ namespace meta
     private:
         template<typename Self>
         static constexpr auto forward_self_as_optional(Self &&self)
-        noexcept(is_capture_view<capture_type> || !std::is_lvalue_reference_v<Self>)
+        noexcept(is_capture_view<capture_type> || std::is_rvalue_reference_v<Self &&>)
         -> std::optional<std::remove_cvref_t<Self>>
         {
             if (self.matched())
@@ -241,7 +241,7 @@ namespace meta
             return std::get<ID>(std::forward<Captures>(captures));
         }
 
-        storage_type _captures;
+        capture_storage_type _captures;
         bool _matched;
     };
 

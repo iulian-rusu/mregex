@@ -49,7 +49,7 @@ namespace meta::ast
             for (auto c : reverse_if<different_iterators>(captured))
             {
                 auto subject = *it;
-                if constexpr (flags_of<Context>::icase)
+                if constexpr (context_flags<Context>::icase)
                 {
                     subject = to_lower(subject);
                     c = to_lower(c);

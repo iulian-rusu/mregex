@@ -28,7 +28,7 @@ namespace meta::ast
         {
             auto ch = *current;
             bool result = A <= ch && ch <= B;
-            if constexpr (flags_of<Context>::icase)
+            if constexpr (context_flags<Context>::icase)
             {
                 if (is_alpha(ch))
                 {

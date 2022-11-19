@@ -44,7 +44,7 @@ namespace meta::ast
         {
             if constexpr (Mode == match_mode::possessive)
                 return possessive_match_rest<rest_size>(begin, end, it, ctx, cont);
-            else if constexpr ((Mode == match_mode::greedy) ^ flags_of<Context>::ungreedy)
+            else if constexpr ((Mode == match_mode::greedy) ^ context_flags<Context>::ungreedy)
                 return greedy_match_rest<rest_size>(begin, end, it, ctx, cont);
             else
                 return lazy_match_rest<rest_size>(begin, end, it, ctx, cont);

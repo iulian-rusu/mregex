@@ -81,7 +81,7 @@ namespace meta
     };
 
     /**
-     * Class that owns a copy of the captured content of a regex group.
+     * Class that holds ownership on the captured content of a regex group.
      *
      * @tparam Name The name of the capturing group (optional)
      */

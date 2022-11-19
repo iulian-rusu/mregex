@@ -40,7 +40,7 @@ namespace meta::ast
         -> match_result<Iter>
         requires (!is_trivially_matchable<Inner>)
         {
-            if constexpr (flags_of<Context>::unroll)
+            if constexpr (context_flags<Context>::unroll)
             {
                 auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
                     return fixed_repetition<N - 1, Inner>::match(begin, end, new_it, ctx, cont);
@@ -60,7 +60,7 @@ namespace meta::ast
         {
             if (distance_less_than<N>(it, end))
                 return {it, false};
-            if constexpr (flags_of<Context>::unroll)
+            if constexpr (context_flags<Context>::unroll)
                 return unrolled_trivial_match(it, ctx, cont, std::make_index_sequence<N>{});
             else
                 return non_unrolled_trivial_match(it, ctx, cont);

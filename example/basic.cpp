@@ -11,6 +11,6 @@ int main()
     std::cout << (match ? "Matched!" : "Not matched") << '\n';
 
     // The result type can be named explicitly, although it is pretty verbose
-    my_regex::result_type<std::string_view::iterator> res = my_regex::match(str);
+    meta::regex_result_view_t<my_regex, std::string_view::iterator> res = my_regex::match(str);
     std::cout << res.matched() << '\n';
 }

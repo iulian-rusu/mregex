@@ -26,7 +26,7 @@ namespace meta::ast
         static constexpr bool match_one(Iter current, Context &) noexcept
         {
             bool result = C == *current;
-            if constexpr (flags_of<Context>::icase)
+            if constexpr (context_flags<Context>::icase)
                 result |= toggle_case<C> == *current;
             return result;
         }

@@ -17,7 +17,7 @@ namespace meta
     {
         using ast_type = typename Context::ast_type;
         using iterator_type = typename Context::iterator_type;
-        using result_type = typename Context::result_type;
+        using result_view_type = typename Context::result_view_type;
         using continuation_category = continuations<iterator_type>;
         using method = search_method<ast_type>;
 
@@ -25,7 +25,7 @@ namespace meta
             : _begin{begin}, _end{end}, _current{begin}, _active{true}
         {}
 
-        [[nodiscard]] constexpr result_type operator()() noexcept
+        [[nodiscard]] constexpr result_view_type operator()() noexcept
         {
             Context ctx{};
             if (_active)
@@ -34,11 +34,11 @@ namespace meta
                 {
                     _active = std::get<0>(ctx.captures).length() != 0;
                     _current = result.end;
-                    return result_type{std::move(ctx.captures), true};
+                    return result_view_type{std::move(ctx.captures), true};
                 }
                 _active = false;
             }
-            return result_type{ctx.captures, false};
+            return result_view_type{ctx.captures, false};
         }
 
         [[nodiscard]] constexpr bool active() const noexcept

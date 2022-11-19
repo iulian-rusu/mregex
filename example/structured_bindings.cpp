@@ -7,7 +7,7 @@ int main()
     // Its match result can be decomposed into 3 local variables
     using date_regex = meta::regex<R"((\d{1,2})/(\d{1,2})/(\d{2,4}))">;
 
-    auto const get_date_info = []() {
+    auto const get_date_info = []() -> meta::regex_result_t<date_regex> {
         std::string date = "Today is 07/08/2021";
         // By default, all methods return results that have views into the original input string
         // In this case, the lifetime of the original std::string is too short

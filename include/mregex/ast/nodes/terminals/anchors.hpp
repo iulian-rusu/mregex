@@ -15,7 +15,7 @@ namespace meta::ast
         {
             if (it == begin)
                 return cont(it);
-            if constexpr (AllowMultiline && flags_of<Context>::multiline)
+            if constexpr (AllowMultiline && context_flags<Context>::multiline)
                 if (linebreak::match_one(std::prev(it), ctx))
                     return cont(it);
             return {it, false};
@@ -34,7 +34,7 @@ namespace meta::ast
         {
             if (it == end)
                 return cont(it);
-            if constexpr (AllowMultiline && flags_of<Context>::multiline)
+            if constexpr (AllowMultiline && context_flags<Context>::multiline)
                 if (linebreak::match_one(it, ctx))
                     return cont(it);
             return {it, false};

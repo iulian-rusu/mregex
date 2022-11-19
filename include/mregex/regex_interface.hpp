@@ -28,7 +28,7 @@ namespace meta
         using context_type = regex_context<Iter, ast_type, Flags ...>;
 
         template<std::forward_iterator Iter>
-        using result_type = typename context_type<Iter>::result_type ;
+        using result_view_type = typename context_type<Iter>::result_view_type;
 
         static constexpr std::size_t capture_count = ast_type::capture_count;
 
@@ -162,11 +162,8 @@ namespace meta
         {
             context_type<Iter> ctx{};
             auto result = Method::invoke(begin, end, begin, ctx);
-            return result_type<Iter>{std::move(ctx.captures), result.matched};
+            return result_view_type<Iter>{std::move(ctx.captures), result.matched};
         }
     };
-
-    template<typename Regex, std::forward_iterator Iter>
-    using result_type_for = typename Regex::template result_type<Iter>;
 }
 #endif //MREGEX_REGEX_INTERFACE_HPP

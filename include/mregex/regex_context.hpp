@@ -16,21 +16,13 @@ namespace meta
     {
         static_assert((is_flag<Flags> && ...), "invalid flag");
 
+        using flags = regex_flags_container<Flags ...>;
         using ast_type = AST;
         using iterator_type = Iter;
-        using result_type = regex_result_view<ast::capture_name_spec_t<ast_type>, iterator_type>;
-        using storage_type = typename result_type::storage_type;
+        using result_view_type = regex_result_view<ast::capture_name_spec_t<ast_type>, iterator_type>;
+        using capture_view_storage_type = typename result_view_type::capture_storage_type;
 
-        struct flags
-        {
-            static constexpr bool icase = is_flag_enabled<flag::icase, Flags ...>;
-            static constexpr bool dotall = is_flag_enabled<flag::dotall, Flags ...>;
-            static constexpr bool multiline = is_flag_enabled<flag::multiline, Flags ...>;
-            static constexpr bool ungreedy = is_flag_enabled<flag::ungreedy, Flags ...>;
-            static constexpr bool unroll = is_flag_enabled<flag::unroll, Flags ...>;
-        };
-
-        storage_type captures{};
+        capture_view_storage_type captures{};
 
         constexpr void clear() noexcept
         {
@@ -41,6 +33,6 @@ namespace meta
     };
 
     template<typename Context>
-    using flags_of = typename Context::flags;
+    using context_flags = typename Context::flags;
 }
 #endif //MREGEX_REGEX_CONTEXT_HPP

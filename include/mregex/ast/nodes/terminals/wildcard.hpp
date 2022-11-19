@@ -23,7 +23,7 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context>
         static constexpr bool match_one(Iter current, Context &) noexcept
         {
-            if constexpr (flags_of<Context>::dotall)
+            if constexpr (context_flags<Context>::dotall)
                 return true;
             auto ch = *current;
             return ch != '\n' && ch != '\r';
