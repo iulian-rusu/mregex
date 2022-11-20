@@ -13,7 +13,7 @@ set(
     regex_match_tests.cpp
     regex_search_tests.cpp
     regex_traits_tests.cpp
-    traits_tests.cpp
+    type_traits_tests.cpp
     type_sequence_tests.cpp
     xpr_ast_tests.cpp
 )

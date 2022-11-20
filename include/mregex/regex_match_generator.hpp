@@ -3,6 +3,7 @@
 
 #include <mregex/regex_context.hpp>
 #include <mregex/regex_methods.hpp>
+#include <mregex/regex_traits.hpp>
 
 namespace meta
 {
@@ -10,16 +11,18 @@ namespace meta
      * A functor that searches through the range given by an iterator pair and
      * yields all regex matches. At most one empty match will be generated.
      *
-     * @tparam Context  The matching context formed from the AST of the regular expression
+     * @tparam Regex    The regex type used to generate matches
+     * @tparam Iter     The forward iterator type used to acces the input sequence
      */
-    template<typename Context>
+    template<typename Regex, std::forward_iterator Iter>
     struct regex_match_generator
     {
-        using ast_type = typename Context::ast_type;
-        using iterator_type = typename Context::iterator_type;
-        using result_view_type = typename Context::result_view_type;
+        using iterator_type = Iter;
+        using ast_type = regex_ast_t<Regex>;
+        using context_type = regex_context_t<Regex, iterator_type>;
+        using result_view_type = regex_result_view_t<Regex, iterator_type>;
         using continuation_category = continuations<iterator_type>;
-        using method = search_method<ast_type>;
+        using method = search_method<Regex>;
 
         constexpr regex_match_generator(iterator_type begin, iterator_type end)
             : _begin{begin}, _end{end}, _current{begin}, _active{true}
@@ -27,7 +30,7 @@ namespace meta
 
         [[nodiscard]] constexpr result_view_type operator()() noexcept
         {
-            Context ctx{};
+            context_type ctx{};
             if (_active)
             {
                 if (auto result = method::invoke(_begin, _end, _current, ctx))

@@ -58,6 +58,8 @@ namespace meta
     template<typename... Flags>
     struct regex_flags_container
     {
+        static_assert((is_flag<Flags> && ...), "invalid flag");
+
         static constexpr bool icase = is_flag_enabled<flag::icase, Flags ...>;
         static constexpr bool dotall = is_flag_enabled<flag::dotall, Flags ...>;
         static constexpr bool multiline = is_flag_enabled<flag::multiline, Flags ...>;

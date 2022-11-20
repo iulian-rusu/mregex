@@ -4,23 +4,24 @@
 #include <mregex/utility/tuple.hpp>
 #include <mregex/regex_flags.hpp>
 #include <mregex/regex_result.hpp>
+#include <mregex/regex_traits.hpp>
 
 namespace meta
 {
     /**
      * Data structure that holds static information about the regex as well as
-     * match-time information like captured contents.
+     * match-time information like capturing group contents.
+     *
+     * @tparam Regex    The regex type used for matching
+     * @tparam Iter     The forward iterator type used to acces the input sequence
      */
-    template<std::forward_iterator Iter, typename AST, typename... Flags>
+    template<typename Regex, std::forward_iterator Iter>
     struct regex_context
     {
-        static_assert((is_flag<Flags> && ...), "invalid flag");
-
-        using flags = regex_flags_container<Flags ...>;
-        using ast_type = AST;
         using iterator_type = Iter;
-        using result_view_type = regex_result_view<ast::capture_name_spec_t<ast_type>, iterator_type>;
-        using capture_view_storage_type = typename result_view_type::capture_storage_type;
+        using ast_type = regex_ast_t<Regex>;
+        using flags = regex_flags<Regex>;
+        using capture_view_storage_type = regex_capture_view_storage_t<Regex, Iter>;
 
         capture_view_storage_type captures{};
 

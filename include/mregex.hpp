@@ -3,6 +3,5 @@
 
 #include <mregex/xpr/operators.hpp>
 #include <mregex/regex.hpp>
-#include <mregex/regex_traits.hpp>
 
 #endif //MREGEX_HPP

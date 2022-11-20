@@ -1,12 +1,12 @@
 #ifndef MREGEX_AST_MATCH_RESULT_HPP
 #define MREGEX_AST_MATCH_RESULT_HPP
 
-#include <concepts>
+#include <iterator>
 
 namespace meta::ast
 {
     /**
-     * Data structure returned by matching methods of AST nodes.
+     * Data structure returned by functions that match AST nodes.
      */
     template<std::forward_iterator Iter>
     struct match_result

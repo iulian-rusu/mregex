@@ -1,7 +1,7 @@
 #ifndef MREGEX_REGEX_INTERFACE_HPP
 #define MREGEX_REGEX_INTERFACE_HPP
 
-#include <mregex/ast/ast.hpp>
+#include <mregex/ast/traits.hpp>
 #include <mregex/utility/input_range_adapter.hpp>
 #include <mregex/regex_match_generator.hpp>
 
@@ -24,11 +24,32 @@ namespace meta
 
         using ast_type = AST;
 
-        template<std::forward_iterator Iter>
-        using context_type = regex_context<Iter, ast_type, Flags ...>;
+        using flags = regex_flags_container<Flags ...>;
 
         template<std::forward_iterator Iter>
-        using result_view_type = typename context_type<Iter>::result_view_type;
+        using context_type = regex_context<regex_interface, Iter>;
+
+        template<std::forward_iterator Iter>
+        using result_view_type = regex_result_view<ast::capture_name_spec_t<ast_type>, Iter>;
+
+        using result_type = regex_result<ast::capture_name_spec_t<ast_type>>;
+
+        template<std::forward_iterator Iter>
+        using capture_view_storage_type = typename result_view_type<Iter>::capture_storage_type;
+
+        using capture_storage_type = typename result_type::capture_storage_type;
+
+        template<std::size_t ID, std::forward_iterator Iter>
+        using capture_view_type = std::tuple_element_t<ID, capture_view_storage_type<Iter>>;
+
+        template<std::size_t ID>
+        using capture_type = std::tuple_element_t<ID, capture_storage_type>;
+
+        template<std::forward_iterator Iter>
+        using generator_type = regex_match_generator<regex_interface, Iter>;
+
+        template<std::forward_iterator Iter>
+        using range_type = input_range_adapter<generator_type<Iter>>;
 
         static constexpr std::size_t capture_count = ast_type::capture_count;
 
@@ -44,9 +65,9 @@ namespace meta
          * @return      An object that holds the results of the match
          */
         template<std::forward_iterator Iter>
-        [[nodiscard]] static constexpr auto match(Iter const begin, Iter const end) noexcept
+        [[nodiscard]] static constexpr auto match(Iter begin, Iter end) noexcept
         {
-            return invoke<match_method<ast_type>>(begin, end);
+            return invoke<match_method<regex_interface>>(begin, end);
         }
 
         /**
@@ -59,9 +80,9 @@ namespace meta
          * @return      An object that holds the results of the search
          */
         template<std::forward_iterator Iter>
-        [[nodiscard]] static constexpr auto search(Iter const begin, Iter const end) noexcept
+        [[nodiscard]] static constexpr auto search(Iter begin, Iter end) noexcept
         {
-            return invoke<search_method<ast_type>>(begin, end);
+            return invoke<search_method<regex_interface>>(begin, end);
         }
 
         /**
@@ -74,9 +95,9 @@ namespace meta
          * @return      A functor that generates regex matches
          */
         template<std::forward_iterator Iter>
-        [[nodiscard]] static constexpr auto generator(Iter const begin, Iter const end) noexcept
+        [[nodiscard]] static constexpr auto generator(Iter begin, Iter end) noexcept
         {
-            return regex_match_generator<context_type<Iter>>{begin, end};
+            return generator_type<Iter>{begin, end};
         }
 
         /**
@@ -89,9 +110,9 @@ namespace meta
          * @return      A range whose elements can be accessed with input iterators
          */
         template<std::forward_iterator Iter>
-        [[nodiscard]] static constexpr auto range(Iter const begin, Iter const end) noexcept
+        [[nodiscard]] static constexpr auto range(Iter begin, Iter end) noexcept
         {
-            return input_range_adapter{generator(begin, end)};
+            return range_type<Iter>{generator(begin, end)};
         }
 
         /**
@@ -153,12 +174,12 @@ namespace meta
         template<char_range R>
         [[nodiscard]] static constexpr auto range(R const &input) noexcept
         {
-            return input_range_adapter{generator(input)};
+            return range(std::cbegin(input), std::cend(input));
         }
 
     private:
         template<typename Method, std::forward_iterator Iter>
-        static constexpr auto invoke(Iter const begin, Iter const end) noexcept
+        static constexpr auto invoke(Iter begin, Iter end) noexcept
         {
             context_type<Iter> ctx{};
             auto result = Method::invoke(begin, end, begin, ctx);
