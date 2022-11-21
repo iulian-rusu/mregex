@@ -8,8 +8,8 @@ namespace meta
 {
     /**
      * Adapter that allows iterating through the results returned by a generating function.
-     * The generator is required to return a boolean-convertible value to signal
-     * its iteration state. A false value implies the end of the iteration.
+     * The generator is required to return a boolean-convertible value to signal the end of iteration.
+     * The generator may be called once when constructing this object.
      *
      * @tparam Gen   The callable type used to generate the data
      */
@@ -33,10 +33,16 @@ namespace meta
             using difference_type = std::ptrdiff_t;
             using iterator_category = std::input_iterator_tag;
 
-            constexpr iterator() noexcept = default;
+            /**
+             * Note: this default constructor is technically not required for the iterator
+             * to satisfy `std::input_iterator`. However, due to a wrong implementation in some older versions of
+             * the standard library (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2325r3.html),
+             * a default constructor is required to satisfy the `std::weakly_incrementable` concept.
+             */
+            constexpr iterator() noexcept : _target{nullptr} {}
 
-            constexpr iterator(input_range_adapter<Gen> *generator) noexcept
-                : _target{generator}
+            constexpr iterator(input_range_adapter<Gen> &generator) noexcept
+                : _target{&generator}
             {}
 
             constexpr explicit operator bool() const noexcept
@@ -51,7 +57,7 @@ namespace meta
 
             constexpr value_type *operator->() const noexcept
             {
-                return _target->get();
+                return &_target->get();
             }
 
             constexpr iterator &operator++() noexcept
@@ -67,18 +73,18 @@ namespace meta
                 return old_iter;
             }
 
-            constexpr bool operator==(iterator) const noexcept
+            constexpr bool operator==(std::default_sentinel_t) const noexcept
             {
                 return !_target->active();
             }
 
-            constexpr bool operator!=(iterator) const noexcept
+            constexpr bool operator!=(std::default_sentinel_t) const noexcept
             {
                 return _target->active();
             }
 
         private:
-            input_range_adapter<Gen> *_target = nullptr;
+            input_range_adapter<Gen> *_target;
         };
 
         /**
@@ -90,19 +96,18 @@ namespace meta
          */
         [[nodiscard]] constexpr auto begin() noexcept
         {
-            return iterator{this};
+            return iterator{*this};
         }
 
         /**
-         * Returns a default constructed iterator which does not point to any object.
-         * This iterator is used to call operator!= while iterating and should never
-         * be dereferenced or incremented.
+         * Returns a sentinel object for the iterator of the range.
+         * This sentinel can only be used to compare for equality with an iterator.
          *
-         * @return  An empty end-of-range iterator
+         * @return  A sentinel object suitable for the iterator of the range
          */
         [[nodiscard]] constexpr auto end() const noexcept
         {
-            return iterator{};
+            return std::default_sentinel;
         }
 
         [[nodiscard]] constexpr bool active() const noexcept
