@@ -184,30 +184,30 @@ namespace meta
          * Use the group() method for extracting captures.
          */
         template<std::size_t ID>
-        constexpr auto &get() & noexcept
+        [[nodiscard]] constexpr auto &get() & noexcept
         {
             return get_group_checked<ID + 1>(_captures);
         }
 
         template<std::size_t ID>
-        constexpr auto const &get() const & noexcept
+        [[nodiscard]] constexpr auto const &get() const & noexcept
         {
             return get_group_checked<ID + 1>(_captures);
         }
 
         template<std::size_t ID>
-        constexpr auto &&get() && noexcept
+        [[nodiscard]] constexpr auto &&get() && noexcept
         {
             return get_group_checked<ID + 1>(std::move(_captures));
         }
 
         template<std::size_t ID>
-        constexpr auto const &&get() const && noexcept
+        [[nodiscard]] constexpr auto const &&get() const && noexcept
         {
             return get_group_checked<ID + 1>(std::move(_captures));
         }
 
-        constexpr bool operator==(bool value) const noexcept
+        [[nodiscard]] constexpr bool operator==(bool value) const noexcept
         {
             return _matched == value;
         }

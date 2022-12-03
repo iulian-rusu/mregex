@@ -188,13 +188,13 @@ namespace meta::symbol
     inline constexpr bool is_infinity<quantifier_inf> = true;
 
     /**
-     * Predicate that checks if a symbolic quantifier is equivalent to some runtime value.
+     * Predicate that checks if a symbolic quantifier is equal to some integral value.
      */
     template<quantifier>
-    inline constexpr auto equals = [](std::size_t) { return false; };
+    inline constexpr auto equals = [](std::size_t) noexcept { return false; };
 
     template<std::size_t N>
-    inline constexpr auto equals<quantifier_value<N>> = [](std::size_t value) { return N == value; };
+    inline constexpr auto equals<quantifier_value<N>> = [](std::size_t value) noexcept { return N == value; };
 
     /**
      * Metafunction used to decrement symbolic quantifiers.

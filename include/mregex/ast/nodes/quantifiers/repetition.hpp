@@ -5,7 +5,6 @@
 #include <mregex/ast/match_result.hpp>
 #include <mregex/ast/traits.hpp>
 #include <mregex/utility/continuations.hpp>
-#include <mregex/utility/distance.hpp>
 #include <mregex/regex_context.hpp>
 
 namespace meta::ast
@@ -60,8 +59,10 @@ namespace meta::ast
             {
                 auto continuation = [=, &ctx, &cont](Iter new_it) noexcept -> match_result<Iter> {
                     if constexpr (symbol::is_infinity<Bound>)
+                    {
                         if (new_it == it)
                             return {new_it, false};
+                    }
                     return bounded_greedy_match<symbol::decrement_t<Bound>>(begin, end, new_it, ctx, cont);
                 };
                 if (auto inner_match = Inner::match(begin, end, it, ctx, continuation))
@@ -78,15 +79,15 @@ namespace meta::ast
             Iter const start = it;
             for (std::size_t match_count = 0; !symbol::equals<Bound>(match_count); ++match_count)
             {
-                if (it == end)
-                    break;
-                if (!Inner::match_one(it, ctx))
+                if (it == end || !Inner::match_one(it, ctx))
                     break;
                 ++it;
             }
             for (; it != start; --it)
+            {
                 if (auto rest_match = cont(it))
                     return rest_match;
+            }
             return cont(start);
         }
 
@@ -101,8 +102,10 @@ namespace meta::ast
             {
                 auto continuation = [=, &ctx, &cont](Iter new_it) noexcept -> match_result<Iter> {
                     if constexpr (symbol::is_infinity<Bound>)
+                    {
                         if (new_it == it)
                             return {new_it, false};
+                    }
                     return bounded_lazy_match<symbol::decrement_t<Bound>>(begin, end, new_it, ctx, cont);
                 };
                 return Inner::match(begin, end, it, ctx, continuation);
@@ -119,9 +122,7 @@ namespace meta::ast
             {
                 if (auto rest_match = cont(it))
                     return rest_match;
-                if (symbol::equals<Bound>(match_count) || it == end)
-                    break;
-                if (!Inner::match_one(it, ctx))
+                if (symbol::equals<Bound>(match_count) || it == end || !Inner::match_one(it, ctx))
                     break;
             }
             return {it, false};
@@ -149,9 +150,7 @@ namespace meta::ast
         {
             for (std::size_t match_count = 0; !symbol::equals<Bound>(match_count); ++match_count)
             {
-                if (it == end)
-                    break;
-                if (!Inner::match_one(it, ctx))
+                if (it == end || !Inner::match_one(it, ctx))
                     break;
                 ++it;
             }

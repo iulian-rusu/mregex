@@ -93,8 +93,10 @@ namespace meta::ast
         -> match_result<Iter>
         {
             for (std::size_t offset = 0; offset != N; ++offset)
+            {
                 if (!Inner::match_one(std::next(it, offset), ctx))
                     return {it, false};
+            }
             return cont(std::next(it, N));
         }
 
@@ -103,8 +105,10 @@ namespace meta::ast
         -> match_result<Iter>
         {
             for (std::size_t match_count = 0; match_count != N; ++match_count)
+            {
                 if (!Inner::match_one(it++, ctx))
                     return {it, false};
+            }
             return cont(it);
         }
 
