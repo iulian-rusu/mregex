@@ -132,5 +132,72 @@ namespace meta::symbol
      */
     template<typename Symbol>
     inline constexpr bool is_semantic_action = std::is_base_of_v<semantic_action, Symbol>;
+
+    /**
+    * Metafunction that projects a symbolic quantifier to its numerical value.
+    */
+    template<typename>
+    inline constexpr std::size_t get_value = 0;
+
+    template<std::size_t N>
+    inline constexpr std::size_t get_value<quantifier_value<N>> = N;
+
+    /**
+     * Metafunction used to decrement symbolic quantifiers.
+     */
+    template<typename Symbol>
+    struct decrement : std::type_identity<Symbol> {};
+
+    template<std::size_t N>
+    struct decrement<quantifier_value<N>> : std::type_identity<quantifier_value<N - 1>> {};
+
+    template<typename Symbol>
+    using decrement_t = typename decrement<Symbol>::type;
+
+    /**
+     * Metafunction that handles subtraction of symbolic quantifiers.
+     */
+    template<typename A, typename B>
+    struct subtract;
+
+    template<std::size_t A, std::size_t B>
+    struct subtract<quantifier_value<A>, quantifier_value<B>> : std::type_identity<quantifier_value<A - B>> {};
+
+    template<std::size_t N>
+    struct subtract<quantifier_inf, quantifier_value<N>> : std::type_identity<quantifier_inf> {};
+
+    template<typename A, typename B>
+    using subtract_t = typename subtract<A, B>::type;
+
+    /**
+     * Predicates for comparing symbolic quantifiers.
+     */
+
+    template<typename, typename>
+    inline constexpr bool is_valid_range = false;
+
+    template<std::size_t A, std::size_t B>
+    inline constexpr bool is_valid_range<quantifier_value<A>, quantifier_value<B>> = A < B;
+
+    template<std::size_t N>
+    inline constexpr bool is_valid_range<quantifier_value<N>, quantifier_inf> = true;
+
+    template<typename>
+    inline constexpr bool is_zero = false;
+
+    template<>
+    inline constexpr bool is_zero<quantifier_value<0>> = true;
+
+    template<typename>
+    inline constexpr bool is_infinity = false;
+
+    template<>
+    inline constexpr bool is_infinity<quantifier_inf> = true;
+
+    template<typename>
+    inline constexpr auto equals = [](std::size_t) { return false; };
+
+    template<std::size_t N>
+    inline constexpr auto equals<quantifier_value<N>> = [](std::size_t value) { return N == value; };
 }
 #endif //MREGEX_SYMBOLS_HPP

@@ -3,7 +3,6 @@
 
 #include <mregex/ast/nodes/quantifiers/fixed_repetition.hpp>
 #include <mregex/ast/nodes/quantifiers/repetition.hpp>
-#include <mregex/ast/nodes/quantifiers/star.hpp>
 #include <mregex/ast/nodes/terminals/backref.hpp>
 #include <mregex/ast/nodes/terminals/empty.hpp>
 #include <mregex/ast/nodes/terminals/literal.hpp>

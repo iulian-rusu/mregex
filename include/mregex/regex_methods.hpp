@@ -20,7 +20,7 @@ namespace meta
         {
             if (auto result = ast_type::match(begin, end, it, ctx, continuations<Iter>::equals(end)))
             {
-                std::get<0>(ctx.captures) = regex_capture_view_t<0, Regex, Iter>{it, end};
+                std::get<0>(ctx.captures) = regex_capture_view_t<Regex, 0, Iter>{it, end};
                 return result;
             }
             return {it, false};
@@ -42,7 +42,7 @@ namespace meta
             {
                 if (auto result = ast_type::match(begin, end, it, ctx, continuations<Iter>::success))
                 {
-                    std::get<0>(ctx.captures) = regex_capture_view_t<0, Regex, Iter>{it, result.end};
+                    std::get<0>(ctx.captures) = regex_capture_view_t<Regex, 0, Iter>{it, result.end};
                     return result;
                 }
                 if (it == end)

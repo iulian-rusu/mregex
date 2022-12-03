@@ -18,6 +18,7 @@ namespace meta
     template<typename Regex, std::forward_iterator Iter>
     struct regex_context
     {
+        using regex_type = Regex;
         using iterator_type = Iter;
         using ast_type = regex_ast_t<Regex>;
         using flags = regex_flags<Regex>;

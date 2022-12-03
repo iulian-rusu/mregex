@@ -26,10 +26,10 @@ namespace meta
     template<typename Regex>
     using regex_capture_storage_t = typename Regex::capture_storage_type;
 
-    template<std::size_t ID, typename Regex, std::forward_iterator Iter>
+    template<typename Regex, std::size_t ID, std::forward_iterator Iter>
     using regex_capture_view_t = typename Regex::template capture_view_type<ID, Iter>;
 
-    template<std::size_t ID, typename Regex>
+    template<typename Regex, std::size_t ID>
     using regex_capture_t = typename Regex::template capture_type<ID>;
 
     template<typename Regex, std::forward_iterator Iter>

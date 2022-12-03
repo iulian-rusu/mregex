@@ -10,12 +10,12 @@ namespace meta::tests
 
     using uri_result_view_t = regex_result_view_t<uri_regex, iterator_type>;
     using uri_result_t = regex_result_t<uri_regex>;
-    using uri_capture_view_t = regex_capture_view_t<1, uri_regex, iterator_type>;
+    using uri_capture_view_t = regex_capture_view_t<uri_regex, 1, iterator_type>;
     using uri_generator_t = regex_generator_t<uri_regex, iterator_type>;
     using uri_range_t = regex_range_t<uri_regex, iterator_type>;
 
     using email_result_view_t = regex_result_view_t<email_regex, iterator_type>;
-    using email_capture_view_t = regex_capture_view_t<1, email_regex, iterator_type>;
+    using email_capture_view_t = regex_capture_view_t<email_regex, 1, iterator_type>;
 
     static_assert(regex_flags<email_regex>::dotall);
     static_assert(regex_flags<email_regex>::icase);
