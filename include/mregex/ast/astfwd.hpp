@@ -15,16 +15,16 @@ namespace meta::ast
     struct capture;
 
     // Repetition
-    template<match_mode, typename, typename, typename>
+    template<match_mode, symbol::quantifier, symbol::quantifier, typename>
     struct basic_repetition;
 
-    template<typename A, typename B, typename Inner>
+    template<symbol::quantifier A, symbol::quantifier B, typename Inner>
     using repetition = basic_repetition<match_mode::greedy, A, B, Inner>;
 
-    template<typename A, typename B, typename Inner>
+    template<symbol::quantifier A, symbol::quantifier B, typename Inner>
     using lazy_repetition = basic_repetition<match_mode::lazy, A, B, Inner>;
 
-    template<typename A, typename B, typename Inner>
+    template<symbol::quantifier A, symbol::quantifier B, typename Inner>
     using possessive_repetition = basic_repetition<match_mode::possessive, A, B, Inner>;
 
     // Fixed repetition

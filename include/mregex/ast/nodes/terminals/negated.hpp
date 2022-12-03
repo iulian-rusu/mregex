@@ -9,7 +9,7 @@ namespace meta::ast
     template<typename Inner>
     struct negated : terminal
     {
-        static_assert(is_trivially_matchable<Inner>);
+        static_assert(is_trivially_matchable<Inner>, "only trivially matchable AST nodes can be negated");
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept

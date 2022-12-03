@@ -10,12 +10,13 @@
 
 namespace meta::ast
 {
-    template<match_mode Mode, typename LowerBound, typename UpperBound, typename Inner>
+    template<match_mode Mode, symbol::quantifier LowerBound, symbol::quantifier UpperBound, typename Inner>
     struct basic_repetition
     {
+        static_assert(symbol::is_valid_range<LowerBound, UpperBound>, "invalid range bounds");
+
         using range_size = symbol::subtract_t<UpperBound, LowerBound>;
-        
-        static_assert(symbol::is_valid_range<LowerBound, UpperBound>, "invalid repetition range bounds");
+
         static constexpr std::size_t capture_count = Inner::capture_count;
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
@@ -24,7 +25,7 @@ namespace meta::ast
         requires (!symbol::is_zero<LowerBound>)
         {
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
-                return match_range(begin, end, new_it, ctx, cont);
+                return match_between_bounds(begin, end, new_it, ctx, cont);
             };
             return basic_fixed_repetition<Mode, symbol::get_value<LowerBound>, Inner>::match(begin, end, it, ctx, continuation);
         }
@@ -34,12 +35,12 @@ namespace meta::ast
         -> match_result<Iter>
         requires symbol::is_zero<LowerBound>
         {
-            return match_range(begin, end, it, ctx, cont);
+            return match_between_bounds(begin, end, it, ctx, cont);
         }
 
     private:
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match_range(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match_between_bounds(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
             if constexpr (Mode == match_mode::possessive)
@@ -50,7 +51,7 @@ namespace meta::ast
                 return bounded_lazy_match<range_size>(begin, end, it, ctx, cont);
         }
 
-        template<typename Bound, std::forward_iterator Iter, typename Context, typename Continuation>
+        template<symbol::quantifier Bound, std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto bounded_greedy_match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         requires (!is_trivially_matchable<Inner> || !std::bidirectional_iterator<Iter>)
@@ -69,7 +70,7 @@ namespace meta::ast
             return cont(it);
         }
 
-        template<typename Bound, std::forward_iterator Iter, typename Context, typename Continuation>
+        template<symbol::quantifier Bound, std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto bounded_greedy_match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         requires (is_trivially_matchable<Inner> && std::bidirectional_iterator<Iter>)
@@ -89,7 +90,7 @@ namespace meta::ast
             return cont(start);
         }
 
-        template<typename Bound, std::forward_iterator Iter, typename Context, typename Continuation>
+        template<symbol::quantifier Bound, std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto bounded_lazy_match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         requires (!is_trivially_matchable<Inner>)
@@ -109,7 +110,7 @@ namespace meta::ast
             return {it, false};
         }
 
-        template<typename Bound, std::forward_iterator Iter, typename Context, typename Continuation>
+        template<symbol::quantifier Bound, std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto bounded_lazy_match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         requires is_trivially_matchable<Inner>
@@ -126,7 +127,7 @@ namespace meta::ast
             return {it, false};
         }
 
-        template<typename Bound, std::forward_iterator Iter, typename Context, typename Continuation>
+        template<symbol::quantifier Bound, std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto bounded_possessive_match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         requires (!is_trivially_matchable<Inner>)
@@ -141,7 +142,7 @@ namespace meta::ast
             return cont(it);
         }
 
-        template<typename Bound, std::forward_iterator Iter, typename Context, typename Continuation>
+        template<symbol::quantifier Bound, std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto bounded_possessive_match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         requires is_trivially_matchable<Inner>

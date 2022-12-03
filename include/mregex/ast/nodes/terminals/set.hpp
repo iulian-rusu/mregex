@@ -10,7 +10,7 @@ namespace meta::ast
     template<typename First, typename... Rest>
     struct set : terminal
     {
-        static_assert(are_trivially_matchable<First, Rest ...>);
+        static_assert(are_trivially_matchable<First, Rest ...>, "only trivially matchable AST nodes can form a set");
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
