@@ -149,13 +149,25 @@ namespace meta::symbol
     concept quantifier = is_quantifier<Symbol>;
 
     /**
-     * Metafunction that projects a symbolic quantifier to its numerical value.
+     * Predicate that checks if a symbolic quantifier is equivalent to infinity.
      */
     template<quantifier>
-    inline constexpr std::size_t get_value = 0;
+    inline constexpr bool is_infinity = false;
 
-    template<std::size_t N>
-    inline constexpr std::size_t get_value<quantifier_value<N>> = N;
+    template<>
+    inline constexpr bool is_infinity<quantifier_inf> = true;
+
+    template<typename Symbol>
+    concept finite_quantifier = quantifier<Symbol> && !is_infinity<Symbol>;
+
+    /**
+     * Predicate that checks if a symbolic quantifier is equivalent to 0.
+     */
+    template<quantifier>
+    inline constexpr bool is_zero = false;
+
+    template<>
+    inline constexpr bool is_zero<quantifier_value<0>> = true;
 
     /**
      * Predicate that checks if a pair of quantifiers for a valid range (interval).
@@ -170,22 +182,13 @@ namespace meta::symbol
     inline constexpr bool is_valid_range<quantifier_value<N>, quantifier_inf> = true;
 
     /**
-     * Predicate that checks if a symbolic quantifier is equivalent to 0.
+     * Metafunction that projects a finite symbolic quantifier to its numerical value.
      */
-    template<quantifier>
-    inline constexpr bool is_zero = false;
+    template<finite_quantifier>
+    inline constexpr std::size_t get_value = {};
 
-    template<>
-    inline constexpr bool is_zero<quantifier_value<0>> = true;
-
-    /**
-     * Predicate that checks if a symbolic quantifier is equivalent to infinity.
-     */
-    template<quantifier>
-    inline constexpr bool is_infinity = false;
-
-    template<>
-    inline constexpr bool is_infinity<quantifier_inf> = true;
+    template<std::size_t N>
+    inline constexpr std::size_t get_value<quantifier_value<N>> = N;
 
     /**
      * Predicate that checks if a symbolic quantifier is equal to some integral value.
@@ -200,11 +203,14 @@ namespace meta::symbol
      * Metafunction used to decrement symbolic quantifiers.
      */
     template<quantifier Symbol>
-    struct decrement : std::type_identity<Symbol> {};
+    struct decrement;
 
     template<std::size_t N>
     requires (N > 0)
     struct decrement<quantifier_value<N>> : std::type_identity<quantifier_value<N - 1>> {};
+
+    template<>
+    struct decrement<quantifier_inf> : std::type_identity<quantifier_inf> {};
 
     template<quantifier Symbol>
     using decrement_t = typename decrement<Symbol>::type;
