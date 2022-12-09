@@ -1,8 +1,8 @@
 #ifndef MREGEX_REGEX_CAPTURE_HPP
 #define MREGEX_REGEX_CAPTURE_HPP
 
-#include <string>
 #include <iterator>
+#include <string>
 #include <string_view>
 #include <mregex/ast/traits.hpp>
 #include <mregex/utility/concepts.hpp>
@@ -165,10 +165,10 @@ namespace meta
     };
 
     /**
-     * Type trait used to check if a given type is an instance of
-     * the regex_capture_view template class.
+     * Type trait used to check if a given capture type is an instance of
+     * the regex_capture_view template.
      */
-    template<typename>
+    template<captured_content>
     inline constexpr bool is_capture_view = false;
 
     template<std::forward_iterator Iter, typename Name>
@@ -210,10 +210,10 @@ namespace meta
      * @tparam Capture  The capture type to be renamed
      * @tparam Name     The new name for the capture type
      */
-    template<typename Capture, typename Name>
+    template<captured_content Capture, typename Name>
     struct rename_capture;
 
-    template<typename Capture, typename Name>
+    template<captured_content Capture, typename Name>
     using rename_capture_t = typename rename_capture<Capture, Name>::type;
 
     template<std::forward_iterator Iter, typename OldName, typename Name>

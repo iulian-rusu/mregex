@@ -14,7 +14,7 @@ namespace meta::ast
         template<std::size_t ID>
         struct id_lookup_method
         {
-            template<typename Storage>
+            template<capture_storage Storage>
             static constexpr decltype(auto) get_capture(Storage &captures) noexcept
             {
                 return std::get<ID>(captures);
@@ -24,7 +24,7 @@ namespace meta::ast
         template<typename Name>
         struct name_lookup_method
         {
-            template<typename Storage>
+            template<capture_storage Storage>
             static constexpr decltype(auto) get_capture(Storage &captures) noexcept
             {
                 return std::get<named_capture_type_for<Storage, Name>>(captures);

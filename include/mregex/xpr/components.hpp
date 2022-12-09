@@ -37,8 +37,7 @@ namespace meta::xpr
     template<std::size_t ID, typename... Nodes>
     constexpr auto capture(regex_interface<Nodes>...) noexcept
     {
-        using wrapper_provider = capture_provider<ID, symbol::unnamed>;
-        return to_regex(pack<wrapper_provider::template type>(Nodes{} ...));
+        return capture<ID, symbol::unnamed>(Nodes{} ...);
     }
 
     // Repetition

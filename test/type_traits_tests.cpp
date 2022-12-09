@@ -29,9 +29,4 @@ namespace meta::tests
     static_assert(std::is_same_v<forward_result_t<std::string>, std::string>);
     static_assert(std::is_same_v<forward_result_t<std::string &&>, std::string>);
     static_assert(std::is_same_v<forward_result_t<std::string &>, std::string &>);
-
-    static_assert(std::is_same_v<make_name<>, symbol::name<"">>);
-    static_assert(std::is_same_v<make_name<'a'>, symbol::name<"a">>);
-    static_assert(std::is_same_v<make_name<'a', 'b'>, symbol::name<"ab">>);
-    static_assert(std::is_same_v<make_name<'a', 'b', 'c'>, symbol::name<"abc">>);
 }

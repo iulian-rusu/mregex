@@ -230,5 +230,13 @@ namespace meta::symbol
 
     template<quantifier A, quantifier B>
     using subtract_t = typename subtract<A, B>::type;
+
+    /**
+     * Metafunction that converts a pack of characters to a symbolic name type.
+     *
+     * @note The sizeof... (Chars) is technically redundant but GCC 11.1 cannot deduce the size.
+     */
+    template<char... Chars>
+    using make_name = name<static_string<sizeof... (Chars)>{{Chars ..., '\0'}}>;
 }
 #endif //MREGEX_SYMBOLS_HPP

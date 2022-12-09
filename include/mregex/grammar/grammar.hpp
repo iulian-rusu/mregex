@@ -409,7 +409,7 @@ namespace meta::grammar
                 <
                     advance,
                     symbol::group_begin,
-                    symbol::make_capture<make_name<Chars ...>>
+                    symbol::make_capture<symbol::make_name<Chars ...>>
                 >;
     };
 
@@ -1275,7 +1275,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::make_named_backref<make_name<Chars ...>>
+                    symbol::make_named_backref<symbol::make_name<Chars ...>>
                 >;
     };
 

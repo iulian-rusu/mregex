@@ -34,13 +34,5 @@ namespace meta
 
     template<typename T>
     using forward_result_t = typename forward_result<T>::type;
-
-    /**
-     * Metafunction that converts a pack of characters to a symbolic name type.
-     *
-     * @note The sizeof... (Chars) is technically redundant but GCC 11.1 cannot deduce the size.
-     */
-    template<char... Chars>
-    using make_name = symbol::name<static_string<sizeof... (Chars)>{{Chars ..., '\0'}}>;
 }
 #endif //MREGEX_UTILITY_TYPE_TRAITS_HPP

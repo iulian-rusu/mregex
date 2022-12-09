@@ -260,7 +260,7 @@ namespace meta
     };
 }
 
-template<typename NameSpec, typename Storage>
+template<typename NameSpec, meta::capture_storage Storage>
 std::ostream &operator<<(std::ostream &os, meta::basic_regex_result<NameSpec, Storage> const &result)
 {
     return os << meta::get_group<0>(result);
@@ -268,13 +268,13 @@ std::ostream &operator<<(std::ostream &os, meta::basic_regex_result<NameSpec, St
 
 namespace std
 {
-    template<typename NameSpec, typename Storage>
+    template<typename NameSpec, meta::capture_storage Storage>
     struct tuple_size<meta::basic_regex_result<NameSpec, Storage>>
     {
         static constexpr size_t value = meta::basic_regex_result<NameSpec, Storage>::capture_count;
     };
 
-    template<size_t ID, typename NameSpec, typename Storage>
+    template<size_t ID, typename NameSpec, meta::capture_storage Storage>
     struct tuple_element<ID, meta::basic_regex_result<NameSpec, Storage>>
     {
         using type = tuple_element_t<ID + 1, Storage>;
