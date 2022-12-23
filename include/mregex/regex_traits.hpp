@@ -21,16 +21,16 @@ namespace meta
     using regex_result_t = typename Regex::result_type;
 
     template<typename Regex, std::forward_iterator Iter>
-    using regex_capture_view_storage_t = typename Regex::template capture_view_storage_type<Iter>;
+    using regex_capture_view_storage_t = typename regex_result_view_t<Regex, Iter>::capture_storage_type;
 
     template<typename Regex>
-    using regex_capture_storage_t = typename Regex::capture_storage_type;
+    using regex_capture_storage_t = typename regex_result_t<Regex>::capture_storage_type;
 
     template<typename Regex, std::size_t ID, std::forward_iterator Iter>
-    using regex_capture_view_t = typename Regex::template capture_view_type<ID, Iter>;
+    using regex_capture_view_t = std::tuple_element_t<ID, regex_capture_view_storage_t<Regex, Iter>>;
 
     template<typename Regex, std::size_t ID>
-    using regex_capture_t = typename Regex::template capture_type<ID>;
+    using regex_capture_t = std::tuple_element_t<ID, regex_capture_storage_t<Regex>>;
 
     template<typename Regex, std::forward_iterator Iter>
     using regex_generator_t = typename Regex::template generator_type<Iter>;

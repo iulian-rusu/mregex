@@ -21,7 +21,7 @@ namespace meta
 
         template<typename G>
         constexpr explicit input_range_adapter(G &&generator)
-        noexcept(std::is_nothrow_move_constructible_v<Gen> && noexcept(Gen::operator()()))
+        noexcept(std::is_nothrow_constructible_v<Gen, G &&> && noexcept(Gen::operator()()))
             : Gen{std::forward<G>(generator)}, _current_result{Gen::operator()()}
         {}
 
@@ -44,11 +44,6 @@ namespace meta
             constexpr iterator(input_range_adapter<Gen> &generator) noexcept
                 : _target{&generator}
             {}
-
-            constexpr explicit operator bool() const noexcept
-            {
-                return _target->active();
-            }
 
             constexpr value_type &operator*() const noexcept
             {
@@ -73,14 +68,14 @@ namespace meta
                 return old_iter;
             }
 
+            constexpr explicit operator bool() const noexcept
+            {
+                return _target->active();
+            }
+
             constexpr bool operator==(std::default_sentinel_t) const noexcept
             {
                 return !_target->active();
-            }
-
-            constexpr bool operator!=(std::default_sentinel_t) const noexcept
-            {
-                return _target->active();
             }
 
         private:

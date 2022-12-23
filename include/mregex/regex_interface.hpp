@@ -35,17 +35,6 @@ namespace meta
         using result_type = regex_result<ast::capture_name_spec_t<ast_type>>;
 
         template<std::forward_iterator Iter>
-        using capture_view_storage_type = typename result_view_type<Iter>::capture_storage_type;
-
-        using capture_storage_type = typename result_type::capture_storage_type;
-
-        template<std::size_t ID, std::forward_iterator Iter>
-        using capture_view_type = std::tuple_element_t<ID, capture_view_storage_type<Iter>>;
-
-        template<std::size_t ID>
-        using capture_type = std::tuple_element_t<ID, capture_storage_type>;
-
-        template<std::forward_iterator Iter>
         using generator_type = regex_match_generator<regex_interface, Iter>;
 
         template<std::forward_iterator Iter>

@@ -36,15 +36,16 @@ namespace meta
     struct basic_regex_result
     {
         using capture_storage_type = Storage;
-        using capture_type = std::tuple_element_t<0, capture_storage_type>;
+        using implicit_capture_type = std::tuple_element_t<0, capture_storage_type>;
 
+        static constexpr bool is_view = is_capture_view<implicit_capture_type>;
         static constexpr std::size_t capture_count = std::tuple_size_v<capture_storage_type> - 1;
 
         constexpr basic_regex_result() noexcept = default;
 
         template<typename S>
         constexpr basic_regex_result(S &&captures, bool matched)
-        noexcept(std::is_nothrow_move_constructible_v<capture_storage_type>)
+        noexcept(std::is_nothrow_constructible_v<capture_storage_type, S &&>)
             : _captures{std::forward<S>(captures)}, _matched{matched}
         {}
 
@@ -75,7 +76,7 @@ namespace meta
          * @return  A new regex result object that holds ownership of captures
          */
         [[nodiscard]] auto as_memory_owner() const
-        requires is_capture_view<capture_type>
+        requires is_view
         {
             auto copied_captures = generate_tuple(_captures, [](auto const &capture) {
                 return regex_capture{capture};
@@ -89,7 +90,7 @@ namespace meta
          *
          * @return A new instance of std::optional that contains the regex result object
          */
-        [[nodiscard]] constexpr auto as_optional() & noexcept(is_capture_view<capture_type>)
+        [[nodiscard]] constexpr auto as_optional() & noexcept(is_view)
         {
             return forward_self_as_optional(*this);
         }
@@ -105,7 +106,7 @@ namespace meta
         template<std::size_t ID>
         [[nodiscard]] constexpr auto &group() & noexcept
         {
-            return get_group_checked<ID>(_captures);
+            return get_group_by_index<ID>(_captures);
         }
 
         /**
@@ -119,7 +120,7 @@ namespace meta
         template<static_string Name>
         [[nodiscard]] constexpr auto &group() & noexcept
         {
-            return std::get<named_capture_type_for<capture_storage_type, symbol::name<Name>>>(_captures);
+            return get_group_by_name<Name>(_captures);
         }
 
         /**
@@ -128,7 +129,7 @@ namespace meta
          * @see https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p0847r4.html
          */
 
-        [[nodiscard]] constexpr auto as_optional() const & noexcept(is_capture_view<capture_type>)
+        [[nodiscard]] constexpr auto as_optional() const & noexcept(is_view)
         {
             return forward_self_as_optional(*this);
         }
@@ -138,7 +139,7 @@ namespace meta
             return forward_self_as_optional(std::move(*this));
         }
 
-        [[nodiscard]] constexpr auto as_optional() const && noexcept
+        [[nodiscard]] constexpr auto as_optional() const && noexcept(is_view)
         {
             return forward_self_as_optional(std::move(*this));
         }
@@ -146,37 +147,37 @@ namespace meta
         template<std::size_t ID>
         [[nodiscard]] constexpr auto const &group() const & noexcept
         {
-            return get_group_checked<ID>(_captures);
+            return get_group_by_index<ID>(_captures);
         }
 
         template<std::size_t ID>
         [[nodiscard]] constexpr auto &&group() && noexcept
         {
-            return get_group_checked<ID>(std::move(_captures));
+            return get_group_by_index<ID>(std::move(_captures));
         }
 
         template<std::size_t ID>
         [[nodiscard]] constexpr auto const &&group() const && noexcept
         {
-            return get_group_checked<ID>(std::move(_captures));
+            return get_group_by_index<ID>(std::move(_captures));
         }
 
         template<static_string Name>
         [[nodiscard]] constexpr auto const &group() const & noexcept
         {
-            return std::get<named_capture_type_for<capture_storage_type, symbol::name<Name>>>(_captures);
+            return get_group_by_name<Name>(_captures);
         }
 
         template<static_string Name>
         [[nodiscard]] constexpr auto &&group() && noexcept
         {
-            return std::get<named_capture_type_for<capture_storage_type, symbol::name<Name>>>(std::move(_captures));
+            return get_group_by_name<Name>(std::move(_captures));
         }
 
         template<static_string Name>
         [[nodiscard]] constexpr auto const &&group() const && noexcept
         {
-            return std::get<named_capture_type_for<capture_storage_type, symbol::name<Name>>>(std::move(_captures));
+            return get_group_by_name<Name>(std::move(_captures));
         }
 
         /**
@@ -186,25 +187,25 @@ namespace meta
         template<std::size_t ID>
         [[nodiscard]] constexpr auto &get() & noexcept
         {
-            return get_group_checked<ID + 1>(_captures);
+            return get_group_by_index<ID + 1>(_captures);
         }
 
         template<std::size_t ID>
         [[nodiscard]] constexpr auto const &get() const & noexcept
         {
-            return get_group_checked<ID + 1>(_captures);
+            return get_group_by_index<ID + 1>(_captures);
         }
 
         template<std::size_t ID>
         [[nodiscard]] constexpr auto &&get() && noexcept
         {
-            return get_group_checked<ID + 1>(std::move(_captures));
+            return get_group_by_index<ID + 1>(std::move(_captures));
         }
 
         template<std::size_t ID>
         [[nodiscard]] constexpr auto const &&get() const && noexcept
         {
-            return get_group_checked<ID + 1>(std::move(_captures));
+            return get_group_by_index<ID + 1>(std::move(_captures));
         }
 
         [[nodiscard]] constexpr bool operator==(bool value) const noexcept
@@ -218,7 +219,7 @@ namespace meta
         }
 
         constexpr explicit(false) operator std::string_view() const noexcept
-        requires std::is_convertible_v<capture_type, std::string_view>
+        requires std::is_convertible_v<implicit_capture_type, std::string_view>
         {
             return static_cast<std::string_view>(group<0>());
         }
@@ -226,7 +227,7 @@ namespace meta
     private:
         template<typename Self>
         static constexpr auto forward_self_as_optional(Self &&self)
-        noexcept(is_capture_view<capture_type> || std::is_rvalue_reference_v<Self &&>)
+        noexcept(is_view || std::is_rvalue_reference_v<Self &&>)
         -> std::optional<std::remove_cvref_t<Self>>
         {
             if (self.matched())
@@ -235,10 +236,17 @@ namespace meta
         }
 
         template<std::size_t ID, typename Captures>
-        static constexpr decltype(auto) get_group_checked(Captures &&captures) noexcept
+        static constexpr decltype(auto) get_group_by_index(Captures &&captures) noexcept
         {
             static_assert(ID <= capture_count, "capturing group does not exist");
             return std::get<ID>(std::forward<Captures>(captures));
+        }
+
+        template<static_string Name, typename Captures>
+        static constexpr decltype(auto) get_group_by_name(Captures &&captures) noexcept
+        {
+            using capture_type = rename_capture_t<implicit_capture_type, symbol::name<Name>>;
+            return std::get<capture_type>(std::forward<Captures>(captures));
         }
 
         capture_storage_type _captures;

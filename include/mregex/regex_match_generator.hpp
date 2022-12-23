@@ -30,6 +30,11 @@ namespace meta
 
         [[nodiscard]] constexpr result_view_type operator()() noexcept
         {
+            return next();
+        }
+
+        [[nodiscard]] constexpr result_view_type next() noexcept
+        {
             context_type ctx{};
             if (_active)
             {
