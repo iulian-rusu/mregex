@@ -12,10 +12,10 @@ namespace meta
     /**
      * Class returned by all regex matching/searching functions.
      *
-     * @tparam NameSpec A type that contains the capture name specification
-     * @tparam Storage  The storage type used to hold the captures
+     * @tparam NameSpec         A type that contains the capture name specification
+     * @tparam CaptureStorage   The storage type used to hold the captures
      */
-    template<typename NameSpec, capture_storage Storage>
+    template<typename NameSpec, capture_storage CaptureStorage>
     struct basic_regex_result;
 
     /**
@@ -32,10 +32,10 @@ namespace meta
     template<typename NameSpec>
     using regex_result = basic_regex_result<NameSpec, regex_capture_storage<NameSpec>>;
 
-    template<typename NameSpec, capture_storage Storage>
+    template<typename NameSpec, capture_storage CaptureStorage>
     struct basic_regex_result
     {
-        using capture_storage_type = Storage;
+        using capture_storage_type = CaptureStorage;
         using implicit_capture_type = std::tuple_element_t<0, capture_storage_type>;
 
         static constexpr bool is_view = is_capture_view<implicit_capture_type>;
@@ -43,10 +43,10 @@ namespace meta
 
         constexpr basic_regex_result() noexcept = default;
 
-        template<typename S>
-        constexpr basic_regex_result(S &&captures, bool matched)
-        noexcept(std::is_nothrow_constructible_v<capture_storage_type, S &&>)
-            : _captures{std::forward<S>(captures)}, _matched{matched}
+        template<capture_storage Captures>
+        constexpr basic_regex_result(Captures &&captures, bool matched)
+        noexcept(std::is_nothrow_constructible_v<capture_storage_type, Captures &&>)
+            : _captures{std::forward<Captures>(captures)}, _matched{matched}
         {}
 
         [[nodiscard]] constexpr bool matched() const noexcept
@@ -235,14 +235,14 @@ namespace meta
             return std::nullopt;
         }
 
-        template<std::size_t ID, typename Captures>
+        template<std::size_t ID, capture_storage Captures>
         static constexpr decltype(auto) get_group_by_index(Captures &&captures) noexcept
         {
             static_assert(ID <= capture_count, "capturing group does not exist");
             return std::get<ID>(std::forward<Captures>(captures));
         }
 
-        template<static_string Name, typename Captures>
+        template<static_string Name, capture_storage Captures>
         static constexpr decltype(auto) get_group_by_name(Captures &&captures) noexcept
         {
             using capture_type = rename_capture_t<implicit_capture_type, symbol::name<Name>>;
@@ -268,24 +268,24 @@ namespace meta
     };
 }
 
-template<typename NameSpec, meta::capture_storage Storage>
-std::ostream &operator<<(std::ostream &os, meta::basic_regex_result<NameSpec, Storage> const &result)
+template<typename NameSpec, meta::capture_storage CaptureStorage>
+std::ostream &operator<<(std::ostream &os, meta::basic_regex_result<NameSpec, CaptureStorage> const &result)
 {
     return os << meta::get_group<0>(result);
 }
 
 namespace std
 {
-    template<typename NameSpec, meta::capture_storage Storage>
-    struct tuple_size<meta::basic_regex_result<NameSpec, Storage>>
+    template<typename NameSpec, meta::capture_storage CaptureStorage>
+    struct tuple_size<meta::basic_regex_result<NameSpec, CaptureStorage>>
     {
-        static constexpr size_t value = meta::basic_regex_result<NameSpec, Storage>::capture_count;
+        static constexpr size_t value = meta::basic_regex_result<NameSpec, CaptureStorage>::capture_count;
     };
 
-    template<size_t ID, typename NameSpec, meta::capture_storage Storage>
-    struct tuple_element<ID, meta::basic_regex_result<NameSpec, Storage>>
+    template<size_t ID, typename NameSpec, meta::capture_storage CaptureStorage>
+    struct tuple_element<ID, meta::basic_regex_result<NameSpec, CaptureStorage>>
     {
-        using type = tuple_element_t<ID + 1, Storage>;
+        using type = tuple_element_t<ID + 1, CaptureStorage>;
     };
 }
 #endif //MREGEX_REGEX_RESULT_HPP

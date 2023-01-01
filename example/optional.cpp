@@ -8,11 +8,11 @@ namespace detail
     template<typename Opt, typename F>
     constexpr auto transform(Opt &&opt, F &&f)
     {
-        using result_type = decltype(std::invoke(std::forward<F>(f), *std::forward<Opt>(opt)));
+        using result_type = std::remove_reference_t<decltype(std::invoke(std::forward<F>(f), *std::forward<Opt>(opt)))>;
 
         if (opt.has_value())
             return std::optional{std::invoke(std::forward<F>(f), *std::forward<Opt>(opt))};
-        return std::optional<std::decay_t<result_type>>{std::nullopt};
+        return std::optional<result_type>{std::nullopt};
     }
 }
 

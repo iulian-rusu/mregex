@@ -227,21 +227,12 @@ namespace meta
     {
         using type = regex_capture<Name>;
     };
-
-    /**
-     * Metafunction that generates a valid named capture type for a given capture storage type.
-     *
-     * @tparam Storage  The capture storage used to deduce the generated type
-     * @tparam Name     The name of the generated capture type
-     */
-    template<capture_storage Storage, typename Name>
-    using named_capture_type_for = rename_capture_t<std::tuple_element_t<0, Storage>, Name>;
 }
 
 template<meta::captured_content Capture>
-std::ostream &operator<<(std::ostream &os, Capture const &cap)
+std::ostream &operator<<(std::ostream &os, Capture const &capture)
 {
-    std::copy(cap.begin(), cap.end(), std::ostream_iterator<char>{os});
+    std::copy(capture.begin(), capture.end(), std::ostream_iterator<char>{os});
     return os;
 }
 #endif //MREGEX_REGEX_CAPTURE_HPP

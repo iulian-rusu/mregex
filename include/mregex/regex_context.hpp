@@ -33,8 +33,5 @@ namespace meta
             });
         }
     };
-
-    template<typename Context>
-    using context_flags = typename Context::flags;
 }
 #endif //MREGEX_REGEX_CONTEXT_HPP

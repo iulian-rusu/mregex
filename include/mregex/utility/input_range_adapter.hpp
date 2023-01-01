@@ -11,23 +11,23 @@ namespace meta
      * The generator is required to return a boolean-convertible value to signal the end of iteration.
      * The generator may be called once when constructing this object.
      *
-     * @tparam Gen   The callable type used to generate the data
+     * @tparam Generator   The callable type used to generate the data
      */
-    template<bool_testable_generator Gen>
-    struct input_range_adapter : private Gen
+    template<bool_testable_generator Generator>
+    struct input_range_adapter : private Generator
     {
-        using result_type = forward_result_t<std::invoke_result_t<Gen>>;
+        using result_type = forward_result_t<std::invoke_result_t<Generator>>;
         using value_type = std::remove_reference_t<result_type>;
 
-        template<typename G>
-        constexpr explicit input_range_adapter(G &&generator)
-        noexcept(std::is_nothrow_constructible_v<Gen, G &&> && noexcept(Gen::operator()()))
-            : Gen{std::forward<G>(generator)}, _current_result{Gen::operator()()}
+        template<typename Gen>
+        constexpr explicit input_range_adapter(Gen &&generator)
+        noexcept(std::is_nothrow_constructible_v<Generator, Gen &&> && noexcept(Generator::operator()()))
+            : Generator{std::forward<Gen>(generator)}, _current_result{Generator::operator()()}
         {}
 
         struct iterator
         {
-            using value_type = typename input_range_adapter<Gen>::value_type;
+            using value_type = typename input_range_adapter<Generator>::value_type;
             using pointer = std::add_pointer_t<value_type>;
             using reference = std::add_lvalue_reference_t<value_type>;
             using difference_type = std::ptrdiff_t;
@@ -41,7 +41,7 @@ namespace meta
              */
             constexpr iterator() noexcept : _target{nullptr} {}
 
-            constexpr iterator(input_range_adapter<Gen> &generator) noexcept
+            constexpr iterator(input_range_adapter<Generator> &generator) noexcept
                 : _target{&generator}
             {}
 
@@ -79,7 +79,7 @@ namespace meta
             }
 
         private:
-            input_range_adapter<Gen> *_target;
+            input_range_adapter<Generator> *_target;
         };
 
         /**
@@ -132,14 +132,14 @@ namespace meta
 
         constexpr void compute_next() noexcept
         {
-            _current_result = Gen::operator()();
+            _current_result = Generator::operator()();
         }
 
     private:
         result_type _current_result;
     };
 
-    template<bool_testable_generator G>
-    input_range_adapter(G &&) -> input_range_adapter<std::remove_reference_t<G>>;
+    template<bool_testable_generator Gen>
+    input_range_adapter(Gen &&) -> input_range_adapter<std::remove_reference_t<Gen>>;
 }
 #endif //MREGEX_UTILITY_INPUT_RANGE_ADAPTER_HPP

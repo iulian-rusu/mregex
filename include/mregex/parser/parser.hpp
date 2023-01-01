@@ -18,10 +18,10 @@ namespace meta
     struct parser
     {
         /**
-         * Metafunction used to capture the current state of the parser.
+         * Metacontainer used to capture the current state of the parser.
          */
         template<std::size_t I, typename Nodes, typename Symbols>
-        using state_t = parser_state<parser<Pattern>, I, Nodes, Symbols>;
+        using state = parser_state<parser<Pattern>, I, Nodes, Symbols>;
 
         /**
          * Metafunction used to extract tokens (characters or empty tokens) from the input pattern.
@@ -88,14 +88,14 @@ namespace meta
         template<std::size_t I, typename Nodes, typename Symbols>
         struct transition<I, grammar::advance, Nodes, Symbols>
         {
-            using type = state_t<I + 1, Nodes, Symbols>;
+            using type = state<I + 1, Nodes, Symbols>;
         };
 
         // Advance and also push the remaining symbols on the stack
         template<std::size_t I, typename Nodes, typename... NewSymbols, typename... Symbols>
         struct transition<I, type_sequence<grammar::advance, NewSymbols ...>, Nodes, type_sequence<Symbols ...>>
         {
-            using type = state_t<I + 1, Nodes, type_sequence<NewSymbols ..., Symbols ...>>;
+            using type = state<I + 1, Nodes, type_sequence<NewSymbols ..., Symbols ...>>;
         };
 
         // Reject the input pattern
@@ -112,18 +112,18 @@ namespace meta
             using type = parser_result<ast::preorder_index_t<0, top<Nodes>>, parsing::success>;
         };
 
-        using initial_state = state_t<0, type_sequence<>, type_sequence<symbol::begin>>;
-        using result = next_state_t<initial_state, Pattern.length()>;
+        using initial_state = state<0, type_sequence<>, type_sequence<symbol::begin>>;
+        using result = final_parser_state<initial_state, Pattern.length()>;
         using ast_type = typename result::ast_type;
-        using verdict_type = typename result::verdict_type;
+        using verdict = typename result::verdict;
 
-        static constexpr bool accepted = std::is_same_v<verdict_type, parsing::success>;
+        static constexpr bool accepted = std::is_same_v<verdict, parsing::success>;
     };
 
     template<static_string Pattern>
     using ast_for = typename parser<Pattern>::ast_type;
 
     template<static_string Pattern>
-    using parser_verdict_for = typename parser<Pattern>::verdict_type;
+    using parser_verdict_for = typename parser<Pattern>::verdict;
 }
 #endif //MREGEX_PARSER_HPP

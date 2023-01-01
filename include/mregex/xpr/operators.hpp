@@ -37,7 +37,7 @@ namespace meta::xpr::operators
         return one_or_more(node);
     }
 
-    // Operators for adding flags
+    // Operator for adding flags
     template<typename... Ts, typename Flag>
     constexpr auto operator/(regex_interface<Ts ...>, Flag) noexcept
     {

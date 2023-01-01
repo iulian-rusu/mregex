@@ -28,18 +28,18 @@ namespace meta
     struct parser_result
     {
         using ast_type = AST;
-        using verdict_type = Verdict;
+        using verdict = Verdict;
     };
 
     template<typename Verdict>
     struct parser_result<symbol::empty, Verdict>
     {
         using ast_type = ast::empty;
-        using verdict_type = Verdict;
+        using verdict = Verdict;
     };
 
     /**
-     * Type that captures the state of the parser at a given parsing step.
+     * Metacontainer that captures the state of the parser at a given parsing step.
      *
      * @tparam Parser   The parser metafunction type
      * @tparam I        The current position in the input
@@ -69,13 +69,17 @@ namespace meta
         }
 
         template<typename State, std::size_t... Indices>
-        static constexpr auto next_state(State initial_state, std::index_sequence<Indices ...>) noexcept
+        static constexpr auto advance_parser_state(State initial_state, std::index_sequence<Indices ...>) noexcept
         {
             return (initial_state << ... << Indices);
         }
     }
 
+    /**
+     * Computes the final parser state starting from an initial state
+     * and advancing it N times.
+     */
     template<typename State, std::size_t N>
-    using next_state_t = decltype(detail::next_state(State{}, std::make_index_sequence<N + 1>{}));
+    using final_parser_state = decltype(detail::advance_parser_state(State{}, std::make_index_sequence<N + 1>{}));
 }
 #endif //MREGEX_PARSER_STATE_HPP

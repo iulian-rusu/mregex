@@ -10,8 +10,8 @@ namespace meta
     /**
      * Concept used to constrain the generic type accepted by matching/searching functions.
      */
-    template<typename R>
-    concept char_range = std::ranges::forward_range<R> && requires (R range)
+    template<typename Range>
+    concept char_range = std::ranges::forward_range<Range> && requires (Range range)
     {
         { *std::begin(range) } -> std::convertible_to<char32_t>;
     };
@@ -19,8 +19,8 @@ namespace meta
     /**
      * Concept used to constrain a type that saves the content captured by regex groups.
      */
-    template<typename C>
-    concept captured_content = std::ranges::forward_range<C> && requires (C capture)
+    template<typename Capture>
+    concept captured_content = std::ranges::forward_range<Capture> && requires (Capture capture)
     {
         { capture.content() } -> char_range;
         { capture.length() } -> std::convertible_to<std::size_t>;
@@ -30,20 +30,21 @@ namespace meta
     /**
      * Concept used to constrain a type that stores multiple regex captures.
      */
-    template<typename S>
-    concept capture_storage = requires (S storage)
+    template<typename CaptureStorage>
+    concept capture_storage = requires (CaptureStorage captures)
     {
-        { std::get<0>(storage) } -> captured_content;
+        { std::tuple_size_v<std::remove_reference_t<CaptureStorage>> } -> std::convertible_to<std::size_t>;
+        { std::get<0>(captures) } -> captured_content;
     };
 
     /**
      * Concept used to constrain a functor type that can be called to generate
      * values convertible to bool.
      */
-    template<typename G>
-    concept bool_testable_generator = requires (G gen)
+    template<typename Generator>
+    concept bool_testable_generator = requires (Generator generator)
     {
-        static_cast<bool>(gen());
+        static_cast<bool>(generator());
     };
 }
 #endif //MREGEX_UTILITY_CONCEPTS_HPP

@@ -24,7 +24,7 @@ namespace meta
 
         using ast_type = AST;
 
-        using flags = regex_flags_container<Flags ...>;
+        using flags = regex_flags_storage<Flags ...>;
 
         template<std::forward_iterator Iter>
         using context_type = regex_context<regex_interface, Iter>;
@@ -113,15 +113,15 @@ namespace meta
             return match(std::cbegin(input), std::cend(input));
         }
 
-        template<char_range R>
-        [[nodiscard]] static constexpr auto match(R const &input) noexcept
+        template<char_range Range>
+        [[nodiscard]] static constexpr auto match(Range const &input) noexcept
         {
             return match(std::cbegin(input), std::cend(input));
         }
 
-        template<char_range R>
-        [[nodiscard]] static constexpr auto match(R &&input)
-        requires is_expiring_memory_owner<R &&>
+        template<char_range Range>
+        [[nodiscard]] static constexpr auto match(Range &&input)
+        requires is_expiring_memory_owner<Range &&>
         {
             return match(std::cbegin(input), std::cend(input)).as_memory_owner();
         }
@@ -131,15 +131,15 @@ namespace meta
             return search(std::cbegin(input), std::cend(input));
         }
 
-        template<char_range R>
-        [[nodiscard]] static constexpr auto search(R const &input) noexcept
+        template<char_range Range>
+        [[nodiscard]] static constexpr auto search(Range const &input) noexcept
         {
             return search(std::cbegin(input), std::cend(input));
         }
 
-        template<char_range R>
-        [[nodiscard]] static constexpr auto search(R &&input)
-        requires is_expiring_memory_owner<R &&>
+        template<char_range Range>
+        [[nodiscard]] static constexpr auto search(Range &&input)
+        requires is_expiring_memory_owner<Range &&>
         {
             return search(std::cbegin(input), std::cend(input)).as_memory_owner();
         }
@@ -149,8 +149,8 @@ namespace meta
             return generator(std::cbegin(input), std::cend(input));
         }
 
-        template<char_range R>
-        [[nodiscard]] static constexpr auto generator(R const &input) noexcept
+        template<char_range Range>
+        [[nodiscard]] static constexpr auto generator(Range const &input) noexcept
         {
             return generator(std::cbegin(input), std::cend(input));
         }
@@ -160,8 +160,8 @@ namespace meta
             return range(std::cbegin(input), std::cend(input));
         }
 
-        template<char_range R>
-        [[nodiscard]] static constexpr auto range(R const &input) noexcept
+        template<char_range Range>
+        [[nodiscard]] static constexpr auto range(Range const &input) noexcept
         {
             return range(std::cbegin(input), std::cend(input));
         }

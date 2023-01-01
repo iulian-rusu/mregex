@@ -14,8 +14,8 @@ namespace meta::ast
         template<std::size_t ID>
         struct id_lookup_method
         {
-            template<capture_storage Storage>
-            static constexpr decltype(auto) get_capture(Storage &captures) noexcept
+            template<capture_storage CaptureStorage>
+            static constexpr decltype(auto) get_capture(CaptureStorage &captures) noexcept
             {
                 return std::get<ID>(captures);
             }
@@ -24,10 +24,11 @@ namespace meta::ast
         template<typename Name>
         struct name_lookup_method
         {
-            template<capture_storage Storage>
-            static constexpr decltype(auto) get_capture(Storage &captures) noexcept
+            template<capture_storage CaptureStorage>
+            static constexpr decltype(auto) get_capture(CaptureStorage &captures) noexcept
             {
-                return std::get<named_capture_type_for<Storage, Name>>(captures);
+                using capture_type = rename_capture_t<std::tuple_element_t<0, CaptureStorage>, Name>;
+                return std::get<capture_type>(captures);
             }
         };
     }
@@ -49,7 +50,7 @@ namespace meta::ast
             for (auto c : reverse_if<different_iterators>(captured))
             {
                 auto subject = *it;
-                if constexpr (context_flags<Context>::icase)
+                if constexpr (Context::flags::icase)
                 {
                     subject = to_lower(subject);
                     c = to_lower(c);
