@@ -53,8 +53,11 @@ namespace meta::symbol
     struct quantifier_mod {};
 
     // Symbols for named AST nodes
-    template<static_string>
-    struct name {};
+    template<static_string Name>
+    struct name
+    {
+        static constexpr auto value = static_cast<std::string_view>(Name);
+    };
 
     struct unnamed {};
 

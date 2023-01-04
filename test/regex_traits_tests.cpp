@@ -38,6 +38,10 @@ namespace meta::tests
 
     static_assert(std::is_same_v<uri_capture_view_t &&, decltype(uri_regex::match("").group<1>())>);
     static_assert(std::is_same_v<email_capture_view_t &&, decltype(uri_regex::match("").group<1>())> == false);
+    static_assert(email_capture_view_t::has_name());
+    static_assert(email_capture_view_t::name() == "test");
+    static_assert(uri_capture_view_t::has_name() == false);
+    static_assert(uri_capture_view_t::name().empty());
 
     static_assert(std::is_same_v<uri_generator_t, decltype(uri_regex::generator(""))>);
     static_assert(std::is_same_v<uri_generator_t, decltype(email_regex::generator(""))> == false);

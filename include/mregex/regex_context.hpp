@@ -20,9 +20,9 @@ namespace meta
     {
         using regex_type = Regex;
         using iterator_type = Iter;
-        using ast_type = regex_ast_t<Regex>;
-        using flags = regex_flags<Regex>;
-        using capture_view_storage_type = regex_capture_view_storage_t<Regex, Iter>;
+        using ast_type = regex_ast_t<regex_type>;
+        using flags = regex_flags<regex_type>;
+        using capture_view_storage_type = regex_capture_view_storage_t<regex_type, iterator_type>;
 
         capture_view_storage_type captures{};
 

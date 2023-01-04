@@ -78,10 +78,10 @@ namespace meta
         [[nodiscard]] auto as_memory_owner() const
         requires is_view
         {
-            auto copied_captures = generate_tuple(_captures, [](auto const &capture) {
+            auto owned_captures = transform_tuple(_captures, [](auto const &capture) {
                 return regex_capture{capture};
             });
-            return regex_result<NameSpec>{std::move(copied_captures), _matched};
+            return regex_result<NameSpec>{std::move(owned_captures), _matched};
         }
 
         /**

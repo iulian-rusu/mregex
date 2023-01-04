@@ -3,7 +3,6 @@
 
 #include <mregex/regex_context.hpp>
 #include <mregex/regex_methods.hpp>
-#include <mregex/regex_traits.hpp>
 
 namespace meta
 {
@@ -17,12 +16,13 @@ namespace meta
     template<typename Regex, std::forward_iterator Iter>
     struct regex_match_generator
     {
+        using regex_type = Regex;
         using iterator_type = Iter;
-        using ast_type = regex_ast_t<Regex>;
-        using context_type = regex_context_t<Regex, iterator_type>;
-        using result_view_type = regex_result_view_t<Regex, iterator_type>;
+        using ast_type = regex_ast_t<regex_type>;
+        using context_type = regex_context_t<regex_type, iterator_type>;
+        using result_view_type = regex_result_view_t<regex_type, iterator_type>;
         using continuation_category = continuations<iterator_type>;
-        using method = search_method<Regex>;
+        using method = search_method<regex_type>;
 
         constexpr regex_match_generator(iterator_type begin, iterator_type end)
             : _begin{begin}, _end{end}, _current{begin}, _active{true}

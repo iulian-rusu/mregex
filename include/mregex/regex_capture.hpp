@@ -9,6 +9,22 @@
 
 namespace meta
 {
+    template<typename Name>
+    struct regex_capture_base
+    {
+        static constexpr bool has_name() noexcept
+        {
+            return !std::is_same_v<Name, symbol::unnamed>;
+        }
+
+        static constexpr std::string_view name() noexcept
+        {
+            if constexpr (has_name())
+                return Name::value;
+            return "";
+        }
+    };
+
     /**
      * Class that holds a view into the captured content of a regex group.
      *
@@ -16,7 +32,7 @@ namespace meta
      * @tparam Name The name of the capturing group (optional)
      */
     template<std::forward_iterator Iter, typename Name = symbol::unnamed>
-    struct regex_capture_view
+    struct regex_capture_view : regex_capture_base<Name>
     {
         constexpr regex_capture_view() noexcept = default;
 
@@ -86,7 +102,7 @@ namespace meta
      * @tparam Name The name of the capturing group (optional)
      */
     template<typename Name = symbol::unnamed>
-    struct regex_capture
+    struct regex_capture : regex_capture_base<Name>
     {
         regex_capture() noexcept = default;
 
