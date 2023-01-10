@@ -31,8 +31,8 @@ namespace meta
         template<typename>
         struct pop;
 
-        template<typename First, typename... Rest>
-        struct pop<type_sequence<First, Rest ...>>
+        template<typename T0, typename... Rest>
+        struct pop<type_sequence<T0, Rest ...>>
         {
             using type = type_sequence<Rest ...>;
         };
@@ -55,10 +55,10 @@ namespace meta
             using type = Sequence;
         };
 
-        template<typename... First, typename... Second>
-        struct concat<type_sequence<First ...>, type_sequence<Second ...>>
+        template<typename... T0, typename... T1>
+        struct concat<type_sequence<T0 ...>, type_sequence<T1 ...>>
         {
-            using type = type_sequence<First ..., Second ...>;
+            using type = type_sequence<T0 ..., T1 ...>;
         };
 
         template<typename... T0, typename... T1, typename... T2>
@@ -79,10 +79,10 @@ namespace meta
             using type = type_sequence<Elems ...>;
         };
 
-        template<typename First, typename Second>
-        struct reverse_sequence<First, Second>
+        template<typename T0, typename T1>
+        struct reverse_sequence<T0, T1>
         {
-            using type = type_sequence<Second, First>;
+            using type = type_sequence<T1, T0>;
         };
 
         template<typename T0, typename T1, typename T2>
@@ -107,10 +107,10 @@ namespace meta
         };
     }
 
-    template<typename First, typename... Rest>
-    struct type_sequence<First, Rest ...>
+    template<typename T, typename... Rest>
+    struct type_sequence<T, Rest ...>
     {
-        using top = First;
+        using top = T;
     };
 
     template<>

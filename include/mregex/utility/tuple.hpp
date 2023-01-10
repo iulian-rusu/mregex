@@ -44,9 +44,9 @@ namespace meta
     constexpr auto transform_tuple(Tuple const &tuple, Func &&func)
     {
         return detail::transform_tuple(
-                tuple,
-                std::forward<Func>(func),
-                std::make_index_sequence<std::tuple_size_v<Tuple>>{}
+            tuple,
+            std::forward<Func>(func),
+            std::make_index_sequence<std::tuple_size_v<Tuple>>{}
         );
     }
 
@@ -78,9 +78,9 @@ namespace meta
     constexpr auto transform_groups(Result const &result, Func &&func)
     {
         return detail::transform_groups(
-                result,
-                std::forward<Func>(func),
-                std::make_index_sequence<std::tuple_size_v<Result>>{}
+            result,
+            std::forward<Func>(func),
+            std::make_index_sequence<std::tuple_size_v<Result>>{}
         );
     }
 

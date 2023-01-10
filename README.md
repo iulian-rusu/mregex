@@ -68,9 +68,11 @@ for (auto &&word : word_regex.range(words))
 
 The main advantage of this approach is the ability to construct complex expressions from simpler components:
 ```cpp
-auto digits = +xpr::digit;      // Matches one or more digits
-auto sep = xpr::regex<"[-/.]">; // Matches '-', '/' or '.'
-auto date = xpr::exactly<2>(digits, sep) >> digits;
+// Constructing a regex equivalent to '(?:ftp|ssh|https?)://(?<domain>:[-.a-z])+.com(?:/\S*)?'
+auto schema = xpr::str<"ftp"> | xpr::str<"ssh"> | xpr::regex<"https?">;
+auto domain = +xpr::regex<"[-.a-z]"> >> xpr::str<".com">;
+auto path = xpr::chr<'/'> >> *!xpr::whitespace;
+auto url = schema >> xpr::str<"://"> >> xpr::capture<1, "domain">(domain) >> xpr::maybe(path);
 ```
 
 More examples can be found in the `example/` directory.

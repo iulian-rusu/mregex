@@ -26,213 +26,213 @@ namespace meta::ast
         using type = push<Nodes, literal<C>>;
     };
 
-    template<char C, typename T, typename Nodes>
-    struct build<symbol::push_literal<C>, T, Nodes>
+    template<char C, typename Token, typename Nodes>
+    struct build<symbol::push_literal<C>, Token, Nodes>
     {
         using type = push<Nodes, literal<C>>;
     };
 
-    template<typename T, typename Nodes>
-    struct build<symbol::make_empty, T, Nodes>
+    template<typename Token, typename Nodes>
+    struct build<symbol::make_empty, Token, Nodes>
     {
         using type = push<Nodes, empty>;
     };
 
-    template<typename T, typename Nodes>
-    struct build<symbol::make_digit, T, Nodes>
+    template<typename Token, typename Nodes>
+    struct build<symbol::make_digit, Token, Nodes>
     {
         using type = push<Nodes, digit>;
     };
 
-    template<typename T, typename Nodes>
-    struct build<symbol::make_word, T, Nodes>
+    template<typename Token, typename Nodes>
+    struct build<symbol::make_word, Token, Nodes>
     {
         using type = push<Nodes, word>;
     };
 
-    template<typename T, typename Nodes>
-    struct build<symbol::make_word_boundary, T, Nodes>
+    template<typename Token, typename Nodes>
+    struct build<symbol::make_word_boundary, Token, Nodes>
     {
         using type = push<Nodes, word_boundary>;
     };
 
-    template<typename T, typename Nodes>
-    struct build<symbol::make_whitespace, T, Nodes>
+    template<typename Token, typename Nodes>
+    struct build<symbol::make_whitespace, Token, Nodes>
     {
         using type = push<Nodes, whitespace>;
     };
 
-    template<typename T, typename Nodes>
-    struct build<symbol::make_lower, T, Nodes>
+    template<typename Token, typename Nodes>
+    struct build<symbol::make_lower, Token, Nodes>
     {
         using type = push<Nodes, lower>;
     };
 
-    template<typename T, typename Nodes>
-    struct build<symbol::make_upper, T, Nodes>
+    template<typename Token, typename Nodes>
+    struct build<symbol::make_upper, Token, Nodes>
     {
         using type = push<Nodes, upper>;
     };
 
-    template<typename T, typename Nodes>
-    struct build<symbol::make_hexa, T, Nodes>
+    template<typename Token, typename Nodes>
+    struct build<symbol::make_hexa, Token, Nodes>
     {
         using type = push<Nodes, hexa>;
     };
 
-    template<typename T, typename Nodes>
-    struct build<symbol::make_linebreak, T, Nodes>
+    template<typename Token, typename Nodes>
+    struct build<symbol::make_linebreak, Token, Nodes>
     {
         using type = push<Nodes, linebreak>;
     };
 
-    template<typename T, typename Nodes>
-    struct build<symbol::make_wildcard, T, Nodes>
+    template<typename Token, typename Nodes>
+    struct build<symbol::make_wildcard, Token, Nodes>
     {
         using type = push<Nodes, wildcard>;
     };
 
-    template<typename T, typename Nodes>
-    struct build<symbol::make_beginning_of_line, T, Nodes>
+    template<typename Token, typename Nodes>
+    struct build<symbol::make_beginning_of_line, Token, Nodes>
     {
         using type = push<Nodes, beginning_of_line>;
     };
 
-    template<typename T, typename Nodes>
-    struct build<symbol::make_end_of_line, T, Nodes>
+    template<typename Token, typename Nodes>
+    struct build<symbol::make_end_of_line, Token, Nodes>
     {
         using type = push<Nodes, end_of_line>;
     };
 
-    template<typename T, typename Nodes>
-    struct build<symbol::make_beginning_of_input, T, Nodes>
+    template<typename Token, typename Nodes>
+    struct build<symbol::make_beginning_of_input, Token, Nodes>
     {
         using type = push<Nodes, beginning_of_input>;
     };
 
-    template<typename T, typename Nodes>
-    struct build<symbol::make_end_of_input, T, Nodes>
+    template<typename Token, typename Nodes>
+    struct build<symbol::make_end_of_input, Token, Nodes>
     {
         using type = push<Nodes, end_of_input>;
     };
 
-    template<typename T, typename First, typename... Rest>
-    struct build<symbol::make_positive_lookahead, T, type_sequence<First, Rest ...>>
+    template<typename Token, typename First, typename... Rest>
+    struct build<symbol::make_positive_lookahead, Token, type_sequence<First, Rest ...>>
     {
         using type = type_sequence<positive_lookahead<First>, Rest ...>;
     };
 
-    template<typename T, typename First, typename... Rest>
-    struct build<symbol::make_negative_lookahead, T, type_sequence<First, Rest ...>>
+    template<typename Token, typename First, typename... Rest>
+    struct build<symbol::make_negative_lookahead, Token, type_sequence<First, Rest ...>>
     {
         using type = type_sequence<negative_lookahead<First>, Rest ...>;
     };
 
-    template<typename T, typename First, typename... Rest>
-    struct build<symbol::make_positive_lookbehind, T, type_sequence<First, Rest ...>>
+    template<typename Token, typename First, typename... Rest>
+    struct build<symbol::make_positive_lookbehind, Token, type_sequence<First, Rest ...>>
     {
         using type = type_sequence<positive_lookbehind<First>, Rest ...>;
     };
 
-    template<typename T, typename First, typename... Rest>
-    struct build<symbol::make_negative_lookbehind, T, type_sequence<First, Rest ...>>
+    template<typename Token, typename First, typename... Rest>
+    struct build<symbol::make_negative_lookbehind, Token, type_sequence<First, Rest ...>>
     {
         using type = type_sequence<negative_lookbehind<First>, Rest ...>;
     };
 
-    template<typename T, typename First, typename... Rest>
-    struct build<symbol::make_negated, T, type_sequence<First, Rest ...>>
+    template<typename Token, typename First, typename... Rest>
+    struct build<symbol::make_negated, Token, type_sequence<First, Rest ...>>
     {
         using type = type_sequence<negated<First>, Rest ...>;
     };
 
-    template<match_mode Mode, typename T, typename First, typename... Rest>
-    struct build<symbol::make_star<Mode>, T, type_sequence<First, Rest ...>>
+    template<match_mode Mode, typename Token, typename First, typename... Rest>
+    struct build<symbol::make_star<Mode>, Token, type_sequence<First, Rest ...>>
     {
         using type = type_sequence<basic_star<Mode, First>, Rest ...>;
     };
 
-    template<match_mode Mode, typename T, typename First, typename... Rest>
-    struct build<symbol::make_optional<Mode>, T, type_sequence<First, Rest ...>>
+    template<match_mode Mode, typename Token, typename First, typename... Rest>
+    struct build<symbol::make_optional<Mode>, Token, type_sequence<First, Rest ...>>
     {
         using type = type_sequence<basic_optional<Mode, First>, Rest ...>;
     };
 
-    template<match_mode Mode, typename T, typename First, typename... Rest>
-    struct build<symbol::make_plus<Mode>, T, type_sequence<First, Rest ...>>
+    template<match_mode Mode, typename Token, typename First, typename... Rest>
+    struct build<symbol::make_plus<Mode>, Token, type_sequence<First, Rest ...>>
     {
         using type = type_sequence<basic_plus<Mode, First>, Rest ...>;
     };
 
     // Combine any two non-sequence symbols into a sequence
-    template<typename T, typename First, typename Second, typename... Rest>
-    struct build<symbol::make_sequence, T, type_sequence<First, Second, Rest ...>>
+    template<typename Token, typename First, typename Second, typename... Rest>
+    struct build<symbol::make_sequence, Token, type_sequence<First, Second, Rest ...>>
     {
         using type = type_sequence<sequence<Second, First>, Rest ...>;
     };
 
     // Add current symbol to previous sequence
-    template<typename T, typename First, typename... Second, typename... Rest>
-    struct build<symbol::make_sequence, T, type_sequence<First, sequence<Second ...>, Rest ...>>
+    template<typename Token, typename First, typename... Second, typename... Rest>
+    struct build<symbol::make_sequence, Token, type_sequence<First, sequence<Second ...>, Rest ...>>
     {
         using type = type_sequence<sequence<Second ..., First>, Rest ...>;
     };
 
     // Add previous symbol to current sequence
-    template<typename T, typename Second, typename... First, typename... Rest>
-    struct build<symbol::make_sequence, T, type_sequence<sequence<First ...>, Second, Rest ...>>
+    template<typename Token, typename Second, typename... First, typename... Rest>
+    struct build<symbol::make_sequence, Token, type_sequence<sequence<First ...>, Second, Rest ...>>
     {
         using type = type_sequence<sequence<Second, First ...>, Rest ...>;
     };
 
     // Concatenate two sequences
-    template<typename T, typename... First, typename... Second, typename... Rest>
-    struct build<symbol::make_sequence, T, type_sequence<sequence<First ...>, sequence<Second ...>, Rest ...>>
+    template<typename Token, typename... First, typename... Second, typename... Rest>
+    struct build<symbol::make_sequence, Token, type_sequence<sequence<First ...>, sequence<Second ...>, Rest ...>>
     {
         using type = type_sequence<sequence<Second ..., First ...>, Rest ...>;
     };
 
-    template<typename T, typename First, typename Second, typename... Rest>
-    struct build<symbol::make_alternation, T, type_sequence<First, Second, Rest ...>>
+    template<typename Token, typename First, typename Second, typename... Rest>
+    struct build<symbol::make_alternation, Token, type_sequence<First, Second, Rest ...>>
     {
         using type = type_sequence<alternation<Second, First>, Rest ...>;
     };
 
-    template<typename T, typename First, typename... Second, typename... Rest>
-    struct build<symbol::make_alternation, T, type_sequence<First, alternation<Second ...>, Rest ...>>
+    template<typename Token, typename First, typename... Second, typename... Rest>
+    struct build<symbol::make_alternation, Token, type_sequence<First, alternation<Second ...>, Rest ...>>
     {
         using type = type_sequence<alternation<Second ..., First>, Rest ...>;
     };
 
-    template<typename T, typename Name, typename First,  typename... Rest>
-    struct build<symbol::make_capture<Name>, T, type_sequence<First, Rest ...>>
+    template<typename Token, typename Name, typename First,  typename... Rest>
+    struct build<symbol::make_capture<Name>, Token, type_sequence<First, Rest ...>>
     {
         static constexpr auto capture_count = count_captures<First, Rest ...>;
 
         using type = type_sequence<capture<capture_count + 1, Name, First>, Rest ...>;
     };
 
-    template<std::size_t ID, typename T, typename... Nodes>
-    struct build<symbol::make_backref<ID>, T, type_sequence<Nodes ...>>
+    template<std::size_t ID, typename Token, typename... Nodes>
+    struct build<symbol::make_backref<ID>, Token, type_sequence<Nodes ...>>
     {
         using type = type_sequence<backref<ID>, Nodes ...>;
     };
 
-    template<typename Name, typename T, typename... Nodes>
-    struct build<symbol::make_named_backref<Name>, T, type_sequence<Nodes ...>>
+    template<typename Name, typename Token, typename... Nodes>
+    struct build<symbol::make_named_backref<Name>, Token, type_sequence<Nodes ...>>
     {
         using type = type_sequence<named_backref<Name>, Nodes ...>;
     };
 
-    template<match_mode Mode, typename A, typename B, typename T, typename First, typename... Rest>
-    struct build<symbol::make_repetition<Mode, A, B>, T, type_sequence<First, Rest ...>>
+    template<match_mode Mode, typename A, typename B, typename Token, typename First, typename... Rest>
+    struct build<symbol::make_repetition<Mode, A, B>, Token, type_sequence<First, Rest ...>>
     {
         using type = type_sequence<basic_repetition<Mode, A, B, First>, Rest ...>;
     };
 
     // Set building rules
-    template<typename T, typename... Nodes>
-    struct build<symbol::make_set, T, type_sequence<Nodes ...>>
+    template<typename Token, typename... Nodes>
+    struct build<symbol::make_set, Token, type_sequence<Nodes ...>>
     {
         using type = type_sequence<nothing, Nodes ...>;
     };
@@ -257,32 +257,32 @@ namespace meta::ast
     };
 
     // Create set from the last generated AST node
-    template<typename T, typename First, typename... Rest>
-    struct build<symbol::make_set_from_stack, T, type_sequence<First, nothing, Rest ...>>
+    template<typename Token, typename First, typename... Rest>
+    struct build<symbol::make_set_from_stack, Token, type_sequence<First, nothing, Rest ...>>
     {
         using type = type_sequence<set<First>, Rest ...>;
     };
 
-    template<typename T, typename... First, typename... Rest>
-    struct build<symbol::make_set_from_stack, T, type_sequence<set<First ...>, nothing, Rest ...>>
+    template<typename Token, typename... First, typename... Rest>
+    struct build<symbol::make_set_from_stack, Token, type_sequence<set<First ...>, nothing, Rest ...>>
     {
         using type = type_sequence<set<First ...>, Rest ...>;
     };
 
-    template<typename T, typename First, typename... Rest>
-    struct build<symbol::make_set_from_stack, T, type_sequence<First, Rest ...>>
+    template<typename Token, typename First, typename... Rest>
+    struct build<symbol::make_set_from_stack, Token, type_sequence<First, Rest ...>>
     {
         using type = type_sequence<set<First>, Rest ...>;
     };
 
-    template<typename T, typename First, typename... Second, typename... Rest>
-    struct build<symbol::make_set_from_stack, T, type_sequence<First, set<Second ...>, Rest ...>>
+    template<typename Token, typename First, typename... Second, typename... Rest>
+    struct build<symbol::make_set_from_stack, Token, type_sequence<First, set<Second ...>, Rest ...>>
     {
         using type = type_sequence<set<First, Second ...>, Rest ...>;
     };
 
-    template<typename T, typename... First, typename... Second, typename... Rest>
-    struct build<symbol::make_set_from_stack, T, type_sequence<set<First ...>, set<Second ...>, Rest ...>>
+    template<typename Token, typename... First, typename... Second, typename... Rest>
+    struct build<symbol::make_set_from_stack, Token, type_sequence<set<First ...>, set<Second ...>, Rest ...>>
     {
         using type = type_sequence<set<First ..., Second ...>, Rest ...>;
     };
@@ -301,14 +301,14 @@ namespace meta::ast
     };
 
     // Create a range from two last generated AST nodes in the set
-    template<typename T, char A, char B, typename... Second, typename... Rest>
-    struct build<symbol::make_range_from_stack, T, type_sequence<set<literal<A>, literal<B>, Second ...>, Rest ...>>
+    template<typename Token, char A, char B, typename... Second, typename... Rest>
+    struct build<symbol::make_range_from_stack, Token, type_sequence<set<literal<A>, literal<B>, Second ...>, Rest ...>>
     {
         using type = type_sequence<set<range<B, A>, Second ...>, Rest ...>;
     };
 
-    template<typename T, char C, typename First, typename... Second, typename... Rest>
-    struct build<symbol::make_range_from_stack, T, type_sequence<set<literal<C>, First, Second ...>, Rest ...>>
+    template<typename Token, char C, typename First, typename... Second, typename... Rest>
+    struct build<symbol::make_range_from_stack, Token, type_sequence<set<literal<C>, First, Second ...>, Rest ...>>
     {
         using type = type_sequence<set<literal<C>, literal<'-'>, First, Second ...>, Rest ...>;
     };

@@ -66,7 +66,7 @@ namespace meta::grammar
     template<typename T, char C, bool = is_numeric<C>>
     struct update_quantifier_value;
 
-    template<auto N, char C>
+    template<std::size_t N, char C>
     struct update_quantifier_value<symbol::quantifier_value<N>, C, true>
     {
         using type =
@@ -77,7 +77,7 @@ namespace meta::grammar
                 >;
     };
 
-    template<typename T, auto N, char C>
+    template<typename T, std::size_t N, char C>
     struct update_quantifier_value<symbol::quantifier_values<T, symbol::quantifier_value<N>>, C, true>
     {
         using type =

@@ -8,23 +8,23 @@ namespace meta::xpr
 {
     namespace detail
     {
-        template<static_string Str, std::size_t... Indices>
+        template<static_string String, std::size_t... Indices>
         constexpr auto to_sequence(std::index_sequence<Indices ...>) noexcept
         {
-            return ast::sequence<ast::literal<Str[Indices]> ...>{};
+            return ast::sequence<ast::literal<String[Indices]> ...>{};
         }
     }
 
     /**
      * Converts a static string into an instance of ast::sequence.
      *
-     * @tparam Str  The static string to be converted
-     * @return      An instance of ast::sequence equivalent to the original string
+     * @tparam String   The static string to be converted
+     * @return          An instance of ast::sequence equivalent to the original string
      */
-    template<static_string Str>
+    template<static_string String>
     constexpr auto to_sequence() noexcept
     {
-        return detail::to_sequence<Str>(std::make_index_sequence<Str.length()>{});
+        return detail::to_sequence<String>(std::make_index_sequence<String.length()>{});
     }
 
     /**
