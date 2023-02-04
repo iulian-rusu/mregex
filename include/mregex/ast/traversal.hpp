@@ -23,7 +23,7 @@ namespace meta::ast
         using type = Wrapper<typename Transform<Inner>::type ...>;
     };
 
-    template<template<typename> typename Transform, match_mode Mode, typename A, typename B, typename Inner>
+    template<template<typename> typename Transform, match_mode Mode, symbol::quantifier A, symbol::quantifier B, typename Inner>
     struct traverse<Transform, basic_repetition<Mode, A, B, Inner>>
     {
         using type = basic_repetition<Mode, A, B, typename Transform<Inner>::type>;

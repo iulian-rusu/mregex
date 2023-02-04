@@ -56,7 +56,7 @@ namespace meta
     inline constexpr bool is_flag_enabled = is_any_of<Flag, Flags ...>;
 
     template<typename... Flags>
-    struct regex_flags_storage
+    struct regex_flag_accessor
     {
         static_assert((is_flag<Flags> && ...), "invalid flag");
 

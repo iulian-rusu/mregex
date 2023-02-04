@@ -224,7 +224,7 @@ namespace meta::ast
         using type = type_sequence<named_backref<Name>, Nodes ...>;
     };
 
-    template<match_mode Mode, typename A, typename B, typename Token, typename First, typename... Rest>
+    template<match_mode Mode, symbol::quantifier A, symbol::quantifier B, typename Token, typename First, typename... Rest>
     struct build<symbol::make_repetition<Mode, A, B>, Token, type_sequence<First, Rest ...>>
     {
         using type = type_sequence<basic_repetition<Mode, A, B, First>, Rest ...>;

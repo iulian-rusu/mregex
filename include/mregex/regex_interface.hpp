@@ -24,13 +24,13 @@ namespace meta
 
         using ast_type = AST;
 
-        using flags = regex_flags_storage<Flags ...>;
+        using flags = regex_flag_accessor<Flags ...>;
 
         template<std::forward_iterator Iter>
         using context_type = regex_context<regex_interface, Iter>;
 
         template<std::forward_iterator Iter>
-        using result_view_type = regex_result_view<ast::capture_name_spec_t<ast_type>, Iter>;
+        using result_view_type = regex_result_view<Iter, ast::capture_name_spec_t<ast_type>>;
 
         using result_type = regex_result<ast::capture_name_spec_t<ast_type>>;
 

@@ -193,17 +193,17 @@ namespace meta
     /**
      * Defines a std::tuple used to store views into regex captures.
      */
-    template<typename, typename>
+    template<std::forward_iterator, typename>
     struct regex_capture_view_allocator;
 
     template<std::forward_iterator Iter, typename... Names>
-    struct regex_capture_view_allocator<type_sequence<Names ...>, Iter>
+    struct regex_capture_view_allocator<Iter, type_sequence<Names ...>>
     {
         using type = std::tuple<regex_capture_view<Iter>, regex_capture_view<Iter, Names> ...>;
     };
 
-    template<typename NameSpec, std::forward_iterator Iter>
-    using regex_capture_view_storage = typename regex_capture_view_allocator<NameSpec, Iter>::type;
+    template<std::forward_iterator Iter, typename NameSpec>
+    using regex_capture_view_storage = typename regex_capture_view_allocator<Iter, NameSpec>::type;
 
     /**
      * Defines a std::tuple used to store memory-owning regex captures.

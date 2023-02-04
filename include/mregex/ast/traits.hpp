@@ -55,7 +55,7 @@ namespace meta::ast
         using type = capture_name_spec_t<Inner>;
     };
 
-    template<match_mode Mode, typename A, typename B, typename Inner>
+    template<match_mode Mode, symbol::quantifier A, symbol::quantifier B, typename Inner>
     struct capture_name_spec<basic_repetition<Mode, A, B, Inner>>
     {
         using type = capture_name_spec_t<Inner>;
