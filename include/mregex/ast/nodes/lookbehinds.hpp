@@ -44,9 +44,9 @@ namespace meta::ast
         {
             static_assert(std::bidirectional_iterator<Iter>, "lookbehinds require bidirectional iterators");
 
-            if (lookbehind_matcher<Inner>::match(begin, end, it, ctx))
-                return cont(it);
-            return {it, false};
+            if (!lookbehind_matcher<Inner>::match(begin, end, it, ctx))
+                return {it, false};
+            return cont(it);
         }
     };
 

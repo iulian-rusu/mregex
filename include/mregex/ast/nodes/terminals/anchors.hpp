@@ -6,8 +6,8 @@
 
 namespace meta::ast
 {
-    template<bool AllowMultiline>
-    struct beginning_anchor_impl : terminal
+    template<bool MultilineSensitive>
+    struct beginning_anchor : terminal
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter begin, Iter, Iter it, Context &ctx, Continuation &&cont) noexcept
@@ -15,7 +15,7 @@ namespace meta::ast
         {
             if (it == begin)
                 return cont(it);
-            if constexpr (AllowMultiline && Context::flags::multiline)
+            if constexpr (MultilineSensitive && Context::flags::multiline)
             {
                 if (linebreak::match_one(std::prev(it), ctx))
                     return cont(it);
@@ -24,11 +24,11 @@ namespace meta::ast
         }
     };
 
-    struct beginning_of_line : beginning_anchor_impl<true> {};
-    struct beginning_of_input : beginning_anchor_impl<false> {};
+    struct beginning_of_line : beginning_anchor<true> {};
+    struct beginning_of_input : beginning_anchor<false> {};
 
-    template<bool AllowMultiline>
-    struct end_anchor_impl : terminal
+    template<bool MultilineSensitive>
+    struct end_anchor : terminal
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
@@ -36,7 +36,7 @@ namespace meta::ast
         {
             if (it == end)
                 return cont(it);
-            if constexpr (AllowMultiline && Context::flags::multiline)
+            if constexpr (MultilineSensitive && Context::flags::multiline)
             {
                 if (linebreak::match_one(it, ctx))
                     return cont(it);
@@ -45,8 +45,8 @@ namespace meta::ast
         }
     };
 
-    struct end_of_line : end_anchor_impl<true> {};
-    struct end_of_input : end_anchor_impl<false> {};
+    struct end_of_line : end_anchor<true> {};
+    struct end_of_input : end_anchor<false> {};
 
     struct word_boundary : terminal
     {

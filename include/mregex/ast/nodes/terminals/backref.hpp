@@ -34,7 +34,7 @@ namespace meta::ast
     }
 
     template<typename LookupMethod>
-    struct backref_impl : terminal
+    struct basic_backref : terminal
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
@@ -74,9 +74,9 @@ namespace meta::ast
     };
 
     template<std::size_t ID>
-    struct backref : backref_impl<detail::id_lookup_method<ID>> {};
+    struct backref : basic_backref<detail::id_lookup_method<ID>> {};
 
     template<typename Name>
-    struct named_backref : backref_impl<detail::name_lookup_method<Name>> {};
+    struct named_backref : basic_backref<detail::name_lookup_method<Name>> {};
 }
 #endif //MREGEX_NODES_BACKREF_HPP

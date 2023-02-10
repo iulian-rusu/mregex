@@ -80,7 +80,6 @@ namespace meta::ast
     using possessive_optional = basic_optional<match_mode::possessive, Inner>;
 
     // Terminals
-    struct terminal;
     struct empty;
     struct nothing;
     struct beginning_of_line;

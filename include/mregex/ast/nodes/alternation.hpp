@@ -7,8 +7,8 @@
 
 namespace meta::ast
 {
-    template<bool, typename First, typename... Rest>
-    struct alternation_impl
+    template<typename First, typename... Rest>
+    struct alternation
     {
         static constexpr std::size_t capture_count = count_captures<First, Rest ...>;
 
@@ -23,10 +23,8 @@ namespace meta::ast
     };
 
     template<typename First, typename... Rest>
-    struct alternation_impl<true, First, Rest ...> : set<First, Rest ...> {};
-
-    template<typename First, typename... Rest>
-    struct alternation : alternation_impl<are_trivially_matchable<First, Rest ...>, First, Rest ...> {};
+    requires (are_trivially_matchable<First, Rest ...>)
+    struct alternation<First, Rest ...> : set<First, Rest ...> {};
 
     template<typename First>
     struct alternation<First> : First {};

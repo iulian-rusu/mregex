@@ -27,7 +27,7 @@ namespace meta
         using flags = regex_flag_accessor<Flags ...>;
 
         template<std::forward_iterator Iter>
-        using context_type = regex_context<regex_interface, Iter>;
+        using context_type = regex_context<regex_interface<AST, Flags ...>, Iter>;
 
         template<std::forward_iterator Iter>
         using result_view_type = regex_result_view<Iter, ast::capture_name_spec_t<ast_type>>;
@@ -35,7 +35,7 @@ namespace meta
         using result_type = regex_result<ast::capture_name_spec_t<ast_type>>;
 
         template<std::forward_iterator Iter>
-        using generator_type = regex_match_generator<regex_interface, Iter>;
+        using generator_type = regex_match_generator<regex_interface<AST, Flags ...>, Iter>;
 
         template<std::forward_iterator Iter>
         using range_type = input_range_adapter<generator_type<Iter>>;
@@ -56,7 +56,7 @@ namespace meta
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto match(Iter begin, Iter end) noexcept
         {
-            return invoke<match_method<regex_interface>>(begin, end);
+            return invoke<match_method<regex_interface<AST, Flags ...>>>(begin, end);
         }
 
         /**
@@ -71,7 +71,7 @@ namespace meta
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto search(Iter begin, Iter end) noexcept
         {
-            return invoke<search_method<regex_interface>>(begin, end);
+            return invoke<search_method<regex_interface<AST, Flags ...>>>(begin, end);
         }
 
         /**

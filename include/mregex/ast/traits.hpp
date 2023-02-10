@@ -1,7 +1,6 @@
 #ifndef MREGEX_AST_TRAITS_HPP
 #define MREGEX_AST_TRAITS_HPP
 
-#include <string_view>
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/utility/type_sequence.hpp>
 
@@ -9,12 +8,11 @@ namespace meta::ast
 {
     /**
      * Type trait to identify nodes that can be trivially matched.
-     * A type T is trivially matchable if it always consumes one character when matching.
      * A type T is detected as trivially matchable by checking if it contains a static member function
      * template match_one<A, B>, where A satisfies std::forward_iterator and B is any generic type.
      */
     template<typename Node>
-    inline constexpr bool is_trivially_matchable = requires { &Node::template match_one<const char *, int>; };
+    inline constexpr bool is_trivially_matchable = requires { &Node::template match_one<char *, std::type_identity<void>>; };
 
     template<typename... Nodes>
     inline constexpr bool are_trivially_matchable = (is_trivially_matchable<Nodes> && ...);

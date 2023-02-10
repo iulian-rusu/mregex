@@ -35,9 +35,9 @@ namespace meta::ast
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            if (lookahead_matcher<Inner>::match(begin, end, it, ctx))
-                return cont(it);
-            return {it, false};
+            if (!lookahead_matcher<Inner>::match(begin, end, it, ctx))
+                return {it, false};
+            return cont(it);
         }
     };
 
