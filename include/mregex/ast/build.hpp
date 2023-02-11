@@ -234,16 +234,10 @@ namespace meta::ast
     template<typename Token, typename... Nodes>
     struct build<symbol::make_set, Token, type_sequence<Nodes ...>>
     {
-        using type = type_sequence<nothing, Nodes ...>;
+        using type = type_sequence<set<>, Nodes ...>;
     };
 
     // Create set from current character
-    template<char C, typename... Rest>
-    struct build<symbol::make_set_from_current_char, symbol::character<C>, type_sequence<nothing, Rest ...>>
-    {
-        using type = type_sequence<set<literal<C>>, Rest ...>;
-    };
-
     template<char C, typename... Nodes>
     struct build<symbol::make_set_from_current_char, symbol::character<C>, type_sequence<Nodes ...>>
     {
@@ -257,18 +251,6 @@ namespace meta::ast
     };
 
     // Create set from the last generated AST node
-    template<typename Token, typename First, typename... Rest>
-    struct build<symbol::make_set_from_stack, Token, type_sequence<First, nothing, Rest ...>>
-    {
-        using type = type_sequence<set<First>, Rest ...>;
-    };
-
-    template<typename Token, typename... First, typename... Rest>
-    struct build<symbol::make_set_from_stack, Token, type_sequence<set<First ...>, nothing, Rest ...>>
-    {
-        using type = type_sequence<set<First ...>, Rest ...>;
-    };
-
     template<typename Token, typename First, typename... Rest>
     struct build<symbol::make_set_from_stack, Token, type_sequence<First, Rest ...>>
     {

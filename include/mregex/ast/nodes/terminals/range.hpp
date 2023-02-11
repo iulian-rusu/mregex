@@ -13,16 +13,16 @@ namespace meta::ast
         static_assert(A < B, "invalid range bounds");
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool match_one(Iter current, Context &) noexcept
+        static constexpr bool match_one(Iter it, Context &) noexcept
         {
-            auto ch = *current;
-            bool result = A <= ch && ch <= B;
+            auto input = *it;
+            bool result = A <= input && input <= B;
             if constexpr (Context::flags::icase)
             {
-                if (is_alpha(ch))
+                if (is_alpha(input))
                 {
-                    ch ^= 0x20;
-                    result |= A <= ch && ch <= B;
+                    input ^= 0x20;
+                    result |= A <= input && input <= B;
                 }
             }
             return result;

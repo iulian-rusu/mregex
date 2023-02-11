@@ -7,7 +7,6 @@
 #include <mregex/ast/nodes/terminals/empty.hpp>
 #include <mregex/ast/nodes/terminals/literal.hpp>
 #include <mregex/ast/nodes/terminals/negated.hpp>
-#include <mregex/ast/nodes/terminals/nothing.hpp>
 #include <mregex/ast/nodes/terminals/range.hpp>
 #include <mregex/ast/nodes/terminals/whitespace.hpp>
 #include <mregex/ast/nodes/terminals/wildcard.hpp>

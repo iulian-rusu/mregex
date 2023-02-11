@@ -12,9 +12,9 @@ namespace meta::ast
         static_assert(is_trivially_matchable<Inner>, "only trivially matchable AST nodes can be negated");
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool match_one(Iter current, Context &ctx) noexcept
+        static constexpr bool match_one(Iter it, Context &ctx) noexcept
         {
-            return !Inner::match_one(current, ctx);
+            return !Inner::match_one(it, ctx);
         }
     };
 }

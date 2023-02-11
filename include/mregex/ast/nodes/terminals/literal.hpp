@@ -11,11 +11,11 @@ namespace meta::ast
     struct literal : trivially_matchable<literal<C>>
     {
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool match_one(Iter current, Context &) noexcept
+        static constexpr bool match_one(Iter it, Context &) noexcept
         {
-            bool result = C == *current;
+            bool result = C == *it;
             if constexpr (Context::flags::icase)
-                result |= toggle_case<C> == *current;
+                result |= toggle_case<C> == *it;
             return result;
         }
     };

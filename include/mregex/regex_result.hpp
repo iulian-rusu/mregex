@@ -12,10 +12,10 @@ namespace meta
     /**
      * Class returned by all regex matching/searching functions.
      *
-     * @tparam NameSpec         A type that contains the capture name specification
      * @tparam CaptureStorage   The storage type used to hold the captures
+     * @tparam NameSpec         A type that contains the capture name specification
      */
-    template<typename NameSpec, capture_storage CaptureStorage>
+    template<capture_storage CaptureStorage, typename NameSpec>
     struct basic_regex_result;
 
     /**
@@ -24,15 +24,15 @@ namespace meta
      * the behavior is undefined.
      */
     template<std::forward_iterator Iter, typename NameSpec>
-    using regex_result_view = basic_regex_result<NameSpec, regex_capture_view_storage<Iter, NameSpec>>;
+    using regex_result_view = basic_regex_result<regex_capture_view_storage<Iter, NameSpec>, NameSpec>;
 
     /**
      * Result that holds ownership of captured content.
      */
     template<typename NameSpec>
-    using regex_result = basic_regex_result<NameSpec, regex_capture_storage<NameSpec>>;
+    using regex_result = basic_regex_result<regex_capture_storage<NameSpec>, NameSpec>;
 
-    template<typename NameSpec, capture_storage CaptureStorage>
+    template<capture_storage CaptureStorage, typename NameSpec>
     struct basic_regex_result
     {
         using capture_storage_type = CaptureStorage;
@@ -268,22 +268,22 @@ namespace meta
     };
 }
 
-template<typename NameSpec, meta::capture_storage CaptureStorage>
-std::ostream &operator<<(std::ostream &os, meta::basic_regex_result<NameSpec, CaptureStorage> const &result)
+template<meta::capture_storage CaptureStorage, typename NameSpec>
+std::ostream &operator<<(std::ostream &os, meta::basic_regex_result<CaptureStorage, NameSpec> const &result)
 {
     return os << meta::get_group<0>(result);
 }
 
 namespace std
 {
-    template<typename NameSpec, meta::capture_storage CaptureStorage>
-    struct tuple_size<meta::basic_regex_result<NameSpec, CaptureStorage>>
+    template<meta::capture_storage CaptureStorage, typename NameSpec>
+    struct tuple_size<meta::basic_regex_result<CaptureStorage, NameSpec>>
     {
-        static constexpr size_t value = meta::basic_regex_result<NameSpec, CaptureStorage>::capture_count;
+        static constexpr size_t value = meta::basic_regex_result<CaptureStorage, NameSpec>::capture_count;
     };
 
-    template<size_t ID, typename NameSpec, meta::capture_storage CaptureStorage>
-    struct tuple_element<ID, meta::basic_regex_result<NameSpec, CaptureStorage>>
+    template<size_t ID, meta::capture_storage CaptureStorage, typename NameSpec>
+    struct tuple_element<ID, meta::basic_regex_result<CaptureStorage, NameSpec>>
     {
         using type = tuple_element_t<ID + 1, CaptureStorage>;
     };

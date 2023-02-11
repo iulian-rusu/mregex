@@ -23,7 +23,7 @@ namespace meta::ast
     };
 
     template<typename First, typename... Rest>
-    requires (are_trivially_matchable<First, Rest ...>)
+    requires are_trivially_matchable<First, Rest ...>
     struct alternation<First, Rest ...> : set<First, Rest ...> {};
 
     template<typename First>

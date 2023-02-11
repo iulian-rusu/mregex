@@ -81,7 +81,6 @@ namespace meta::ast
 
     // Terminals
     struct empty;
-    struct nothing;
     struct beginning_of_line;
     struct beginning_of_input;
     struct end_of_line;
@@ -93,15 +92,17 @@ namespace meta::ast
     template<char>
     struct literal;
 
-    template<typename, typename...>
-    struct set;
-
     template<char, char>
     struct range;
-    
+
     using lower = range<'a', 'z'>;
     using upper = range<'A', 'Z'>;
     using digit = range<'0', '9'>;
+
+    template<typename...>
+    struct set;
+    
+    using nothing = set<>;
     using word = set<lower, upper, digit, literal<'_'>>;
     using hexa = set<digit, range<'a', 'f'>, range<'A', 'F'>>;
     using linebreak = set<literal<'\n'>, literal<'\r'>>;

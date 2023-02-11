@@ -7,15 +7,15 @@
 
 namespace meta::ast
 {
-    template<typename First, typename... Rest>
-    struct set : trivially_matchable<set<First, Rest ...>>
+    template<typename... Nodes>
+    struct set : trivially_matchable<set<Nodes ...>>
     {
-        static_assert(are_trivially_matchable<First, Rest ...>, "only trivially matchable AST nodes can form a set");
+        static_assert(are_trivially_matchable<Nodes ...>, "only trivially matchable AST nodes can form a set");
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool match_one(Iter current, Context &ctx) noexcept
+        static constexpr bool match_one(Iter it, Context &ctx) noexcept
         {
-            return First::match_one(current, ctx) || (Rest::match_one(current, ctx) || ...);
+            return (Nodes::match_one(it, ctx) || ...);
         }
     };
 }
