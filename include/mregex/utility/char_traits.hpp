@@ -13,15 +13,13 @@ namespace meta
     inline constexpr bool is_upper = 'A' <= C && C <= 'Z';
 
     template<char C>
-    inline constexpr bool is_word = is_lower<C> || is_upper<C> || is_numeric<C> || C == '_';
+    inline constexpr bool is_alpha = is_lower<C> || is_upper<C>;
 
     template<char C>
-    inline constexpr char toggle_case = (is_lower<C> || is_upper<C>) ? C ^ 0x20 : C;
+    inline constexpr bool is_word = is_alpha<C> || is_numeric<C> || C == '_';
 
-    constexpr bool is_alpha(char c) noexcept
-    {
-        return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
-    }
+    template<char C>
+    inline constexpr char toggle_case = is_alpha<C> ? static_cast<char>(C ^ 0x20) : C;
 
     constexpr char to_lower(char c) noexcept
     {

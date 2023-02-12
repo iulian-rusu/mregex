@@ -44,6 +44,10 @@ namespace meta::tests
     static_assert(regex<R"([a-zA-Z]+)">::match("aBcDefghijklmnopqrstuvqXyZ"));
     static_assert(regex<R"([0-Z]+)", flag::i>::match("1234abczABCZ"));
     static_assert(regex<R"([A-Z]+)", flag::icase>::match("aBcDeFiOyZ"));
+    static_assert(regex<R"([123A-z-+]+)", flag::icase>::match("123-+abcdxyz[`]^ABCDXYZ"));
+    static_assert(regex<R"([Y-b]+)", flag::icase>::match("[aAbByYzZ]"));
+    static_assert(regex<R"([X-`]+)", flag::icase>::match("xXyYzZ[]"));
+    static_assert(regex<R"([!-C]+)", flag::icase>::match("aAbBcC"));
     static_assert(regex<R"([\^a]+)">::match("^a"));
     static_assert(regex<R"([^]+)">::match("aA01-^*@#(){}[]\n"));
     static_assert(regex<R"([^\^a]+)">::match("b$"));
@@ -273,6 +277,17 @@ namespace meta::tests
     static_assert(regex<R"([0-9]+)">::match("123123f123123") == false);
     static_assert(regex<R"([0-3]+)">::match("1231243123123") == false);
     static_assert(regex<R"([(|)][^0-9]+[a-z]+)">::match("(x") == false);
+    static_assert(regex<R"([Y-b])", flag::icase>::match("~") == false);
+    static_assert(regex<R"([Y-b])", flag::icase>::match("x") == false);
+    static_assert(regex<R"([Y-b])", flag::icase>::match("X") == false);
+    static_assert(regex<R"([Y-b])", flag::icase>::match("c") == false);
+    static_assert(regex<R"([Y-b])", flag::icase>::match("C") == false);
+    static_assert(regex<R"([Y-b])", flag::icase>::match("{") == false);
+    static_assert(regex<R"([Y-b])", flag::icase>::match(";") == false);
+    static_assert(regex<R"([!-C])", flag::icase>::match("d") == false);
+    static_assert(regex<R"([!-C])", flag::icase>::match("D") == false);
+    static_assert(regex<R"([X-`])", flag::icase>::match("w") == false);
+    static_assert(regex<R"([X-`])", flag::icase>::match("W") == false);
     // Optional, Kleene star and plus
     static_assert(regex<R"(a?+a)">::match("a") == false);
     static_assert(regex<R"(a??)">::match("b") == false);

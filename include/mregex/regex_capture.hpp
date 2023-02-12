@@ -184,7 +184,7 @@ namespace meta
      * Type trait used to check if a given capture type is an instance of
      * the regex_capture_view template.
      */
-    template<captured_content>
+    template<captured_content Capture>
     inline constexpr bool is_capture_view = false;
 
     template<std::forward_iterator Iter, typename Name>
@@ -193,7 +193,7 @@ namespace meta
     /**
      * Defines a std::tuple used to store views into regex captures.
      */
-    template<std::forward_iterator, typename>
+    template<std::forward_iterator Iter, typename NameSpec>
     struct regex_capture_view_allocator;
 
     template<std::forward_iterator Iter, typename... Names>
@@ -208,7 +208,7 @@ namespace meta
     /**
      * Defines a std::tuple used to store memory-owning regex captures.
      */
-    template<typename>
+    template<typename NameSpec>
     struct regex_capture_allocator;
 
     template<typename... Names>

@@ -70,7 +70,7 @@ namespace meta::ast
         }
     };
 
-    template<typename First>
-    struct sequence<First> : First {};
+    template<typename Inner>
+    struct sequence<Inner> : Inner {};
 }
 #endif //MREGEX_NODES_SEQUENCE_HPP

@@ -26,7 +26,7 @@ namespace meta::ast
     requires are_trivially_matchable<First, Rest ...>
     struct alternation<First, Rest ...> : set<First, Rest ...> {};
 
-    template<typename First>
-    struct alternation<First> : First {};
+    template<typename Inner>
+    struct alternation<Inner> : Inner {};
 }
 #endif //MREGEX_NODES_ALTERNATION_HPP

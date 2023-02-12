@@ -7,12 +7,12 @@
 namespace meta::symbol
 {
     // Symbols for parsing tokens
-    template<char>
+    template<char C>
     struct character {};
 
     struct empty {};
 
-    template<char>
+    template<char C>
     struct expect {};
 
     // Symbols for parsing basic operators
@@ -43,13 +43,13 @@ namespace meta::symbol
     struct quantifier_begin {};
     struct quantifier_inf {};
 
-    template<std::size_t>
+    template<std::size_t N>
     struct quantifier_value {};
 
-    template<typename, typename>
+    template<typename A, typename B>
     struct quantifier_values {};
 
-    template<typename>
+    template<typename Action>
     struct quantifier_mod {};
 
     // Symbols for named AST nodes
@@ -62,16 +62,16 @@ namespace meta::symbol
     struct unnamed {};
 
     // Symbol for parsing backreferences
-    template<std::size_t>
+    template<std::size_t ID>
     struct backref_id {};
 
     struct backref_name_begin {};
 
-    template<char...>
+    template<char... Chars>
     struct backref_name_seq {};
 
     // Symbols for parsing named captures
-    template<char...>
+    template<char... Chars>
     struct capture_name_seq {};
 
     // Tag type for symbols which require a semantic action
@@ -101,28 +101,28 @@ namespace meta::symbol
     struct make_wildcard : semantic_action {};
     struct make_literal : semantic_action {};
 
-    template<char>
+    template<char C>
     struct push_literal : semantic_action {};
 
-    template<typename>
+    template<typename Name>
     struct make_capture : semantic_action {};
 
-    template<match_mode, typename, typename>
+    template<match_mode Mode, typename A, typename B>
     struct make_repetition : semantic_action {};
 
-    template<match_mode>
+    template<match_mode Mode>
     struct make_star : semantic_action {};
 
-    template<match_mode>
+    template<match_mode Mode>
     struct make_plus : semantic_action {};
 
-    template<match_mode>
+    template<match_mode Mode>
     struct make_optional : semantic_action {};
 
-    template<std::size_t>
+    template<std::size_t ID>
     struct make_backref : semantic_action {};
 
-    template<typename>
+    template<typename Name>
     struct make_named_backref : semantic_action {};
 
     struct make_positive_lookahead : semantic_action {};
@@ -139,7 +139,7 @@ namespace meta::symbol
     /**
      * Type trait used to check if a type is a symbolic quantifier.
      */
-    template<typename>
+    template<typename Symbol>
     inline constexpr bool is_quantifier = false;
 
     template<std::size_t N>
@@ -166,7 +166,7 @@ namespace meta::symbol
     /**
      * Predicate that checks if a symbolic quantifier is equivalent to 0.
      */
-    template<quantifier>
+    template<quantifier Symbol>
     inline constexpr bool is_zero = false;
 
     template<>
@@ -175,7 +175,7 @@ namespace meta::symbol
     /**
      * Predicate that checks if a pair of quantifiers for a valid range (interval).
      */
-    template<quantifier, quantifier>
+    template<quantifier A, quantifier B>
     inline constexpr bool is_valid_range = false;
 
     template<std::size_t A, std::size_t B>
@@ -187,7 +187,7 @@ namespace meta::symbol
     /**
      * Metafunction that projects a finite symbolic quantifier to its numerical value.
      */
-    template<finite_quantifier>
+    template<finite_quantifier Symbol>
     inline constexpr std::size_t get_value = {};
 
     template<std::size_t N>
@@ -196,7 +196,7 @@ namespace meta::symbol
     /**
      * Predicate that checks if a symbolic quantifier is equal to some integral value.
      */
-    template<quantifier>
+    template<quantifier Symbol>
     inline constexpr auto equals = [](std::size_t) noexcept { return false; };
 
     template<std::size_t N>

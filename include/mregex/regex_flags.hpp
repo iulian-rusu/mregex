@@ -46,7 +46,7 @@ namespace meta
         using r = unroll;
     }
 
-    template<typename>
+    template<typename T>
     inline constexpr bool is_flag = false;
 
     template<std::size_t ID>

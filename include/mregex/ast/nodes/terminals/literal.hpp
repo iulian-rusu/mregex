@@ -13,9 +13,10 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context>
         static constexpr bool match_one(Iter it, Context &) noexcept
         {
-            bool result = C == *it;
+            char input = *it;
+            bool result = C == input;
             if constexpr (Context::flags::icase)
-                result |= toggle_case<C> == *it;
+                result |= toggle_case<C> == input;
             return result;
         }
     };

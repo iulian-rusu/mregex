@@ -8,12 +8,12 @@ namespace meta
     /**
      * Metacontainer for a sequence of types.
      */
-    template<typename...>
+    template<typename... Elems>
     struct type_sequence;
 
     namespace detail
     {
-        template<typename, typename>
+        template<typename Sequence, typename T>
         struct push;
 
         template<typename... Elems, typename T>
@@ -28,11 +28,11 @@ namespace meta
             using type = type_sequence<Ts ..., Elems ...>;
         };
 
-        template<typename>
+        template<typename Sequence>
         struct pop;
 
-        template<typename T0, typename... Rest>
-        struct pop<type_sequence<T0, Rest ...>>
+        template<typename First, typename... Rest>
+        struct pop<type_sequence<First, Rest ...>>
         {
             using type = type_sequence<Rest ...>;
         };
@@ -97,7 +97,7 @@ namespace meta
             using type = typename concat<typename reverse_sequence<Rest ...>::type, type_sequence<T3, T2, T1, T0>>::type;
         };
 
-        template<typename>
+        template<typename Sequence>
         struct reverse;
 
         template<typename... Elems>

@@ -5,17 +5,17 @@
 
 namespace meta::ast
 {
-    template<typename, typename...>
+    template<typename First, typename... Rest>
     struct sequence;
 
-    template<typename, typename...>
+    template<typename First, typename... Rest>
     struct alternation;
 
-    template<std::size_t, typename, typename>
+    template<std::size_t ID, typename Name, typename Inner>
     struct capture;
 
     // Repetition
-    template<match_mode, symbol::quantifier, symbol::quantifier, typename>
+    template<match_mode Mode, symbol::quantifier A, symbol::quantifier B, typename Inner>
     struct basic_repetition;
 
     template<symbol::quantifier A, symbol::quantifier B, typename Inner>
@@ -89,17 +89,17 @@ namespace meta::ast
     struct whitespace;
     struct wildcard;
 
-    template<char>
+    template<char C>
     struct literal;
 
-    template<char, char>
+    template<char A, char B>
     struct range;
 
     using lower = range<'a', 'z'>;
     using upper = range<'A', 'Z'>;
     using digit = range<'0', '9'>;
 
-    template<typename...>
+    template<typename... Nodes>
     struct set;
     
     using nothing = set<>;
@@ -107,26 +107,26 @@ namespace meta::ast
     using hexa = set<digit, range<'a', 'f'>, range<'A', 'F'>>;
     using linebreak = set<literal<'\n'>, literal<'\r'>>;
 
-    template<typename>
+    template<typename Inner>
     struct negated;
 
-    template<std::size_t>
+    template<std::size_t ID>
     struct backref;
 
-    template<typename>
+    template<typename Name>
     struct named_backref;
 
     // Lookarounds
-    template<typename>
+    template<typename Inner>
     struct positive_lookahead;
 
-    template<typename>
+    template<typename Inner>
     struct negative_lookahead;
 
-    template<typename>
+    template<typename Inner>
     struct positive_lookbehind;
 
-    template<typename>
+    template<typename Inner>
     struct negative_lookbehind;
 }
 #endif //MREGEX_AST_ASTFWD_HPP
