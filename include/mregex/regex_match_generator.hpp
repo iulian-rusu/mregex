@@ -1,7 +1,6 @@
 #ifndef MREGEX_REGEX_MATCH_GENERATOR_HPP
 #define MREGEX_REGEX_MATCH_GENERATOR_HPP
 
-#include <mregex/regex_context.hpp>
 #include <mregex/regex_methods.hpp>
 
 namespace meta

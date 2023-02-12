@@ -5,7 +5,6 @@
 #include <mregex/ast/match_result.hpp>
 #include <mregex/ast/traits.hpp>
 #include <mregex/utility/continuations.hpp>
-#include <mregex/regex_context.hpp>
 
 namespace meta::ast
 {
@@ -21,7 +20,6 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
-        requires (!symbol::is_zero<LowerBound>)
         {
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
                 return match_between_bounds(begin, end, new_it, ctx, cont);
@@ -53,7 +51,6 @@ namespace meta::ast
         template<symbol::quantifier Bound, std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto bounded_greedy_match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
-        requires (!is_trivially_matchable<Inner> || !std::bidirectional_iterator<Iter>)
         {
             if constexpr (!symbol::is_zero<Bound>)
             {
@@ -94,7 +91,6 @@ namespace meta::ast
         template<symbol::quantifier Bound, std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto bounded_lazy_match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
-        requires (!is_trivially_matchable<Inner>)
         {
             if (auto rest_match = cont(it))
                 return rest_match;
@@ -131,7 +127,6 @@ namespace meta::ast
         template<symbol::quantifier Bound, std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto bounded_possessive_match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
-        requires (!is_trivially_matchable<Inner>)
         {
             for (std::size_t match_count = 0; !symbol::equals<Bound>(match_count); ++match_count)
             {

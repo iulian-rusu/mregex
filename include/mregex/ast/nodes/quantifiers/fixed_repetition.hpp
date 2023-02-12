@@ -6,7 +6,6 @@
 #include <mregex/ast/traits.hpp>
 #include <mregex/utility/continuations.hpp>
 #include <mregex/utility/distance.hpp>
-#include <mregex/regex_context.hpp>
 
 namespace meta::ast
 {
@@ -38,7 +37,6 @@ namespace meta::ast
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto backtracking_match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
-        requires (!is_trivially_matchable<Inner>)
         {
             if constexpr (Context::flags::unroll)
             {

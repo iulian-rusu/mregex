@@ -2,7 +2,6 @@
 #define MREGEX_NODES_SET_HPP
 
 #include <mregex/ast/nodes/terminals/trivially_matchable.hpp>
-#include <mregex/ast/match_result.hpp>
 #include <mregex/ast/traits.hpp>
 
 namespace meta::ast

@@ -2,8 +2,6 @@
 #define MREGEX_NODES_WILDCARD_HPP
 
 #include <mregex/ast/nodes/terminals/trivially_matchable.hpp>
-#include <mregex/ast/match_result.hpp>
-#include <mregex/regex_context.hpp>
 
 namespace meta::ast
 {

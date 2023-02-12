@@ -2,6 +2,7 @@
 #define MREGEX_NODES_LOOKAHEADS_HPP
 
 #include <mregex/ast/astfwd.hpp>
+#include <mregex/ast/match_result.hpp>
 #include <mregex/ast/traits.hpp>
 #include <mregex/utility/continuations.hpp>
 
@@ -12,7 +13,6 @@ namespace meta::ast
     {
         template<std::bidirectional_iterator Iter, typename Context>
         static constexpr bool match(Iter begin, Iter end, Iter it, Context &ctx) noexcept
-        requires (!is_trivially_matchable<Inner>)
         {
             auto inner_match = Inner::match(begin, end, it, ctx, continuations<Iter>::success);
             return inner_match.matched;

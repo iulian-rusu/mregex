@@ -3,7 +3,6 @@
 
 #include <mregex/ast/nodes/terminals/trivially_matchable.hpp>
 #include <mregex/utility/char_traits.hpp>
-#include <mregex/regex_context.hpp>
 
 namespace meta::ast
 {

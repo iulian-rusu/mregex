@@ -3,7 +3,10 @@
 
 #include <mregex/ast/traits.hpp>
 #include <mregex/utility/input_range_adapter.hpp>
+#include <mregex/regex_context.hpp>
+#include <mregex/regex_flags.hpp>
 #include <mregex/regex_match_generator.hpp>
+#include <mregex/regex_result.hpp>
 
 namespace meta
 {

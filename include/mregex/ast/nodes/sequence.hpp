@@ -5,7 +5,6 @@
 #include <mregex/ast/match_result.hpp>
 #include <mregex/ast/traits.hpp>
 #include <mregex/utility/distance.hpp>
-#include <mregex/regex_context.hpp>
 
 namespace meta::ast
 {

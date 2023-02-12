@@ -2,7 +2,6 @@
 #define MREGEX_NODES_NEGATED_HPP
 
 #include <mregex/ast/nodes/terminals/trivially_matchable.hpp>
-#include <mregex/ast/match_result.hpp>
 
 namespace meta::ast
 {

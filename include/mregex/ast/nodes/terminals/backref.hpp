@@ -5,7 +5,7 @@
 #include <mregex/ast/match_result.hpp>
 #include <mregex/utility/distance.hpp>
 #include <mregex/utility/reversed_range_view.hpp>
-#include <mregex/regex_context.hpp>
+#include <mregex/regex_capture.hpp>
 
 namespace meta::ast
 {

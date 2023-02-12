@@ -2,8 +2,6 @@
 #define MREGEX_REGEX_CONTEXT_HPP
 
 #include <mregex/utility/tuple.hpp>
-#include <mregex/regex_flags.hpp>
-#include <mregex/regex_result.hpp>
 #include <mregex/regex_traits.hpp>
 
 namespace meta

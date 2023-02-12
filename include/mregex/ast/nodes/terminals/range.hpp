@@ -2,8 +2,6 @@
 #define MREGEX_NODES_RANGE_HPP
 
 #include <mregex/ast/nodes/terminals/literal.hpp>
-#include <mregex/ast/match_result.hpp>
-#include <mregex/regex_context.hpp>
 
 namespace meta::ast
 {

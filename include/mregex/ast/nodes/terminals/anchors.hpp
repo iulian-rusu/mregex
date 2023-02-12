@@ -1,8 +1,8 @@
 #ifndef MREGEX_NODES_ANCHORS_HPP
 #define MREGEX_NODES_ANCHORS_HPP
 
+#include <mregex/ast/nodes/terminals/range.hpp>
 #include <mregex/ast/nodes/terminals/set.hpp>
-#include <mregex/regex_context.hpp>
 
 namespace meta::ast
 {
