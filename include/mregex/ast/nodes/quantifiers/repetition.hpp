@@ -55,14 +55,9 @@ namespace meta::ast
             if constexpr (!symbol::is_zero<Bound>)
             {
                 auto continuation = [=, &ctx, &cont](Iter new_it) noexcept -> match_result<Iter> {
-                    if constexpr (symbol::is_infinity<Bound>)
-                    {
-                        if (new_it == it)
-                            return {new_it, false};
-                    }
                     return bounded_greedy_match<symbol::decrement_t<Bound>>(begin, end, new_it, ctx, cont);
                 };
-                if (auto inner_match = Inner::match(begin, end, it, ctx, continuation))
+                if (auto inner_match = Inner::match(begin, end, it, ctx, continue_unless_infinite_loop<Bound>(it, continuation)))
                     return inner_match;
             }
             return cont(it);
@@ -97,14 +92,9 @@ namespace meta::ast
             if constexpr (!symbol::is_zero<Bound>)
             {
                 auto continuation = [=, &ctx, &cont](Iter new_it) noexcept -> match_result<Iter> {
-                    if constexpr (symbol::is_infinity<Bound>)
-                    {
-                        if (new_it == it)
-                            return {new_it, false};
-                    }
                     return bounded_lazy_match<symbol::decrement_t<Bound>>(begin, end, new_it, ctx, cont);
                 };
-                return Inner::match(begin, end, it, ctx, continuation);
+                return Inner::match(begin, end, it, ctx, continue_unless_infinite_loop<Bound>(it, continuation));
             }
             return {it, false};
         }
@@ -150,6 +140,17 @@ namespace meta::ast
                 ++it;
             }
             return cont(it);
+        }
+
+    private:
+        template<symbol::quantifier Bound, std::forward_iterator Iter, typename Continuation>
+        static constexpr auto continue_unless_infinite_loop(Iter it, Continuation &&cont) noexcept
+        {
+            return [=, &cont](Iter new_it) noexcept -> match_result<Iter> {
+                if (symbol::is_infinity<Bound> && is_zero_length_matcher<Inner> && new_it == it)
+                    return {it, false};
+                return cont(new_it);
+            };
         }
     };
 

@@ -45,10 +45,7 @@ namespace meta::ast
                 };
                 return Inner::match(begin, end, it, ctx, continuation);
             }
-            else
-            {
-                return non_unrolled_generic_match(begin, end, it, ctx, cont);
-            }
+            return non_unrolled_generic_match(begin, end, it, ctx, cont);
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>

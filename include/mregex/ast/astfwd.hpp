@@ -5,6 +5,8 @@
 
 namespace meta::ast
 {
+    struct zero_length_matcher {};
+
     template<typename First, typename... Rest>
     struct sequence;
 

@@ -6,7 +6,7 @@
 
 namespace meta::ast
 {
-    struct empty : terminal
+    struct empty : terminal, zero_length_matcher
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter, Iter, Iter it, Context &, Continuation &&cont) noexcept

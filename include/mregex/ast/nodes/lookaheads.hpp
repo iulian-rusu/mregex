@@ -27,7 +27,7 @@ namespace meta::ast
     };
 
     template<typename Inner>
-    struct positive_lookahead
+    struct positive_lookahead : zero_length_matcher
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
 
@@ -42,7 +42,7 @@ namespace meta::ast
     };
 
     template<typename Inner>
-    struct negative_lookahead
+    struct negative_lookahead : zero_length_matcher
     {
         static constexpr std::size_t capture_count = Inner::capture_count;
 

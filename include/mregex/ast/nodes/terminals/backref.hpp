@@ -34,7 +34,7 @@ namespace meta::ast
     }
 
     template<typename LookupMethod>
-    struct backref_base : terminal
+    struct backref_base : terminal, zero_length_matcher
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept

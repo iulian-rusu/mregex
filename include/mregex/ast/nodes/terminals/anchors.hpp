@@ -7,7 +7,7 @@
 namespace meta::ast
 {
     template<bool MultilineSensitive>
-    struct beginning_anchor : terminal
+    struct beginning_anchor : terminal, zero_length_matcher
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter begin, Iter, Iter it, Context &ctx, Continuation &&cont) noexcept
@@ -28,7 +28,7 @@ namespace meta::ast
     struct beginning_of_input : beginning_anchor<false> {};
 
     template<bool MultilineSensitive>
-    struct end_anchor : terminal
+    struct end_anchor : terminal, zero_length_matcher
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
@@ -48,7 +48,7 @@ namespace meta::ast
     struct end_of_line : end_anchor<true> {};
     struct end_of_input : end_anchor<false> {};
 
-    struct word_boundary : terminal
+    struct word_boundary : terminal, zero_length_matcher
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
@@ -69,7 +69,7 @@ namespace meta::ast
      * Since anchors are not trivially matchable, this template specialization is required.
      */
     template<>
-    struct negated<word_boundary> : terminal
+    struct negated<word_boundary> : terminal, zero_length_matcher
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
