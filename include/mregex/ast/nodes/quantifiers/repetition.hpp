@@ -8,7 +8,7 @@
 
 namespace meta::ast
 {
-    template<match_mode Mode, symbol::quantifier LowerBound, symbol::quantifier UpperBound, typename Inner>
+    template<match_mode Mode, symbol::finite_quantifier LowerBound, symbol::quantifier UpperBound, typename Inner>
     struct basic_repetition
     {
         static_assert(symbol::is_valid_range<LowerBound, UpperBound>, "invalid range bounds");
@@ -141,8 +141,7 @@ namespace meta::ast
             }
             return cont(it);
         }
-
-    private:
+        
         template<symbol::quantifier Bound, std::forward_iterator Iter, typename Continuation>
         static constexpr auto continue_unless_infinite_loop(Iter it, Continuation &&cont) noexcept
         {

@@ -1,7 +1,8 @@
 #ifndef MREGEX_PARSER_LEXER_HPP
 #define MREGEX_PARSER_LEXER_HPP
 
-#include <mregex/symbols.hpp>
+#include <mregex/symbols/core.hpp>
+#include <mregex/utility/static_string.hpp>
 
 namespace meta
 {
@@ -14,7 +15,10 @@ namespace meta
     struct lexer
     {
         template<std::size_t I, bool = I < Pattern.length()>
-        struct token
+        struct token;
+
+        template<std::size_t I>
+        struct token<I, true>
         {
             using type = symbol::character<Pattern[I]>;
         };

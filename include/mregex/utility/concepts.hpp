@@ -2,6 +2,7 @@
 #define MREGEX_UTILITY_CONCEPTS_HPP
 
 #include <concepts>
+#include <iterator>
 #include <tuple>
 #include <type_traits>
 

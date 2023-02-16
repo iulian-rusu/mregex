@@ -370,7 +370,7 @@ namespace meta::tests
             repetition
             <
                 symbol::quantifier_value<22>,
-                symbol::quantifier_inf,
+                symbol::infinity,
                 literal<'c'>
             >
         >
@@ -1173,7 +1173,7 @@ namespace meta::tests
                 repetition
                 <
                     symbol::quantifier_value<2>,
-                    symbol::quantifier_inf,
+                    symbol::infinity,
                     capture
                     <
                         2,

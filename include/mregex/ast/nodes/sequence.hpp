@@ -25,16 +25,6 @@ namespace meta::ast
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
-        -> match_result<Iter>
-        requires (is_trivially_matchable<First> && !are_trivially_matchable<Rest ...>)
-        {
-            if (it == end || !First::match_one(it, ctx))
-                return {it, false};
-            return sequence<Rest ...>::match(begin, end, std::next(it), ctx, cont);
-        }
-
-        template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         requires are_trivially_matchable<First, Rest ...>

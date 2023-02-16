@@ -2,7 +2,6 @@
 #define MREGEX_UTILITY_TYPE_TRAITS_HPP
 
 #include <type_traits>
-#include <mregex/symbols.hpp>
 
 namespace meta
 {
@@ -27,10 +26,16 @@ namespace meta
      * Other value categories are forwarded (moved or copy elided) to a value type.
      */
     template<typename T>
-    struct forward_result : std::type_identity<T> {};
+    struct forward_result
+    {
+        using type = T;
+    };
 
     template<typename T>
-    struct forward_result<T &&> : std::type_identity<T> {};
+    struct forward_result<T &&>
+    {
+        using type = T;
+    };
 
     template<typename T>
     using forward_result_t = typename forward_result<T>::type;

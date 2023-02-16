@@ -1,12 +1,12 @@
 #ifndef MREGEX_AST_ASTFWD_HPP
 #define MREGEX_AST_ASTFWD_HPP
 
-#include <mregex/symbols.hpp>
+#include <mregex/symbols/core.hpp>
+#include <mregex/symbols/quantifiers.hpp>
+#include <mregex/utility/enums.hpp>
 
 namespace meta::ast
 {
-    struct zero_length_matcher {};
-
     template<typename First, typename... Rest>
     struct sequence;
 
@@ -17,16 +17,16 @@ namespace meta::ast
     struct capture;
 
     // Repetition
-    template<match_mode Mode, symbol::quantifier A, symbol::quantifier B, typename Inner>
+    template<match_mode Mode, symbol::finite_quantifier A, symbol::quantifier B, typename Inner>
     struct basic_repetition;
 
-    template<symbol::quantifier A, symbol::quantifier B, typename Inner>
+    template<symbol::finite_quantifier A, symbol::quantifier B, typename Inner>
     using repetition = basic_repetition<match_mode::greedy, A, B, Inner>;
 
-    template<symbol::quantifier A, symbol::quantifier B, typename Inner>
+    template<symbol::finite_quantifier A, symbol::quantifier B, typename Inner>
     using lazy_repetition = basic_repetition<match_mode::lazy, A, B, Inner>;
 
-    template<symbol::quantifier A, symbol::quantifier B, typename Inner>
+    template<symbol::finite_quantifier A, symbol::quantifier B, typename Inner>
     using possessive_repetition = basic_repetition<match_mode::possessive, A, B, Inner>;
 
     // Fixed repetition
@@ -44,7 +44,7 @@ namespace meta::ast
 
     // Kleene star
     template<match_mode Mode, typename Inner>
-    using basic_star = basic_repetition<Mode, symbol::quantifier_value<0>, symbol::quantifier_inf, Inner>;
+    using basic_star = basic_repetition<Mode, symbol::quantifier_value<0>, symbol::infinity, Inner>;
 
     template<typename Inner>
     using star = basic_star<match_mode::greedy, Inner>;
@@ -57,7 +57,7 @@ namespace meta::ast
 
     // Plus
     template<match_mode Mode, typename Inner>
-    using basic_plus = basic_repetition<Mode, symbol::quantifier_value<1>, symbol::quantifier_inf, Inner>;
+    using basic_plus = basic_repetition<Mode, symbol::quantifier_value<1>, symbol::infinity, Inner>;
 
     template<typename Inner>
     using plus = basic_plus<match_mode::greedy, Inner>;
@@ -119,16 +119,19 @@ namespace meta::ast
     struct named_backref;
 
     // Lookarounds
-    template<typename Inner>
-    struct positive_lookahead;
+    template<assertion_mode Mode, lookaround_direction Direction, typename Inner>
+    struct lookaround;
 
     template<typename Inner>
-    struct negative_lookahead;
+    using positive_lookahead = lookaround<assertion_mode::positive, lookaround_direction::ahead, Inner>;
 
     template<typename Inner>
-    struct positive_lookbehind;
+    using negative_lookahead = lookaround<assertion_mode::negative, lookaround_direction::ahead, Inner>;
 
     template<typename Inner>
-    struct negative_lookbehind;
+    using positive_lookbehind = lookaround<assertion_mode::positive, lookaround_direction::behind, Inner>;
+
+    template<typename Inner>
+    using negative_lookbehind = lookaround<assertion_mode::negative, lookaround_direction::behind, Inner>;
 }
 #endif //MREGEX_AST_ASTFWD_HPP

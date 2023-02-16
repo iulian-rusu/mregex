@@ -373,6 +373,7 @@ namespace meta::tests
     static_assert(regex<R"(0(x|X)(\x+)(h|H)?)">::match("01234F") == false);
     static_assert(regex<R"(0(x|X)(\x+)(h|H)?)">::match("X0h") == false);
     static_assert(regex<R"(0x(\x+)h?)", flag::i>::match("0X012323EJH") == false);
+    static_assert(regex<R"(!)", flag::icase>::match("A") == false);
     // Lookarounds
     static_assert(regex<R"((?!))">::match("") == false);
     static_assert(regex<R"((?!))">::match("a") == false);

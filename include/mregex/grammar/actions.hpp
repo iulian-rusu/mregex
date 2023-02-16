@@ -5,7 +5,7 @@
 
 namespace meta::grammar
 {
-    // Ignore the current symbol on top of the stack and continue
+    // Ignore the current symbol at the front of the stack and continue
     struct ignore {};
 
     // Move to the next token in the input sequence

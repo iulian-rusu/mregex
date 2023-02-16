@@ -6,12 +6,12 @@
 namespace meta::grammar
 {
     /**
-     * Metafunction that handles any escape sequence that is not a backreference.
+     * Metafunction that defines symbols used to handle a single escaped character.
      *
      * @tparam C    The current character in the input pattern
      */
     template<char C>
-    struct begin_generic_escape_sequence
+    struct handle_escaped_char
     {
         using type =
                 type_sequence
@@ -22,7 +22,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'0'>
+    struct handle_escaped_char<'0'>
     {
         using type =
                 type_sequence
@@ -34,7 +34,7 @@ namespace meta::grammar
 
 
     template<>
-    struct begin_generic_escape_sequence<'n'>
+    struct handle_escaped_char<'n'>
     {
         using type =
                 type_sequence
@@ -45,7 +45,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'r'>
+    struct handle_escaped_char<'r'>
     {
         using type =
                 type_sequence
@@ -56,7 +56,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'t'>
+    struct handle_escaped_char<'t'>
     {
         using type =
                 type_sequence
@@ -67,7 +67,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'f'>
+    struct handle_escaped_char<'f'>
     {
         using type =
                 type_sequence
@@ -78,7 +78,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'v'>
+    struct handle_escaped_char<'v'>
     {
         using type =
                 type_sequence
@@ -89,7 +89,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'a'>
+    struct handle_escaped_char<'a'>
     {
         using type =
                 type_sequence
@@ -100,7 +100,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'e'>
+    struct handle_escaped_char<'e'>
     {
         using type =
                 type_sequence
@@ -111,7 +111,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'d'>
+    struct handle_escaped_char<'d'>
     {
         using type =
                 type_sequence
@@ -122,7 +122,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'D'>
+    struct handle_escaped_char<'D'>
     {
         using type =
                 type_sequence
@@ -133,7 +133,7 @@ namespace meta::grammar
                 >;
     };
     template<>
-    struct begin_generic_escape_sequence<'w'>
+    struct handle_escaped_char<'w'>
     {
         using type =
                 type_sequence
@@ -144,7 +144,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'W'>
+    struct handle_escaped_char<'W'>
     {
         using type =
                 type_sequence
@@ -156,7 +156,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'s'>
+    struct handle_escaped_char<'s'>
     {
         using type =
                 type_sequence
@@ -167,7 +167,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'S'>
+    struct handle_escaped_char<'S'>
     {
         using type =
                 type_sequence
@@ -179,7 +179,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'l'>
+    struct handle_escaped_char<'l'>
     {
         using type =
                 type_sequence
@@ -190,7 +190,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'L'>
+    struct handle_escaped_char<'L'>
     {
         using type =
                 type_sequence
@@ -202,7 +202,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'u'>
+    struct handle_escaped_char<'u'>
     {
         using type =
                 type_sequence
@@ -213,7 +213,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'U'>
+    struct handle_escaped_char<'U'>
     {
         using type =
                 type_sequence
@@ -225,7 +225,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'x'>
+    struct handle_escaped_char<'x'>
     {
         using type =
                 type_sequence
@@ -236,7 +236,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'X'>
+    struct handle_escaped_char<'X'>
     {
         using type =
                 type_sequence
@@ -248,7 +248,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'R'>
+    struct handle_escaped_char<'R'>
     {
         using type =
                 type_sequence
@@ -259,7 +259,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'N'>
+    struct handle_escaped_char<'N'>
     {
         using type =
                 type_sequence
@@ -271,7 +271,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'b'>
+    struct handle_escaped_char<'b'>
     {
         using type =
                 type_sequence
@@ -283,7 +283,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'B'>
+    struct handle_escaped_char<'B'>
     {
         using type =
                 type_sequence
@@ -296,7 +296,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'A'>
+    struct handle_escaped_char<'A'>
     {
         using type =
                 type_sequence
@@ -308,7 +308,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_generic_escape_sequence<'Z'>
+    struct handle_escaped_char<'Z'>
     {
         using type =
                 type_sequence
@@ -320,38 +320,38 @@ namespace meta::grammar
     };
 
     /**
-     * Metafunction that handles an escaped character sequence.
-     * Such sequences can be parsed either as a backreference or as a special escaped character.
+     * Metafunction that defines symbols used to handle an escaped character sequence.
+     * Such sequences can be parsed either as a backreference or as a special escape sequence.
      *
      * @tparam C    The current character in the input pattern
      */
-    template<char C, bool = C != '0' && is_numeric<C>>
-    struct begin_escape_sequence : begin_backref<C> {};
+    template<char C, bool = C != '0' && is_numeric(C)>
+    struct handle_escape_sequence;
 
     template<char C>
-    using begin_escape_sequence_t = typename begin_escape_sequence<C>::type;
+    struct handle_escape_sequence<C, true> : begin_backref<C> {};
 
     template<>
-    struct begin_escape_sequence<'k', false> : begin_named_backref {};
+    struct handle_escape_sequence<'k', false> : begin_named_backref {};
 
     template<char C>
-    struct begin_escape_sequence<C, false> : begin_generic_escape_sequence<C> {};
+    struct handle_escape_sequence<C, false> : handle_escaped_char<C> {};
+
+    template<char C>
+    using handle_escape_sequence_t = typename handle_escape_sequence<C>::type;
 
     /**
-     * Metafunction that handles an escaped character sequence inside a set.
+     * Metafunction that defines symbols used to handle an escaped character sequence inside a set.
      * Sets do not allow anchors and backreferences. All such escape sequences are treaded as
      * literal characters.
      *
      * @tparam C    The current character in the input pattern
      */
     template<char C>
-    struct begin_set_escape_sequence : begin_generic_escape_sequence<C> {};
-
-    template<char C>
-    using begin_set_escape_sequence_t = typename begin_set_escape_sequence<C>::type;
+    struct handle_set_escaped_char : handle_escaped_char<C> {};
 
     template<>
-    struct begin_set_escape_sequence<'A'>
+    struct handle_set_escaped_char<'A'>
     {
         using type =
                 type_sequence
@@ -362,7 +362,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_set_escape_sequence<'Z'>
+    struct handle_set_escaped_char<'Z'>
     {
         using type =
                 type_sequence
@@ -373,7 +373,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_set_escape_sequence<'B'>
+    struct handle_set_escaped_char<'B'>
     {
         using type =
                 type_sequence
@@ -384,7 +384,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct begin_set_escape_sequence<'b'>
+    struct handle_set_escaped_char<'b'>
     {
         using type =
                 type_sequence
@@ -394,101 +394,104 @@ namespace meta::grammar
                 >;
     };
 
+    template<char C>
+    using handle_set_escaped_char_t = typename handle_set_escaped_char<C>::type;
+
     /**
-     * Metafunction that handles an escaped character sequence inside a set range.
+     * Metafunction that defines symbols used to handle an escaped character sequence inside a set range.
      * Escape sequences which can match multiple characters are invalid range bounds.
      *
      * @tparam C    The current character in the input pattern
      */
     template<char C>
-    struct begin_set_range_escape_sequence : begin_set_escape_sequence<C> {};
+    struct handle_set_range_escaped_char : handle_set_escaped_char<C> {};
+
+    // Special character classes which cannot be range bounds
+    template<>
+    struct handle_set_range_escaped_char<'d'>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct handle_set_range_escaped_char<'D'>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct handle_set_range_escaped_char<'w'>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct handle_set_range_escaped_char<'W'>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct handle_set_range_escaped_char<'s'>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct handle_set_range_escaped_char<'S'>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct handle_set_range_escaped_char<'l'>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct handle_set_range_escaped_char<'L'>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct handle_set_range_escaped_char<'u'>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct handle_set_range_escaped_char<'U'>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct handle_set_range_escaped_char<'x'>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct handle_set_range_escaped_char<'X'>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct handle_set_range_escaped_char<'R'>
+    {
+        using type = reject;
+    };
+
+    template<>
+    struct handle_set_range_escaped_char<'N'>
+    {
+        using type = reject;
+    };
 
     template<char C>
-    using begin_set_range_escape_sequence_t = typename begin_set_range_escape_sequence<C>::type;
-
-    // Special character classes which cannot be a range bound
-    template<>
-    struct begin_set_range_escape_sequence<'d'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct begin_set_range_escape_sequence<'D'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct begin_set_range_escape_sequence<'w'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct begin_set_range_escape_sequence<'W'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct begin_set_range_escape_sequence<'s'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct begin_set_range_escape_sequence<'S'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct begin_set_range_escape_sequence<'l'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct begin_set_range_escape_sequence<'L'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct begin_set_range_escape_sequence<'u'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct begin_set_range_escape_sequence<'U'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct begin_set_range_escape_sequence<'x'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct begin_set_range_escape_sequence<'X'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct begin_set_range_escape_sequence<'R'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct begin_set_range_escape_sequence<'N'>
-    {
-        using type = reject;
-    };
+    using handle_set_range_escaped_char_t = typename handle_set_range_escaped_char<C>::type;
 }
 #endif //MREGEX_GRAMMAR_ESCAPES_HPP

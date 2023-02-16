@@ -16,7 +16,7 @@ namespace meta::xpr
         using type = ast::capture<ID, Name, Inner>;
     };
 
-    template<match_mode Mode, symbol::quantifier A, symbol::quantifier B>
+    template<match_mode Mode, symbol::finite_quantifier A, symbol::quantifier B>
     struct repetition_provider
     {
         template<typename Inner>

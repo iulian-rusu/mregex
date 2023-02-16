@@ -39,13 +39,9 @@ namespace meta::ast
         -> match_result<Iter>
         {
             if constexpr (Context::flags::unroll)
-            {
-                auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
-                    return fixed_repetition<N - 1, Inner>::match(begin, end, new_it, ctx, cont);
-                };
-                return Inner::match(begin, end, it, ctx, continuation);
-            }
-            return non_unrolled_generic_match(begin, end, it, ctx, cont);
+                return unrolled_generic_match(begin, end, it, ctx, cont);
+            else
+                return non_unrolled_generic_match(begin, end, it, ctx, cont);
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
@@ -59,6 +55,31 @@ namespace meta::ast
                 return unrolled_trivial_match(it, ctx, cont, std::make_index_sequence<N>{});
             else
                 return non_unrolled_trivial_match(it, ctx, cont);
+        }
+
+        template<std::forward_iterator Iter, typename Context, typename Continuation>
+        static constexpr auto unrolled_generic_match(Iter begin, Iter end, Iter it,Context &ctx, Continuation &&cont) noexcept
+        -> match_result<Iter>
+        {
+            auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
+                return fixed_repetition<N - 1, Inner>::match(begin, end, new_it, ctx, cont);
+            };
+            return Inner::match(begin, end, it, ctx, continuation);
+        }
+
+        template<std::forward_iterator Iter, typename Context, typename Continuation>
+        static constexpr auto non_unrolled_generic_match(
+                Iter begin, Iter end, Iter it,
+                Context &ctx, Continuation &&cont,
+                std::size_t repeats = N
+        ) noexcept -> match_result<Iter>
+        {
+            if (repeats == 1)
+                return Inner::match(begin, end, it, ctx, cont);
+            auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
+                return non_unrolled_generic_match(begin, end, new_it, ctx, cont, repeats - 1);
+            };
+            return Inner::match(begin, end, it, ctx, continuation);
         }
 
         template<std::random_access_iterator Iter, typename Context, typename Continuation, std::size_t... Indices>
@@ -105,21 +126,6 @@ namespace meta::ast
                     return {it, false};
             }
             return cont(it);
-        }
-
-        template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto non_unrolled_generic_match(
-                Iter begin, Iter end, Iter it,
-                Context &ctx, Continuation &&cont,
-                std::size_t repeats = N
-        ) noexcept -> match_result<Iter>
-        {
-            if (repeats == 1)
-                return Inner::match(begin, end, it, ctx, cont);
-            auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
-                return non_unrolled_generic_match(begin, end, new_it, ctx, cont, repeats - 1);
-            };
-            return Inner::match(begin, end, it, ctx, continuation);
         }
     };
 }

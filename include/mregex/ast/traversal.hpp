@@ -23,10 +23,16 @@ namespace meta::ast
         using type = Wrapper<typename Transform<Inner>::type ...>;
     };
 
-    template<template<typename> typename Transform, match_mode Mode, symbol::quantifier A, symbol::quantifier B, typename Inner>
+    template<template<typename> typename Transform, match_mode Mode, symbol::finite_quantifier A, symbol::quantifier B, typename Inner>
     struct traverse<Transform, basic_repetition<Mode, A, B, Inner>>
     {
         using type = basic_repetition<Mode, A, B, typename Transform<Inner>::type>;
+    };
+
+    template<template<typename> typename Transform, template<assertion_mode, lookaround_direction, typename> typename Lookaround, assertion_mode Mode, lookaround_direction Direction, typename Inner>
+    struct traverse<Transform, Lookaround<Mode, Direction, Inner>>
+    {
+        using type = Lookaround<Mode, Direction, typename Transform<Inner>::type>;
     };
 
     template<template<typename> typename Transform, std::size_t I, typename Name, typename Inner>

@@ -3,6 +3,7 @@
 
 #include <mregex/ast/nodes/terminals/terminal.hpp>
 #include <mregex/ast/match_result.hpp>
+#include <mregex/ast/traits.hpp>
 #include <mregex/utility/distance.hpp>
 #include <mregex/utility/reversed_range_view.hpp>
 #include <mregex/regex_capture.hpp>
@@ -47,15 +48,9 @@ namespace meta::ast
 
             // Lookbehinds use reverse iterators. To check for equality, iterator directions must be the same
             constexpr bool different_iterators = !std::is_same_v<Iter, typename Context::iterator_type>;
-            for (auto c : reverse_if<different_iterators>(captured))
+            for (auto target : reverse_if<different_iterators>(captured))
             {
-                auto subject = *it;
-                if constexpr (Context::flags::icase)
-                {
-                    subject = to_lower(subject);
-                    c = to_lower(c);
-                }
-                if (subject != c)
+                if (!equals<Context::flags::icase>(target, *it))
                     return {it, false};
                 ++it;
             }
@@ -63,13 +58,22 @@ namespace meta::ast
         }
 
     private:
-        template<bool Reverse, typename Range>
+        template<bool Reverse, std::ranges::bidirectional_range Range>
         static constexpr auto reverse_if(Range &range) noexcept
         {
             if constexpr (Reverse)
                 return reversed_range_view{range};
             else
                 return range;
+        }
+
+        template<bool IgnoreCase>
+        static constexpr bool equals(char a, char b) noexcept
+        {
+            if constexpr (IgnoreCase)
+                return to_lower(a) == to_lower(b);
+            else
+                return a == b;
         }
     };
 

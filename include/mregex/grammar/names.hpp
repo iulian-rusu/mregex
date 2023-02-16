@@ -8,11 +8,14 @@
 namespace meta::grammar
 {
     /**
-     * Metafunction that begins the parsing of a name sequence.
-     * Name sequences are used to identity named captures and named backreferences.
+     * Metafunction that defines symbols used to parse name sequences.
+     * Name sequences are used to identify named captures and named backreferences.
      */
-    template<template<char...> typename Name, char C, bool = is_word<C> && !is_numeric<C>>
-    struct begin_name
+    template<template<char...> typename Name, char C, bool = is_word(C) && !is_numeric(C)>
+    struct begin_name;
+
+    template<template<char...> typename Name, char C>
+    struct begin_name<Name, C, true>
     {
         using type =
                 type_sequence
@@ -32,14 +35,11 @@ namespace meta::grammar
     using begin_name_t = typename begin_name<Name, C>::type;
 
     /**
-     * Metafunction that updates a name sequence.
+     * Metafunction that defines symbols used to update a name sequence.
      * This update can add more characters or finish parsing the name sequence.
      */
-    template<typename, char C, bool = is_word<C>>
-    struct update_name
-    {
-        using type = reject;
-    };
+    template<typename Name, char C, bool = is_word(C)>
+    struct update_name;
 
     template<template<char...> typename Name, char... Chars, char C>
     struct update_name<Name<Chars ...>, C, true>
@@ -50,6 +50,12 @@ namespace meta::grammar
                     advance,
                     Name<Chars ..., C>
                 >;
+    };
+
+    template<typename Name, char C>
+    struct update_name<Name, C, false>
+    {
+        using type = reject;
     };
 
     template<typename Name, char C>

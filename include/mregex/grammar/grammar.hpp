@@ -4,6 +4,9 @@
 #include <mregex/grammar/escapes.hpp>
 #include <mregex/grammar/names.hpp>
 #include <mregex/grammar/quantifiers.hpp>
+#include <mregex/symbols/actions.hpp>
+#include <mregex/symbols/core.hpp>
+#include <mregex/symbols/names.hpp>
 #include <mregex/utility/type_traits.hpp>
 
 namespace meta::grammar
@@ -337,7 +340,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::group_mod_less
+                    symbol::group_mod_less_than
                 >;
     };
 
@@ -349,7 +352,7 @@ namespace meta::grammar
                 <
                     advance,
                     symbol::group_begin,
-                    symbol::make_positive_lookahead
+                    symbol::make_lookaround<assertion_mode::positive, lookaround_direction::ahead>
                 >;
     };
 
@@ -361,36 +364,36 @@ namespace meta::grammar
                 <
                     advance,
                     symbol::group_begin,
-                    symbol::make_negative_lookahead
+                    symbol::make_lookaround<assertion_mode::negative, lookaround_direction::ahead>
                 >;
     };
 
     template<>
-    struct rule<symbol::group_mod_less, symbol::character<'='>>
+    struct rule<symbol::group_mod_less_than, symbol::character<'='>>
     {
         using type =
                 type_sequence
                 <
                     advance,
                     symbol::group_begin,
-                    symbol::make_positive_lookbehind
+                    symbol::make_lookaround<assertion_mode::positive, lookaround_direction::behind>
                 >;
     };
 
     template<>
-    struct rule<symbol::group_mod_less, symbol::character<'!'>>
+    struct rule<symbol::group_mod_less_than, symbol::character<'!'>>
     {
         using type =
                 type_sequence
                 <
                     advance,
                     symbol::group_begin,
-                    symbol::make_negative_lookbehind
+                    symbol::make_lookaround<assertion_mode::negative, lookaround_direction::behind>
                 >;
     };
 
     template<char C>
-    struct rule<symbol::group_mod_less, symbol::character<C>>
+    struct rule<symbol::group_mod_less_than, symbol::character<C>>
     {
         using type = begin_name_t<symbol::capture_name_seq, C>;
     };
@@ -594,7 +597,7 @@ namespace meta::grammar
     template<char C>
     struct rule<symbol::esc, symbol::character<C>>
     {
-        using type = begin_escape_sequence_t<C>;
+        using type = handle_escape_sequence_t<C>;
     };
 
     template<>
@@ -714,18 +717,18 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::quantifier_values<symbol::quantifier_value<N>, symbol::quantifier_inf>
+                    symbol::quantifier_range<symbol::quantifier_value<N>, symbol::infinity>
                 >;
     };
 
-    template<typename A, typename B, char C>
-    struct rule<symbol::quantifier_values<A, B>, symbol::character<C>>
+    template<symbol::finite_quantifier A, symbol::quantifier B, char C>
+    struct rule<symbol::quantifier_range<A, B>, symbol::character<C>>
     {
-        using type = update_quantifier_value_t<symbol::quantifier_values<A, B>, C>;
+        using type = update_quantifier_value_t<symbol::quantifier_range<A, B>, C>;
     };
 
-    template<typename A, typename B>
-    struct rule<symbol::quantifier_values<A, B>, symbol::character<'}'>>
+    template<symbol::finite_quantifier A, symbol::quantifier B>
+    struct rule<symbol::quantifier_range<A, B>, symbol::character<'}'>>
     {
         using type =
                 type_sequence
@@ -1159,7 +1162,7 @@ namespace meta::grammar
     template<char C>
     struct rule<symbol::set_esc, symbol::character<C>>
     {
-        using type = begin_set_escape_sequence_t<C>;
+        using type = handle_set_escaped_char_t<C>;
     };
 
     template<char C>
@@ -1233,7 +1236,7 @@ namespace meta::grammar
     template<char C>
     struct rule<symbol::set_range_esc, symbol::character<C>>
     {
-        using type = begin_set_range_escape_sequence_t<C>;
+        using type = handle_set_range_escaped_char_t<C>;
     };
 
     template<>
@@ -1242,7 +1245,7 @@ namespace meta::grammar
         using type = reject;
     };
 
-    // Rules for parsing identifier-based backreferences
+    // Rules for parsing numeric backreferences
     template<std::size_t ID, char C>
     struct rule<symbol::backref_id<ID>, symbol::character<C>>
     {
@@ -1255,7 +1258,7 @@ namespace meta::grammar
         using type = symbol::make_backref<ID>;
     };
 
-    // Rules for parsing name-based backreferences
+    // Rules for parsing named backreferences
     template<char C>
     struct rule<symbol::backref_name_begin, symbol::character<C>>
     {

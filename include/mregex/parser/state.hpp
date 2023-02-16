@@ -76,8 +76,7 @@ namespace meta
     }
 
     /**
-     * Computes the final parser state starting from an initial state
-     * and advancing it N times.
+     * Computes the final parser state starting from an initial state and advancing it N times.
      */
     template<typename State, std::size_t N>
     using final_parser_state = decltype(detail::advance_parser_state(State{}, std::make_index_sequence<N + 1>{}));

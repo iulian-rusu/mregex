@@ -5,6 +5,7 @@
 #include <string>
 #include <string_view>
 #include <mregex/ast/traits.hpp>
+#include <mregex/symbols/names.hpp>
 #include <mregex/utility/concepts.hpp>
 
 namespace meta
@@ -199,11 +200,11 @@ namespace meta
     template<std::forward_iterator Iter, typename... Names>
     struct regex_capture_view_allocator<Iter, type_sequence<Names ...>>
     {
-        using type = std::tuple<regex_capture_view<Iter>, regex_capture_view<Iter, Names> ...>;
+        using storage_type = std::tuple<regex_capture_view<Iter>, regex_capture_view<Iter, Names> ...>;
     };
 
     template<std::forward_iterator Iter, typename NameSpec>
-    using regex_capture_view_storage = typename regex_capture_view_allocator<Iter, NameSpec>::type;
+    using regex_capture_view_storage = typename regex_capture_view_allocator<Iter, NameSpec>::storage_type;
 
     /**
      * Defines a std::tuple used to store memory-owning regex captures.
@@ -214,11 +215,11 @@ namespace meta
     template<typename... Names>
     struct regex_capture_allocator<type_sequence<Names ...>>
     {
-        using type = std::tuple<regex_capture<>, regex_capture<Names> ...>;
+        using storage_type = std::tuple<regex_capture<>, regex_capture<Names> ...>;
     };
 
     template<typename NameSpec>
-    using regex_capture_storage = typename regex_capture_allocator<NameSpec>::type;
+    using regex_capture_storage = typename regex_capture_allocator<NameSpec>::storage_type;
 
     /**
      * Metafunction used to rename a given regex capture type using pattern matching.
@@ -228,9 +229,6 @@ namespace meta
      */
     template<captured_content Capture, typename Name>
     struct rename_capture;
-
-    template<captured_content Capture, typename Name>
-    using rename_capture_t = typename rename_capture<Capture, Name>::type;
 
     template<std::forward_iterator Iter, typename OldName, typename Name>
     struct rename_capture<regex_capture_view<Iter, OldName>, Name>
@@ -243,6 +241,9 @@ namespace meta
     {
         using type = regex_capture<Name>;
     };
+
+    template<captured_content Capture, typename Name>
+    using rename_capture_t = typename rename_capture<Capture, Name>::type;
 }
 
 template<meta::captured_content Capture>

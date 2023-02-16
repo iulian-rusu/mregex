@@ -8,8 +8,8 @@
 namespace meta::grammar
 {
     /**
-     * Metafunction that handles any escape sequence which marks the beginning
-     * of a backreference or a named backreference.
+     * Metafunction that defines symbols used to parse any escape sequence
+     * which marks the beginning of a backreference.
      *
      * @tparam C    The current character in the input pattern
      */
@@ -24,6 +24,9 @@ namespace meta::grammar
                 >;
     };
 
+    /**
+     * Metafunction that defines symbols used to parse named backreferences.
+     */
     struct begin_named_backref
     {
         using type =
@@ -36,14 +39,17 @@ namespace meta::grammar
     };
 
     /**
-     * Metafunction that decides if the current rule will continue
-     * the backreference ID building or will finish it.
+     * Metafunction that defines symbols used to either continue a backreference ID
+     * or finish parsing it.
      *
      * @tparam ID   The current backreference ID on the stack
      * @tparam C    The current character in the input pattern
      */
-    template<std::size_t ID, char C, bool = is_numeric<C>>
-    struct update_backref
+    template<std::size_t ID, char C, bool = is_numeric(C)>
+    struct update_backref;
+
+    template<std::size_t ID, char C>
+    struct update_backref<ID, C, true>
     {
         using type =
                 type_sequence

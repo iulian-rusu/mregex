@@ -291,16 +291,19 @@ namespace meta::tests
     static_assert(accepted<R"(xyz(?<a)abc)"> == false);
     static_assert(accepted<R"(xyz(?<<a)abc)"> == false);
     // Named groups and named backreferences
+    static_assert(accepted<R"((?<>xyz))"> == false);
     static_assert(accepted<R"((?<1name>xyz))"> == false);
     static_assert(accepted<R"((?<namexyz))"> == false);
     static_assert(accepted<R"((?<name >xyz))"> == false);
     static_assert(accepted<R"((?< name>xyz))"> == false);
     static_assert(accepted<R"((?<+name>xyz))"> == false);
+    static_assert(accepted<R"(\k)"> == false);
+    static_assert(accepted<R"(\k<)"> == false);
+    static_assert(accepted<R"(\k<>)"> == false);
     static_assert(accepted<R"(\k<+name>)"> == false);
     static_assert(accepted<R"(\k<name)"> == false);
+    static_assert(accepted<R"(\k<name >)"> == false);
     static_assert(accepted<R"(\kname>)"> == false);
     static_assert(accepted<R"(\k<1name>)"> == false);
     static_assert(accepted<R"(\k<name>**)"> == false);
-    static_assert(accepted<R"(\k<)"> == false);
-    static_assert(accepted<R"(\k)"> == false);
 }

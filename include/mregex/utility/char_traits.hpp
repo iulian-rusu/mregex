@@ -3,36 +3,54 @@
 
 namespace meta
 {
-    template<char C>
-    inline constexpr bool is_numeric = '0' <= C && C <= '9';
-
-    template<char C>
-    inline constexpr bool is_lower = 'a' <= C && C <= 'z';
-
-    template<char C>
-    inline constexpr bool is_upper = 'A' <= C && C <= 'Z';
-
-    template<char C>
-    inline constexpr bool is_alpha = is_lower<C> || is_upper<C>;
-
-    template<char C>
-    inline constexpr bool is_word = is_alpha<C> || is_numeric<C> || C == '_';
-
-    template<char C>
-    inline constexpr char toggle_case = is_alpha<C> ? static_cast<char>(C ^ 0x20) : C;
-
-    constexpr char to_lower(char c) noexcept
+    constexpr bool is_numeric(char input) noexcept
     {
-        if ('A' <= c && c <= 'Z')
-            return static_cast<char>(c ^ 0x20);
-        return c;
+        return '0' <= input && input <= '9';
     }
 
-    constexpr char to_upper(char c) noexcept
+    constexpr bool is_lower(char input) noexcept
     {
-        if ('a' <= c && c <= 'z')
-            return static_cast<char>(c ^ 0x20);;
-        return c;
+        return 'a' <= input && input <= 'z';
+    }
+
+    constexpr bool is_upper(char input) noexcept
+    {
+        return 'A' <= input && input <= 'Z';
+    }
+
+    constexpr bool is_alpha(char input) noexcept
+    {
+        return is_lower(input) || is_upper(input);
+    }
+
+    constexpr bool is_word(char input) noexcept
+    {
+        return is_alpha(input) || is_numeric(input) || input == '_';
+    }
+
+    /**
+     * In ASCII encoding, each lowercase letter is offset by 32 from its uppercase equivalent.
+     * Flipping the fifth bit of an alphabetical character will invert its case.
+     * This function forces the bit flip without checking if the input is alphabetical.
+     */
+    constexpr char flip_case_bit(char input) noexcept
+    {
+        return static_cast<char>(input ^ 0x20);
+    }
+
+    constexpr char to_lower(char input) noexcept
+    {
+        return is_upper(input) ? flip_case_bit(input) : input;
+    }
+
+    constexpr char to_upper(char input) noexcept
+    {
+        return is_lower(input) ? flip_case_bit(input) : input;
+    }
+
+    constexpr char invert_case(char input) noexcept
+    {
+        return is_alpha(input) ? flip_case_bit(input) : input;
     }
 }
 #endif //MREGEX_UTILITY_CHAR_TRAITS_HPP

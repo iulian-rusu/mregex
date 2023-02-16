@@ -50,7 +50,7 @@ namespace meta
          * @tparam Nodes    The stack with the AST nodes
          * @tparam Symbols  The stack with the current parsing symbols
          */
-        template<std::size_t I, typename Nodes, typename Symbols, bool = symbol::is_semantic_action<top<Symbols>>>
+        template<std::size_t I, typename Nodes, typename Symbols, bool = symbol::is_semantic_action<front_t<Symbols>>>
         struct parse;
 
         template<std::size_t I, typename Nodes, typename Symbols>
@@ -59,22 +59,22 @@ namespace meta
         template<std::size_t I, typename Nodes, typename Symbols>
         struct parse<I, Nodes, Symbols, true>
         {
-            using next_nodes = ast::build_t<top<Symbols>, token_t<I - 1>, Nodes>;
-            using type = parse_t<I, next_nodes, pop<Symbols>>;
+            using next_nodes = ast::build_t<front_t<Symbols>, token_t<I - 1>, Nodes>;
+            using type = parse_t<I, next_nodes, pop_t<Symbols>>;
         };
 
         template<std::size_t I, typename Nodes, typename Symbols>
         struct parse<I, Nodes, Symbols, false>
         {
-            using next_symbols = grammar::rule_t<top<Symbols>, token_t<I>>;
-            using type = transition_t<I, next_symbols, Nodes, pop<Symbols>>;
+            using next_symbols = grammar::rule_t<front_t<Symbols>, token_t<I>>;
+            using type = transition_t<I, next_symbols, Nodes, pop_t<Symbols>>;
         };
 
         // Base case - push the symbols on the stack
         template<std::size_t I, typename NewSymbols, typename Nodes, typename Symbols>
         struct transition
         {
-            using type = parse_t<I, Nodes, push<Symbols, NewSymbols>>;
+            using type = parse_t<I, Nodes, push_t<Symbols, NewSymbols>>;
         };
 
         // Don't push anything
@@ -109,7 +109,7 @@ namespace meta
         template<std::size_t I, typename Nodes, typename Symbols>
         struct transition<I, grammar::accept, Nodes, Symbols>
         {
-            using type = parser_result<ast::preorder_index_t<0, top<Nodes>>, parsing::success>;
+            using type = parser_result<ast::preorder_index_t<0, front_t<Nodes>>, parsing::success>;
         };
 
         using initial_state = state<0, type_sequence<>, type_sequence<symbol::begin>>;

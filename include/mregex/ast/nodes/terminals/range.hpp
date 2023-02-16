@@ -7,7 +7,7 @@ namespace meta::ast
 {
     namespace detail
     {
-        template<typename T, typename U>
+        template<typename R1, typename R2>
         struct range_intersection;
 
         template<char A1, char B1, char A2, char B2>
@@ -41,7 +41,7 @@ namespace meta::ast
             auto input = *it;
             bool result = A <= input && input <= B;
             if constexpr (Context::flags::icase)
-                result |= is_in_alpha_subrange(input ^ 0x20);
+                result |= is_in_alpha_subrange(flip_case_bit(input));
             return result;
         }
 

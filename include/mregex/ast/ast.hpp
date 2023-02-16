@@ -11,8 +11,7 @@
 #include <mregex/ast/nodes/terminals/wildcard.hpp>
 #include <mregex/ast/nodes/alternation.hpp>
 #include <mregex/ast/nodes/capture.hpp>
-#include <mregex/ast/nodes/lookaheads.hpp>
-#include <mregex/ast/nodes/lookbehinds.hpp>
+#include <mregex/ast/nodes/lookaround.hpp>
 #include <mregex/ast/nodes/sequence.hpp>
 
 #endif //MREGEX_AST_HPP

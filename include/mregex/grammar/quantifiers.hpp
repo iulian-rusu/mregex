@@ -8,7 +8,7 @@
 namespace meta::grammar
 {
     /**
-     * Metafunction used as a grammar rule when the parsing of a quantifier fails.
+     * Metafunction that defines symbols used to abort parsing a quantifier.
      * In this case, the parser has to recover the skipped metacharacter used to
      * mark the start of a quantifier, like '{'.
      *
@@ -37,8 +37,11 @@ namespace meta::grammar
      *
      * @tparam C    The current character being parsed
      */
-    template<char C, bool = is_numeric<C>>
-    struct begin_quantifier_value
+    template<char C, bool = is_numeric(C)>
+    struct begin_quantifier_value;
+
+    template<char C>
+    struct begin_quantifier_value<C, true>
     {
         using type =
                 type_sequence
@@ -47,7 +50,7 @@ namespace meta::grammar
                     symbol::quantifier_value<C - '0'>
                 >;
     };
-    
+
     template<char C>
     struct begin_quantifier_value<C, false>
     {
@@ -58,12 +61,12 @@ namespace meta::grammar
     using begin_quantifier_value_t = typename begin_quantifier_value<C>::type;
 
     /**
-     * Metafunction that defines the rules for updating quantifier values when parsing a new token.
+     * Metafunction that defines symbols used to update quantifier values.
      *
-     * @tparam T    The quantifier value symbol being updated
-     * @tparam C    The current character being parsed
+     * @tparam Symbol   The symbol containing the quantifier value to be updated
+     * @tparam C        The current character being parsed
      */
-    template<typename T, char C, bool = is_numeric<C>>
+    template<typename Symbol, char C, bool = is_numeric(C)>
     struct update_quantifier_value;
 
     template<std::size_t N, char C>
@@ -77,35 +80,35 @@ namespace meta::grammar
                 >;
     };
 
-    template<typename T, std::size_t N, char C>
-    struct update_quantifier_value<symbol::quantifier_values<T, symbol::quantifier_value<N>>, C, true>
+    template<symbol::quantifier A, std::size_t N, char C>
+    struct update_quantifier_value<symbol::quantifier_range<A, symbol::quantifier_value<N>>, C, true>
     {
         using type =
                 type_sequence
                 <
                     advance,
-                    symbol::quantifier_values<T, symbol::quantifier_value<10 * N + C - '0'>>
+                    symbol::quantifier_range<A, symbol::quantifier_value<10 * N + C - '0'>>
                 >;
     };
 
-    template<typename T, char C>
-    struct update_quantifier_value<symbol::quantifier_values<T, symbol::quantifier_inf>, C, true>
+    template<symbol::quantifier A, char C>
+    struct update_quantifier_value<symbol::quantifier_range<A, symbol::infinity>, C, true>
     {
         using type =
                 type_sequence
                 <
                     advance,
-                    symbol::quantifier_values<T, symbol::quantifier_value<C - '0'>>
+                    symbol::quantifier_range<A, symbol::quantifier_value<C - '0'>>
                 >;
     };
 
-    template<typename T, char C>
-    struct update_quantifier_value<T, C, false>
+    template<typename Symbol, char C>
+    struct update_quantifier_value<Symbol, C, false>
     {
         using type = reject;
     };
 
-    template<typename T, char C>
-    using update_quantifier_value_t = typename update_quantifier_value<T, C>::type;
+    template<typename Symbol, char C>
+    using update_quantifier_value_t = typename update_quantifier_value<Symbol, C>::type;
 }
 #endif //MREGEX_GRAMMAR_QUANTIFIERS_HPP

@@ -5,95 +5,109 @@ namespace meta::tests
     namespace
     {
         template<typename Sequence, typename First, typename... Rest>
-        struct push_sequence
+        struct push_type_pack
         {
-            using type = push<typename push_sequence<Sequence, Rest ...>::type, First>;
+            using type = typename push_type_pack<push_t<Sequence, First>, Rest ...>::type;
         };
 
         template<typename Sequence, typename Elem>
-        struct push_sequence<Sequence, Elem>
+        struct push_type_pack<Sequence, Elem>
         {
-            using type = push<Sequence, Elem>;
+            using type = push_t<Sequence, Elem>;
         };
 
         template<typename Sequence, typename... Elems>
-        using push_sequence_t = typename push_sequence<Sequence, Elems ...>::type;
+        using push_type_pack_t = typename push_type_pack<Sequence, Elems ...>::type;
     }
 
-    static_assert(std::is_same_v<top<type_sequence<>>, symbol::empty>);
-    static_assert(std::is_same_v<top<type_sequence<double, int, char>>, double>);
-    static_assert(std::is_same_v<pop<type_sequence<>>, type_sequence<>>);
-    static_assert(std::is_same_v<push<type_sequence<>, type_sequence<>>, type_sequence<>>);
-    static_assert(std::is_same_v<push<type_sequence<>, int>, type_sequence<int>>);
-    static_assert(std::is_same_v<push<push<push<type_sequence<>, int>, char>, double>, type_sequence<double, char, int>>);
-    static_assert(std::is_same_v<pop<pop<push<push<push<type_sequence<>, int>, char>, double>>>, type_sequence<int>>);
+    static_assert(std::is_same_v<front_t<type_sequence<>>, symbol::empty>);
+    static_assert(std::is_same_v<front_t<type_sequence<char, int, double>>, char>);
+    static_assert(std::is_same_v<pop_t<type_sequence<>>, type_sequence<>>);
+    static_assert(std::is_same_v<pop_t<push_t<type_sequence<>, int>>, type_sequence<>>);
+    static_assert(std::is_same_v<push_t<type_sequence<>, type_sequence<>>, type_sequence<>>);
+    static_assert(std::is_same_v<push_t<type_sequence<>, int>, type_sequence<int>>);
     static_assert(
         std::is_same_v
         <
-            push<type_sequence<long, char>, type_sequence<double, int>>,
-            type_sequence<double, int, long, char>
+            push_t<push_t<push_t<type_sequence<>, double>, int>, char>,
+            type_sequence<char, int, double>
         >
     );
     static_assert(
         std::is_same_v
         <
-            push_sequence_t<type_sequence<void>, char, int, float, double, long, long double, long long, short int>,
-            type_sequence<char, int, float, double, long, long double, long long, short int, void>
+            pop_t<pop_t<push_t<push_t<push_t<type_sequence<>, double>, int>, char>>>,
+            type_sequence<double>
         >
     );
     static_assert(
         std::is_same_v
         <
-            concat
+            push_t<type_sequence<short, long>, type_sequence<signed, unsigned>>,
+            type_sequence<signed, unsigned, short, long>
+        >
+    );
+    static_assert(
+        std::is_same_v
+        <
+            push_type_pack_t<type_sequence<void>, char, short, long, float, double, unsigned, signed>,
+            type_sequence<signed, unsigned, double, float, long, short, char, void>
+        >
+    );
+    static_assert(
+        std::is_same_v
+        <
+            concat_t
             <
-                type_sequence<char>,
-                type_sequence<int, float>,
-                type_sequence<double, long, long double>,
-                type_sequence<long long, short int>
+                type_sequence<void>,
+                type_sequence<short, long>,
+                type_sequence<int, float, double>,
+                type_sequence<char, signed, unsigned>,
+                type_sequence<bool, bool, bool, bool, bool>
             >,
-            type_sequence<char, int, float, double, long, long double, long long, short int>
+            type_sequence<void, short, long, int, float, double, char, signed, unsigned, bool, bool, bool, bool, bool>
         >
     );
     static_assert(
         std::is_same_v
         <
-            reverse<type_sequence<>>,
+            reverse_t<type_sequence<>>,
             type_sequence<>
         >
     );
     static_assert(
         std::is_same_v
         <
-            reverse<type_sequence<int>>,
+            reverse_t<type_sequence<int>>,
             type_sequence<int>
         >
     );
     static_assert(
         std::is_same_v
         <
-            reverse<type_sequence<int, double>>,
+            reverse_t<type_sequence<int, double>>,
             type_sequence<double, int>
         >
     );
     static_assert(
         std::is_same_v
         <
-            reverse<type_sequence<char, short, int>>,
-            type_sequence<int, short, char>
+            reverse_t<type_sequence<char, short, long>>,
+            type_sequence<long, short, char>
         >
     );
     static_assert(
         std::is_same_v
         <
-            reverse<type_sequence<char, short, int, long>>,
-            type_sequence<long, int, short, char>
+            reverse_t<type_sequence<char, short, long, double>>,
+            type_sequence<double, long, short, char>
         >
     );
     static_assert(
         std::is_same_v
         <
-            reverse<type_sequence<char, short, int, long, float, double, unsigned, void>>,
-            type_sequence<void, unsigned, double, float, long, int, short, char>
+            reverse_t<type_sequence<void, char, short, long, float, double, unsigned, signed>>,
+            type_sequence<signed, unsigned, double, float, long, short, char, void>
         >
     );
 }

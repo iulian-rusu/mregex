@@ -39,7 +39,7 @@ namespace meta
         using implicit_capture_type = std::tuple_element_t<0, capture_storage_type>;
 
         static constexpr bool is_view = is_capture_view<implicit_capture_type>;
-        static constexpr std::size_t capture_count = std::tuple_size_v<capture_storage_type> - 1;
+        static constexpr std::size_t group_count = std::tuple_size_v<capture_storage_type> - 1;
 
         constexpr basic_regex_result() noexcept = default;
 
@@ -238,7 +238,7 @@ namespace meta
         template<std::size_t ID, capture_storage Captures>
         static constexpr decltype(auto) get_group_by_index(Captures &&captures) noexcept
         {
-            static_assert(ID <= capture_count, "capturing group does not exist");
+            static_assert(ID <= group_count, "capturing group does not exist");
             return std::get<ID>(std::forward<Captures>(captures));
         }
 
@@ -279,7 +279,7 @@ namespace std
     template<meta::capture_storage CaptureStorage, typename NameSpec>
     struct tuple_size<meta::basic_regex_result<CaptureStorage, NameSpec>>
     {
-        static constexpr size_t value = meta::basic_regex_result<CaptureStorage, NameSpec>::capture_count;
+        static constexpr size_t value = meta::basic_regex_result<CaptureStorage, NameSpec>::group_count;
     };
 
     template<size_t ID, meta::capture_storage CaptureStorage, typename NameSpec>

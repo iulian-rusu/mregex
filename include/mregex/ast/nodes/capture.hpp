@@ -4,6 +4,7 @@
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/match_result.hpp>
 #include <mregex/ast/traits.hpp>
+#include <mregex/symbols/names.hpp>
 
 namespace meta::ast
 {
@@ -16,22 +17,29 @@ namespace meta::ast
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            using regex_type = typename Context::regex_type;
-            using base_iterator_type = typename Context::iterator_type;
-            using capture_view_type = regex_capture_view_t<regex_type, ID, base_iterator_type>;
-
             auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
-                // Iterator types might be different if matching inside lookbehind
-                if constexpr (!std::is_same_v<Iter, base_iterator_type>)
-                    std::get<ID>(ctx.captures) = capture_view_type{new_it.base(), it.base()};
-                else
-                    std::get<ID>(ctx.captures) = capture_view_type{it, new_it};
+                capture_matched_range(it, new_it, ctx);
                 return cont(new_it);
             };
             if (auto inner_match = Inner::match(begin, end, it, ctx, continuation))
                 return inner_match;
             std::get<ID>(ctx.captures).clear();
             return {it, false};
+        }
+
+    private:
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr auto capture_matched_range(Iter begin, Iter end, Context &ctx) noexcept
+        {
+            using regex_type = typename Context::regex_type;
+            using base_iterator_type = typename Context::iterator_type;
+            using capture_view_type = regex_capture_view_t<regex_type, ID, base_iterator_type>;
+
+            // Iterator types might be different if matching was done inside a lookbehind
+            if constexpr (std::is_same_v<Iter, base_iterator_type>)
+                std::get<ID>(ctx.captures) = capture_view_type{begin, end};
+            else
+                std::get<ID>(ctx.captures) = capture_view_type{end.base(), begin.base()};
         }
     };
 

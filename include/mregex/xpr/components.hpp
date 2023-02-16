@@ -57,7 +57,7 @@ namespace meta::xpr
     template<std::size_t N, match_mode Mode, typename... Nodes>
     constexpr auto at_least(regex_interface<Nodes>...) noexcept
     {
-        using wrapper_provider = repetition_provider<Mode, symbol::quantifier_value<N>, symbol::quantifier_inf>;
+        using wrapper_provider = repetition_provider<Mode, symbol::quantifier_value<N>, symbol::infinity>;
         return to_regex(pack<wrapper_provider::template type>(Nodes{} ...));
     }
 

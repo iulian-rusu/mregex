@@ -28,7 +28,7 @@ namespace meta::ast
     template<typename... Inner>
     struct invert<sequence<Inner ...>>
     {
-        using type = decltype(detail::to_sequence(reverse<type_sequence<invert_t<Inner> ...>>{}));
+        using type = decltype(detail::to_sequence(reverse_t<type_sequence<invert_t<Inner> ...>>{}));
     };
 
     template<typename Inner>

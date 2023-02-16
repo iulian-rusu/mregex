@@ -20,7 +20,6 @@ namespace meta
         using ast_type = regex_ast_t<regex_type>;
         using context_type = regex_context_t<regex_type, iterator_type>;
         using result_view_type = regex_result_view_t<regex_type, iterator_type>;
-        using continuation_category = continuations<iterator_type>;
         using method = search_method<regex_type>;
 
         constexpr regex_match_generator(iterator_type begin, iterator_type end)

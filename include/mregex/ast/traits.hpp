@@ -10,10 +10,10 @@ namespace meta::ast
     /**
      * Type trait used to identify nodes that can be trivially matched.
      * A node is detected as trivially matchable by checking if it contains a static member function
-     * template match_one<A, B>, where A satisfies std::forward_iterator and B is any generic type.
+     * template match_one<A, B>, where A satisfies std::forward_iterator and B is a regular type.
      */
     template<typename Node>
-    inline constexpr bool is_trivially_matchable = requires { &Node::template match_one<char *, std::type_identity<void>>; };
+    inline constexpr bool is_trivially_matchable = requires { &Node::template match_one<char *, type_sequence<>>; };
 
     template<typename... Nodes>
     inline constexpr bool are_trivially_matchable = (is_trivially_matchable<Nodes> && ...);
@@ -45,11 +45,17 @@ namespace meta::ast
     template<template<typename...> typename Wrapper, typename... Nodes>
     struct capture_name_spec<Wrapper<Nodes ...>>
     {
-        using type = concat<capture_name_spec_t<Nodes> ...>;
+        using type = concat_t<capture_name_spec_t<Nodes> ...>;
     };
 
-    template<match_mode Mode, symbol::quantifier A, symbol::quantifier B, typename Inner>
+    template<match_mode Mode, symbol::finite_quantifier A, symbol::quantifier B, typename Inner>
     struct capture_name_spec<basic_repetition<Mode, A, B, Inner>>
+    {
+        using type = capture_name_spec_t<Inner>;
+    };
+
+    template<template<assertion_mode, lookaround_direction, typename> typename Lookaround, assertion_mode Mode, lookaround_direction Direction, typename Inner>
+    struct capture_name_spec<Lookaround<Mode, Direction, Inner>>
     {
         using type = capture_name_spec_t<Inner>;
     };
@@ -57,26 +63,31 @@ namespace meta::ast
     template<std::size_t ID, typename Name, typename Inner>
     struct capture_name_spec<capture<ID, Name, Inner>>
     {
-        using type = push<capture_name_spec_t<Inner>, Name>;
+        using type = push_t<capture_name_spec_t<Inner>, Name>;
     };
 
     /**
-     * Type trait used to identify nodes that are zero-length matchers.
-     * A node is a zero-length matchers if it can match an input sequence of length zero.
+     * Base type used to tag all AST nodes which are zero-length matchers.
+     * A node is a zero-length matcher if it may match input sequences of length zero.
+     */
+    struct zero_length_matcher {};
+
+    /**
+     * Type trait used to identify zero-length matchers.
      */
     template<typename Node>
     inline constexpr bool is_zero_length_matcher = std::is_base_of_v<zero_length_matcher, Node>;
+
+    template<std::size_t ID, typename Name, typename Inner>
+    inline constexpr bool is_zero_length_matcher<capture<ID, Name, Inner>> = is_zero_length_matcher<Inner>;
+
+    template<match_mode Mode, symbol::finite_quantifier A, symbol::quantifier B, typename Inner>
+    inline constexpr bool is_zero_length_matcher<basic_repetition<Mode, A, B, Inner>> = symbol::is_zero<A> || is_zero_length_matcher<Inner>;
 
     template<typename... Nodes>
     inline constexpr bool is_zero_length_matcher<sequence<Nodes ...>> = (is_zero_length_matcher<Nodes> && ...);
 
     template<typename... Nodes>
     inline constexpr bool is_zero_length_matcher<alternation<Nodes ...>> = (is_zero_length_matcher<Nodes> && ...);
-
-    template<match_mode Mode, symbol::quantifier A, symbol::quantifier B, typename Inner>
-    inline constexpr bool is_zero_length_matcher<basic_repetition<Mode, A, B, Inner>> = symbol::is_zero<A> || is_zero_length_matcher<Inner>;
-
-    template<std::size_t ID, typename Name, typename Inner>
-    inline constexpr bool is_zero_length_matcher<capture<ID, Name, Inner>> = is_zero_length_matcher<Inner>;
 }
 #endif //MREGEX_AST_TRAITS_HPP

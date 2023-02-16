@@ -63,6 +63,8 @@ namespace meta::tests
 
     // Nodes which are zero length matchers by definition
     static_assert(is_zero_length_matcher<empty>);
+    static_assert(is_zero_length_matcher<backref<1>>);
+    static_assert(is_zero_length_matcher<named_backref<name<"abc">>>);
     static_assert(is_zero_length_matcher<beginning_of_line>);
     static_assert(is_zero_length_matcher<beginning_of_input>);
     static_assert(is_zero_length_matcher<end_of_line>);

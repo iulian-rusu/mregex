@@ -3,6 +3,8 @@
 
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/traits.hpp>
+#include <mregex/symbols/actions.hpp>
+#include <mregex/symbols/core.hpp>
 #include <mregex/utility/type_sequence.hpp>
 
 namespace meta::ast
@@ -23,122 +25,105 @@ namespace meta::ast
     template<char C, typename Nodes>
     struct build<symbol::make_literal, symbol::character<C>, Nodes>
     {
-        using type = push<Nodes, literal<C>>;
+        using type = push_t<Nodes, literal<C>>;
     };
 
     template<char C, typename Token, typename Nodes>
     struct build<symbol::push_literal<C>, Token, Nodes>
     {
-        using type = push<Nodes, literal<C>>;
+        using type = push_t<Nodes, literal<C>>;
     };
 
     template<typename Token, typename Nodes>
     struct build<symbol::make_empty, Token, Nodes>
     {
-        using type = push<Nodes, empty>;
+        using type = push_t<Nodes, empty>;
     };
 
     template<typename Token, typename Nodes>
     struct build<symbol::make_digit, Token, Nodes>
     {
-        using type = push<Nodes, digit>;
+        using type = push_t<Nodes, digit>;
     };
 
     template<typename Token, typename Nodes>
     struct build<symbol::make_word, Token, Nodes>
     {
-        using type = push<Nodes, word>;
+        using type = push_t<Nodes, word>;
     };
 
     template<typename Token, typename Nodes>
     struct build<symbol::make_word_boundary, Token, Nodes>
     {
-        using type = push<Nodes, word_boundary>;
+        using type = push_t<Nodes, word_boundary>;
     };
 
     template<typename Token, typename Nodes>
     struct build<symbol::make_whitespace, Token, Nodes>
     {
-        using type = push<Nodes, whitespace>;
+        using type = push_t<Nodes, whitespace>;
     };
 
     template<typename Token, typename Nodes>
     struct build<symbol::make_lower, Token, Nodes>
     {
-        using type = push<Nodes, lower>;
+        using type = push_t<Nodes, lower>;
     };
 
     template<typename Token, typename Nodes>
     struct build<symbol::make_upper, Token, Nodes>
     {
-        using type = push<Nodes, upper>;
+        using type = push_t<Nodes, upper>;
     };
 
     template<typename Token, typename Nodes>
     struct build<symbol::make_hexa, Token, Nodes>
     {
-        using type = push<Nodes, hexa>;
+        using type = push_t<Nodes, hexa>;
     };
 
     template<typename Token, typename Nodes>
     struct build<symbol::make_linebreak, Token, Nodes>
     {
-        using type = push<Nodes, linebreak>;
+        using type = push_t<Nodes, linebreak>;
     };
 
     template<typename Token, typename Nodes>
     struct build<symbol::make_wildcard, Token, Nodes>
     {
-        using type = push<Nodes, wildcard>;
+        using type = push_t<Nodes, wildcard>;
     };
 
     template<typename Token, typename Nodes>
     struct build<symbol::make_beginning_of_line, Token, Nodes>
     {
-        using type = push<Nodes, beginning_of_line>;
+        using type = push_t<Nodes, beginning_of_line>;
     };
 
     template<typename Token, typename Nodes>
     struct build<symbol::make_end_of_line, Token, Nodes>
     {
-        using type = push<Nodes, end_of_line>;
+        using type = push_t<Nodes, end_of_line>;
     };
 
     template<typename Token, typename Nodes>
     struct build<symbol::make_beginning_of_input, Token, Nodes>
     {
-        using type = push<Nodes, beginning_of_input>;
+        using type = push_t<Nodes, beginning_of_input>;
     };
 
     template<typename Token, typename Nodes>
     struct build<symbol::make_end_of_input, Token, Nodes>
     {
-        using type = push<Nodes, end_of_input>;
+        using type = push_t<Nodes, end_of_input>;
     };
 
-    template<typename Token, typename First, typename... Rest>
-    struct build<symbol::make_positive_lookahead, Token, type_sequence<First, Rest ...>>
+    template<assertion_mode Mode, lookaround_direction Direction, typename Token, typename First, typename... Rest>
+    struct build<symbol::make_lookaround<Mode, Direction>, Token, type_sequence<First, Rest ...>>
     {
-        using type = type_sequence<positive_lookahead<First>, Rest ...>;
+        using type = type_sequence<lookaround<Mode, Direction, First>, Rest ...>;
     };
 
-    template<typename Token, typename First, typename... Rest>
-    struct build<symbol::make_negative_lookahead, Token, type_sequence<First, Rest ...>>
-    {
-        using type = type_sequence<negative_lookahead<First>, Rest ...>;
-    };
-
-    template<typename Token, typename First, typename... Rest>
-    struct build<symbol::make_positive_lookbehind, Token, type_sequence<First, Rest ...>>
-    {
-        using type = type_sequence<positive_lookbehind<First>, Rest ...>;
-    };
-
-    template<typename Token, typename First, typename... Rest>
-    struct build<symbol::make_negative_lookbehind, Token, type_sequence<First, Rest ...>>
-    {
-        using type = type_sequence<negative_lookbehind<First>, Rest ...>;
-    };
 
     template<typename Token, typename First, typename... Rest>
     struct build<symbol::make_negated, Token, type_sequence<First, Rest ...>>
@@ -224,7 +209,7 @@ namespace meta::ast
         using type = type_sequence<named_backref<Name>, Nodes ...>;
     };
 
-    template<match_mode Mode, symbol::quantifier A, symbol::quantifier B, typename Token, typename First, typename... Rest>
+    template<match_mode Mode, symbol::finite_quantifier A, symbol::quantifier B, typename Token, typename First, typename... Rest>
     struct build<symbol::make_repetition<Mode, A, B>, Token, type_sequence<First, Rest ...>>
     {
         using type = type_sequence<basic_repetition<Mode, A, B, First>, Rest ...>;

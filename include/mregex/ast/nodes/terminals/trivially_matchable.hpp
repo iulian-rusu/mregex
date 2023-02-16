@@ -9,6 +9,8 @@ namespace meta::ast
     /**
      * Base type for trivially matchable AST nodes.
      * Trivially matchable nodes are terminals that can only match one input character at a time.
+     *
+     * @tparam Node The trivially matchable AST node derived from this type
      */
     template<typename Node>
     struct trivially_matchable : terminal
