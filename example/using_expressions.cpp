@@ -16,9 +16,6 @@ int main()
      * Alternation is done with the | operator.
      * The Kleene star and plus quantifiers are achieved with unary * and + operators.
      * Negation of character classes and lookarounds is done with the ! operator.
-     * Flags can be added after defining the regex using the / operator.
-     *
-     * Once an expression has been modified by flags, it cannot be composed with other expressions!
      */
 
     // Opting in for operators is done by importing the namespace xpr::operators

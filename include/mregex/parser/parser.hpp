@@ -121,9 +121,9 @@ namespace meta
     };
 
     template<static_string Pattern>
-    using ast_for = typename parser<Pattern>::ast_type;
+    using ast_of = typename parser<Pattern>::ast_type;
 
     template<static_string Pattern>
-    using parser_verdict_for = typename parser<Pattern>::verdict;
+    using parser_verdict = typename parser<Pattern>::verdict;
 }
 #endif //MREGEX_PARSER_HPP

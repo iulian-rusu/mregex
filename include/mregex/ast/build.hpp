@@ -77,12 +77,6 @@ namespace meta::ast
     };
 
     template<typename Token, typename Nodes>
-    struct build<symbol::make_hexa, Token, Nodes>
-    {
-        using type = push_t<Nodes, hexa>;
-    };
-
-    template<typename Token, typename Nodes>
     struct build<symbol::make_linebreak, Token, Nodes>
     {
         using type = push_t<Nodes, linebreak>;
@@ -192,7 +186,7 @@ namespace meta::ast
     template<typename Token, typename Name, typename First,  typename... Rest>
     struct build<symbol::make_capture<Name>, Token, type_sequence<First, Rest ...>>
     {
-        static constexpr auto capture_count = count_captures<First, Rest ...>;
+        static constexpr std::size_t capture_count = count_captures<First, Rest ...>;
 
         using type = type_sequence<capture<capture_count + 1, Name, First>, Rest ...>;
     };

@@ -16,7 +16,7 @@ namespace meta
     template<bool_testable_generator Generator>
     struct input_range_adapter : private Generator
     {
-        using result_type = forward_result_t<std::invoke_result_t<Generator>>;
+        using result_type = remove_rvalue_cvref_t<std::invoke_result_t<Generator>>;
         using value_type = std::remove_reference_t<result_type>;
 
         template<typename Gen>
@@ -45,14 +45,14 @@ namespace meta
                 : _target{&generator}
             {}
 
-            constexpr value_type &operator*() const noexcept
+            constexpr reference operator*() const noexcept
             {
-                return _target->get();
+                return _target->current_result();
             }
 
-            constexpr value_type *operator->() const noexcept
+            constexpr pointer operator->() const noexcept
             {
-                return &_target->get();
+                return &_target->current_result();
             }
 
             constexpr iterator &operator++() noexcept
@@ -89,7 +89,7 @@ namespace meta
          *
          * @return  An input iterator pointing to the first element of the range
          */
-        [[nodiscard]] constexpr auto begin() noexcept
+        constexpr auto begin() noexcept
         {
             return iterator{*this};
         }
@@ -100,32 +100,32 @@ namespace meta
          *
          * @return  A sentinel object suitable for the iterator of the range
          */
-        [[nodiscard]] constexpr auto end() const noexcept
+        constexpr auto end() const noexcept
         {
             return std::default_sentinel;
         }
 
-        [[nodiscard]] constexpr bool active() const noexcept
+        constexpr bool active() const noexcept
         {
             return static_cast<bool>(_current_result);
         }
 
-        [[nodiscard]] constexpr auto &get() & noexcept
+        constexpr auto &current_result() & noexcept
         {
             return _current_result;
         }
 
-        [[nodiscard]] constexpr auto const &get() const & noexcept
+        constexpr auto const &current_result() const & noexcept
         {
             return _current_result;
         }
 
-        [[nodiscard]] constexpr auto &&get() && noexcept
+        constexpr auto &&current_result() && noexcept
         {
             return _current_result;
         }
 
-        [[nodiscard]] constexpr auto const &&get() const && noexcept
+        constexpr auto const &&current_result() const && noexcept
         {
             return _current_result;
         }

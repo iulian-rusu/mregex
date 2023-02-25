@@ -106,7 +106,6 @@ namespace meta::ast
     
     using nothing = set<>;
     using word = set<lower, upper, digit, literal<'_'>>;
-    using hexa = set<digit, range<'a', 'f'>, range<'A', 'F'>>;
     using linebreak = set<literal<'\n'>, literal<'\r'>>;
 
     template<typename Inner>

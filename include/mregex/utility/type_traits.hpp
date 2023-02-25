@@ -21,23 +21,23 @@ namespace meta
                                                      !std::is_trivially_destructible_v<std::remove_reference_t<T>>;
 
     /**
-     * Metafunction that deduces the type required to perfectly forward the result of a function.
-     * Return types that are lvalue references are forwarded to a reference.
-     * Other value categories are forwarded (moved or copy elided) to a value type.
+     * Metafunction that removes references and CV-qualifiers from rvalues only.
+     * Non-refernce types are also treated as rvalues.
+     * References to lvalues are unchanged.
      */
     template<typename T>
-    struct forward_result
+    struct remove_rvalue_cvref
     {
-        using type = T;
+        using type = std::remove_cvref_t<T>;
     };
 
     template<typename T>
-    struct forward_result<T &&>
+    struct remove_rvalue_cvref<T &>
     {
-        using type = T;
+        using type = T &;
     };
 
     template<typename T>
-    using forward_result_t = typename forward_result<T>::type;
+    using remove_rvalue_cvref_t = typename remove_rvalue_cvref<T>::type;
 }
 #endif //MREGEX_UTILITY_TYPE_TRAITS_HPP

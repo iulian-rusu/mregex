@@ -13,6 +13,18 @@ namespace meta::xpr
         {
             return ast::sequence<ast::literal<String[Indices]> ...>{};
         }
+
+        template<typename Wrapper>
+        constexpr auto flatten(Wrapper) noexcept -> Wrapper { return {}; }
+
+        template<template<typename...> typename Wrapper, typename First, typename... Second>
+        constexpr auto flatten(Wrapper<First, Wrapper<Second ...>>) noexcept -> Wrapper<First, Second ...> { return {}; }
+
+        template<template<typename...> typename Wrapper, typename... First, typename Second>
+        constexpr auto flatten(Wrapper<Wrapper<First ...>, Second>) noexcept -> Wrapper<First ..., Second> { return {}; }
+
+        template<template<typename...> typename Wrapper, typename... First, typename... Second>
+        constexpr auto flatten(Wrapper<Wrapper<First ...>, Wrapper<Second ...>>) noexcept -> Wrapper<First ..., Second ...> { return {}; }
     }
 
     /**
@@ -37,40 +49,43 @@ namespace meta::xpr
     constexpr auto to_regex(AST) noexcept -> regex_interface<AST> { return {}; }
 
     /**
-     * Packs a list of elements into a wrapper that holds a single type.
+     * Packs a sequence of elements into a wrapper that holds a single type.
      * If the list contains more than one type, it is wrapped into an ast::sequence.
      *
      * @tparam Wrapper  The type of the wrapper
      * @tparam Nodes    The list of elements to be wrapped
      * @return          An instance of the wrapper type
      */
-    template<template<typename> typename Wrapper, typename Node>
-    constexpr auto pack(Node) -> Wrapper<Node> { return {}; }
-
     template<template<typename> typename Wrapper, typename... Nodes>
-    constexpr auto pack(Nodes...) -> Wrapper<ast::sequence<Nodes ...>> { return {}; }
+    constexpr auto pack_sequence(Nodes...) -> Wrapper<ast::sequence<Nodes ...>> { return {}; }
+
+    template<template<typename> typename Wrapper, typename Node>
+    constexpr auto pack_sequence(Node) -> Wrapper<Node> { return {}; }
 
     /**
-     * Wraps a list of elements into a metacontainer and flattens the resulting
-     * structure to obtain a single nesting level.
+     * Wraps a sequence of elements into a wrapper type and flattens the result.
+     * Flattening will remove any redundant wrappers from the resulting type.
      *
      * @tparam Wrapper  The type of the wrapper
-     * @tparam Nodes    The list of elements to be wrapped
+     * @tparam First    The first element in the sequnece
+     * @tparam Second   The second element in the sequnece
+     * @tparam Rest     The rest of the sequence
      * @return          A flattened instance of the wrapper type
      */
-    template<template<typename...> typename Wrapper, typename... Nodes>
-    constexpr auto flat_wrap(Nodes...) noexcept -> Wrapper<Nodes ...> { return {}; }
+    template<template<typename...> typename Wrapper, typename First, typename Second, typename... Rest>
+    constexpr auto flat_wrap_sequence(First, Second, Rest... rest) noexcept
+    {
+        constexpr auto wrapped = detail::flatten(Wrapper<First, Second>{});
+        if constexpr(sizeof...(Rest) == 0)
+            return wrapped;
+        else
+            return flat_wrap_sequence<Wrapper>(wrapped, rest ...);
+    }
 
-    template<template<typename...> typename, typename Node>
-    constexpr auto flat_wrap(Node) noexcept -> Node { return {}; }
+    template<template<typename...> typename Wrapper, typename Node>
+    constexpr auto flat_wrap_sequence(Node) noexcept -> Node { return {}; }
 
-    template<template<typename...> typename Wrapper, typename First, typename... Second>
-    constexpr auto flat_wrap(First, Wrapper<Second ...>) noexcept -> Wrapper<First, Second ...> { return {}; }
-
-    template<template<typename...> typename Wrapper, typename... First, typename Second>
-    constexpr auto flat_wrap(Wrapper<First ...>, Second) noexcept -> Wrapper<First ..., Second> { return {}; }
-
-    template<template<typename...> typename Wrapper, typename... First, typename... Second>
-    constexpr auto flat_wrap(Wrapper<First ...>, Wrapper<Second ...>) noexcept -> Wrapper<First ..., Second ...> { return {}; }
+    template<template<typename...> typename Wrapper>
+    constexpr auto flat_wrap_sequence() noexcept -> Wrapper<> { return {}; }
 }
 #endif //MREGEX_XPR_ADAPTERS_HPP

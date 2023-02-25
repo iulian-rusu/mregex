@@ -143,6 +143,7 @@ namespace meta::tests
     static_assert(accepted<R"(^[^a-z]$)">);
     static_assert(accepted<R"([^-a-z])">);
     static_assert(accepted<R"([\0-\n])">);
+    static_assert(accepted<R"([a-\x])">);
     static_assert(accepted<R"(f?[a-zA-Z]?a?)">);
     static_assert(accepted<R"(f?[a-z-]?a?)">);
     static_assert(accepted<R"(f?[a-z-A]?a?)">);
@@ -267,10 +268,8 @@ namespace meta::tests
     static_assert(accepted<R"([][)"> == false);
     static_assert(accepted<R"([a-\d])"> == false);
     static_assert(accepted<R"([a-\w])"> == false);
-    static_assert(accepted<R"([a-\x])"> == false);
     static_assert(accepted<R"([a-\D])"> == false);
     static_assert(accepted<R"([a-\W])"> == false);
-    static_assert(accepted<R"([a-\X])"> == false);
     static_assert(accepted<R"([a-\N])"> == false);
     static_assert(accepted<R"([a-\R])"> == false);
     static_assert(accepted<R"([)"> == false);

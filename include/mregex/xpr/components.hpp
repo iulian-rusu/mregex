@@ -16,14 +16,14 @@ namespace meta::xpr
     template<typename... Nodes>
     constexpr auto concat(regex_interface<Nodes>...) noexcept
     {
-        return to_regex(flat_wrap<ast::sequence>(Nodes{} ...));
+        return to_regex(flat_wrap_sequence<ast::sequence>(Nodes{} ...));
     }
 
     // Alternations
     template<typename... Nodes>
     constexpr auto either(regex_interface<Nodes>...) noexcept
     {
-        return to_regex(flat_wrap<ast::alternation>(Nodes{} ...));
+        return to_regex(flat_wrap_sequence<ast::alternation>(Nodes{} ...));
     }
 
     // Captures
@@ -31,13 +31,14 @@ namespace meta::xpr
     constexpr auto capture(regex_interface<Nodes>...) noexcept
     {
         using wrapper_provider = capture_provider<ID, symbol::name<Name>>;
-        return to_regex(pack<wrapper_provider::template type>(Nodes{} ...));
+        return to_regex(pack_sequence<wrapper_provider::template type>(Nodes{} ...));
     }
 
     template<std::size_t ID, typename... Nodes>
     constexpr auto capture(regex_interface<Nodes>...) noexcept
     {
-        return capture<ID, symbol::unnamed>(Nodes{} ...);
+        using wrapper_provider = capture_provider<ID, symbol::unnamed>;
+        return to_regex(pack_sequence<wrapper_provider::template type>(Nodes{} ...));
     }
 
     // Repetition
@@ -45,78 +46,78 @@ namespace meta::xpr
     constexpr auto between(regex_interface<Nodes>...) noexcept
     {
         using wrapper_provider = repetition_provider<Mode, symbol::quantifier_value<A>, symbol::quantifier_value<B>>;
-        return to_regex(pack<wrapper_provider::template type>(Nodes{} ...));
+        return to_regex(pack_sequence<wrapper_provider::template type>(Nodes{} ...));
     }
 
     template<std::size_t A, std::size_t B, typename... Nodes>
-    constexpr auto between(regex_interface<Nodes>... nodes) noexcept
+    constexpr auto between(regex_interface<Nodes>... expressions) noexcept
     {
-        return between<A, B, match_mode::greedy>(nodes ...);
+        return between<A, B, match_mode::greedy>(expressions ...);
     }
 
     template<std::size_t N, match_mode Mode, typename... Nodes>
     constexpr auto at_least(regex_interface<Nodes>...) noexcept
     {
         using wrapper_provider = repetition_provider<Mode, symbol::quantifier_value<N>, symbol::infinity>;
-        return to_regex(pack<wrapper_provider::template type>(Nodes{} ...));
+        return to_regex(pack_sequence<wrapper_provider::template type>(Nodes{} ...));
     }
 
     template<std::size_t N, typename... Nodes>
-    constexpr auto at_least(regex_interface<Nodes>... nodes) noexcept
+    constexpr auto at_least(regex_interface<Nodes>... expressions) noexcept
     {
-        return at_least<N, match_mode::greedy>(nodes ...);
+        return at_least<N, match_mode::greedy>(expressions ...);
     }
 
     // Fixed repetition
-    template<std::size_t N, typename... Nodes>
-    constexpr auto exactly(regex_interface<Nodes>... nodes) noexcept
+    template<std::size_t N, match_mode Mode, typename... Nodes>
+    constexpr auto exactly(regex_interface<Nodes>... expressions) noexcept
     {
-        return between<N, N>(nodes ...);
+        return between<N, N, Mode>(expressions ...);
     }
 
-    template<std::size_t N, match_mode Mode, typename... Nodes>
-    constexpr auto exactly(regex_interface<Nodes>... nodes) noexcept
+    template<std::size_t N, typename... Nodes>
+    constexpr auto exactly(regex_interface<Nodes>... expressions) noexcept
     {
-        return between<N, N, Mode>(nodes ...);
+        return between<N, N>(expressions ...);
     }
 
     // Kleene star
     template<match_mode Mode, typename... Nodes>
-    constexpr auto zero_or_more(regex_interface<Nodes>... nodes) noexcept
+    constexpr auto zero_or_more(regex_interface<Nodes>... expressions) noexcept
     {
-        return at_least<0, Mode>(nodes ...);
+        return at_least<0, Mode>(expressions ...);
     }
 
     template<typename... Nodes>
-    constexpr auto zero_or_more(regex_interface<Nodes>... nodes) noexcept
+    constexpr auto zero_or_more(regex_interface<Nodes>... expressions) noexcept
     {
-        return at_least<0>(nodes ...);
+        return at_least<0>(expressions ...);
     }
 
     // Plus
     template<match_mode Mode, typename... Nodes>
-    constexpr auto one_or_more(regex_interface<Nodes>... nodes) noexcept
+    constexpr auto one_or_more(regex_interface<Nodes>... expressions) noexcept
     {
-        return at_least<1, Mode>(nodes ...);
+        return at_least<1, Mode>(expressions ...);
     }
 
     template<typename... Nodes>
-    constexpr auto one_or_more(regex_interface<Nodes>... nodes) noexcept
+    constexpr auto one_or_more(regex_interface<Nodes>... expressions) noexcept
     {
-        return at_least<1>(nodes ...);
+        return at_least<1>(expressions ...);
     }
 
     // Optional
     template<match_mode Mode, typename... Nodes>
-    constexpr auto maybe(regex_interface<Nodes>... nodes) noexcept
+    constexpr auto maybe(regex_interface<Nodes>... expressions) noexcept
     {
-        return between<0, 1, Mode>(nodes ...);
+        return between<0, 1, Mode>(expressions ...);
     }
 
     template<typename... Nodes>
-    constexpr auto maybe(regex_interface<Nodes>... nodes) noexcept
+    constexpr auto maybe(regex_interface<Nodes>... expressions) noexcept
     {
-        return between<0, 1, match_mode::greedy>(nodes ...);
+        return between<0, 1>(expressions ...);
     }
 
     // Terminals
@@ -128,13 +129,12 @@ namespace meta::xpr
     inline constexpr auto end_input = regex_interface<ast::end_of_input>{};
     inline constexpr auto boundary = regex_interface<ast::word_boundary>{};
     inline constexpr auto whitespace = regex_interface<ast::whitespace>{};
-    inline constexpr auto any = regex_interface<ast::wildcard>{};
+    inline constexpr auto wildcard = regex_interface<ast::wildcard>{};
     inline constexpr auto digit = regex_interface<ast::digit>{};
     inline constexpr auto lower = regex_interface<ast::lower>{};
     inline constexpr auto upper = regex_interface<ast::upper>{};
     inline constexpr auto word = regex_interface<ast::word>{};
-    inline constexpr auto hexa = regex_interface<ast::hexa>{};
-    inline constexpr auto endl = regex_interface<ast::linebreak>{};
+    inline constexpr auto linebreak = regex_interface<ast::linebreak>{};
 
     template<char C>
     inline constexpr auto chr = regex_interface<ast::literal<C>>{};
@@ -158,25 +158,25 @@ namespace meta::xpr
     template<typename... Nodes>
     constexpr auto ahead(regex_interface<Nodes>...) noexcept
     {
-        return to_regex(pack<ast::positive_lookahead>(Nodes{} ...));
+        return to_regex(pack_sequence<ast::positive_lookahead>(Nodes{} ...));
     }
 
     template<typename... Nodes>
     constexpr auto behind(regex_interface<Nodes>...) noexcept
     {
-        return to_regex(pack<ast::positive_lookbehind>(Nodes{} ...));
+        return to_regex(pack_sequence<ast::positive_lookbehind>(Nodes{} ...));
     }
 
-    template<typename Inner>
-    constexpr auto negate(regex_interface<ast::positive_lookahead<Inner>>) noexcept
+    template<lookaround_direction Direction, typename Inner>
+    constexpr auto negate(regex_interface<ast::lookaround<assertion_mode::positive, Direction, Inner>>) noexcept
     {
-        return to_regex(ast::negative_lookahead<Inner>{});
+        return regex_interface<ast::lookaround<assertion_mode::negative, Direction, Inner>>{};
     }
 
-    template<typename Inner>
-    constexpr auto negate(regex_interface<ast::positive_lookbehind<Inner>>) noexcept
+    template<lookaround_direction Direction, typename Inner>
+    constexpr auto negate(regex_interface<ast::lookaround<assertion_mode::negative, Direction, Inner>>) noexcept
     {
-        return to_regex(ast::negative_lookbehind<Inner>{});
+        return regex_interface<ast::lookaround<assertion_mode::positive, Direction, Inner>>{};
     }
 
     // Builder that generates the AST from a regular expression

@@ -49,22 +49,22 @@ namespace meta
             : _captures{std::forward<Captures>(captures)}, _matched{matched}
         {}
 
-        [[nodiscard]] constexpr bool matched() const noexcept
+        constexpr bool matched() const noexcept
         {
             return _matched;
         }
 
-        [[nodiscard]] constexpr std::size_t length() const noexcept
+        constexpr std::size_t length() const noexcept
         {
             return std::get<0>(_captures).length();
         }
 
-        [[nodiscard]] constexpr auto begin() const noexcept
+        constexpr auto begin() const noexcept
         {
             return std::get<0>(_captures).begin();
         }
 
-        [[nodiscard]] constexpr auto end() const noexcept
+        constexpr auto end() const noexcept
         {
             return std::get<0>(_captures).end();
         }
@@ -78,7 +78,7 @@ namespace meta
         [[nodiscard]] auto as_memory_owner() const
         requires is_view
         {
-            auto owned_captures = transform_tuple(_captures, [](auto const &capture) {
+            auto owned_captures = transform_groups([](auto const &capture) {
                 return regex_capture{capture};
             });
             return regex_result<NameSpec>{std::move(owned_captures), _matched};
@@ -96,6 +96,30 @@ namespace meta
         }
 
         /**
+         * Creates a new tuple by applying an invocable object on each group captured
+         * in this regex result.
+         *
+         * @param func  The function invoked to transform each capturing group
+         * @return      A new std::tuple that contains the transformed groups
+         */
+        template<typename Func>
+        [[nodiscard]] constexpr auto transform_groups(Func &&func) const
+        {
+            return transform_tuple(_captures, std::forward<Func>(func));
+        }
+
+        /**
+         * Invokes a function-like object for every group captured in this regex result.
+         *
+         * @param func  The function invoked on each capturing group
+         */
+        template<typename Func>
+        constexpr void for_each_group(Func &&func) &
+        {
+            iterate_tuple(_captures, std::forward<Func>(func));
+        }
+
+        /**
          * Returns the capturing group with the specified number.
          * The method is specialized to move the captures if this object
          * is an expiring value.
@@ -104,7 +128,7 @@ namespace meta
          * @return      The capturing group
          */
         template<std::size_t ID>
-        [[nodiscard]] constexpr auto &group() & noexcept
+        constexpr auto &group() & noexcept
         {
             return get_group_by_index<ID>(_captures);
         }
@@ -118,7 +142,7 @@ namespace meta
          * @return      The capturing group
          */
         template<static_string Name>
-        [[nodiscard]] constexpr auto &group() & noexcept
+        constexpr auto &group() & noexcept
         {
             return get_group_by_name<Name>(_captures);
         }
@@ -144,38 +168,56 @@ namespace meta
             return forward_self_as_optional(std::move(*this));
         }
 
+        template<typename Func>
+        constexpr void for_each_group(Func &&func) const &
+        {
+            iterate_tuple(_captures, std::forward<Func>(func));
+        }
+
+        template<typename Func>
+        constexpr void for_each_group(Func &&func) &&
+        {
+            iterate_tuple(std::move(_captures), std::forward<Func>(func));
+        }
+
+        template<typename Func>
+        constexpr void for_each_group(Func &&func) const &&
+        {
+            iterate_tuple(std::move(_captures), std::forward<Func>(func));
+        }
+
         template<std::size_t ID>
-        [[nodiscard]] constexpr auto const &group() const & noexcept
+        constexpr auto const &group() const & noexcept
         {
             return get_group_by_index<ID>(_captures);
         }
 
         template<std::size_t ID>
-        [[nodiscard]] constexpr auto &&group() && noexcept
+        constexpr auto &&group() && noexcept
         {
             return get_group_by_index<ID>(std::move(_captures));
         }
 
         template<std::size_t ID>
-        [[nodiscard]] constexpr auto const &&group() const && noexcept
+        constexpr auto const &&group() const && noexcept
         {
             return get_group_by_index<ID>(std::move(_captures));
         }
 
         template<static_string Name>
-        [[nodiscard]] constexpr auto const &group() const & noexcept
+        constexpr auto const &group() const & noexcept
         {
             return get_group_by_name<Name>(_captures);
         }
 
         template<static_string Name>
-        [[nodiscard]] constexpr auto &&group() && noexcept
+        constexpr auto &&group() && noexcept
         {
             return get_group_by_name<Name>(std::move(_captures));
         }
 
         template<static_string Name>
-        [[nodiscard]] constexpr auto const &&group() const && noexcept
+        constexpr auto const &&group() const && noexcept
         {
             return get_group_by_name<Name>(std::move(_captures));
         }
@@ -185,30 +227,30 @@ namespace meta
          * Use the group() method for extracting captures.
          */
         template<std::size_t ID>
-        [[nodiscard]] constexpr auto &get() & noexcept
+        constexpr auto &get() & noexcept
         {
             return get_group_by_index<ID + 1>(_captures);
         }
 
         template<std::size_t ID>
-        [[nodiscard]] constexpr auto const &get() const & noexcept
+        constexpr auto const &get() const & noexcept
         {
             return get_group_by_index<ID + 1>(_captures);
         }
 
         template<std::size_t ID>
-        [[nodiscard]] constexpr auto &&get() && noexcept
+        constexpr auto &&get() && noexcept
         {
             return get_group_by_index<ID + 1>(std::move(_captures));
         }
 
         template<std::size_t ID>
-        [[nodiscard]] constexpr auto const &&get() const && noexcept
+        constexpr auto const &&get() const && noexcept
         {
             return get_group_by_index<ID + 1>(std::move(_captures));
         }
 
-        [[nodiscard]] constexpr bool operator==(bool value) const noexcept
+        constexpr bool operator==(bool value) const noexcept
         {
             return _matched == value;
         }
@@ -274,18 +316,15 @@ std::ostream &operator<<(std::ostream &os, meta::basic_regex_result<CaptureStora
     return os << meta::get_group<0>(result);
 }
 
-namespace std
+template<meta::capture_storage CaptureStorage, typename NameSpec>
+struct std::tuple_size<meta::basic_regex_result<CaptureStorage, NameSpec>>
 {
-    template<meta::capture_storage CaptureStorage, typename NameSpec>
-    struct tuple_size<meta::basic_regex_result<CaptureStorage, NameSpec>>
-    {
-        static constexpr size_t value = meta::basic_regex_result<CaptureStorage, NameSpec>::group_count;
-    };
+    static constexpr std::size_t value = meta::basic_regex_result<CaptureStorage, NameSpec>::group_count;
+};
 
-    template<size_t ID, meta::capture_storage CaptureStorage, typename NameSpec>
-    struct tuple_element<ID, meta::basic_regex_result<CaptureStorage, NameSpec>>
-    {
-        using type = tuple_element_t<ID + 1, CaptureStorage>;
-    };
-}
+template<size_t ID, meta::capture_storage CaptureStorage, typename NameSpec>
+struct std::tuple_element<ID, meta::basic_regex_result<CaptureStorage, NameSpec>>
+{
+    using type = std::tuple_element_t<ID + 1, CaptureStorage>;
+};
 #endif //MREGEX_REGEX_RESULT_HPP

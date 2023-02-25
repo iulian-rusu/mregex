@@ -46,36 +46,39 @@ namespace meta
             _end = _begin;
         }
 
-        [[nodiscard]] constexpr std::size_t length() const noexcept
+        constexpr std::size_t length() const noexcept
         {
             return std::distance(_begin, _end);
         }
 
-        [[nodiscard]] constexpr auto begin() const noexcept
+        constexpr auto begin() const noexcept
         {
             return _begin;
         }
 
-        [[nodiscard]] constexpr auto end() const noexcept
+        constexpr auto end() const noexcept
         {
             return _end;
         }
 
-        [[nodiscard]] constexpr auto content() const noexcept(std::contiguous_iterator<Iter>)
+        [[nodiscard]] constexpr auto content() const
         {
-            if constexpr (std::contiguous_iterator<Iter>)
-                return std::string_view{_begin, _end};
-            else
-                return std::string{_begin, _end};
+            return std::string{_begin, _end};
         }
 
-        [[nodiscard]] constexpr auto &operator[](std::size_t index)
+        constexpr auto content() const noexcept
+        requires std::contiguous_iterator<Iter>
+        {
+            return std::string_view{_begin, _end};
+        }
+
+        constexpr auto &operator[](std::size_t index) noexcept
         requires std::random_access_iterator<Iter>
         {
             return _begin[index];
         }
 
-        [[nodiscard]] constexpr auto const &operator[](std::size_t index) const
+        constexpr auto const &operator[](std::size_t index) const noexcept
         requires std::random_access_iterator<Iter>
         {
             return _begin[index];
@@ -112,57 +115,57 @@ namespace meta
             : _capture{capture_view.begin(), capture_view.end()}
         {}
 
-        [[nodiscard]] std::size_t length() const noexcept
+        std::size_t length() const noexcept
         {
             return _capture.length();
         }
 
-        [[nodiscard]] auto begin() noexcept
+        auto begin() noexcept
         {
             return _capture.begin();
         }
 
-        [[nodiscard]] auto begin() const noexcept
+        auto begin() const noexcept
         {
             return _capture.cbegin();
         }
 
-        [[nodiscard]] auto end() noexcept
+        auto end() noexcept
         {
             return _capture.end();
         }
 
-        [[nodiscard]] auto end() const noexcept
+        auto end() const noexcept
         {
             return _capture.cend();
         }
 
-        [[nodiscard]] auto &content() & noexcept
+        auto &content() & noexcept
         {
             return _capture;
         }
 
-        [[nodiscard]] auto const &content() const & noexcept
+        auto const &content() const & noexcept
         {
             return _capture;
         }
 
-        [[nodiscard]] auto &&content() && noexcept
+        auto &&content() && noexcept
         {
             return _capture;
         }
 
-        [[nodiscard]] auto const &&content() const && noexcept
+        auto const &&content() const && noexcept
         {
             return _capture;
         }
 
-        [[nodiscard]] auto &operator[](std::size_t index)
+        auto &operator[](std::size_t index) noexcept
         {
             return _capture[index];
         }
 
-        [[nodiscard]] auto const &operator[](std::size_t index) const
+        auto const &operator[](std::size_t index) const noexcept
         {
             return _capture[index];
         }

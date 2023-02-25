@@ -47,7 +47,7 @@ namespace meta
             return result_view_type{ctx.captures, false};
         }
 
-        [[nodiscard]] constexpr bool active() const noexcept
+        constexpr bool active() const noexcept
         {
             return _active;
         }

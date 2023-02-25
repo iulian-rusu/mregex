@@ -12,7 +12,7 @@ namespace meta::ast
     struct sequence
     {
         static constexpr std::size_t capture_count = count_captures<First, Rest ...>;
-        static constexpr std::size_t size = 1 + sizeof... (Rest);
+        static constexpr std::size_t size = 1 + sizeof...(Rest);
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept

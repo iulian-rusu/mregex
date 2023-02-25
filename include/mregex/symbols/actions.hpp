@@ -25,7 +25,6 @@ namespace meta::symbol
     struct make_lower : semantic_action {};
     struct make_upper : semantic_action {};
     struct make_word : semantic_action {};
-    struct make_hexa : semantic_action {};
     struct make_linebreak : semantic_action {};
     struct make_negated : semantic_action {};
     struct make_empty : semantic_action {};

@@ -23,7 +23,12 @@ namespace meta
          * Metafunction used to add flags to the current regex type.
          */
         template<typename... ExtraFlags>
-        using with = regex_interface<AST, Flags ..., ExtraFlags ...>;
+        using with_flags = regex_interface<AST, Flags ..., ExtraFlags ...>;
+
+        /**
+         * Metafunction used to clear all flags from the current regex type.
+         */
+        using without_flags = regex_interface<AST>;
 
         using ast_type = AST;
 

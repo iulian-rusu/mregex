@@ -29,27 +29,27 @@ namespace meta
                 std::copy(std::cbegin(other.data), std::cend(other.data), std::begin(data));
         }
 
-        [[nodiscard]] constexpr auto length() const noexcept
+        constexpr auto length() const noexcept
         {
             return N;
         }
 
-        [[nodiscard]] constexpr auto begin() noexcept
+        constexpr auto begin() noexcept
         {
             return std::begin(data);
         }
 
-        [[nodiscard]] constexpr auto begin() const noexcept
+        constexpr auto begin() const noexcept
         {
             return std::cbegin(data);
         }
 
-        [[nodiscard]] constexpr auto end() noexcept
+        constexpr auto end() noexcept
         {
             return std::end(data);
         }
 
-        [[nodiscard]] constexpr auto end() const noexcept
+        constexpr auto end() const noexcept
         {
             return std::cend(data);
         }

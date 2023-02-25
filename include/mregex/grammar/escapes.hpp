@@ -225,29 +225,6 @@ namespace meta::grammar
     };
 
     template<>
-    struct handle_escaped_char<'x'>
-    {
-        using type =
-                type_sequence
-                <
-                    advance,
-                    symbol::make_hexa
-                >;
-    };
-
-    template<>
-    struct handle_escaped_char<'X'>
-    {
-        using type =
-                type_sequence
-                <
-                    advance,
-                    symbol::make_hexa,
-                    symbol::make_negated
-                >;
-    };
-
-    template<>
     struct handle_escaped_char<'R'>
     {
         using type =
@@ -463,18 +440,6 @@ namespace meta::grammar
 
     template<>
     struct handle_set_range_escaped_char<'U'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct handle_set_range_escaped_char<'x'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct handle_set_range_escaped_char<'X'>
     {
         using type = reject;
     };

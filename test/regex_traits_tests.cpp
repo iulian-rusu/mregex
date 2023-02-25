@@ -4,7 +4,7 @@ namespace meta::tests
 {
     using empty_regex = regex<"">;
     using uri_regex = regex<R"(([a-zA-Z][a-zA-Z0-9]*)://([^ /]+)(/[^ ]*)?)">;
-    using email_regex = regex<R"((?<test>[^ @]+)@([^ @]+))">::with<flag::icase, flag::dotall>;
+    using email_regex = regex<R"((?<test>[^ @]+)@([^ @]+))">::with_flags<flag::icase, flag::dotall>;
 
     using iterator_type = std::string_view::iterator;
 

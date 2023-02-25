@@ -93,12 +93,12 @@ Below is a complete list of the supported syntax constructs:
 |         `\l`          |                             match any lowercase letter                             |
 |         `\u`          |                             match any uppercase letter                             |
 |         `\w`          |                 match any word character (letters, digits and `_`)                 |
-|         `\x`          |                          match any hexadecimal character                           |
 | `\D`, `\W`, `\U` etc. |                match any character **not** in the respective class                 |
 |         `\ `          |    remove any special meaning from the next token (except ones mentioned above)    |
 |        `[abc]`        |                           match any character in the set                           |
 |        `[a-z]`        |                    match any character in the ASCII code range                     |
 |       `[^abc]`        |                       match any character **not** in the set                       |
+|        `[\b]`         |                         match a `\b` (backspace) character                         |
 |  <code>&#124;</code>  |                         match the left or right expression                         |
 |          `*`          |                             match any number of times                              |
 |          `+`          |                                match at least once                                 |

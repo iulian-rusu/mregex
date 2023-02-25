@@ -14,13 +14,13 @@ namespace meta::ast
             template<typename Node>
             struct index : traverse<index, Node> {};
 
-            template<std::size_t I, typename Name, typename Inner>
-            struct index<capture<I, Name, Inner>>
+            template<std::size_t ID, typename Name, typename Inner>
+            struct index<capture<ID, Name, Inner>>
             {
                 static constexpr std::size_t capture_count = Inner::capture_count;
 
                 using indexed_inner_type = typename preorder_index_provider<Offset + 1>::template type<Inner>;
-                using type = capture<I + Offset - capture_count, Name, indexed_inner_type>;
+                using type = capture<ID + Offset - capture_count, Name, indexed_inner_type>;
             };
 
             template<typename Node>

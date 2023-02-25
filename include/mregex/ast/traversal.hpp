@@ -35,10 +35,10 @@ namespace meta::ast
         using type = Lookaround<Mode, Direction, typename Transform<Inner>::type>;
     };
 
-    template<template<typename> typename Transform, std::size_t I, typename Name, typename Inner>
-    struct traverse<Transform, capture<I, Name, Inner>>
+    template<template<typename> typename Transform, std::size_t ID, typename Name, typename Inner>
+    struct traverse<Transform, capture<ID, Name, Inner>>
     {
-        using type = capture<I, Name, typename Transform<Inner>::type>;
+        using type = capture<ID, Name, typename Transform<Inner>::type>;
     };
 }
 #endif //MREGEX_AST_TRAVERSAL_HPP

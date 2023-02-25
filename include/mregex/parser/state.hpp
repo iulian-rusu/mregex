@@ -69,7 +69,7 @@ namespace meta
         }
 
         template<typename State, std::size_t... Indices>
-        static constexpr auto advance_parser_state(State initial_state, std::index_sequence<Indices ...>) noexcept
+        constexpr auto advance_parser_state(State initial_state, std::index_sequence<Indices ...>) noexcept
         {
             return (initial_state << ... << Indices);
         }

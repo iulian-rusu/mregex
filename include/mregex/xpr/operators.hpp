@@ -2,7 +2,6 @@
 #define MREGEX_XPR_OPERATORS_HPP
 
 #include <mregex/xpr/components.hpp>
-#include <mregex/xpr/flags.hpp>
 
 namespace meta::xpr::operators
 {
@@ -35,13 +34,6 @@ namespace meta::xpr::operators
     constexpr auto operator+(regex_interface<Node> node) noexcept
     {
         return one_or_more(node);
-    }
-
-    // Operator for adding flags
-    template<typename... Ts, typename Flag>
-    constexpr auto operator/(regex_interface<Ts ...>, Flag) noexcept
-    {
-        return regex_interface<Ts ..., Flag>{};
     }
 }
 #endif //MREGEX_XPR_OPERATORS_HPP
