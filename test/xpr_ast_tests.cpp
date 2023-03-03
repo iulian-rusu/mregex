@@ -8,14 +8,14 @@ namespace meta::tests
     namespace
     {
         template<typename Regex, typename Expected>
-        inline constexpr bool expect_ast = std::is_same_v<meta::regex_ast_t<Regex>, Expected>;
+        inline constexpr bool is_ast_of = std::is_same_v<meta::regex_ast_t<Regex>, Expected>;
     }
 
-    static_assert(expect_ast<decltype(xpr::nothing), nothing>);
-    static_assert(expect_ast<decltype(xpr::chr<'a'>), literal<'a'>>);
-    static_assert(expect_ast<decltype(xpr::concat(xpr::chr<'a'>)), literal<'a'>>);
+    static_assert(is_ast_of<decltype(xpr::nothing), nothing>);
+    static_assert(is_ast_of<decltype(xpr::chr<'a'>), literal<'a'>>);
+    static_assert(is_ast_of<decltype(xpr::concat(xpr::chr<'a'>)), literal<'a'>>);
     static_assert(
-        expect_ast
+        is_ast_of
         <
             decltype(xpr::chr<'a'> >> xpr::chr<'b'>),
             sequence
@@ -26,7 +26,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             decltype(xpr::chr<'a'> >> xpr::chr<'b'> >> xpr::chr<'c'>),
             sequence
@@ -38,7 +38,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             decltype(xpr::concat(xpr::chr<'a'>,xpr::chr<'b'>,xpr::chr<'c'>)),
             sequence
@@ -50,7 +50,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             decltype(
                 xpr::concat(
@@ -84,7 +84,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             decltype(xpr::str<"abc">),
             sequence
@@ -96,7 +96,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             decltype(not xpr::word >> xpr::str<"abc">),
             sequence
@@ -109,7 +109,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             decltype(xpr::str<"ab"> >> xpr::zero_or_more(!xpr::digit) >> xpr::str<"xy">),
             sequence
@@ -123,7 +123,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             decltype(xpr::regex<"ab?c+"> >> xpr::regex<".*">),
             sequence
@@ -136,7 +136,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             decltype(xpr::chr<'a'> | xpr::chr<'b'>),
             alternation
@@ -147,7 +147,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             decltype(xpr::chr<'a'> | xpr::chr<'b'> | xpr::chr<'c'>),
             alternation
@@ -159,7 +159,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             decltype(xpr::either(xpr::chr<'a'>, xpr::chr<'b'>, xpr::chr<'c'>)),
             alternation
@@ -171,7 +171,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             decltype(xpr::str<"ab"> >> (xpr::chr<'c'> | xpr::chr<'d'>)),
             sequence
@@ -187,7 +187,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             decltype(xpr::begin_line >> xpr::str<"ab"> >> +(xpr::chr<'c'> | xpr::chr<'d'>) >> xpr::end_line),
             sequence
@@ -208,7 +208,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             decltype(
                 xpr::exactly<5>(
@@ -245,7 +245,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             decltype(
                 xpr::concat(

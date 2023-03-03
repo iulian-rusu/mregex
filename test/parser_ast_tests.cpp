@@ -7,18 +7,18 @@ namespace meta::tests
     namespace
     {
         template<static_string Pattern, typename Expected>
-        inline constexpr bool expect_ast = std::is_same_v<ast_of<Pattern>, Expected>;
+        inline constexpr bool is_ast_of = std::is_same_v<ast_of<Pattern>, Expected>;
     }
 
-    static_assert(expect_ast<R"()", empty>);
-    static_assert(expect_ast<R"(a)", literal<'a'>>);
-    static_assert(expect_ast<R"((?:))", empty>);
-    static_assert(expect_ast<R"((?:)+)", plus<empty>>);
-    static_assert(expect_ast<R"((?:^)+)", plus<beginning_of_line>>);
-    static_assert(expect_ast<R"((?!))", negative_lookahead<empty>>);
-    static_assert(expect_ast<R"(())", unnamed_capture<1, empty>>);
+    static_assert(is_ast_of<R"()", empty>);
+    static_assert(is_ast_of<R"(a)", literal<'a'>>);
+    static_assert(is_ast_of<R"((?:))", empty>);
+    static_assert(is_ast_of<R"((?:)+)", plus<empty>>);
+    static_assert(is_ast_of<R"((?:^)+)", plus<beginning_of_line>>);
+    static_assert(is_ast_of<R"((?!))", negative_lookahead<empty>>);
+    static_assert(is_ast_of<R"(())", unnamed_capture<1, empty>>);
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(a.?b)",
             sequence
@@ -30,7 +30,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(^ab)",
             sequence
@@ -42,7 +42,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(ab$)",
             sequence
@@ -54,7 +54,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(^ab$)",
             sequence
@@ -67,7 +67,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(x(?=ab)x)",
             sequence
@@ -86,7 +86,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(.+(?<=a+)a)",
             sequence
@@ -98,7 +98,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(.*(?<!a|b))",
             sequence
@@ -116,7 +116,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(x(?!ab){2}x)",
             sequence
@@ -139,7 +139,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(x(?<=a(?<!c*d?)b)x)",
             sequence
@@ -165,31 +165,31 @@ namespace meta::tests
             >
         >
     );
-    static_assert(expect_ast<R"(\n)", literal<'\n'>>);
-    static_assert(expect_ast<R"(\r)", literal<'\r'>>);
-    static_assert(expect_ast<R"(\t)", literal<'\t'>>);
-    static_assert(expect_ast<R"(\f)", literal<'\f'>>);
-    static_assert(expect_ast<R"(\v)", literal<'\v'>>);
-    static_assert(expect_ast<R"(\R)", linebreak>);
-    static_assert(expect_ast<R"(\N)", negated<linebreak>>);
-    static_assert(expect_ast<R"(\a)", literal<'\a'>>);
-    static_assert(expect_ast<R"(\D)", negated<digit>>);
-    static_assert(expect_ast<R"(\b)", word_boundary>);
-    static_assert(expect_ast<R"(\B)", negated<word_boundary>>);
-    static_assert(expect_ast<R"(\A)", beginning_of_input>);
-    static_assert(expect_ast<R"(\Z)", end_of_input>);
-    static_assert(expect_ast<R"((c))", unnamed_capture<1, literal<'c'>>>);
-    static_assert(expect_ast<R"((?:c))", literal<'c'>>);
-    static_assert(expect_ast<R"(\1)", backref<1>>);
-    static_assert(expect_ast<R"(\31)", backref<31>>);
-    static_assert(expect_ast<R"(\1+)", plus<backref<1>>>);
-    static_assert(expect_ast<R"(\42?)", optional<backref<42>>>);
-    static_assert(expect_ast<R"(\1+?)", lazy_plus<backref<1>>>);
-    static_assert(expect_ast<R"(\1++)", possessive_plus<backref<1>>>);
-    static_assert(expect_ast<R"(\42??)", lazy_optional<backref<42>>>);
-    static_assert(expect_ast<R"(\42?+)", possessive_optional<backref<42>>>);
+    static_assert(is_ast_of<R"(\n)", literal<'\n'>>);
+    static_assert(is_ast_of<R"(\r)", literal<'\r'>>);
+    static_assert(is_ast_of<R"(\t)", literal<'\t'>>);
+    static_assert(is_ast_of<R"(\f)", literal<'\f'>>);
+    static_assert(is_ast_of<R"(\v)", literal<'\v'>>);
+    static_assert(is_ast_of<R"(\R)", linebreak>);
+    static_assert(is_ast_of<R"(\N)", negated<linebreak>>);
+    static_assert(is_ast_of<R"(\a)", literal<'\a'>>);
+    static_assert(is_ast_of<R"(\D)", negated<digit>>);
+    static_assert(is_ast_of<R"(\b)", word_boundary>);
+    static_assert(is_ast_of<R"(\B)", negated<word_boundary>>);
+    static_assert(is_ast_of<R"(\A)", beginning_of_input>);
+    static_assert(is_ast_of<R"(\Z)", end_of_input>);
+    static_assert(is_ast_of<R"((c))", unnamed_capture<1, literal<'c'>>>);
+    static_assert(is_ast_of<R"((?:c))", literal<'c'>>);
+    static_assert(is_ast_of<R"(\1)", backref<1>>);
+    static_assert(is_ast_of<R"(\31)", backref<31>>);
+    static_assert(is_ast_of<R"(\1+)", plus<backref<1>>>);
+    static_assert(is_ast_of<R"(\42?)", optional<backref<42>>>);
+    static_assert(is_ast_of<R"(\1+?)", lazy_plus<backref<1>>>);
+    static_assert(is_ast_of<R"(\1++)", possessive_plus<backref<1>>>);
+    static_assert(is_ast_of<R"(\42??)", lazy_optional<backref<42>>>);
+    static_assert(is_ast_of<R"(\42?+)", possessive_optional<backref<42>>>);
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"((c)\1)",
             sequence
@@ -200,7 +200,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"((c)\0)",
             sequence
@@ -211,7 +211,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"((c)\12)",
             sequence
@@ -222,7 +222,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"((c)\01)",
             sequence
@@ -234,7 +234,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"((c)\12?x)",
             sequence
@@ -246,7 +246,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(((c))(e))",
             sequence
@@ -261,7 +261,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(((?:c))(e))",
             sequence
@@ -271,14 +271,14 @@ namespace meta::tests
             >
         >
     );
-    static_assert(expect_ast<R"(c?)", optional<literal<'c'>>>);
-    static_assert(expect_ast<R"(c*)", star<literal<'c'>>>);
-    static_assert(expect_ast<R"(c+)", plus<literal<'c'>>>);
-    static_assert(expect_ast<R"(c??)", lazy_optional<literal<'c'>>>);
-    static_assert(expect_ast<R"(c*?)", lazy_star<literal<'c'>>>);
-    static_assert(expect_ast<R"(c+?)", lazy_plus<literal<'c'>>>);
+    static_assert(is_ast_of<R"(c?)", optional<literal<'c'>>>);
+    static_assert(is_ast_of<R"(c*)", star<literal<'c'>>>);
+    static_assert(is_ast_of<R"(c+)", plus<literal<'c'>>>);
+    static_assert(is_ast_of<R"(c??)", lazy_optional<literal<'c'>>>);
+    static_assert(is_ast_of<R"(c*?)", lazy_star<literal<'c'>>>);
+    static_assert(is_ast_of<R"(c+?)", lazy_plus<literal<'c'>>>);
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(c{2})",
             repetition
@@ -290,7 +290,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(c{2}c{2}?c{2}+)",
             sequence
@@ -302,7 +302,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(c{0})",
             repetition
@@ -314,7 +314,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(c{)",
             sequence
@@ -325,7 +325,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(c{})",
             sequence
@@ -337,7 +337,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(c{*})",
             sequence
@@ -349,7 +349,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(c{22})",
             repetition
@@ -361,7 +361,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(c{22,})",
             repetition
@@ -373,7 +373,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(c{22,0}?)", // Parsable syntax, but will not compile if trying to match
             lazy_repetition
@@ -385,7 +385,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(c{984,7644}+)",
             possessive_repetition
@@ -397,7 +397,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(c{0,22})",
             repetition
@@ -409,7 +409,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(c{,22})",
             sequence
@@ -424,7 +424,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(c\{22})",
             sequence
@@ -438,7 +438,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(c{012})",
             repetition
@@ -450,7 +450,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(c{x})",
             sequence
@@ -463,7 +463,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(c*\{012})",
             sequence
@@ -478,7 +478,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(\b\{)",
             sequence
@@ -489,7 +489,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(\b\{012})",
             sequence
@@ -504,7 +504,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(x\A\{+x?)",
             sequence
@@ -517,7 +517,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"((c*?\{012}){3})",
             repetition
@@ -541,7 +541,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(a(b(c()d)*){15}?)",
             sequence
@@ -577,7 +577,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"((\(+)*)",
             star
@@ -591,7 +591,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"((\++)*)",
             star
@@ -605,14 +605,14 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"((?:\++)*?)",
             lazy_star<plus<literal<'+'>>>
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(x(?:abc)*x)",
             sequence
@@ -632,7 +632,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(x(?:abc)*+x)",
             sequence
@@ -652,7 +652,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(()()((()())()))",
             sequence
@@ -679,9 +679,9 @@ namespace meta::tests
             >
         >
     );
-    static_assert(expect_ast<R"(\\)", literal<'\\'>>);
+    static_assert(is_ast_of<R"(\\)", literal<'\\'>>);
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(\(??x+)",
             sequence
@@ -692,7 +692,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(abc)",
             sequence
@@ -704,7 +704,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(a|b|c)",
             alternation
@@ -716,7 +716,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(aa|bb|cc)",
             alternation
@@ -740,7 +740,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(a?|b|c)",
             alternation
@@ -751,16 +751,16 @@ namespace meta::tests
             >
         >
     );
-    static_assert(expect_ast<R"([a])", set<literal<'a'>>>);
-    static_assert(expect_ast<R"([.])", set<literal<'.'>>>);
-    static_assert(expect_ast<R"([])", nothing>);
-    static_assert(expect_ast<R"([^])", negated<nothing>>);
-    static_assert(expect_ast<R"([-])", set<literal<'-'>>>);
-    static_assert(expect_ast<R"([\0])", set<literal<'\0'>>>);
-    static_assert(expect_ast<R"([\1])", set<literal<'1'>>>);
-    static_assert(expect_ast<R"([\k])", set<literal<'k'>>>);
+    static_assert(is_ast_of<R"([a])", set<literal<'a'>>>);
+    static_assert(is_ast_of<R"([.])", set<literal<'.'>>>);
+    static_assert(is_ast_of<R"([])", nothing>);
+    static_assert(is_ast_of<R"([^])", negated<nothing>>);
+    static_assert(is_ast_of<R"([-])", set<literal<'-'>>>);
+    static_assert(is_ast_of<R"([\0])", set<literal<'\0'>>>);
+    static_assert(is_ast_of<R"([\1])", set<literal<'1'>>>);
+    static_assert(is_ast_of<R"([\k])", set<literal<'k'>>>);
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"([\k<test>])",
             set
@@ -776,7 +776,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"([a-])",
             set
@@ -787,7 +787,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"([\d-a])",
             set
@@ -799,7 +799,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"([a][b\w])",
             sequence
@@ -817,7 +817,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"([][b])",
             sequence
@@ -828,7 +828,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"([a]?[b])",
             sequence
@@ -839,7 +839,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"([a]??[b]?)",
             sequence
@@ -850,7 +850,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"([abc])",
             set
@@ -861,11 +861,11 @@ namespace meta::tests
             >
         >
     );
-    static_assert(expect_ast<R"([a-z])", set<range<'a', 'z'>>>);
-    static_assert(expect_ast<R"([\0-\n])", set<range<'\0', '\n'>>>);
-    static_assert(expect_ast<R"([\X-\x])", set<range<'X', 'x'>>>);
+    static_assert(is_ast_of<R"([a-z])", set<range<'a', 'z'>>>);
+    static_assert(is_ast_of<R"([\0-\n])", set<range<'\0', '\n'>>>);
+    static_assert(is_ast_of<R"([\X-\x])", set<range<'X', 'x'>>>);
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"([a\-z])",
             set
@@ -877,7 +877,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"([a-z-])",
             set
@@ -888,7 +888,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"([a-z-A])",
             set
@@ -900,7 +900,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"([a-z0-9A-Z])",
             set
@@ -912,7 +912,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"([A-[0-\]])",
             set
@@ -923,7 +923,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"([^A-[0-\]])",
             negated
@@ -937,7 +937,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"([-A-[0-\]])",
             set
@@ -949,7 +949,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"([^-aA-Z])",
             negated
@@ -964,7 +964,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(a[^-a-z\WA-Z])",
             sequence
@@ -984,7 +984,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(\h\X[^a^[\]b\c]yy)",
             sequence
@@ -1009,7 +1009,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(((?<_t3st1ng>tuv)?b+?)*|xy)",
             alternation
@@ -1048,7 +1048,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"((?<group_name>))",
             capture
@@ -1060,7 +1060,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"((?<test>x+))",
             capture
@@ -1072,7 +1072,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"((?<group_name>x+?)\k<group_name>)",
             sequence
@@ -1088,7 +1088,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"(x(?<_capture_name>abc)+)",
             sequence
@@ -1112,7 +1112,7 @@ namespace meta::tests
         >
     );
     static_assert(
-        expect_ast
+        is_ast_of
         <
             R"((?<grp_1>abc)? \k<grp_1> (?<grp_2>xyz){2,})",
             sequence
