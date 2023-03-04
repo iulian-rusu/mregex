@@ -39,7 +39,7 @@ namespace meta
              * the standard library (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2325r3.html),
              * a default constructor is required to satisfy the `std::weakly_incrementable` concept.
              */
-            constexpr iterator() noexcept : _target{nullptr} {}
+            constexpr iterator() noexcept = default;
 
             constexpr iterator(input_range_adapter<Generator> &generator) noexcept
                 : _target{&generator}
@@ -79,7 +79,7 @@ namespace meta
             }
 
         private:
-            input_range_adapter<Generator> *_target;
+            input_range_adapter<Generator> *_target{nullptr};
         };
 
         /**

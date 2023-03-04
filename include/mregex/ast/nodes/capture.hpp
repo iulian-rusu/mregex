@@ -3,7 +3,6 @@
 
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/match_result.hpp>
-#include <mregex/ast/traits.hpp>
 #include <mregex/symbols/names.hpp>
 
 namespace meta::ast

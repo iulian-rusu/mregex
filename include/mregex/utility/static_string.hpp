@@ -29,7 +29,7 @@ namespace meta
                 std::copy(std::cbegin(other.data), std::cend(other.data), std::begin(data));
         }
 
-        constexpr auto length() const noexcept
+        constexpr std::size_t length() const noexcept
         {
             return N;
         }

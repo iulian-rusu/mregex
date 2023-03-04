@@ -1,7 +1,6 @@
 #ifndef MREGEX_UTILITY_TYPE_SEQUENCE_HPP
 #define MREGEX_UTILITY_TYPE_SEQUENCE_HPP
 
-#include <type_traits>
 #include <mregex/symbols/core.hpp>
 
 namespace meta

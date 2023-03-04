@@ -71,7 +71,7 @@ namespace meta
 
         /**
          * Performs a deep copy of all regex captures and returns
-         * a regex result container that owns the memory.
+         * a new regex result container that owns the memory.
          *
          * @return  A new regex result object that holds ownership of captures
          */
@@ -96,8 +96,7 @@ namespace meta
         }
 
         /**
-         * Creates a new tuple by applying an invocable object on each group captured
-         * in this regex result.
+         * Creates a new tuple by applying a function on each group of this regex result.
          *
          * @param func  The function invoked to transform each capturing group
          * @return      A new std::tuple that contains the transformed groups
@@ -109,7 +108,7 @@ namespace meta
         }
 
         /**
-         * Invokes a function-like object for every group captured in this regex result.
+         * Invokes a function for each group of this regex result.
          *
          * @param func  The function invoked on each capturing group
          */
@@ -292,7 +291,7 @@ namespace meta
         }
 
         capture_storage_type _captures;
-        bool _matched;
+        bool _matched{};
     };
 
     /**

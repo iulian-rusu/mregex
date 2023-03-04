@@ -1,0 +1,4 @@
+Checks:
+  -readability-simplify-boolean-expr,
+  -readability-magic-numbers
+InheritParentConfig: true

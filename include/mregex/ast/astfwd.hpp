@@ -1,7 +1,6 @@
 #ifndef MREGEX_AST_ASTFWD_HPP
 #define MREGEX_AST_ASTFWD_HPP
 
-#include <mregex/symbols/core.hpp>
 #include <mregex/symbols/quantifiers.hpp>
 #include <mregex/utility/enums.hpp>
 

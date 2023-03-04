@@ -12,6 +12,7 @@ namespace meta::tests
         inline constexpr bool is_name_spec_of = std::is_same_v<capture_name_spec_t<ast_of<Pattern>>, Expected>;
     }
 
+    // Nodes which are trivially matchable by definition
     static_assert(is_trivially_matchable<nothing>);
     static_assert(is_trivially_matchable<negated<nothing>>);
     static_assert(is_trivially_matchable<literal<'a'>>);
@@ -19,9 +20,11 @@ namespace meta::tests
     static_assert(is_trivially_matchable<wildcard>);
     static_assert(is_trivially_matchable<range<'a', 'z'>>);
     static_assert(is_trivially_matchable<set<wildcard, literal<'b'>, whitespace>>);
+    // Nodes which should be deduced as trivially matchable
     static_assert(is_trivially_matchable<sequence<wildcard>>);
     static_assert(is_trivially_matchable<alternation<wildcard>>);
     static_assert(is_trivially_matchable<alternation<whitespace, literal<'a'>, literal<'b'>>>);
+    // Nodes which should not be deduced as trivially matchable
     static_assert(is_trivially_matchable<beginning_of_line> == false);
     static_assert(is_trivially_matchable<end_of_input> == false);
     static_assert(is_trivially_matchable<sequence<wildcard, whitespace>> == false);

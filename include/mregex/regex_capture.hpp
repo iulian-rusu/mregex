@@ -35,6 +35,8 @@ namespace meta
     template<std::forward_iterator Iter, typename Name = symbol::unnamed>
     struct regex_capture_view : regex_capture_base<Name>
     {
+        static constexpr bool is_contiguous_view = std::contiguous_iterator<Iter>;
+
         constexpr regex_capture_view() noexcept = default;
 
         constexpr explicit regex_capture_view(Iter begin, Iter end) noexcept
@@ -61,15 +63,12 @@ namespace meta
             return _end;
         }
 
-        [[nodiscard]] constexpr auto content() const
+        [[nodiscard]] constexpr auto content() const noexcept(is_contiguous_view)
         {
-            return std::string{_begin, _end};
-        }
-
-        constexpr auto content() const noexcept
-        requires std::contiguous_iterator<Iter>
-        {
-            return std::string_view{_begin, _end};
+            if constexpr (is_contiguous_view)
+                return std::string_view{_begin, _end};
+            else
+                return std::string{_begin, _end};
         }
 
         constexpr auto &operator[](std::size_t index) noexcept

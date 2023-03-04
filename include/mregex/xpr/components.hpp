@@ -1,7 +1,6 @@
 #ifndef MREGEX_XPR_COMPONENTS_HPP
 #define MREGEX_XPR_COMPONENTS_HPP
 
-#include <mregex/ast/traits.hpp>
 #include <mregex/xpr/adapters.hpp>
 #include <mregex/xpr/providers.hpp>
 #include <mregex/regex.hpp>
