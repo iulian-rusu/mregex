@@ -19,9 +19,11 @@ namespace meta
         using result_type = remove_rvalue_cvref_t<std::invoke_result_t<Generator>>;
         using value_type = std::remove_reference_t<result_type>;
 
+        static constexpr bool is_nothrow_invocable = std::is_nothrow_invocable_v<Generator>;
+
         template<typename Gen>
         constexpr explicit input_range_adapter(Gen &&generator)
-        noexcept(std::is_nothrow_constructible_v<Generator, Gen &&> && noexcept(Generator::operator()()))
+        noexcept(std::is_nothrow_constructible_v<Generator, Gen &&> && is_nothrow_invocable)
             : Generator{std::forward<Gen>(generator)}, _current_result{Generator::operator()()}
         {}
 
@@ -55,13 +57,13 @@ namespace meta
                 return &_target->current_result();
             }
 
-            constexpr iterator &operator++() noexcept
+            constexpr iterator &operator++() noexcept(is_nothrow_invocable)
             {
                 _target->compute_next();
                 return *this;
             }
 
-            constexpr iterator operator++(int) noexcept
+            constexpr iterator operator++(int) noexcept(is_nothrow_invocable)
             {
                 iterator old_iter{_target};
                 this->operator++();
@@ -130,7 +132,7 @@ namespace meta
             return _current_result;
         }
 
-        constexpr void compute_next() noexcept
+        constexpr void compute_next() noexcept(is_nothrow_invocable)
         {
             _current_result = Generator::operator()();
         }
