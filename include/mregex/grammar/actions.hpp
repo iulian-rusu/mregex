@@ -8,13 +8,13 @@ namespace meta::grammar
     // Ignore the current symbol at the front of the stack and continue
     struct ignore {};
 
-    // Move to the next token in the input sequence
+    // Move to the next token in the input
     struct advance {};
 
-    // Accept the input sequence
+    // Accept the input
     struct accept : std::true_type {};
 
-    // Reject the input sequence
+    // Reject the input
     struct reject : std::false_type {};
 }
 #endif //MREGEX_GRAMMAR_ACTIONS_HPP

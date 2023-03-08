@@ -21,8 +21,8 @@ an iterator compatible with `std::forward_iterator`
   * `multiline` - enables multi-line mode, in which the anchors `^`/`$` will also match line boundaries
   * `ungreedy` - swaps lazy and greedy quantifiers
   * `dotall` - allows the wildcard `.` to also match `\n` and `\r`
-* a flexible API that allows exact matching, searching or iterating over multiple results
-* Ability to define the regex using a standard string-based API or using an [expression-based API](example/using_expressions.cpp)
+* a flexible API that allows exact matching, searching, tokenizing or iterating over multiple matches
+* ability to define the regex using a standard string-based API or using an [expression-based API](example/using_expressions.cpp)
     
 ## Installation
 The project is header-only and does not depend on any third-party libraries. 
@@ -42,27 +42,47 @@ using date_regex = meta::regex<R"((\d{1,2})/(\d{1,2})/(\d{2,4}))">;
 constexpr std::string_view date = "07/08/2021";
 auto [day, month, year] = date_regex::match(date);
 ```
-
-The library supports searching for multiple matches in a string.
-In this case, the `meta::regex::range` method returns a type that satisfies `std::ranges::input_range` and can be iterated to lazily generate all matches in the string.
-Since the range only provides input iterators, all results are discarded and cannot be visited again after the first iteration.
+Each regex type offers the following API:
 ```cpp
-using word_regex = meta::regex<R"(\w+(?!\w))">;
-std::string words = "Find all word-like sequences in this string!";
-for (auto &&word : word_regex::range(words))
-    std::cout << word << '\n';
+// Perform an exact match over the entire range
+template<std::forward_iterator Iter>
+static constexpr auto match(Iter begin, Iter end) -> result_view_type<Iter>;
+
+// Match the prefix of the range
+template<std::forward_iterator Iter>
+static constexpr auto match_prefix(Iter begin, Iter end) -> result_view_type<Iter>;
+
+// Search the first match in the range
+template<std::forward_iterator Iter>
+static constexpr auto search(Iter begin, Iter end) -> result_view_type<Iter>;
+
+// Get a generator that lazily computes matches until the first non-match position
+template<std::forward_iterator Iter>
+static constexpr auto tokenizer(Iter begin, Iter end) -> tokenizer_type<Iter>;
+
+// Get a generator that lazily searches all matches in the range, skipping non-match positions
+template<std::forward_iterator Iter>
+static constexpr auto searcher(Iter begin, Iter end) -> searcher_type<Iter>;
+
+// Get a lazy view of all tokens in the range
+template<std::forward_iterator Iter>
+static constexpr auto tokenize(Iter begin, Iter end) -> token_range_type<Iter>;
+
+// Get a lazy view of all matches in the range
+template<std::forward_iterator Iter>
+static constexpr auto find_all(Iter begin, Iter end) -> match_range_type<Iter>;
 ```
 
 The [expression-based API](example/using_expressions.cpp) allows defining a regex as a composition of C++ expressions 
 (similar to [Boost.Xpressive](https://www.boost.org/doc/libs/1_65_1/doc/html/xpressive.html)). 
-The previous example can be rewritten as follows:
+For example, the regex `\w+(?!\w)` can be defined as follows:
 ```cpp
 namespace xpr = meta::xpr;
 using namespace xpr::operators;
 
 auto word_regex = +xpr::word >> not xpr::ahead(xpr::word);
 std::string words = "Find all word-like sequences in this string!";
-for (auto &&word : word_regex.range(words))
+for (auto &&word : word_regex.find_all(words))
     std::cout << word << '\n';
 ```
 

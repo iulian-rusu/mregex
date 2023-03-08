@@ -11,19 +11,35 @@ namespace meta
      * Method used for exact matching of a range.
      */
     template<typename Regex>
-    struct match_method
+    struct regex_match_method
     {
-        using ast_type = regex_ast_t<Regex>;
+        using regex_type = Regex;
+        using ast_type = regex_ast_t<regex_type>;
 
         template<std::forward_iterator Iter, typename Context>
         static constexpr auto invoke(Iter begin, Iter end, Iter it, Context &ctx) noexcept -> ast::match_result<Iter>
         {
-            if (auto result = ast_type::match(begin, end, it, ctx, continuations<Iter>::equals(end)))
-            {
-                std::get<0>(ctx.captures) = regex_capture_view_t<Regex, 0, Iter>{it, end};
-                return result;
-            }
-            return {it, false};
+            auto result = ast_type::match(begin, end, it, ctx, continuations<Iter>::equals(end));
+            std::get<0>(ctx.captures) = regex_capture_view_t<regex_type, 0, Iter>{it, end};
+            return result;
+        }
+    };
+
+    /**
+     * Method used for matching the prefix of a range.
+     */
+    template<typename Regex>
+    struct regex_match_prefix_method
+    {
+        using regex_type = Regex;
+        using ast_type = regex_ast_t<regex_type>;
+
+        template<std::forward_iterator Iter, typename Context>
+        static constexpr auto invoke(Iter begin, Iter end, Iter it, Context &ctx) noexcept -> ast::match_result<Iter>
+        {
+            auto result = ast_type::match(begin, end, it, ctx, continuations<Iter>::success);
+            std::get<0>(ctx.captures) = regex_capture_view_t<regex_type, 0, Iter>{it, result.end};
+            return result;
         }
     };
 
@@ -31,9 +47,10 @@ namespace meta
      * Method used for searching the first match in a range.
      */
     template<typename Regex>
-    struct search_method
+    struct regex_search_method
     {
-        using ast_type = regex_ast_t<Regex>;
+        using regex_type = Regex;
+        using ast_type = regex_ast_t<regex_type>;
 
         template<std::forward_iterator Iter, typename Context>
         static constexpr auto invoke(Iter begin, Iter end, Iter it, Context &ctx) noexcept -> ast::match_result<Iter>
@@ -42,7 +59,7 @@ namespace meta
             {
                 if (auto result = ast_type::match(begin, end, it, ctx, continuations<Iter>::success))
                 {
-                    std::get<0>(ctx.captures) = regex_capture_view_t<Regex, 0, Iter>{it, result.end};
+                    std::get<0>(ctx.captures) = regex_capture_view_t<regex_type, 0, Iter>{it, result.end};
                     return result;
                 }
                 if (it == end)

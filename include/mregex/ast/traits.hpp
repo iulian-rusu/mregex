@@ -68,7 +68,7 @@ namespace meta::ast
 
     /**
      * Base type used to tag all AST nodes which are zero-length matchers.
-     * A node is a zero-length matcher if it may match input sequences of length zero.
+     * A node is a zero-length matcher if it may match inputs of length zero.
      */
     struct zero_length_matcher {};
 

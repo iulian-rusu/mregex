@@ -19,14 +19,14 @@ namespace meta
     struct basic_regex_result;
 
     /**
-     * Result that holds views into the captured content.
-     * The behavior is undefined if the orginal input sequence expires before this object.
+     * Result that holds views into the matched content.
+     * The behavior is undefined if the orginal input expires before this object.
      */
     template<std::forward_iterator Iter, typename NameSpec>
     using regex_result_view = basic_regex_result<regex_capture_view_storage<Iter, NameSpec>, NameSpec>;
 
     /**
-     * Result that holds ownership of captured content.
+     * Result that holds ownership of matched content.
      */
     template<typename NameSpec>
     using regex_result = basic_regex_result<regex_capture_storage<NameSpec>, NameSpec>;
@@ -147,7 +147,7 @@ namespace meta
 
         /**
          * More overloads are required because C++ doesn't allow deducing
-         * the value category of `this` inside a method.
+         * the value category of 'this' inside a method.
          * @see https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p0847r4.html
          */
 
@@ -270,9 +270,9 @@ namespace meta
         noexcept(is_view || std::is_rvalue_reference_v<Self &&>)
         -> std::optional<std::remove_cvref_t<Self>>
         {
-            if (self.matched())
-                return std::optional{std::forward<Self>(self)};
-            return std::nullopt;
+            if (!self.matched())
+                return std::nullopt;
+            return std::optional{std::forward<Self>(self)};
         }
 
         template<std::size_t ID, capture_storage Captures>
@@ -294,7 +294,7 @@ namespace meta
     };
 
     /**
-     * Functors used to project a regex result to one of its capture groups.
+     * Functors used to project a regex result to one of its capturing groups.
      */
 
     template<std::size_t ID>

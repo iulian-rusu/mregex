@@ -14,7 +14,7 @@ namespace meta
         struct success : std::true_type {};
 
         // Parsing finished with syntax error
-        template<std::size_t>
+        template<std::size_t I>
         struct syntax_error : std::false_type {};
     }
 

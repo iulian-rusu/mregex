@@ -1162,7 +1162,7 @@ namespace meta::grammar
     template<char C>
     struct rule<symbol::set_esc, symbol::character<C>>
     {
-        using type = handle_set_escaped_char_t<C>;
+        using type = handle_set_escape_sequence_t<C>;
     };
 
     template<char C>
@@ -1236,7 +1236,7 @@ namespace meta::grammar
     template<char C>
     struct rule<symbol::set_range_esc, symbol::character<C>>
     {
-        using type = handle_set_range_escaped_char_t<C>;
+        using type = handle_set_range_escape_sequence_t<C>;
     };
 
     template<>

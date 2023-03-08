@@ -57,7 +57,7 @@ namespace meta::symbol
     inline constexpr bool is_zero<quantifier_value<0>> = true;
 
     /**
-     * Predicate that checks if a pair of quantifiers for a valid range (interval).
+     * Predicate that checks if a pair of quantifiers form a valid range (interval).
      */
     template<quantifier A, quantifier B>
     inline constexpr bool is_valid_range = false;

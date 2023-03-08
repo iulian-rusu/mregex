@@ -12,9 +12,6 @@ namespace meta
     using regex_flags = typename Regex::flags;
 
     template<typename Regex, std::forward_iterator Iter>
-    using regex_context_t = typename Regex::template context_type<Iter>;
-
-    template<typename Regex, std::forward_iterator Iter>
     using regex_result_view_t = typename Regex::template result_view_type<Iter>;
 
     template<typename Regex>
@@ -33,9 +30,15 @@ namespace meta
     using regex_capture_t = std::tuple_element_t<ID, regex_capture_storage_t<Regex>>;
 
     template<typename Regex, std::forward_iterator Iter>
-    using regex_generator_t = typename Regex::template generator_type<Iter>;
+    using regex_tokenizer_t = typename Regex::template tokenizer_type<Iter>;
 
     template<typename Regex, std::forward_iterator Iter>
-    using regex_range_t = typename Regex::template range_type<Iter>;
+    using regex_searcher_t = typename Regex::template searcher_type<Iter>;
+
+    template<typename Regex, std::forward_iterator Iter>
+    using regex_token_range_t = typename Regex::template token_range_type<Iter>;
+
+    template<typename Regex, std::forward_iterator Iter>
+    using regex_match_range_t = typename Regex::template match_range_type<Iter>;
 }
 #endif //MREGEX_REGEX_TRAITS_HPP

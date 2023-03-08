@@ -5,9 +5,13 @@ int main()
 {
     using word_regex = meta::regex<R"(\w+?(?!\w))">;
 
-    // The range() method returns a range that lazily generates the results one-by-one
-    // Old results are discarded after advancing the iterator
-    // Reading an iterator multiple times without incrementing will give the same result
-    for (auto &&word : word_regex::range("Find all word-like sequences in this string!"))
+    // The find_all() method returns an input range that lazily generates matches
+    std::cout << "With find_all():\n";
+    for (auto &&word : word_regex::find_all("Find all word-like sequences in this string!"))
         std::cout << word << '\n';
+
+    // Tokenizing stops at the first non-match position (in this case, after matching "Find")
+    std::cout << "\nWith tokenize():\n";
+    for (auto &&token : word_regex::tokenize("Find all word-like sequences in this string!"))
+        std::cout << token << '\n';
 }

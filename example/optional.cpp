@@ -10,9 +10,9 @@ namespace detail
     {
         using result_type = std::remove_reference_t<decltype(std::invoke(std::forward<F>(f), *std::forward<Opt>(opt)))>;
 
-        if (opt.has_value())
-            return std::optional{std::invoke(std::forward<F>(f), *std::forward<Opt>(opt))};
-        return std::optional<result_type>{std::nullopt};
+        if (!opt.has_value())
+            return std::optional<result_type>{std::nullopt};
+        return std::optional{std::invoke(std::forward<F>(f), *std::forward<Opt>(opt))};
     }
 }
 
@@ -21,7 +21,7 @@ using my_regex = meta::regex<R"(Today is (?<day>[A-Z][a-z]+))">;
 constexpr auto try_parse_day(std::string_view text) -> std::optional<std::string_view>
 {
     // Regex results can be converted to std::optional
-    // This makes it easier to use standard interface methods like `transform`, `and_then`, `or_else` etc.
+    // This makes it easier to use standard interface methods like transform, and_then, or_else etc.
     return detail::transform(
         my_regex::match(text).as_optional(),
         meta::get_group_named<"day">

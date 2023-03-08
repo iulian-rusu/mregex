@@ -325,10 +325,10 @@ namespace meta::grammar
      * @tparam C    The current character in the input pattern
      */
     template<char C>
-    struct handle_set_escaped_char : handle_escaped_char<C> {};
+    struct handle_set_escape_sequence : handle_escaped_char<C> {};
 
     template<>
-    struct handle_set_escaped_char<'A'>
+    struct handle_set_escape_sequence<'A'>
     {
         using type =
                 type_sequence
@@ -339,7 +339,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct handle_set_escaped_char<'Z'>
+    struct handle_set_escape_sequence<'Z'>
     {
         using type =
                 type_sequence
@@ -350,7 +350,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct handle_set_escaped_char<'B'>
+    struct handle_set_escape_sequence<'B'>
     {
         using type =
                 type_sequence
@@ -361,7 +361,7 @@ namespace meta::grammar
     };
 
     template<>
-    struct handle_set_escaped_char<'b'>
+    struct handle_set_escape_sequence<'b'>
     {
         using type =
                 type_sequence
@@ -372,7 +372,7 @@ namespace meta::grammar
     };
 
     template<char C>
-    using handle_set_escaped_char_t = typename handle_set_escaped_char<C>::type;
+    using handle_set_escape_sequence_t = typename handle_set_escape_sequence<C>::type;
 
     /**
      * Metafunction that defines symbols used to handle an escaped character sequence inside a set range.
@@ -381,82 +381,82 @@ namespace meta::grammar
      * @tparam C    The current character in the input pattern
      */
     template<char C>
-    struct handle_set_range_escaped_char : handle_set_escaped_char<C> {};
+    struct handle_set_range_escape_sequence : handle_set_escape_sequence<C> {};
 
     // Special character classes which cannot be range bounds
     template<>
-    struct handle_set_range_escaped_char<'d'>
+    struct handle_set_range_escape_sequence<'d'>
     {
         using type = reject;
     };
 
     template<>
-    struct handle_set_range_escaped_char<'D'>
+    struct handle_set_range_escape_sequence<'D'>
     {
         using type = reject;
     };
 
     template<>
-    struct handle_set_range_escaped_char<'w'>
+    struct handle_set_range_escape_sequence<'w'>
     {
         using type = reject;
     };
 
     template<>
-    struct handle_set_range_escaped_char<'W'>
+    struct handle_set_range_escape_sequence<'W'>
     {
         using type = reject;
     };
 
     template<>
-    struct handle_set_range_escaped_char<'s'>
+    struct handle_set_range_escape_sequence<'s'>
     {
         using type = reject;
     };
 
     template<>
-    struct handle_set_range_escaped_char<'S'>
+    struct handle_set_range_escape_sequence<'S'>
     {
         using type = reject;
     };
 
     template<>
-    struct handle_set_range_escaped_char<'l'>
+    struct handle_set_range_escape_sequence<'l'>
     {
         using type = reject;
     };
 
     template<>
-    struct handle_set_range_escaped_char<'L'>
+    struct handle_set_range_escape_sequence<'L'>
     {
         using type = reject;
     };
 
     template<>
-    struct handle_set_range_escaped_char<'u'>
+    struct handle_set_range_escape_sequence<'u'>
     {
         using type = reject;
     };
 
     template<>
-    struct handle_set_range_escaped_char<'U'>
+    struct handle_set_range_escape_sequence<'U'>
     {
         using type = reject;
     };
 
     template<>
-    struct handle_set_range_escaped_char<'R'>
+    struct handle_set_range_escape_sequence<'R'>
     {
         using type = reject;
     };
 
     template<>
-    struct handle_set_range_escaped_char<'N'>
+    struct handle_set_range_escape_sequence<'N'>
     {
         using type = reject;
     };
 
     template<char C>
-    using handle_set_range_escaped_char_t = typename handle_set_range_escaped_char<C>::type;
+    using handle_set_range_escape_sequence_t = typename handle_set_range_escape_sequence<C>::type;
 }
 #endif //MREGEX_GRAMMAR_ESCAPES_HPP

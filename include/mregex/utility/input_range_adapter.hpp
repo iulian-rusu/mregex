@@ -37,9 +37,9 @@ namespace meta
 
             /**
              * Note: this default constructor is technically not required for the iterator
-             * to satisfy `std::input_iterator`. However, due to a wrong implementation in some older versions of
+             * to satisfy std::input_iterator. However, due to a wrong implementation in some older versions of
              * the standard library (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2325r3.html),
-             * a default constructor is required to satisfy the `std::weakly_incrementable` concept.
+             * a default constructor is required to satisfy the std::weakly_incrementable concept.
              */
             constexpr iterator() noexcept = default;
 

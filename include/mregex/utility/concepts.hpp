@@ -25,6 +25,7 @@ namespace meta
     {
         { capture.content() } -> char_range;
         { capture.length() } -> std::convertible_to<std::size_t>;
+        { capture.is_empty() } -> std::same_as<bool>;
         static_cast<bool>(capture);
     };
 

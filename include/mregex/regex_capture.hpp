@@ -27,9 +27,9 @@ namespace meta
     };
 
     /**
-     * Class that holds a view into the captured content of a regex group.
+     * Class that holds a view into the content captured by a regex group.
      *
-     * @tparam Iter The forward iterator type used to acces the input sequence
+     * @tparam Iter The forward iterator type used to acces the input
      * @tparam Name The name of the capturing group (optional)
      */
     template<std::forward_iterator Iter, typename Name = symbol::unnamed>
@@ -46,6 +46,11 @@ namespace meta
         constexpr void clear() noexcept
         {
             _end = _begin;
+        }
+
+        constexpr bool is_empty() const noexcept
+        {
+            return _begin == _end;
         }
 
         constexpr std::size_t length() const noexcept
@@ -85,7 +90,7 @@ namespace meta
 
         constexpr explicit operator bool() const noexcept
         {
-            return length() > 0;
+            return is_empty();
         }
 
         constexpr explicit(false) operator std::string_view() const noexcept
@@ -100,7 +105,7 @@ namespace meta
     };
 
     /**
-     * Class that holds ownership on the captured content of a regex group.
+     * Class that holds ownership on the content captured by a regex group.
      *
      * @tparam Name The name of the capturing group (optional)
      */
@@ -113,6 +118,11 @@ namespace meta
         explicit regex_capture(regex_capture_view<Iter, Name> const &capture_view)
             : _capture{capture_view.begin(), capture_view.end()}
         {}
+
+        bool is_empty() const noexcept
+        {
+            return _capture.empty();
+        }
 
         std::size_t length() const noexcept
         {
@@ -171,7 +181,7 @@ namespace meta
 
         explicit operator bool() const noexcept
         {
-            return length() > 0;
+            return is_empty();
         }
 
         explicit(false) operator std::string_view() const noexcept

@@ -8,10 +8,10 @@ namespace meta
 {
     /**
      * Data structure that holds static information about the regex as well as
-     * match-time information like capturing group contents.
+     * match-time information like captures.
      *
      * @tparam Regex    The regex type used for matching
-     * @tparam Iter     The forward iterator type used to acces the input sequence
+     * @tparam Iter     The forward iterator type used to acces the input
      */
     template<typename Regex, std::forward_iterator Iter>
     struct regex_context
