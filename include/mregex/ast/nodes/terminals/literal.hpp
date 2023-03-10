@@ -15,7 +15,7 @@ namespace meta::ast
             char input = *it;
             bool result = C == input;
             if constexpr (Context::flags::icase && is_alpha(C))
-                result |= flip_case_bit(C) == input;
+                result |= flip_lowercase_bit(C) == input;
             return result;
         }
     };

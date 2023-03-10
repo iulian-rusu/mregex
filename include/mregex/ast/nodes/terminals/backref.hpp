@@ -70,10 +70,7 @@ namespace meta::ast
         template<bool IgnoreCase>
         static constexpr bool equals(char a, char b) noexcept
         {
-            if constexpr (IgnoreCase)
-                return to_lower(a) == to_lower(b);
-            else
-                return a == b;
+            return a == b || (IgnoreCase && a == to_lower(b));
         }
     };
 

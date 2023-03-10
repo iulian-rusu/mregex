@@ -41,7 +41,7 @@ namespace meta::ast
             auto input = *it;
             bool result = A <= input && input <= B;
             if constexpr (Context::flags::icase)
-                result |= is_in_alpha_subrange(flip_case_bit(input));
+                result |= is_in_alpha_subrange(flip_lowercase_bit(input));
             return result;
         }
 
