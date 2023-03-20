@@ -10,13 +10,13 @@ namespace meta::ast::predicates
     struct beginning_predicate
     {
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool is_match(Iter begin, Iter, Iter it, Context &ctx) noexcept
+        static constexpr bool is_match(Iter begin, Iter /*end*/, Iter current, Context &ctx) noexcept
         {
-            if (it == begin)
+            if (current == begin)
                 return true;
             if constexpr (Mode == line_mode::multiline && Context::flags::multiline)
             {
-                if (linebreak::match_one(std::prev(it), ctx))
+                if (linebreak::match_one(std::prev(current), ctx))
                     return true;
             }
             return false;
@@ -27,13 +27,13 @@ namespace meta::ast::predicates
     struct end_predicate
     {
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool is_match(Iter, Iter end, Iter it, Context &ctx) noexcept
+        static constexpr bool is_match(Iter /*begin*/, Iter end, Iter current, Context &ctx) noexcept
         {
-            if (it == end)
+            if (current == end)
                 return true;
             if constexpr (Mode == line_mode::multiline && Context::flags::multiline)
             {
-                if (linebreak::match_one(it, ctx))
+                if (linebreak::match_one(current, ctx))
                     return true;
             }
             return false;
@@ -43,11 +43,11 @@ namespace meta::ast::predicates
     struct word_boundary_predicate
     {
         template<std::bidirectional_iterator Iter, typename Context>
-        static constexpr bool is_match(Iter begin, Iter end, Iter it, Context &ctx) noexcept
+        static constexpr bool is_match(Iter begin, Iter end, Iter current, Context &ctx) noexcept
         {
-            bool behind = it != begin && word::match_one(std::prev(it), ctx);
-            bool ahead = it != end && word::match_one(it, ctx);
-            return behind ^ ahead;
+            bool is_word_behind = current != begin && word::match_one(std::prev(current), ctx);
+            bool is_word_ahead = current != end && word::match_one(current, ctx);
+            return is_word_behind ^ is_word_ahead;
         }
     };
 }

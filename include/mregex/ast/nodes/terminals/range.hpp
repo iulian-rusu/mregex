@@ -36,9 +36,9 @@ namespace meta::ast
         static_assert(A < B, "invalid range bounds");
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool match_one(Iter it, Context &) noexcept
+        static constexpr bool match_one(Iter current, Context &) noexcept
         {
-            auto input = *it;
+            auto input = *current;
             bool result = A <= input && input <= B;
             if constexpr (Context::flags::icase)
                 result |= is_in_alpha_subrange(flip_lowercase_bit(input));

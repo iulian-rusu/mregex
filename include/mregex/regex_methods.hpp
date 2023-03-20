@@ -17,10 +17,10 @@ namespace meta
         using ast_type = regex_ast_t<regex_type>;
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr auto invoke(Iter begin, Iter end, Iter it, Context &ctx) noexcept -> ast::match_result<Iter>
+        static constexpr auto invoke(Iter begin, Iter end, Iter current, Context &ctx) noexcept -> ast::match_result<Iter>
         {
-            auto result = ast_type::match(begin, end, it, ctx, continuations<Iter>::equals(end));
-            std::get<0>(ctx.captures) = regex_capture_view_t<regex_type, 0, Iter>{it, end};
+            auto result = ast_type::match(begin, end, current, ctx, continuations<Iter>::equals(end));
+            std::get<0>(ctx.captures) = regex_capture_view_t<regex_type, 0, Iter>{current, end};
             return result;
         }
     };
@@ -35,10 +35,10 @@ namespace meta
         using ast_type = regex_ast_t<regex_type>;
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr auto invoke(Iter begin, Iter end, Iter it, Context &ctx) noexcept -> ast::match_result<Iter>
+        static constexpr auto invoke(Iter begin, Iter end, Iter current, Context &ctx) noexcept -> ast::match_result<Iter>
         {
-            auto result = ast_type::match(begin, end, it, ctx, continuations<Iter>::success);
-            std::get<0>(ctx.captures) = regex_capture_view_t<regex_type, 0, Iter>{it, result.end};
+            auto result = ast_type::match(begin, end, current, ctx, continuations<Iter>::success);
+            std::get<0>(ctx.captures) = regex_capture_view_t<regex_type, 0, Iter>{current, result.end};
             return result;
         }
     };
@@ -53,19 +53,19 @@ namespace meta
         using ast_type = regex_ast_t<regex_type>;
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr auto invoke(Iter begin, Iter end, Iter it, Context &ctx) noexcept -> ast::match_result<Iter>
+        static constexpr auto invoke(Iter begin, Iter end, Iter current, Context &ctx) noexcept -> ast::match_result<Iter>
         {
-            for (;; ++it)
+            for (;; ++current)
             {
-                if (auto result = ast_type::match(begin, end, it, ctx, continuations<Iter>::success))
+                if (auto result = ast_type::match(begin, end, current, ctx, continuations<Iter>::success))
                 {
-                    std::get<0>(ctx.captures) = regex_capture_view_t<regex_type, 0, Iter>{it, result.end};
+                    std::get<0>(ctx.captures) = regex_capture_view_t<regex_type, 0, Iter>{current, result.end};
                     return result;
                 }
-                if (it == end)
+                if (current == end)
                     break;
             }
-            return {it, false};
+            return {current, false};
         }
     };
 }

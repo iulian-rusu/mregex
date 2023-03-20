@@ -38,23 +38,23 @@ namespace meta::ast
     struct backref_base : terminal, zero_length_matcher
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match(Iter /*begin*/, Iter end, Iter current, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
             auto const captured = LookupMethod::get_capture(ctx.captures);
             std::size_t const length_to_match = captured.length();
-            if (distance_less_than(length_to_match, it, end))
-                return {it, false};
+            if (distance_less_than(length_to_match, current, end))
+                return {current, false};
 
             // Lookbehinds use reverse iterators. To check for equality, iterator directions must be the same
             constexpr bool different_iterators = !std::is_same_v<Iter, typename Context::iterator_type>;
             for (auto target : reverse_if<different_iterators>(captured))
             {
-                if (!equals<Context::flags::icase>(target, *it))
-                    return {it, false};
-                ++it;
+                if (!equals<Context::flags::icase>(target, *current))
+                    return {current, false};
+                ++current;
             }
-            return cont(it);
+            return cont(current);
         }
 
     private:

@@ -13,12 +13,12 @@ namespace meta::ast
         static constexpr std::size_t capture_count = count_captures<First, Rest ...>;
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match(Iter begin, Iter end, Iter current, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            if (auto first_match = First::match(begin, end, it, ctx, cont))
+            if (auto first_match = First::match(begin, end, current, ctx, cont))
                 return first_match;
-            return alternation<Rest ...>::match(begin, end, it, ctx, cont);
+            return alternation<Rest ...>::match(begin, end, current, ctx, cont);
         }
     };
 

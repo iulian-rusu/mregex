@@ -15,117 +15,117 @@ namespace meta::ast
         static constexpr std::size_t capture_count = Inner::capture_count;
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match(Iter begin, Iter end, Iter current, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
             if constexpr (Mode == match_mode::possessive)
-                return possessive_match(begin, end, it, ctx, cont);
+                return possessive_match(begin, end, current, ctx, cont);
             else
-                return backtracking_match(begin, end, it, ctx, cont);
+                return backtracking_match(begin, end, current, ctx, cont);
         }
 
     private:
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto possessive_match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto possessive_match(Iter begin, Iter end, Iter current, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            if (auto result = backtracking_match(begin, end, it, ctx, continuations<Iter>::success))
+            if (auto result = backtracking_match(begin, end, current, ctx, continuations<Iter>::success))
                 return cont(result.end);
-            return {it, false};
+            return {current, false};
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto backtracking_match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto backtracking_match(Iter begin, Iter end, Iter current, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
             if constexpr (Context::flags::unroll)
-                return unrolled_generic_match(begin, end, it, ctx, cont);
+                return unrolled_generic_match(begin, end, current, ctx, cont);
             else
-                return non_unrolled_generic_match(begin, end, it, ctx, cont);
+                return non_unrolled_generic_match(begin, end, current, ctx, cont);
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto backtracking_match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto backtracking_match(Iter /*begin*/, Iter end, Iter current, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         requires is_trivially_matchable<Inner>
         {
-            if (distance_less_than<N>(it, end))
-                return {it, false};
+            if (distance_less_than<N>(current, end))
+                return {current, false};
             if constexpr (Context::flags::unroll)
-                return unrolled_trivial_match(it, ctx, cont, std::make_index_sequence<N>{});
+                return unrolled_trivial_match(current, ctx, cont, std::make_index_sequence<N>{});
             else
-                return non_unrolled_trivial_match(it, ctx, cont);
+                return non_unrolled_trivial_match(current, ctx, cont);
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto unrolled_generic_match(Iter begin, Iter end, Iter it,Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto unrolled_generic_match(Iter begin, Iter end, Iter current, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
-                return fixed_repetition<N - 1, Inner>::match(begin, end, new_it, ctx, cont);
+            auto continuation = [=, &ctx, &cont](Iter next) noexcept {
+                return fixed_repetition<N - 1, Inner>::match(begin, end, next, ctx, cont);
             };
-            return Inner::match(begin, end, it, ctx, continuation);
+            return Inner::match(begin, end, current, ctx, continuation);
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
         static constexpr auto non_unrolled_generic_match(
-                Iter begin, Iter end, Iter it,
+                Iter begin, Iter end, Iter current,
                 Context &ctx, Continuation &&cont,
                 std::size_t repeats = N
         ) noexcept -> match_result<Iter>
         {
             if (repeats == 1)
-                return Inner::match(begin, end, it, ctx, cont);
-            auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
-                return non_unrolled_generic_match(begin, end, new_it, ctx, cont, repeats - 1);
+                return Inner::match(begin, end, current, ctx, cont);
+            auto continuation = [=, &ctx, &cont](Iter next) noexcept {
+                return non_unrolled_generic_match(begin, end, next, ctx, cont, repeats - 1);
             };
-            return Inner::match(begin, end, it, ctx, continuation);
+            return Inner::match(begin, end, current, ctx, continuation);
         }
 
         template<std::random_access_iterator Iter, typename Context, typename Continuation, std::size_t... Indices>
         static constexpr auto unrolled_trivial_match(
-                Iter it, Context &ctx, Continuation &&cont,
+                Iter current, Context &ctx, Continuation &&cont,
                 std::index_sequence<Indices ...> &&
         ) noexcept -> match_result<Iter>
         {
-            if ((Inner::match_one(std::next(it, Indices), ctx) && ...))
-                return cont(std::next(it, N));
-            return {it, false};
+            if ((Inner::match_one(std::next(current, Indices), ctx) && ...))
+                return cont(std::next(current, N));
+            return {current, false};
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation, std::size_t... Indices>
         static constexpr auto unrolled_trivial_match(
-                Iter it, Context &ctx, Continuation &&cont,
+                Iter current, Context &ctx, Continuation &&cont,
                 std::index_sequence<Indices ...> &&
         ) noexcept -> match_result<Iter>
         {
-            if (((Indices, Inner::match_one(it++, ctx)) && ...))
-                return cont(it);
-            return {it, false};
+            if (((Indices, Inner::match_one(current++, ctx)) && ...))
+                return cont(current);
+            return {current, false};
         }
 
         template<std::random_access_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto non_unrolled_trivial_match(Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto non_unrolled_trivial_match(Iter current, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
             for (std::size_t offset = 0; offset != N; ++offset)
             {
-                if (!Inner::match_one(std::next(it, offset), ctx))
-                    return {it, false};
+                if (!Inner::match_one(std::next(current, offset), ctx))
+                    return {current, false};
             }
-            return cont(std::next(it, N));
+            return cont(std::next(current, N));
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto non_unrolled_trivial_match(Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto non_unrolled_trivial_match(Iter current, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
             for (std::size_t match_count = 0; match_count != N; ++match_count)
             {
-                if (!Inner::match_one(it++, ctx))
-                    return {it, false};
+                if (!Inner::match_one(current++, ctx))
+                    return {current, false};
             }
-            return cont(it);
+            return cont(current);
         }
     };
 }

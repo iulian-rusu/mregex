@@ -13,13 +13,13 @@ namespace meta
     template<std::forward_iterator Iter>
     struct continuations
     {
-        static constexpr auto success = [](Iter it) noexcept -> ast::match_result<Iter> {
-            return {it, true};
+        static constexpr auto success = [](Iter current) noexcept -> ast::match_result<Iter> {
+            return {current, true};
         };
 
         static constexpr auto equals = [](Iter target) noexcept {
-            return [=](Iter it) noexcept -> ast::match_result<Iter> {
-                return {it, it == target};
+            return [=](Iter current) noexcept -> ast::match_result<Iter> {
+                return {current, current == target};
             };
         };
     };

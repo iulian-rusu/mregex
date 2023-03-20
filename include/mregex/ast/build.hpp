@@ -125,24 +125,6 @@ namespace meta::ast
         using type = type_sequence<negated<First>, Rest ...>;
     };
 
-    template<match_mode Mode, typename Token, typename First, typename... Rest>
-    struct build<symbol::make_star<Mode>, Token, type_sequence<First, Rest ...>>
-    {
-        using type = type_sequence<basic_star<Mode, First>, Rest ...>;
-    };
-
-    template<match_mode Mode, typename Token, typename First, typename... Rest>
-    struct build<symbol::make_optional<Mode>, Token, type_sequence<First, Rest ...>>
-    {
-        using type = type_sequence<basic_optional<Mode, First>, Rest ...>;
-    };
-
-    template<match_mode Mode, typename Token, typename First, typename... Rest>
-    struct build<symbol::make_plus<Mode>, Token, type_sequence<First, Rest ...>>
-    {
-        using type = type_sequence<basic_plus<Mode, First>, Rest ...>;
-    };
-
     // Combine any two non-sequence symbols into a sequence
     template<typename Token, typename First, typename Second, typename... Rest>
     struct build<symbol::make_sequence, Token, type_sequence<First, Second, Rest ...>>

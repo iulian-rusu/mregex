@@ -47,13 +47,13 @@ namespace meta::symbol
     struct make_repetition : semantic_action {};
 
     template<match_mode Mode>
-    struct make_star : semantic_action {};
+    using make_star = make_repetition<Mode, quantifier_value<0>, infinity>;
 
     template<match_mode Mode>
-    struct make_plus : semantic_action {};
+    using make_plus = make_repetition<Mode, quantifier_value<1>, infinity>;
 
     template<match_mode Mode>
-    struct make_optional : semantic_action {};
+    using make_optional = make_repetition<Mode, quantifier_value<0>, quantifier_value<1>>;
 
     template<std::size_t ID>
     struct make_backref : semantic_action {};

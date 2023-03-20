@@ -15,47 +15,47 @@ namespace meta::ast
         static constexpr std::size_t size = 1 + sizeof...(Rest);
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match(Iter begin, Iter end, Iter current, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
-                return sequence<Rest ...>::match(begin, end, new_it, ctx, cont);
+            auto continuation = [=, &ctx, &cont](Iter next) noexcept {
+                return sequence<Rest ...>::match(begin, end, next, ctx, cont);
             };
-            return First::match(begin, end, it, ctx, continuation);
+            return First::match(begin, end, current, ctx, continuation);
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match(Iter /*begin*/, Iter end, Iter current, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         requires are_trivially_matchable<First, Rest ...>
         {
-            if (distance_less_than<size>(it, end))
-                return {it, false};
+            if (distance_less_than<size>(current, end))
+                return {current, false};
             if constexpr (std::random_access_iterator<Iter>)
-                return unrolled_trivial_match(it, ctx, cont, std::make_index_sequence<size - 1>{});
+                return unrolled_trivial_match(current, ctx, cont, std::make_index_sequence<size - 1>{});
             else
-                return unrolled_trivial_match(it, ctx, cont);
+                return unrolled_trivial_match(current, ctx, cont);
         }
 
     private:
         template<std::random_access_iterator Iter, typename Context, typename Continuation, std::size_t... Indices>
         static constexpr auto unrolled_trivial_match(
-                Iter it, Context &ctx, Continuation &&cont,
+                Iter current, Context &ctx, Continuation &&cont,
                 std::index_sequence<Indices ...> &&
         ) noexcept -> match_result<Iter>
         {
-            if (First::match_one(it, ctx) && (Rest::match_one(std::next(it, Indices + 1), ctx) && ...))
-                return cont(std::next(it, size));
-            return {it, false};
+            if (First::match_one(current, ctx) && (Rest::match_one(std::next(current, Indices + 1), ctx) && ...))
+                return cont(std::next(current, size));
+            return {current, false};
         }
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto unrolled_trivial_match(Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto unrolled_trivial_match(Iter current, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            if (First::match_one(it, ctx) && (Rest::match_one(++it, ctx) && ...))
-                return cont(std::next(it));
-            return {it, false};
+            if (First::match_one(current, ctx) && (Rest::match_one(++current, ctx) && ...))
+                return cont(std::next(current));
+            return {current, false};
         }
     };
 

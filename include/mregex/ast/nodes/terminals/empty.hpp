@@ -10,10 +10,10 @@ namespace meta::ast
     struct empty : terminal, zero_length_matcher
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter, Iter, Iter it, Context &, Continuation &&cont) noexcept
+        static constexpr auto match(Iter /*begin*/, Iter /*end*/, Iter current, Context &, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            return cont(it);
+            return cont(current);
         }
     };
 }

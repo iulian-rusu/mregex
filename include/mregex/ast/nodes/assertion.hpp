@@ -17,12 +17,12 @@ namespace meta::ast
     struct assertion : zero_length_matcher
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match(Iter begin, Iter end, Iter current, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            if (Predicate::is_match(begin, end, it, ctx))
-                return cont(it);
-            return {it, false};
+            if (Predicate::is_match(begin, end, current, ctx))
+                return cont(current);
+            return {current, false};
         }
     };
 }

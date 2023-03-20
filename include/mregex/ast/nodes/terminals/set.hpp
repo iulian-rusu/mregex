@@ -12,9 +12,9 @@ namespace meta::ast
         static_assert(are_trivially_matchable<Nodes ...>, "only trivially matchable AST nodes can form a set");
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool match_one(Iter it, Context &ctx) noexcept
+        static constexpr bool match_one(Iter current, Context &ctx) noexcept
         {
-            return (Nodes::match_one(it, ctx) || ...);
+            return (Nodes::match_one(current, ctx) || ...);
         }
     };
 }

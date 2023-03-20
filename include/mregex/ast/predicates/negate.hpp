@@ -9,9 +9,9 @@ namespace meta::ast::predicates
     struct negate
     {
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool is_match(Iter begin, Iter end, Iter it, Context &ctx) noexcept
+        static constexpr bool is_match(Iter begin, Iter end, Iter current, Context &ctx) noexcept
         {
-            return !Predicate::is_match(begin, end, it, ctx);
+            return !Predicate::is_match(begin, end, current, ctx);
         }
     };
 }

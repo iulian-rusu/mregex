@@ -21,26 +21,22 @@ namespace meta
 
         constexpr auto begin() noexcept
         {
-            auto it = std::end(_range);
-            return std::make_reverse_iterator(it);
+            return std::make_reverse_iterator(std::end(_range));
         }
 
         constexpr auto begin() const noexcept
         {
-            auto it = std::cend(_range);
-            return std::make_reverse_iterator(it);
+            return std::make_reverse_iterator(std::cend(_range));
         }
 
         constexpr auto end() noexcept
         {
-            auto it = std::begin(_range);
-            return std::make_reverse_iterator(it);
+            return std::make_reverse_iterator(std::begin(_range));
         }
 
         constexpr auto end() const noexcept
         {
-            auto it = std::cbegin(_range);
-            return std::make_reverse_iterator(it);
+            return std::make_reverse_iterator(std::cbegin(_range));
         }
 
     private:

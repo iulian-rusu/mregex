@@ -8,9 +8,9 @@ namespace meta::ast
     struct whitespace : trivially_matchable<whitespace>
     {
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool match_one(Iter it, Context &) noexcept
+        static constexpr bool match_one(Iter current, Context &) noexcept
         {
-            auto input = *it;
+            auto input = *current;
             return input == ' ' || input == '\t' || input == '\v' ||
                    input == '\n' || input == '\r' || input == '\f';
         }

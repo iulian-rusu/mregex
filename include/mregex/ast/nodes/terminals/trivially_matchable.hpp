@@ -16,12 +16,12 @@ namespace meta::ast
     struct trivially_matchable : terminal
     {
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match(Iter /*begin*/, Iter end, Iter current, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            if (it == end || !Node::match_one(it, ctx))
-                return {it, false};
-            return cont(std::next(it));
+            if (current == end || !Node::match_one(current, ctx))
+                return {current, false};
+            return cont(std::next(current));
         }
     };
 }

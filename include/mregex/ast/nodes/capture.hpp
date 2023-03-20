@@ -13,17 +13,17 @@ namespace meta::ast
         static constexpr std::size_t capture_count = 1 + Inner::capture_count;
 
         template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter begin, Iter end, Iter it, Context &ctx, Continuation &&cont) noexcept
+        static constexpr auto match(Iter begin, Iter end, Iter current, Context &ctx, Continuation &&cont) noexcept
         -> match_result<Iter>
         {
-            auto continuation = [=, &ctx, &cont](Iter new_it) noexcept {
-                capture_matched_range(it, new_it, ctx);
-                return cont(new_it);
+            auto continuation = [=, &ctx, &cont](Iter next) noexcept {
+                capture_matched_range(current, next, ctx);
+                return cont(next);
             };
-            if (auto inner_match = Inner::match(begin, end, it, ctx, continuation))
+            if (auto inner_match = Inner::match(begin, end, current, ctx, continuation))
                 return inner_match;
             std::get<ID>(ctx.captures).clear();
-            return {it, false};
+            return {current, false};
         }
 
     private:

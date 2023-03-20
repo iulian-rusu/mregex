@@ -738,25 +738,25 @@ namespace meta::grammar
                 >;
     };
 
-    template<template<match_mode, typename...> typename Action, match_mode Mode, typename... Inner>
-    struct rule<symbol::quantifier_mod<Action<Mode, Inner ...>>, symbol::character<'?'>>
+    template<match_mode Mode, symbol::finite_quantifier A, symbol::quantifier B>
+    struct rule<symbol::quantifier_mod<symbol::make_repetition<Mode, A, B>>, symbol::character<'?'>>
     {
         using type =
                 type_sequence
                 <
                     advance,
-                    Action<match_mode::lazy, Inner ...>
+                    symbol::make_repetition<match_mode::lazy, A, B>
                 >;
     };
 
-    template<template<match_mode, typename...> typename Action, match_mode Mode, typename... Inner>
-    struct rule<symbol::quantifier_mod<Action<Mode, Inner ...>>, symbol::character<'+'>>
+    template<match_mode Mode, symbol::finite_quantifier A, symbol::quantifier B>
+    struct rule<symbol::quantifier_mod<symbol::make_repetition<Mode, A, B>>, symbol::character<'+'>>
     {
         using type =
                 type_sequence
                 <
                     advance,
-                    Action<match_mode::possessive, Inner ...>
+                    symbol::make_repetition<match_mode::possessive, A, B>
                 >;
     };
 

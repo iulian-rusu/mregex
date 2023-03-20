@@ -12,17 +12,17 @@ namespace meta::ast::predicates
     struct lookahead_predicate
     {
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool is_match(Iter begin, Iter end, Iter it, Context &ctx) noexcept
+        static constexpr bool is_match(Iter begin, Iter end, Iter current, Context &ctx) noexcept
         {
-            auto inner_match = Inner::match(begin, end, it, ctx, continuations<Iter>::success);
+            auto inner_match = Inner::match(begin, end, current, ctx, continuations<Iter>::success);
             return inner_match.matched;
         }
 
         template<std::forward_iterator Iter, typename Context>
-        static constexpr bool is_match(Iter, Iter end, Iter it, Context &ctx) noexcept
+        static constexpr bool is_match(Iter /*begin*/, Iter end, Iter current, Context &ctx) noexcept
         requires is_trivially_matchable<Inner>
         {
-            return it != end && Inner::match_one(it, ctx);
+            return current != end && Inner::match_one(current, ctx);
         }
     };
 
@@ -30,7 +30,7 @@ namespace meta::ast::predicates
     struct lookbehind_predicate
     {
         template<std::bidirectional_iterator Iter, typename Context>
-        static constexpr bool is_match(Iter begin, Iter end, Iter it, Context &ctx) noexcept
+        static constexpr bool is_match(Iter begin, Iter end, Iter current, Context &ctx) noexcept
         {
             // For non-trivial nodes, the AST is inverted to match the regex backwards
             using ast_type = invert_t<Inner>;
@@ -38,17 +38,17 @@ namespace meta::ast::predicates
 
             auto rbegin = std::make_reverse_iterator(end); // Reversed end becomes new begin
             auto rend = std::make_reverse_iterator(begin); // Reversed begin becomes new end
-            auto rit = std::make_reverse_iterator(it);
-            auto result = ast_type::match(rbegin, rend, rit, ctx, continuations<iterator_type>::success);
+            auto rcurrent = std::make_reverse_iterator(current);
+            auto result = ast_type::match(rbegin, rend, rcurrent, ctx, continuations<iterator_type>::success);
             return result.matched;
         }
 
         template<std::bidirectional_iterator Iter, typename Context>
-        static constexpr bool is_match(Iter begin, Iter, Iter it, Context &ctx) noexcept
+        static constexpr bool is_match(Iter begin, Iter /*end*/, Iter current, Context &ctx) noexcept
         requires is_trivially_matchable<Inner>
         {
             // For trivially matchable nodes, a single step backwards is enough
-            return it != begin && Inner::match_one(std::prev(it), ctx);
+            return current != begin && Inner::match_one(std::prev(current), ctx);
         }
     };
 
