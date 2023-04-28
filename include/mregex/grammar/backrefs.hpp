@@ -8,13 +8,12 @@
 namespace meta::grammar
 {
     /**
-     * Metafunction that defines symbols used to parse any escape sequence
-     * which marks the beginning of a backreference.
+     * Metafunction that defines symbols used to begin parsing a backreference ID.
      *
      * @tparam C    The current character in the input pattern
      */
     template<char C>
-    struct begin_backref
+    struct begin_backref_id
     {
         using type =
                 type_sequence
@@ -25,7 +24,7 @@ namespace meta::grammar
     };
 
     /**
-     * Metafunction that defines symbols used to parse named backreferences.
+     * Metafunction that defines symbols used to begin parsing a backreference name.
      */
     struct begin_named_backref
     {
@@ -39,17 +38,16 @@ namespace meta::grammar
     };
 
     /**
-     * Metafunction that defines symbols used to either continue a backreference ID
-     * or finish parsing it.
+     * Metafunction that defines symbols used to continue parsing a backreference ID.
      *
-     * @tparam ID   The current backreference ID on the stack
+     * @tparam ID   The backreference ID being parsed
      * @tparam C    The current character in the input pattern
      */
     template<std::size_t ID, char C, bool = is_digit(C)>
-    struct update_backref;
+    struct continue_backref_id;
 
     template<std::size_t ID, char C>
-    struct update_backref<ID, C, true>
+    struct continue_backref_id<ID, C, true>
     {
         using type =
                 type_sequence
@@ -60,12 +58,12 @@ namespace meta::grammar
     };
 
     template<std::size_t ID, char C>
-    struct update_backref<ID, C, false>
+    struct continue_backref_id<ID, C, false>
     {
         using type = symbol::make_backref<ID>;
     };
 
     template<std::size_t ID, char C>
-    using update_backref_t = typename update_backref<ID, C>::type;
+    using continue_backref_id_t = typename continue_backref_id<ID, C>::type;
 }
 #endif //MREGEX_GRAMMAR_BACKREFS_HPP

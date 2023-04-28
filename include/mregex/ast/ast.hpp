@@ -7,7 +7,6 @@
 #include <mregex/ast/nodes/terminals/backref.hpp>
 #include <mregex/ast/nodes/terminals/empty.hpp>
 #include <mregex/ast/nodes/terminals/negated.hpp>
-#include <mregex/ast/nodes/terminals/whitespace.hpp>
 #include <mregex/ast/nodes/terminals/wildcard.hpp>
 #include <mregex/ast/nodes/alternation.hpp>
 #include <mregex/ast/nodes/capture.hpp>

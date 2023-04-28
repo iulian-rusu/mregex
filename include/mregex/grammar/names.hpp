@@ -8,8 +8,10 @@
 namespace meta::grammar
 {
     /**
-     * Metafunction that defines symbols used to parse name sequences.
-     * Name sequences are used to identify named captures and named backreferences.
+     * Metafunction that defines symbols used to begin parsing a name sequence.
+     *
+     * @tparam Name The metacontainer for the name sequence
+     * @tparam C    The current character being parsed
      */
     template<template<char...> typename Name, char C, bool = is_word(C) && !is_digit(C)>
     struct begin_name;
@@ -35,14 +37,16 @@ namespace meta::grammar
     using begin_name_t = typename begin_name<Name, C>::type;
 
     /**
-     * Metafunction that defines symbols used to update a name sequence.
-     * This update can add more characters or finish parsing the name sequence.
+     * Metafunction that defines symbols used to continue parsing a name sequence.
+     *
+     * @tparam Name The name sequence being parsed
+     * @tparam C    The current character being parsed
      */
     template<typename Name, char C, bool = is_word(C)>
-    struct update_name;
+    struct continue_name;
 
     template<template<char...> typename Name, char... Chars, char C>
-    struct update_name<Name<Chars ...>, C, true>
+    struct continue_name<Name<Chars ...>, C, true>
     {
         using type =
                 type_sequence
@@ -53,12 +57,12 @@ namespace meta::grammar
     };
 
     template<typename Name, char C>
-    struct update_name<Name, C, false>
+    struct continue_name<Name, C, false>
     {
         using type = reject;
     };
 
     template<typename Name, char C>
-    using update_name_t = typename update_name<Name, C>::type;
+    using continue_name_t = typename continue_name<Name, C>::type;
 }
 #endif //MREGEX_GRAMMAR_NAMES_HPP

@@ -252,8 +252,7 @@ namespace meta::grammar
     };
 
     /**
-     * Metafunction that defines symbols used to handle an escaped character sequence.
-     * Such sequences can be parsed either as a backreference or as a special escape sequence.
+     * Metafunction that defines symbols used to handle a generic escape sequence.
      *
      * @tparam C    The current character in the input pattern
      */
@@ -261,7 +260,7 @@ namespace meta::grammar
     struct handle_escape_sequence;
 
     template<char C>
-    struct handle_escape_sequence<C, true> : begin_backref<C> {};
+    struct handle_escape_sequence<C, true> : begin_backref_id<C> {};
 
     template<>
     struct handle_escape_sequence<'k', false> : begin_named_backref {};
@@ -276,8 +275,8 @@ namespace meta::grammar
     using handle_escape_sequence_t = typename handle_escape_sequence<C>::type;
 
     /**
-     * Metafunction that defines symbols used to handle an escaped character sequence inside a set.
-     * Sets do not allow anchors and backreferences. All such escape sequences are treaded as
+     * Metafunction that defines symbols used to handle an escape sequence inside a set.
+     * Sets do not allow anchors and backreferences. All such escape sequences are treated as
      * literal characters.
      *
      * @tparam C    The current character in the input pattern

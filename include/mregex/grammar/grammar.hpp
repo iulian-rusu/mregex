@@ -401,7 +401,7 @@ namespace meta::grammar
     template<char... Chars, char C>
     struct rule<symbol::capture_name_seq<Chars ...>, symbol::character<C>>
     {
-        using type = update_name_t<symbol::capture_name_seq<Chars ...>, C>;
+        using type = continue_name_t<symbol::capture_name_seq<Chars ...>, C>;
     };
 
     template<char... Chars>
@@ -603,7 +603,7 @@ namespace meta::grammar
     template<std::uint8_t... Hexdigits, typename Token>
     struct rule<symbol::hex_esc_seq<Hexdigits ...>, Token>
     {
-        using type = update_hex_escape_sequence_t<symbol::hex_esc_seq<Hexdigits ...>, Token>;
+        using type = continue_hex_escape_sequence_t<symbol::hex_esc_seq<Hexdigits ...>, Token>;
     };
 
     template<>
@@ -701,7 +701,7 @@ namespace meta::grammar
     template<std::size_t N, char C>
     struct rule<symbol::quantifier_value<N>, symbol::character<C>>
     {
-        using type = update_quantifier_value_t<symbol::quantifier_value<N>, C>;
+        using type = continue_quantifier_value_t<symbol::quantifier_value<N>, C>;
     };
 
     template<std::size_t N>
@@ -730,7 +730,7 @@ namespace meta::grammar
     template<symbol::finite_quantifier A, symbol::quantifier B, char C>
     struct rule<symbol::quantifier_range<A, B>, symbol::character<C>>
     {
-        using type = update_quantifier_value_t<symbol::quantifier_range<A, B>, C>;
+        using type = continue_quantifier_value_t<symbol::quantifier_range<A, B>, C>;
     };
 
     template<symbol::finite_quantifier A, symbol::quantifier B>
@@ -1255,7 +1255,7 @@ namespace meta::grammar
     template<std::size_t ID, char C>
     struct rule<symbol::backref_id<ID>, symbol::character<C>>
     {
-        using type = update_backref_t<ID, C>;
+        using type = continue_backref_id_t<ID, C>;
     };
 
     template<std::size_t ID>
@@ -1274,7 +1274,7 @@ namespace meta::grammar
     template<char... Chars, char C>
     struct rule<symbol::backref_name_seq<Chars ...>, symbol::character<C>>
     {
-        using type = update_name_t<symbol::backref_name_seq<Chars ...>, C>;
+        using type = continue_name_t<symbol::backref_name_seq<Chars ...>, C>;
     };
 
     template<char... Chars>

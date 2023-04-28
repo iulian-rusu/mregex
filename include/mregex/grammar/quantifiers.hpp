@@ -61,16 +61,16 @@ namespace meta::grammar
     using begin_quantifier_value_t = typename begin_quantifier_value<C>::type;
 
     /**
-     * Metafunction that defines symbols used to update quantifier values.
+     * Metafunction that defines symbols used to continue parsing quantifier values.
      *
-     * @tparam Symbol   The symbol containing the quantifier value to be updated
+     * @tparam Symbol   The symbolci quantifier being parsed
      * @tparam C        The current character being parsed
      */
     template<typename Symbol, char C, bool = is_digit(C)>
-    struct update_quantifier_value;
+    struct continue_quantifier_value;
 
     template<std::size_t N, char C>
-    struct update_quantifier_value<symbol::quantifier_value<N>, C, true>
+    struct continue_quantifier_value<symbol::quantifier_value<N>, C, true>
     {
         using type =
                 type_sequence
@@ -81,7 +81,7 @@ namespace meta::grammar
     };
 
     template<symbol::quantifier A, std::size_t N, char C>
-    struct update_quantifier_value<symbol::quantifier_range<A, symbol::quantifier_value<N>>, C, true>
+    struct continue_quantifier_value<symbol::quantifier_range<A, symbol::quantifier_value<N>>, C, true>
     {
         using type =
                 type_sequence
@@ -92,7 +92,7 @@ namespace meta::grammar
     };
 
     template<symbol::quantifier A, char C>
-    struct update_quantifier_value<symbol::quantifier_range<A, symbol::infinity>, C, true>
+    struct continue_quantifier_value<symbol::quantifier_range<A, symbol::infinity>, C, true>
     {
         using type =
                 type_sequence
@@ -103,12 +103,12 @@ namespace meta::grammar
     };
 
     template<typename Symbol, char C>
-    struct update_quantifier_value<Symbol, C, false>
+    struct continue_quantifier_value<Symbol, C, false>
     {
         using type = reject;
     };
 
     template<typename Symbol, char C>
-    using update_quantifier_value_t = typename update_quantifier_value<Symbol, C>::type;
+    using continue_quantifier_value_t = typename continue_quantifier_value<Symbol, C>::type;
 }
 #endif //MREGEX_GRAMMAR_QUANTIFIERS_HPP

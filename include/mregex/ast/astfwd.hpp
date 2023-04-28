@@ -87,7 +87,6 @@ namespace meta::ast
     struct end_of_line;
     struct end_of_input;
     struct word_boundary;
-    struct whitespace;
     struct wildcard;
 
     template<char C>
@@ -106,6 +105,7 @@ namespace meta::ast
     using nothing = set<>;
     using word = set<lower, upper, digit, literal<'_'>>;
     using linebreak = set<literal<'\n'>, literal<'\r'>>;
+    using whitespace = set<linebreak, literal<' '>, literal<'\t'>, literal<'\v'>, literal<'\f'>>;
 
     template<typename Inner>
     struct negated;
