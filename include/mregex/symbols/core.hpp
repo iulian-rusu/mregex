@@ -42,10 +42,10 @@ namespace meta::symbol
     struct set_range_esc {};
 
     // Symbol for parsing backreferences
+    struct backref_name_begin {};
+
     template<std::size_t ID>
     struct backref_id {};
-
-    struct backref_name_begin {};
 
     template<char... Chars>
     struct backref_name_seq {};
@@ -53,5 +53,9 @@ namespace meta::symbol
     // Symbols for parsing named captures
     template<char... Chars>
     struct capture_name_seq {};
+
+    // Symbols for parsing hexadecimal escape sequences
+    template<std::uint8_t... Hexdigits>
+    struct hex_esc_seq {};
 }
 #endif //MREGEX_SYMBOLS_CORE_HPP

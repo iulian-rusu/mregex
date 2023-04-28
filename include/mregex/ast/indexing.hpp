@@ -1,5 +1,5 @@
-#ifndef MREGEX_AST_INDEX_HPP
-#define MREGEX_AST_INDEX_HPP
+#ifndef MREGEX_AST_INDEXING_HPP
+#define MREGEX_AST_INDEXING_HPP
 
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/traversal.hpp>
@@ -47,4 +47,4 @@ namespace meta::ast
     template<std::size_t Offset, typename Node>
     using preorder_index_t = typename preorder_index<Offset, Node>::type;
 }
-#endif //MREGEX_AST_INDEX_HPP
+#endif //MREGEX_AST_INDEXING_HPP

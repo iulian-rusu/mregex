@@ -30,6 +30,9 @@ namespace meta
     static_assert(has_error<R"(a{3,)">::at_position<4>);
     static_assert(has_error<R"(a{1,2,3})">::at_position<5>);
     static_assert(has_error<R"(a**b)">::at_position<2>);
+    static_assert(has_error<R"(\x)">::at_position<2>);
+    static_assert(has_error<R"(\x0)">::at_position<3>);
+    static_assert(has_error<R"(\x0x)">::at_position<3>);
     static_assert(has_error<R"((a(b(c(d))))))">::at_position<12>);
     static_assert(has_error<R"((?<1name>x))">::at_position<3>);
     static_assert(has_error<R"((?<name+>x))">::at_position<7>);

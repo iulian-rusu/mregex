@@ -85,13 +85,13 @@ namespace meta::tests
     static_assert(is_zero_length_matcher<sequence<optional<wildcard>, empty>>);
     static_assert(is_zero_length_matcher<optional<alternation<wildcard, word>>>);
     static_assert(is_zero_length_matcher<alternation<optional<wildcard>, word_boundary>>);
-    static_assert(is_zero_length_matcher<sequence<unnamed_capture<1, optional<wildcard>>, star<lower>>>);
+    static_assert(is_zero_length_matcher<sequence<unnamed_capture<1, optional<wildcard>>, star<word>>>);
     // Nodes which should not be deduced as zero length matchers
     static_assert(is_zero_length_matcher<literal<'a'>> == false);
     static_assert(is_zero_length_matcher<set<>> == false);
-    static_assert(is_zero_length_matcher<negated<upper>> == false);
+    static_assert(is_zero_length_matcher<negated<word>> == false);
     static_assert(is_zero_length_matcher<sequence<empty, digit>> == false);
     static_assert(is_zero_length_matcher<alternation<empty, literal<'a'>>> == false);
     static_assert(is_zero_length_matcher<unnamed_capture<1, wildcard>> == false);
-    static_assert(is_zero_length_matcher<sequence<unnamed_capture<1, optional<wildcard>>, plus<lower>>> == false);
+    static_assert(is_zero_length_matcher<sequence<unnamed_capture<1, optional<wildcard>>, plus<digit>>> == false);
 }

@@ -2,7 +2,7 @@
 #define MREGEX_PARSER_HPP
 
 #include <mregex/ast/build.hpp>
-#include <mregex/ast/index.hpp>
+#include <mregex/ast/indexing.hpp>
 #include <mregex/grammar/grammar.hpp>
 #include <mregex/parser/lexer.hpp>
 #include <mregex/parser/state.hpp>

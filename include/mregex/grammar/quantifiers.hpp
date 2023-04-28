@@ -37,7 +37,7 @@ namespace meta::grammar
      *
      * @tparam C    The current character being parsed
      */
-    template<char C, bool = is_numeric(C)>
+    template<char C, bool = is_digit(C)>
     struct begin_quantifier_value;
 
     template<char C>
@@ -66,7 +66,7 @@ namespace meta::grammar
      * @tparam Symbol   The symbol containing the quantifier value to be updated
      * @tparam C        The current character being parsed
      */
-    template<typename Symbol, char C, bool = is_numeric(C)>
+    template<typename Symbol, char C, bool = is_digit(C)>
     struct update_quantifier_value;
 
     template<std::size_t N, char C>

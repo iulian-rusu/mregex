@@ -11,7 +11,7 @@ namespace meta::grammar
      * Metafunction that defines symbols used to parse name sequences.
      * Name sequences are used to identify named captures and named backreferences.
      */
-    template<template<char...> typename Name, char C, bool = is_word(C) && !is_numeric(C)>
+    template<template<char...> typename Name, char C, bool = is_word(C) && !is_digit(C)>
     struct begin_name;
 
     template<template<char...> typename Name, char C>

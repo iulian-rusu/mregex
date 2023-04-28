@@ -126,12 +126,12 @@ namespace meta::xpr
     inline constexpr auto end_line = regex_interface<ast::end_of_line>{};
     inline constexpr auto begin_input = regex_interface<ast::beginning_of_input>{};
     inline constexpr auto end_input = regex_interface<ast::end_of_input>{};
-    inline constexpr auto boundary = regex_interface<ast::word_boundary>{};
+    inline constexpr auto word_boundary = regex_interface<ast::word_boundary>{};
     inline constexpr auto whitespace = regex_interface<ast::whitespace>{};
     inline constexpr auto wildcard = regex_interface<ast::wildcard>{};
-    inline constexpr auto digit = regex_interface<ast::digit>{};
     inline constexpr auto lower = regex_interface<ast::lower>{};
     inline constexpr auto upper = regex_interface<ast::upper>{};
+    inline constexpr auto digit = regex_interface<ast::digit>{};
     inline constexpr auto word = regex_interface<ast::word>{};
     inline constexpr auto linebreak = regex_interface<ast::linebreak>{};
 

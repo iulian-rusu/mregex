@@ -170,14 +170,26 @@ namespace meta::tests
     static_assert(is_ast_of<R"(\t)", literal<'\t'>>);
     static_assert(is_ast_of<R"(\f)", literal<'\f'>>);
     static_assert(is_ast_of<R"(\v)", literal<'\v'>>);
+    static_assert(is_ast_of<R"(\a)", literal<'\a'>>);
+    static_assert(is_ast_of<R"(\e)", literal<'\x1b'>>);
+    static_assert(is_ast_of<R"(\x1b)", literal<'\x1b'>>);
+    static_assert(is_ast_of<R"(\x5F)", literal<'_'>>);
+    static_assert(is_ast_of<R"(\x61)", literal<'a'>>);
+    static_assert(is_ast_of<R"(\x01?)", optional<literal<'\x01'>>>);
+    static_assert(is_ast_of<R"(\x09*)", star<literal<'\x09'>>>);
+    static_assert(is_ast_of<R"(\x0a+)", plus<literal<'\x0a'>>>);
+    static_assert(is_ast_of<R"(\xff{3,5}?)", lazy_repetition<symbol::quantifier_value<3>, symbol::quantifier_value<5>, literal<'\xff'>>>);
+    static_assert(is_ast_of<R"(f*\xfff+)", sequence<star<literal<'f'>>, literal<'\xff'>, plus<literal<'f'>>>>);
+    static_assert(is_ast_of<R"(.\xFF.)", sequence<wildcard, literal<'\xFF'>, wildcard>>);
     static_assert(is_ast_of<R"(\R)", linebreak>);
     static_assert(is_ast_of<R"(\N)", negated<linebreak>>);
-    static_assert(is_ast_of<R"(\a)", literal<'\a'>>);
     static_assert(is_ast_of<R"(\D)", negated<digit>>);
     static_assert(is_ast_of<R"(\b)", word_boundary>);
     static_assert(is_ast_of<R"(\B)", negated<word_boundary>>);
     static_assert(is_ast_of<R"(\A)", beginning_of_input>);
     static_assert(is_ast_of<R"(\Z)", end_of_input>);
+    static_assert(is_ast_of<R"(\l)", literal<'l'>>);
+    static_assert(is_ast_of<R"(\u)", literal<'u'>>);
     static_assert(is_ast_of<R"((c))", unnamed_capture<1, literal<'c'>>>);
     static_assert(is_ast_of<R"((?:c))", literal<'c'>>);
     static_assert(is_ast_of<R"(\1)", backref<1>>);
@@ -683,11 +695,11 @@ namespace meta::tests
     static_assert(
         is_ast_of
         <
-            R"(\(??x+)",
+            R"(\(??\x8c+)",
             sequence
             <
                 lazy_optional<literal<'('>>,
-                plus<literal<'x'>>
+                plus<literal<'\x8c'>>
             >
         >
     );
@@ -801,6 +813,18 @@ namespace meta::tests
     static_assert(
         is_ast_of
         <
+            R"([\d-\xf8])",
+            set
+            <
+                literal<'\xf8'>,
+                literal<'-'>,
+                digit
+            >
+        >
+    );
+    static_assert(
+        is_ast_of
+        <
             R"([a][b\w])",
             sequence
             <
@@ -830,11 +854,11 @@ namespace meta::tests
     static_assert(
         is_ast_of
         <
-            R"([a]?[b])",
+            R"([a]?[\x10])",
             sequence
             <
                 optional<set<literal<'a'>>>,
-                set<literal<'b'>>
+                set<literal<'\x10'>>
             >
         >
     );
@@ -863,7 +887,7 @@ namespace meta::tests
     );
     static_assert(is_ast_of<R"([a-z])", set<range<'a', 'z'>>>);
     static_assert(is_ast_of<R"([\0-\n])", set<range<'\0', '\n'>>>);
-    static_assert(is_ast_of<R"([\X-\x])", set<range<'X', 'x'>>>);
+    static_assert(is_ast_of<R"([\X-\Y])", set<range<'X', 'Y'>>>);
     static_assert(
         is_ast_of
         <
@@ -1011,7 +1035,7 @@ namespace meta::tests
     static_assert(
         is_ast_of
         <
-            R"(((?<_t3st1ng>tuv)?b+?)*|xy)",
+            R"(((?<_t3st1ng>tuv)?b+?)*|\x0E??y)",
             alternation
             <
                 star
@@ -1041,7 +1065,7 @@ namespace meta::tests
                 >,
                 sequence
                 <
-                    literal<'x'>,
+                    lazy_optional<literal<'\x0E'>>,
                     literal<'y'>
                 >
             >
@@ -1114,7 +1138,7 @@ namespace meta::tests
     static_assert(
         is_ast_of
         <
-            R"((?<grp_1>abc)? \k<grp_1> (?<grp_2>xyz){2,})",
+            R"((?<grp_1>abc)?\x09\k<grp_1>\x0A(?<grp_2>xyz){2,})",
             sequence
             <
                 optional
@@ -1131,9 +1155,9 @@ namespace meta::tests
                         >
                     >
                 >,
-                literal<' '>,
+                literal<'\t'>, // Same as \x09
                 named_backref<symbol::name<"grp_1">>,
-                literal<' '>,
+                literal<'\n'>, // Same as \x0A
                 repetition
                 <
                     symbol::quantifier_value<2>,

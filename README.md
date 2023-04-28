@@ -110,11 +110,10 @@ Below is a complete list of the supported syntax constructs:
 |         `\b`          |     (word boundary) match the position between a word and a non-word character     |
 |         `\B`          |                    match everything that is not a word boundary                    |
 |         `\d`          |                             match any digit character                              |
-|         `\l`          |                             match any lowercase letter                             |
-|         `\u`          |                             match any uppercase letter                             |
 |         `\w`          |                 match any word character (letters, digits and `_`)                 |
-| `\D`, `\W`, `\U` etc. |                match any character **not** in the respective class                 |
-|         `\ `          |    remove any special meaning from the next token (except ones mentioned above)    |
+|         `\s`          |                           match any whitespace charater                            |
+| `\D`, `\W`, `\S` etc. |                match any character **not** in the respective class                 |
+|  `\x1f`, `\xA9` etc.  |                 match a character specified by its ASCII hex code                  |
 |        `[abc]`        |                           match any character in the set                           |
 |        `[a-z]`        |                    match any character in the ASCII code range                     |
 |       `[^abc]`        |                       match any character **not** in the set                       |

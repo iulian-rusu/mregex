@@ -52,7 +52,7 @@ namespace meta::ast::predicates
         }
     };
 
-    template<assertion_mode Mode, lookaround_direction Direction,  typename Inner>
+    template<assertion_mode Mode, lookaround_direction Direction, typename Inner>
     struct lookaround_predicate;
 
     template<typename Inner>

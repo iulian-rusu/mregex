@@ -11,7 +11,9 @@ namespace meta::tests
     using uri_result_view_t = regex_result_view_t<uri_regex, iterator_type>;
     using uri_result_t = regex_result_t<uri_regex>;
     using uri_capture_view_t = regex_capture_view_t<uri_regex, 1, iterator_type>;
+    using uri_tokenizer_t = regex_tokenizer_t<uri_regex, iterator_type>;
     using uri_searcher_t = regex_searcher_t<uri_regex, iterator_type>;
+    using uri_token_range_t = regex_token_range_t<uri_regex, iterator_type>;
     using uri_match_range_t = regex_match_range_t<uri_regex, iterator_type>;
 
     using email_result_view_t = regex_result_view_t<email_regex, iterator_type>;
@@ -43,10 +45,20 @@ namespace meta::tests
     static_assert(uri_capture_view_t::has_name() == false);
     static_assert(uri_capture_view_t::name().empty());
 
+    static_assert(std::is_same_v<uri_tokenizer_t, decltype(uri_regex::tokenizer(""))>);
+    static_assert(std::is_same_v<uri_tokenizer_t, decltype(email_regex::tokenizer(""))> == false);
+    static_assert(std::is_same_v<uri_tokenizer_t, decltype(uri_regex::tokenizer(std::string{}))> == false);
+    static_assert(std::is_same_v<uri_tokenizer_t, decltype(uri_regex::searcher(""))> == false);
+
     static_assert(std::is_same_v<uri_searcher_t, decltype(uri_regex::searcher(""))>);
     static_assert(std::is_same_v<uri_searcher_t, decltype(email_regex::searcher(""))> == false);
     static_assert(std::is_same_v<uri_searcher_t, decltype(uri_regex::searcher(std::string{}))> == false);
     static_assert(std::is_same_v<uri_searcher_t, decltype(uri_regex::tokenizer(""))> == false);
+
+    static_assert(std::is_same_v<uri_token_range_t, decltype(uri_regex::tokenize(""))>);
+    static_assert(std::is_same_v<uri_token_range_t, decltype(email_regex::tokenize(""))> == false);
+    static_assert(std::is_same_v<uri_token_range_t, decltype(uri_regex::tokenize(std::string{}))> == false);
+    static_assert(std::is_same_v<uri_token_range_t, decltype(uri_regex::find_all(""))> == false);
 
     static_assert(std::is_same_v<uri_match_range_t, decltype(uri_regex::find_all(""))>);
     static_assert(std::is_same_v<uri_match_range_t, decltype(email_regex::find_all(""))> == false);

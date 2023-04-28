@@ -12,6 +12,16 @@ namespace meta
         inline constexpr char lowercase_bit_mask = 0x20;
     }
 
+    /**
+     *  Checks if the given ASCII code is in the specified range (inclusive).
+     *  This should be used instead of directly comparing chars since char is a signed type.
+     */
+    template<std::uint8_t A, std::uint8_t B>
+    constexpr bool is_in_ascii_range(std::uint8_t input) noexcept
+    {
+        return A <= input && input <= B;
+    }
+
     constexpr char flip_lowercase_bit(char input) noexcept
     {
         return static_cast<char>(input ^ detail::lowercase_bit_mask);
@@ -22,19 +32,24 @@ namespace meta
         return static_cast<char>(input | detail::lowercase_bit_mask);
     }
 
-    constexpr bool is_numeric(char input) noexcept
+    constexpr bool is_digit(char input) noexcept
     {
-        return '0' <= input && input <= '9';
+        return is_in_ascii_range<'0', '9'>(input);
+    }
+
+    constexpr bool is_hexdigit(char input) noexcept
+    {
+        return is_digit(input) || is_in_ascii_range<'a', 'f'>(set_lowercase_bit(input));
     }
 
     constexpr bool is_lower(char input) noexcept
     {
-        return 'a' <= input && input <= 'z';
+        return is_in_ascii_range<'a', 'z'>(input);
     }
 
     constexpr bool is_upper(char input) noexcept
     {
-        return 'A' <= input && input <= 'Z';
+        return is_in_ascii_range<'A', 'Z'>(input);
     }
 
     constexpr bool is_alpha(char input) noexcept
@@ -44,7 +59,7 @@ namespace meta
 
     constexpr bool is_word(char input) noexcept
     {
-        return is_alpha(input) || is_numeric(input) || input == '_';
+        return is_alpha(input) || is_digit(input) || input == '_';
     }
 
     constexpr char to_lower(char input) noexcept

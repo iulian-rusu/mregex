@@ -11,8 +11,9 @@ namespace meta::tests
     static_assert(regex<R"(())">::match(""));
     static_assert(regex<R"(a)">::match("a"));
     static_assert(regex<R"(abcd)">::match("abcd"));
-    // Escaped characters
+    // Escape sequences
     static_assert(regex<R"(\a)">::match("\a"));
+    static_assert(regex<R"(\xf8)">::match("\xf8"));
     static_assert(regex<R"(\n)">::match("\n"));
     static_assert(regex<R"(\N)">::match("N"));
     static_assert(regex<R"(\R)">::match("\r"));
@@ -242,8 +243,9 @@ namespace meta::tests
     static_assert(regex<R"(())">::match(".") == false);
     static_assert(regex<R"(a)">::match("b") == false);
     static_assert(regex<R"(abc)">::match("cba") == false);
-    // Escaped characters
+    // Escape sequences
     static_assert(regex<R"(\a)">::match("1") == false);
+    static_assert(regex<R"(\xf8)">::match("\xf9") == false);
     static_assert(regex<R"(\n)">::match("n") == false);
     static_assert(regex<R"(\N)">::match("\r") == false);
     static_assert(regex<R"(\N)">::match("\n") == false);

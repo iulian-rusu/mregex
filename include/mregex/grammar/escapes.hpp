@@ -2,6 +2,7 @@
 #define MREGEX_GRAMMAR_ESCAPES_HPP
 
 #include <mregex/grammar/backrefs.hpp>
+#include <mregex/grammar/hexadecimal.hpp>
 
 namespace meta::grammar
 {
@@ -179,52 +180,6 @@ namespace meta::grammar
     };
 
     template<>
-    struct handle_escaped_char<'l'>
-    {
-        using type =
-                type_sequence
-                <
-                    advance,
-                    symbol::make_lower
-                >;
-    };
-
-    template<>
-    struct handle_escaped_char<'L'>
-    {
-        using type =
-                type_sequence
-                <
-                    advance,
-                    symbol::make_lower,
-                    symbol::make_negated
-                >;
-    };
-
-    template<>
-    struct handle_escaped_char<'u'>
-    {
-        using type =
-                type_sequence
-                <
-                    advance,
-                    symbol::make_upper
-                >;
-    };
-
-    template<>
-    struct handle_escaped_char<'U'>
-    {
-        using type =
-                type_sequence
-                <
-                    advance,
-                    symbol::make_upper,
-                    symbol::make_negated
-                >;
-    };
-
-    template<>
     struct handle_escaped_char<'R'>
     {
         using type =
@@ -302,7 +257,7 @@ namespace meta::grammar
      *
      * @tparam C    The current character in the input pattern
      */
-    template<char C, bool = C != '0' && is_numeric(C)>
+    template<char C, bool = C != '0' && is_digit(C)>
     struct handle_escape_sequence;
 
     template<char C>
@@ -310,6 +265,9 @@ namespace meta::grammar
 
     template<>
     struct handle_escape_sequence<'k', false> : begin_named_backref {};
+
+    template<>
+    struct handle_escape_sequence<'x', false> : begin_hex_escape_sequence {};
 
     template<char C>
     struct handle_escape_sequence<C, false> : handle_escaped_char<C> {};
@@ -326,6 +284,9 @@ namespace meta::grammar
      */
     template<char C>
     struct handle_set_escape_sequence : handle_escaped_char<C> {};
+
+    template<>
+    struct handle_set_escape_sequence<'x'> : begin_hex_escape_sequence {};
 
     template<>
     struct handle_set_escape_sequence<'A'>
@@ -416,30 +377,6 @@ namespace meta::grammar
 
     template<>
     struct handle_set_range_escape_sequence<'S'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct handle_set_range_escape_sequence<'l'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct handle_set_range_escape_sequence<'L'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct handle_set_range_escape_sequence<'u'>
-    {
-        using type = reject;
-    };
-
-    template<>
-    struct handle_set_range_escape_sequence<'U'>
     {
         using type = reject;
     };

@@ -65,18 +65,6 @@ namespace meta::ast
     };
 
     template<typename Token, typename Nodes>
-    struct build<symbol::make_lower, Token, Nodes>
-    {
-        using type = push_t<Nodes, lower>;
-    };
-
-    template<typename Token, typename Nodes>
-    struct build<symbol::make_upper, Token, Nodes>
-    {
-        using type = push_t<Nodes, upper>;
-    };
-
-    template<typename Token, typename Nodes>
     struct build<symbol::make_linebreak, Token, Nodes>
     {
         using type = push_t<Nodes, linebreak>;

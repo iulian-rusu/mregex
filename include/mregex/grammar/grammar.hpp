@@ -600,6 +600,12 @@ namespace meta::grammar
         using type = handle_escape_sequence_t<C>;
     };
 
+    template<std::uint8_t... Hexdigits, typename Token>
+    struct rule<symbol::hex_esc_seq<Hexdigits ...>, Token>
+    {
+        using type = update_hex_escape_sequence_t<symbol::hex_esc_seq<Hexdigits ...>, Token>;
+    };
+
     template<>
     struct rule<symbol::mod, symbol::character<'*'>>
     {
