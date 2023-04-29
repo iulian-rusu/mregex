@@ -41,26 +41,27 @@ namespace meta::tests
     static_assert(is_name_spec_of<"(a)", type_sequence<unnamed>>);
     static_assert(is_name_spec_of<"(a){5}", type_sequence<unnamed>>);
     static_assert(is_name_spec_of<"(a)+", type_sequence<unnamed>>);
+    static_assert(is_name_spec_of<"a?(b+)c*", type_sequence<unnamed>>);
+    static_assert(is_name_spec_of<"(a?)(b+(c{1,2}))c*", type_sequence<unnamed, unnamed, unnamed>>);
     static_assert(is_name_spec_of<"(?<test>a)", type_sequence<name<"test">>>);
     static_assert(is_name_spec_of<"(?<test>a)+", type_sequence<name<"test">>>);
     static_assert(is_name_spec_of<"(?<test>a){5,10}", type_sequence<name<"test">>>);
-    static_assert(is_name_spec_of<"a?(b+)c*", type_sequence<unnamed>>);
-    static_assert(is_name_spec_of<"(a?)(b+)c*", type_sequence<unnamed, unnamed>>);
-    static_assert(is_name_spec_of<"(a?)(?<x>b+)c*", type_sequence<unnamed, name<"x">>>);
-    static_assert(is_name_spec_of<"(a?)(?<x>b+b(b))c*", type_sequence<unnamed, name<"x">, unnamed>>);
-    static_assert(is_name_spec_of<"(?<z>a?)(?<x>b+b(b))c*", type_sequence<name<"z">, name<"x">, unnamed>>);
+    static_assert(is_name_spec_of<"(a?)(?<test>b+)c*", type_sequence<unnamed, name<"test">>>);
+    static_assert(is_name_spec_of<"(a?)(?<test>b+b(b))c*", type_sequence<unnamed, name<"test">, unnamed>>);
+    static_assert(is_name_spec_of<"(?=(?<ahead>a)+)(?<!(?<behind>a)+)", type_sequence<name<"ahead">, name<"behind">>>);
+    static_assert(is_name_spec_of<"(?<a1>a?)(?<a2>b+b(b))c*", type_sequence<name<"a1">, name<"a2">, unnamed>>);
     static_assert(
         is_name_spec_of
         <
-            "((?<a>.)(?<bb>(.))((.)(?<ccc>.)(.)))",
-            type_sequence<unnamed, name<"a">, name<"bb">, unnamed, unnamed, unnamed, name<"ccc">, unnamed>
+            "((?<a1>.)(?<a2>(.))((?<a3>.(?<a4>(?<a5>.).))(.)))",
+            type_sequence<unnamed, name<"a1">, name<"a2">, unnamed, unnamed, name<"a3">, name<"a4">, name<"a5">, unnamed>
         >
     );
     static_assert(
         is_name_spec_of
         <
-            "(?<a>.){5}(?<bb>.){5,10}(?<ccc>.){5,}",
-            type_sequence<name<"a">, name<"bb">, name<"ccc">>
+            "(?<a1>.){5}(?<a2>.){5,10}?(?<a3>.){5,}+",
+            type_sequence<name<"a1">, name<"a2">, name<"a3">>
         >
     );
 

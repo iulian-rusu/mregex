@@ -109,7 +109,7 @@ namespace meta
         template<std::size_t I, typename Nodes, typename Symbols>
         struct transition<I, grammar::accept, Nodes, Symbols>
         {
-            using type = parser_result<ast::preorder_index_t<0, front_t<Nodes>>, parsing::success>;
+            using type = parser_result<ast::index_captures_t<front_t<Nodes>>, parsing::success>;
         };
 
         using initial_state = state<0, type_sequence<>, type_sequence<symbol::begin>>;

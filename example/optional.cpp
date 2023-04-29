@@ -5,14 +5,14 @@
 namespace detail
 {
     // Until we get std::optional::transform in C++23, we have to implement this manually
-    template<typename Opt, typename F>
-    constexpr auto transform(Opt &&opt, F &&f)
+    template<typename Opt, typename Func>
+    constexpr auto transform(Opt &&opt, Func &&func)
     {
-        using result_type = std::remove_reference_t<decltype(std::invoke(std::forward<F>(f), *std::forward<Opt>(opt)))>;
+        using result_type = std::remove_reference_t<decltype(std::invoke(std::forward<Func>(func), *std::forward<Opt>(opt)))>;
 
         if (!opt.has_value())
             return std::optional<result_type>{std::nullopt};
-        return std::optional{std::invoke(std::forward<F>(f), *std::forward<Opt>(opt))};
+        return std::optional{std::invoke(std::forward<Func>(func), *std::forward<Opt>(opt))};
     }
 }
 

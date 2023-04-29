@@ -2,7 +2,7 @@
 #define MREGEX_AST_INVERSION_HPP
 
 #include <mregex/ast/astfwd.hpp>
-#include <mregex/ast/traversal.hpp>
+#include <mregex/ast/transform.hpp>
 #include <mregex/utility/type_sequence.hpp>
 
 namespace meta::ast
@@ -20,7 +20,7 @@ namespace meta::ast
      * @tparam Node The AST node type being inverted
      */
     template<typename Node>
-    struct invert : traverse<invert, Node> {};
+    struct invert : transform<Node, invert> {};
 
     template<typename Node>
     using invert_t = typename invert<Node>::type;

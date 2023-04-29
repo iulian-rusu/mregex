@@ -54,8 +54,8 @@ namespace meta::ast
         using type = capture_name_spec_t<Inner>;
     };
 
-    template<template<assertion_mode, lookaround_direction, typename> typename Lookaround, assertion_mode Mode, lookaround_direction Direction, typename Inner>
-    struct capture_name_spec<Lookaround<Mode, Direction, Inner>>
+    template<assertion_mode Mode, lookaround_direction Direction, typename Inner>
+    struct capture_name_spec<lookaround<Mode, Direction, Inner>>
     {
         using type = capture_name_spec_t<Inner>;
     };
