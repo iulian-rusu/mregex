@@ -1,19 +1,18 @@
 #ifndef MREGEX_NODES_ALTERNATION_HPP
 #define MREGEX_NODES_ALTERNATION_HPP
 
-#include <mregex/ast/astfwd.hpp>
+#include <mregex/ast/nodes/set.hpp>
 #include <mregex/ast/match_result.hpp>
 #include <mregex/ast/traits.hpp>
+#include <mregex/utility/continuations.hpp>
 
 namespace meta::ast
 {
     template<typename First, typename... Rest>
     struct alternation
     {
-        static constexpr std::size_t capture_count = count_captures<First, Rest ...>;
-
-        template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter begin, Iter end, Iter current, Context &ctx, Continuation &&cont) noexcept
+        template<std::forward_iterator Iter, typename Context, match_continuation<Iter> Cont>
+        static constexpr auto match(Iter begin, Iter end, Iter current, Context &ctx, Cont &&cont) noexcept
         -> match_result<Iter>
         {
             if (auto first_match = First::match(begin, end, current, ctx, cont))

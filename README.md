@@ -11,15 +11,16 @@ an iterator compatible with `std::forward_iterator`
 * compile-time syntax checking
 * support for a large portion of the standard regex syntax:
   * quantifiers (`*`, `?`, `+`, `{N,M}`), including lazy and possessive versions
+  * atomic groups
   * alternations and sets
   * capturing groups, including named captures
-  * backreferences
+  * backreferences and named backreferences
   * lookaheads
   * lookbehinds with arbitrary expressions (requires bidirectional iterators)
 * flags that modify the matching behaviour:
   * `icase` - enables case-insensitive matching
   * `multiline` - enables multi-line mode, in which the anchors `^`/`$` will also match line boundaries
-  * `ungreedy` - swaps lazy and greedy quantifiers
+  * `ungreedy` - swaps the default syntax for lazy and greedy quantifers
   * `dotall` - allows the wildcard `.` to also match `\n` and `\r`
 * a flexible API that allows exact matching, searching, tokenizing or iterating over multiple matches
 * ability to define the regex using a standard string-based API or using an [expression-based API](example/using_expressions.cpp)
@@ -97,8 +98,7 @@ auto url = schema >> xpr::str<"://"> >> xpr::capture<1, "domain">(domain) >> xpr
 
 More examples can be found in the `example/` directory.
 
-## Syntax
-Below is a complete list of the supported syntax constructs:
+## Syntax Reference
 
 |      **Syntax**       |                                     **Effect**                                     |
 |:---------------------:|:----------------------------------------------------------------------------------:|
@@ -112,6 +112,8 @@ Below is a complete list of the supported syntax constructs:
 |         `\d`          |                             match any digit character                              |
 |         `\w`          |                 match any word character (letters, digits and `_`)                 |
 |         `\s`          |                           match any whitespace charater                            |
+|         `\R`          |                          match `\n` or `\r` (line break)                           |
+|         `\N`          |                       match any character except line breaks                       |
 | `\D`, `\W`, `\S` etc. |                match any character **not** in the respective class                 |
 |  `\x1f`, `\xA9` etc.  |                 match a character specified by its ASCII hex code                  |
 |        `[abc]`        |                           match any character in the set                           |
@@ -125,18 +127,46 @@ Below is a complete list of the supported syntax constructs:
 |         `{N}`         |                              match exactly `N` times                               |
 |        `{N,}`         |                              match at least `N` times                              |
 |        `{N,M}`        |                          match between `N` and `M` times                           |
-| `??`, `*?`, `{N,M}?`  |                    match as few characters as possible (lazily)                    |
-| `?+`, `*+`, `{N,M}+`  |                     match without backtracking (possessively)                      |
+| `??`, `*?`, `{N,M}?`  |               (lazy quantifiers) match as few characters as possible               |
+| `?+`, `*+`, `{N,M}+`  |                (possessive quantifiers) match without backtracking                 |
+|      `(?>expr)`       |                  (atomic group) match `expr` without backtracking                  |
 |       `(expr)`        |                       capture the result of matching `expr`                        |
 |         `\N`          |                  backreference to the capturing group number `N`                   |
 |    `(?<name>expr)`    |                   capture by name the result of matching `expr`                    |
 |      `\k<name>`       |                      backreference to a named capturing group                      |
 |      `(?:expr)`       |                             make a non-capturing group                             |
 |      `(?=expr)`       |       (positive lookahead) test if `expr` will match from the current point        |
-|      `(?!expr)`       |            (negative lookahead) test the opposite of positive lookahead            |
+|      `(?!expr)`       |            (negative lookahead) test the negation of positive lookahead            |
 |      `(?<=expr)`      |  (positive lookbehind) test if `expr` would have matched before the current point  |
-|      `(?<!expr)`      |           (negative lookbehind) test the opposite of positive lookbehind           |
+|      `(?<!expr)`      |           (negative lookbehind) test the negation of positive lookbehind           |
 
+### Some Notes on the Syntax
+
+#### Backreferences
+Numeric backreferences support multiple digits, so `\10` will be parsed as a backreference to group number 10.
+If the group is not defined, it will result in a compile-time error. 
+A numeric backreference that is followed by a literal digit can be specified as `(?:\1)0` or `\1[0]`. 
+Another option is to use named captures and named backreferences.
+
+#### Escaped Characters
+Currently, any escaped character that does not have a special meaning is treated literally and does not result
+in a compilation error. That is, something like `\c` is the same as `c`.
+Since backreferences have no meaning inside sets, something like `[\12]` is the same as `[12]`.
+
+#### Sets
+This library supports the empty set syntax - `[]`. The empty set will not match anything, ever.
+You can also use `[^]` to make an "everything" set.
+
+#### Quantifiers
+If a quantifier that start with `{` is not followed by a digit, the parser will catch it and try to
+interpret the curly brace literally. This does not work if the parsing has advanced deeper into something that
+looks like a quantifier.
+
+Examples:
+ * `a{` will be interpreted as "`a` followed by `{`"
+ * `a{+` will be interpreted as "`a` followed by one or more `{`"
+ * `a{1+` will be a syntax error
+  
 ## Credits
 This project was inspired by other compile-time regex libraries like [Boost.Xpressive](https://www.boost.org/doc/libs/1_65_1/doc/html/xpressive.html)
 and especially [CTRE](https://github.com/hanickadot/compile-time-regular-expressions), which served as a reference for the compile-time regex parser.

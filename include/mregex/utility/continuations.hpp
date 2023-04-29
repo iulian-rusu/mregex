@@ -5,6 +5,12 @@
 
 namespace meta
 {
+    template<typename Cont, typename Iter>
+    concept match_continuation = std::forward_iterator<Iter> && requires (Cont cont, Iter current)
+    {
+        { cont(current) } -> std::same_as<ast::match_result<Iter>>;
+    };
+
     /**
      * Struct containing static lambda expressions used as continuations for regex matching.
      * Calling a continuation is equivalent to evaluating the rest of the regex from
@@ -13,13 +19,13 @@ namespace meta
     template<std::forward_iterator Iter>
     struct continuations
     {
-        static constexpr auto success = [](Iter current) noexcept -> ast::match_result<Iter> {
-            return {current, true};
+        static constexpr auto success = [](Iter next) noexcept -> ast::match_result<Iter> {
+            return {next, true};
         };
 
         static constexpr auto equals = [](Iter target) noexcept {
-            return [=](Iter current) noexcept -> ast::match_result<Iter> {
-                return {current, current == target};
+            return [=](Iter next) noexcept -> ast::match_result<Iter> {
+                return {next, next == target};
             };
         };
     };

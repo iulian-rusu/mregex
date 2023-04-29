@@ -22,25 +22,25 @@ namespace meta
         using i = icase;
 
         /**
-         * Makes wildcards (.) match newline characters.
+         * Makes wildcards (.) match line break characters.
          */
         using dotall = regex_flag<0x1>;
         using s = dotall;
 
         /**
-         * Makes anchors ($ and ^) also match beginnings/ends of lines.
+         * Makes anchors ($ and ^) also match the beginning/end of lines.
          */
         using multiline = regex_flag<0x2>;
         using m = multiline;
 
         /**
-         * Makes the Kleene star operator (*) consume as few elements as possible.
+         * Swaps the default syntax for lazy and greedy quantifers.
          */
         using ungreedy = regex_flag<0x3>;
         using U = ungreedy;
 
         /**
-         * Makes the compiler unroll even non-trivial repetition loops.
+         * Enables the compiler to be more aggressive when unrolling repetition loops.
          */
         using unroll = regex_flag<0x4>;
         using r = unroll;

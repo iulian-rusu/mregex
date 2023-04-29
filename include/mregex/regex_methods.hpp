@@ -65,7 +65,7 @@ namespace meta
                 if (current == end)
                     break;
             }
-            return {current, false};
+            return ast::non_match(current);
         }
     };
 }

@@ -53,17 +53,21 @@ namespace meta::symbol
     template<match_mode Mode>
     using make_optional = make_repetition<Mode, quantifier_value<0>, quantifier_value<1>>;
 
+    using make_atomic = make_repetition<match_mode::possessive, quantifier_value<1>, quantifier_value<1>>;
+
     template<std::size_t ID>
     struct make_backref : semantic_action {};
 
     template<typename Name>
     struct make_named_backref : semantic_action {};
 
-    template<assertion_mode Mode,  lookaround_direction Direction>
+    template<lookaround_direction Direction>
     struct make_lookaround : semantic_action {};
 
     /**
      * Type trait used to distinguish semantic action symbols from other symbols.
+     *
+     * @tparam Symbol   The symbolic type
      */
     template<typename Symbol>
     inline constexpr bool is_semantic_action = std::is_base_of_v<semantic_action, Symbol>;

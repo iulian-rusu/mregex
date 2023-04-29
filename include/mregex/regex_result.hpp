@@ -146,8 +146,8 @@ namespace meta
         }
 
         /**
-         * More overloads are required because C++ doesn't allow deducing
-         * the value category of 'this' inside a method.
+         * More overloads are required because C++20 doesn't allow deducing
+         * the value category of "this" inside a method.
          * @see https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p0847r4.html
          */
 

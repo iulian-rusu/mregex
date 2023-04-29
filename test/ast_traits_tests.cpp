@@ -23,13 +23,17 @@ namespace meta::tests
     // Nodes which should be deduced as trivially matchable
     static_assert(is_trivially_matchable<sequence<wildcard>>);
     static_assert(is_trivially_matchable<alternation<wildcard>>);
+    static_assert(is_trivially_matchable<atomic<wildcard>>);
+    static_assert(is_trivially_matchable<fixed_repetition<1, wildcard>>);
     static_assert(is_trivially_matchable<alternation<whitespace, literal<'a'>, literal<'b'>>>);
-    // Nodes which should not be deduced as trivially matchable
+    // Nodes which should not be detected as trivially matchable
     static_assert(is_trivially_matchable<beginning_of_line> == false);
     static_assert(is_trivially_matchable<end_of_input> == false);
     static_assert(is_trivially_matchable<sequence<wildcard, whitespace>> == false);
     static_assert(is_trivially_matchable<alternation<wildcard, beginning_of_line>> == false);
-    static_assert(is_trivially_matchable<capture<1, name<"a">, wildcard>> == false);
+    static_assert(is_trivially_matchable<atomic<plus<wildcard>>> == false);
+    static_assert(is_trivially_matchable<unnamed_capture<1, wildcard>> == false);
+    static_assert(is_trivially_matchable<fixed_repetition<1, optional<wildcard>>> == false);
     static_assert(is_trivially_matchable<backref<1>> == false);
     static_assert(is_trivially_matchable<named_backref<name<"a">>> == false);
     static_assert(is_trivially_matchable<star<literal<'a'>>> == false);
@@ -86,13 +90,34 @@ namespace meta::tests
     static_assert(is_zero_length_matcher<sequence<optional<wildcard>, empty>>);
     static_assert(is_zero_length_matcher<optional<alternation<wildcard, word>>>);
     static_assert(is_zero_length_matcher<alternation<optional<wildcard>, word_boundary>>);
+    static_assert(is_zero_length_matcher<alternation<word, empty, literal<'a'>>>);
     static_assert(is_zero_length_matcher<sequence<unnamed_capture<1, optional<wildcard>>, star<word>>>);
-    // Nodes which should not be deduced as zero length matchers
+    static_assert(is_zero_length_matcher<atomic<sequence<unnamed_capture<1, optional<wildcard>>, star<word>>>>);
+    // Nodes which should not be detected as zero length matchers
     static_assert(is_zero_length_matcher<literal<'a'>> == false);
     static_assert(is_zero_length_matcher<set<>> == false);
     static_assert(is_zero_length_matcher<negated<word>> == false);
     static_assert(is_zero_length_matcher<sequence<empty, digit>> == false);
-    static_assert(is_zero_length_matcher<alternation<empty, literal<'a'>>> == false);
+    static_assert(is_zero_length_matcher<alternation<whitespace, literal<'a'>>> == false);
     static_assert(is_zero_length_matcher<unnamed_capture<1, wildcard>> == false);
     static_assert(is_zero_length_matcher<sequence<unnamed_capture<1, optional<wildcard>>, plus<digit>>> == false);
+    static_assert(is_zero_length_matcher<atomic<plus<digit>>> == false);
+
+    // Nodes which should be detected as assertions
+    static_assert(is_assertion<beginning_of_line>);
+    static_assert(is_assertion<beginning_of_input>);
+    static_assert(is_assertion<end_of_line>);
+    static_assert(is_assertion<end_of_input>);
+    static_assert(is_assertion<word_boundary>);
+    static_assert(is_assertion<negated<word_boundary>>);
+    static_assert(is_assertion<negated<word_boundary>>);
+    static_assert(is_assertion<positive_lookahead<wildcard>>);
+    static_assert(is_assertion<positive_lookbehind<wildcard>>);
+    static_assert(is_assertion<negative_lookahead<wildcard>>);
+    static_assert(is_assertion<negative_lookbehind<wildcard>>);
+    // Nodes which should not be detected as assertions
+    static_assert(is_assertion<empty> == false);
+    static_assert(is_assertion<sequence<word_boundary, word>> == false);
+    static_assert(is_assertion<negated<word>> == false);
+    static_assert(is_assertion<plus<positive_lookahead<wildcard>>> == false);
 }

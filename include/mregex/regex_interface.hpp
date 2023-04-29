@@ -47,6 +47,8 @@ namespace meta
 
         /**
          * Metafunction used to add flags to the current regex type.
+         *
+         * @tparam ExtraFlags   The new flags to be added
          */
         template<typename... ExtraFlags>
         using with_flags = regex_interface<ast_type, Flags ..., ExtraFlags ...>;
@@ -56,7 +58,7 @@ namespace meta
          */
         using without_flags = regex_interface<ast_type>;
 
-        static constexpr std::size_t capture_count = ast_type::capture_count;
+        static constexpr std::size_t capture_count = ast::capture_count<ast_type>;
 
         constexpr regex_interface() noexcept = default;
 

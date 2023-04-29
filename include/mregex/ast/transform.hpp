@@ -18,10 +18,10 @@ namespace meta::ast
         using type = Node;
     };
 
-    template<template<typename...> typename Wrapper, typename... Inner, template<typename> typename Func>
-    struct transform<Wrapper<Inner ...>, Func>
+    template<template<typename...> typename Wrapper, typename... Nodes, template<typename> typename Func>
+    struct transform<Wrapper<Nodes ...>, Func>
     {
-        using type = Wrapper<typename Func<Inner>::type ...>;
+        using type = Wrapper<typename Func<Nodes>::type ...>;
     };
 
     template<match_mode Mode, symbol::finite_quantifier A, symbol::quantifier B, typename Inner, template<typename> typename Func>
@@ -30,10 +30,10 @@ namespace meta::ast
         using type = basic_repetition<Mode, A, B, typename Func<Inner>::type>;
     };
 
-    template<assertion_mode Mode, lookaround_direction Direction, typename Inner, template<typename> typename Func>
-    struct transform<lookaround<Mode, Direction, Inner>, Func>
+    template<lookaround_direction Direction, typename Inner, template<typename> typename Func>
+    struct transform<lookaround<Direction, Inner>, Func>
     {
-        using type = lookaround<Mode, Direction, typename Func<Inner>::type>;
+        using type = lookaround<Direction, typename Func<Inner>::type>;
     };
 
     template<std::size_t ID, typename Name, typename Inner, template<typename> typename Func>

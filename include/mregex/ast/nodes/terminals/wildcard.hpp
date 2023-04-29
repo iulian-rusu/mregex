@@ -1,7 +1,7 @@
 #ifndef MREGEX_NODES_WILDCARD_HPP
 #define MREGEX_NODES_WILDCARD_HPP
 
-#include <mregex/ast/nodes/terminals/trivially_matchable.hpp>
+#include <mregex/ast/nodes/trivially_matchable.hpp>
 
 namespace meta::ast
 {

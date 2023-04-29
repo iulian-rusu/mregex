@@ -87,7 +87,7 @@ namespace meta::tests
         <
             sequence
             <
-                literal<'x'>,
+                atomic<literal<'x'>>,
                 optional
                 <
                     sequence
@@ -111,7 +111,7 @@ namespace meta::tests
                         literal<'a'>
                     >
                 >,
-                literal<'x'>
+                atomic<literal<'x'>>
             >
         >
     );

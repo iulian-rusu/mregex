@@ -196,6 +196,8 @@ namespace meta
     /**
      * Type trait used to check if a given capture type is an instance of
      * the regex_capture_view template.
+     *
+     * @tparam Capture  The regex capture type
      */
     template<captured_content Capture>
     inline constexpr bool is_capture_view = false;

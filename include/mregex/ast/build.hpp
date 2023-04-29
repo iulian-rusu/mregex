@@ -100,12 +100,11 @@ namespace meta::ast
         using type = push_t<Nodes, end_of_input>;
     };
 
-    template<assertion_mode Mode, lookaround_direction Direction, typename Token, typename First, typename... Rest>
-    struct build<symbol::make_lookaround<Mode, Direction>, Token, type_sequence<First, Rest ...>>
+    template<lookaround_direction Direction, typename Token, typename First, typename... Rest>
+    struct build<symbol::make_lookaround<Direction>, Token, type_sequence<First, Rest ...>>
     {
-        using type = type_sequence<lookaround<Mode, Direction, First>, Rest ...>;
+        using type = type_sequence<lookaround<Direction, First>, Rest ...>;
     };
-
 
     template<typename Token, typename First, typename... Rest>
     struct build<symbol::make_negated, Token, type_sequence<First, Rest ...>>
@@ -153,12 +152,12 @@ namespace meta::ast
         using type = type_sequence<alternation<Second ..., First>, Rest ...>;
     };
 
-    template<typename Token, typename Name, typename First,  typename... Rest>
+    template<typename Token, typename Name, typename First, typename... Rest>
     struct build<symbol::make_capture<Name>, Token, type_sequence<First, Rest ...>>
     {
-        static constexpr std::size_t capture_count = count_captures<First, Rest ...>;
+        static constexpr std::size_t group_id = (capture_count<First> + ... + capture_count<Rest>) + 1;
 
-        using type = type_sequence<capture<capture_count + 1, Name, First>, Rest ...>;
+        using type = type_sequence<capture<group_id, Name, First>, Rest ...>;
     };
 
     template<std::size_t ID, typename Token, typename... Nodes>

@@ -22,6 +22,8 @@ namespace meta::symbol
 
     /**
     * Type trait used to check if a type is a symbolic quantifier.
+     *
+     * @tparam Symbol   The symbolic type
     */
     template<typename Symbol>
     inline constexpr bool is_quantifier = false;
@@ -36,9 +38,11 @@ namespace meta::symbol
     concept quantifier = is_quantifier<Symbol>;
 
     /**
-     * Predicate that checks if a symbolic quantifier is equivalent to infinity.
+     * Type trait that checks if a symbolic quantifier is equivalent to infinity.
+     *
+     * @tparam Symbol   The symbolic quantifier
      */
-    template<quantifier>
+    template<quantifier Symbol>
     inline constexpr bool is_infinity = false;
 
     template<>
@@ -48,7 +52,9 @@ namespace meta::symbol
     concept finite_quantifier = quantifier<Symbol> && !is_infinity<Symbol>;
 
     /**
-     * Predicate that checks if a symbolic quantifier is equivalent to 0.
+     * Type trait that checks if a symbolic quantifier is equivalent to 0.
+     *
+     * @tparam Symbol   The symbolic quantifier
      */
     template<quantifier Symbol>
     inline constexpr bool is_zero = false;
@@ -57,7 +63,10 @@ namespace meta::symbol
     inline constexpr bool is_zero<quantifier_value<0>> = true;
 
     /**
-     * Predicate that checks if a pair of quantifiers form a valid range (interval).
+     * Type trait that checks if a pair of quantifiers forms a valid range (interval).
+     *
+     * @tparam A    The beginning of the range
+     * @tparam B    The end (inclusive) of the range
      */
     template<quantifier A, quantifier B>
     inline constexpr bool is_valid_range = false;
@@ -81,10 +90,10 @@ namespace meta::symbol
      * Predicate that checks if a symbolic quantifier is equal to some integral value.
      */
     template<quantifier Symbol>
-    inline constexpr auto equals = [](std::size_t) noexcept { return false; };
+    inline constexpr auto equals = [](std::size_t) noexcept -> bool { return false; };
 
     template<std::size_t N>
-    inline constexpr auto equals<quantifier_value<N>> = [](std::size_t value) noexcept { return N == value; };
+    inline constexpr auto equals<quantifier_value<N>> = [](std::size_t value) noexcept -> bool { return value == N; };
 
     /**
      * Metafunction used to decrement symbolic quantifiers.

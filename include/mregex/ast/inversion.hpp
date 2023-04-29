@@ -25,10 +25,10 @@ namespace meta::ast
     template<typename Node>
     using invert_t = typename invert<Node>::type;
 
-    template<typename... Inner>
-    struct invert<sequence<Inner ...>>
+    template<typename... Nodes>
+    struct invert<sequence<Nodes ...>>
     {
-        using type = decltype(detail::to_sequence(reverse_t<type_sequence<invert_t<Inner> ...>>{}));
+        using type = decltype(detail::to_sequence(reverse_t<type_sequence<invert_t<Nodes> ...>>{}));
     };
 
     template<typename Inner>

@@ -3,27 +3,31 @@
 
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/match_result.hpp>
+#include <mregex/utility/continuations.hpp>
 #include <mregex/symbols/names.hpp>
 
 namespace meta::ast
 {
+    /**
+     * @note Captures cannot be considered trivially matchable even when the inner node is.
+     * This is because trivially matchable nodes do not have access to continuation functions when matching,
+     * making it impossible for the capture to unmatch when a subsequent AST node fails to match.
+     */
     template<std::size_t ID, typename Name, typename Inner>
     struct capture
     {
-        static constexpr std::size_t capture_count = 1 + Inner::capture_count;
-
-        template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter begin, Iter end, Iter current, Context &ctx, Continuation &&cont) noexcept
+        template<std::forward_iterator Iter, typename Context, match_continuation<Iter> Cont>
+        static constexpr auto match(Iter begin, Iter end, Iter current, Context &ctx, Cont &&cont) noexcept
         -> match_result<Iter>
         {
-            auto continuation = [=, &ctx, &cont](Iter next) noexcept {
+            auto continuation = [=, &ctx, &cont](Iter next) noexcept -> match_result<Iter> {
                 capture_matched_range(current, next, ctx);
                 return cont(next);
             };
             if (auto inner_match = Inner::match(begin, end, current, ctx, continuation))
                 return inner_match;
             std::get<ID>(ctx.captures).clear();
-            return {current, false};
+            return non_match(current);
         }
 
     private:

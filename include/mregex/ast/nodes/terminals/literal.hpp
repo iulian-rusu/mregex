@@ -1,7 +1,7 @@
 #ifndef MREGEX_NODES_LITERAL_HPP
 #define MREGEX_NODES_LITERAL_HPP
 
-#include <mregex/ast/nodes/terminals/trivially_matchable.hpp>
+#include <mregex/ast/nodes/trivially_matchable.hpp>
 #include <mregex/utility/char_traits.hpp>
 
 namespace meta::ast
@@ -15,7 +15,7 @@ namespace meta::ast
             char input = *current;
             bool result = C == input;
             if constexpr (Context::flags::icase && is_alpha(C))
-                result |= flip_lowercase_bit(C) == input;
+                result = result || flip_lowercase_bit(C) == input;
             return result;
         }
     };

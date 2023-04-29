@@ -3,6 +3,7 @@
 
 #include <mregex/ast/match_result.hpp>
 #include <mregex/ast/traits.hpp>
+#include <mregex/utility/continuations.hpp>
 
 namespace meta::ast
 {
@@ -16,13 +17,15 @@ namespace meta::ast
     template<typename Predicate>
     struct assertion : zero_length_matcher
     {
-        template<std::forward_iterator Iter, typename Context, typename Continuation>
-        static constexpr auto match(Iter begin, Iter end, Iter current, Context &ctx, Continuation &&cont) noexcept
+        using predicate_type = Predicate;
+
+        template<std::forward_iterator Iter, typename Context, match_continuation<Iter> Cont>
+        static constexpr auto match(Iter begin, Iter end, Iter current, Context &ctx, Cont &&cont) noexcept
         -> match_result<Iter>
         {
             if (Predicate::is_match(begin, end, current, ctx))
                 return cont(current);
-            return {current, false};
+            return non_match(current);
         }
     };
 }

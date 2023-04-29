@@ -3,6 +3,8 @@
 
 #include <algorithm>
 #include <mregex/ast/nodes/terminals/literal.hpp>
+#include <mregex/ast/nodes/trivially_matchable.hpp>
+#include <mregex/utility/char_traits.hpp>
 
 namespace meta::ast
 {
@@ -42,7 +44,7 @@ namespace meta::ast
             auto input = *current;
             bool result = is_in_ascii_range<start, stop>(input);
             if constexpr (Context::flags::icase)
-                result |= is_in_alpha_subrange(flip_lowercase_bit(input));
+                result = result || is_in_alpha_subrange(flip_lowercase_bit(input));
             return result;
         }
 

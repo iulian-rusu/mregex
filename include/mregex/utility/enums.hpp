@@ -25,16 +25,6 @@ namespace meta
     };
 
     /**
-     * Enumerator which lists the possible assertion modes.
-     * Negative mode means the asserted condition is negated.
-     */
-    enum struct assertion_mode
-    {
-        negative,
-        positive
-    };
-
-    /**
      * Enumerator which lists the possible directions in which
      * lookaround assertions can match.
      */

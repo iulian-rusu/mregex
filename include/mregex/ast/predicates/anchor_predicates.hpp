@@ -2,7 +2,7 @@
 #define MREGEX_PREDICATES_ANCHOR_PREDICATES_HPP
 
 #include <mregex/ast/nodes/terminals/range.hpp>
-#include <mregex/ast/nodes/terminals/set.hpp>
+#include <mregex/ast/nodes/set.hpp>
 
 namespace meta::ast::predicates
 {

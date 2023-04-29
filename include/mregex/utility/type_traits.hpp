@@ -7,14 +7,19 @@ namespace meta
 {
     /**
      * Metafunction used to detect if a type is present inside a type pack.
+     *
+     * @tparam T        The type being searched
+     * @tparam Elems    The type pack where the type is searched
      */
-    template<typename Test, typename... Elems>
-    inline constexpr bool is_any_of = (std::is_same_v<Test, Elems> || ...);
+    template<typename T, typename... Elems>
+    inline constexpr bool is_any_of = (std::is_same_v<T, Elems> || ...);
 
     /**
      * Type trait that checks if T is an rvalue reference to an object that is non-trivially destructible.
      * This usually indicates a temporary object which needs to free memory upon destruction.
      * Although this does not guarantee that T has dynamically allocated memory, it is a good heuristic.
+     *
+     * @tparam T    The (possibly CV-qualified) type
      */
     template<typename T>
     inline constexpr bool is_expiring_memory_owner = std::is_rvalue_reference_v<T> &&
@@ -24,6 +29,8 @@ namespace meta
      * Metafunction that removes references and CV-qualifiers from rvalues only.
      * Non-refernce types are also treated as rvalues.
      * References to lvalues are unchanged.
+     *
+     * @tparam T    The (possibly CV-qualified) type
      */
     template<typename T>
     struct remove_rvalue_cvref

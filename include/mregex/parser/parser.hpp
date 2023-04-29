@@ -25,6 +25,8 @@ namespace meta
 
         /**
          * Metafunction used to extract tokens (characters or empty tokens) from the input pattern.
+         *
+         * @tparam I    The current position in the input
          */
         template<std::size_t I>
         using token_t = typename lexer<Pattern>::template token_t<I>;

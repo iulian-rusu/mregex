@@ -3,14 +3,12 @@
 
 #include <mregex/ast/nodes/assertion.hpp>
 #include <mregex/ast/predicates/lookaround_predicate.hpp>
+#include <mregex/ast/predicates/negate.hpp>
 #include <mregex/ast/astfwd.hpp>
 
 namespace meta::ast
 {
-    template<assertion_mode Mode, lookaround_direction Direction, typename Inner>
-    struct lookaround : assertion<predicates::lookaround_predicate<Mode, Direction, Inner>>
-    {
-        static constexpr std::size_t capture_count = Inner::capture_count;
-    };
+    template<lookaround_direction Direction, typename Inner>
+    struct lookaround: assertion<predicates::lookaround_predicate<Direction, Inner>> {};
 }
 #endif //MREGEX_NODES_LOOKAROUND_HPP

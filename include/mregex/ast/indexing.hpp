@@ -18,7 +18,7 @@ namespace meta::ast
             struct index<capture<ID, Name, Inner>>
             {
                 using indexed_inner_type = typename preorder_capture_indexer<Offset + 1>::template type<Inner>;
-                using type = capture<ID + Offset - Inner::capture_count, Name, indexed_inner_type>;
+                using type = capture<ID + Offset - capture_count<Inner>, Name, indexed_inner_type>;
             };
 
             template<typename Node>

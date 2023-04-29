@@ -41,6 +41,9 @@ namespace meta::ast
     template<std::size_t N, typename Inner>
     using possessive_fixed_repetition = basic_fixed_repetition<match_mode::possessive, N, Inner>;
 
+    template<typename Inner>
+    using atomic = possessive_fixed_repetition<1, Inner>;
+
     // Kleene star
     template<match_mode Mode, typename Inner>
     using basic_star = basic_repetition<Mode, symbol::quantifier_value<0>, symbol::infinity, Inner>;
@@ -80,6 +83,12 @@ namespace meta::ast
     template<typename Inner>
     using possessive_optional = basic_optional<match_mode::possessive, Inner>;
 
+    template<typename... Nodes>
+    struct set;
+
+    template<typename Inner>
+    struct negated;
+
     // Terminals
     struct empty;
     struct beginning_of_line;
@@ -99,16 +108,10 @@ namespace meta::ast
     using upper = range<'A', 'Z'>;
     using digit = range<'0', '9'>;
 
-    template<typename... Nodes>
-    struct set;
-    
     using nothing = set<>;
     using word = set<lower, upper, digit, literal<'_'>>;
     using linebreak = set<literal<'\n'>, literal<'\r'>>;
     using whitespace = set<linebreak, literal<' '>, literal<'\t'>, literal<'\v'>, literal<'\f'>>;
-
-    template<typename Inner>
-    struct negated;
 
     template<std::size_t ID>
     struct backref;
@@ -117,19 +120,19 @@ namespace meta::ast
     struct named_backref;
 
     // Lookarounds
-    template<assertion_mode Mode, lookaround_direction Direction, typename Inner>
+    template<lookaround_direction Direction, typename Inner>
     struct lookaround;
 
     template<typename Inner>
-    using positive_lookahead = lookaround<assertion_mode::positive, lookaround_direction::ahead, Inner>;
+    using positive_lookahead = lookaround<lookaround_direction::ahead, Inner>;
 
     template<typename Inner>
-    using negative_lookahead = lookaround<assertion_mode::negative, lookaround_direction::ahead, Inner>;
+    using negative_lookahead = negated<positive_lookahead<Inner>>;
 
     template<typename Inner>
-    using positive_lookbehind = lookaround<assertion_mode::positive, lookaround_direction::behind, Inner>;
+    using positive_lookbehind = lookaround<lookaround_direction::behind, Inner>;
 
     template<typename Inner>
-    using negative_lookbehind = lookaround<assertion_mode::negative, lookaround_direction::behind, Inner>;
+    using negative_lookbehind = negated<positive_lookbehind<Inner>>;
 }
 #endif //MREGEX_AST_ASTFWD_HPP

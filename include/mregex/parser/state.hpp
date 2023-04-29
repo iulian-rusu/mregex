@@ -76,7 +76,11 @@ namespace meta
     }
 
     /**
-     * Computes the final parser state starting from an initial state and advancing it N times.
+     * Metafunction that computes the final parser state starting from an initial state
+     * and advancing it N times.
+     *
+     * @tparam State    The initial parser state
+     * @tparam N        The number of times to advance the parser state
      */
     template<typename State, std::size_t N>
     using final_parser_state = decltype(detail::advance_parser_state(State{}, std::make_index_sequence<N + 1>{}));

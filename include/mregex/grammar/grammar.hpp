@@ -345,6 +345,18 @@ namespace meta::grammar
     };
 
     template<>
+    struct rule<symbol::group_mod, symbol::character<'>'>>
+    {
+        using type =
+                type_sequence
+                <
+                    advance,
+                    symbol::group_begin,
+                    symbol::make_atomic
+                >;
+    };
+
+    template<>
     struct rule<symbol::group_mod, symbol::character<'='>>
     {
         using type =
@@ -352,7 +364,7 @@ namespace meta::grammar
                 <
                     advance,
                     symbol::group_begin,
-                    symbol::make_lookaround<assertion_mode::positive, lookaround_direction::ahead>
+                    symbol::make_lookaround<lookaround_direction::ahead>
                 >;
     };
 
@@ -364,8 +376,15 @@ namespace meta::grammar
                 <
                     advance,
                     symbol::group_begin,
-                    symbol::make_lookaround<assertion_mode::negative, lookaround_direction::ahead>
+                    symbol::make_lookaround<lookaround_direction::ahead>,
+                    symbol::make_negated
                 >;
+    };
+
+    template<char C>
+    struct rule<symbol::group_mod, symbol::character<C>>
+    {
+        using type = reject;
     };
 
     template<>
@@ -376,7 +395,7 @@ namespace meta::grammar
                 <
                     advance,
                     symbol::group_begin,
-                    symbol::make_lookaround<assertion_mode::positive, lookaround_direction::behind>
+                    symbol::make_lookaround<lookaround_direction::behind>
                 >;
     };
 
@@ -388,7 +407,8 @@ namespace meta::grammar
                 <
                     advance,
                     symbol::group_begin,
-                    symbol::make_lookaround<assertion_mode::negative, lookaround_direction::behind>
+                    symbol::make_lookaround<lookaround_direction::behind>,
+                    symbol::make_negated
                 >;
     };
 
@@ -414,12 +434,6 @@ namespace meta::grammar
                     symbol::group_begin,
                     symbol::make_capture<symbol::make_name<Chars ...>>
                 >;
-    };
-
-    template<char C>
-    struct rule<symbol::group_mod, symbol::character<C>>
-    {
-        using type = reject;
     };
 
     template<>
@@ -651,6 +665,12 @@ namespace meta::grammar
     };
 
     template<typename Token>
+    struct rule<symbol::mod, Token>
+    {
+        using type = ignore;
+    };
+
+    template<typename Token>
     struct rule<symbol::unquantifiable, Token>
     {
         using type = ignore;
@@ -690,12 +710,6 @@ namespace meta::grammar
     struct rule<symbol::quantifier_begin, symbol::empty>
     {
         using type = abort_quantifier_parsing_t<'{'>;
-    };
-
-    template<typename Token>
-    struct rule<symbol::mod, Token>
-    {
-        using type = ignore;
     };
 
     template<std::size_t N, char C>

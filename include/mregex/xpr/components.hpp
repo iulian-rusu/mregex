@@ -25,6 +25,13 @@ namespace meta::xpr
         return to_regex(flat_wrap_sequence<ast::alternation>(Nodes{} ...));
     }
 
+    // Atomics
+    template<typename... Nodes>
+    constexpr auto atomic(regex_interface<Nodes>...) noexcept
+    {
+        return to_regex(pack_sequence<ast::atomic>(Nodes{} ...));
+    }
+
     // Captures
     template<std::size_t ID, static_string Name, typename... Nodes>
     constexpr auto capture(regex_interface<Nodes>...) noexcept
@@ -164,18 +171,6 @@ namespace meta::xpr
     constexpr auto behind(regex_interface<Nodes>...) noexcept
     {
         return to_regex(pack_sequence<ast::positive_lookbehind>(Nodes{} ...));
-    }
-
-    template<lookaround_direction Direction, typename Inner>
-    constexpr auto negate(regex_interface<ast::lookaround<assertion_mode::positive, Direction, Inner>>) noexcept
-    {
-        return regex_interface<ast::lookaround<assertion_mode::negative, Direction, Inner>>{};
-    }
-
-    template<lookaround_direction Direction, typename Inner>
-    constexpr auto negate(regex_interface<ast::lookaround<assertion_mode::negative, Direction, Inner>>) noexcept
-    {
-        return regex_interface<ast::lookaround<assertion_mode::positive, Direction, Inner>>{};
     }
 
     // Builder that generates the AST from a regular expression

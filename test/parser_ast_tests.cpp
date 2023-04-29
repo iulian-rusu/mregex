@@ -66,6 +66,28 @@ namespace meta::tests
             >
         >
     );
+    static_assert(is_ast_of<R"((?>))", atomic<empty>>);
+    static_assert(is_ast_of<R"((?>a))", atomic<literal<'a'>>>);
+    static_assert(is_ast_of<R"((?>a)+)", plus<atomic<literal<'a'>>>>);
+    static_assert(is_ast_of<R"((?>a)++)", possessive_plus<atomic<literal<'a'>>>>);
+    static_assert(
+        is_ast_of
+        <
+            R"((?>ab*(\d))+?)",
+            lazy_plus
+            <
+                atomic
+                <
+                    sequence
+                    <
+                        literal<'a'>,
+                        star<literal<'b'>>,
+                        unnamed_capture<1, digit>
+                    >
+                >
+            >
+        >
+    );
     static_assert(
         is_ast_of
         <
@@ -165,6 +187,13 @@ namespace meta::tests
             >
         >
     );
+    static_assert(is_ast_of<R"(\R)", linebreak>);
+    static_assert(is_ast_of<R"(\N)", negated<linebreak>>);
+    static_assert(is_ast_of<R"(\D)", negated<digit>>);
+    static_assert(is_ast_of<R"(\b)", word_boundary>);
+    static_assert(is_ast_of<R"(\B)", negated<word_boundary>>);
+    static_assert(is_ast_of<R"(\A)", beginning_of_input>);
+    static_assert(is_ast_of<R"(\Z)", end_of_input>);
     static_assert(is_ast_of<R"(\n)", literal<'\n'>>);
     static_assert(is_ast_of<R"(\r)", literal<'\r'>>);
     static_assert(is_ast_of<R"(\t)", literal<'\t'>>);
@@ -175,25 +204,40 @@ namespace meta::tests
     static_assert(is_ast_of<R"(\x1b)", literal<'\x1b'>>);
     static_assert(is_ast_of<R"(\x5F)", literal<'_'>>);
     static_assert(is_ast_of<R"(\x61)", literal<'a'>>);
+    static_assert(is_ast_of<R"(\l)", literal<'l'>>);
     static_assert(is_ast_of<R"(\x01?)", optional<literal<'\x01'>>>);
     static_assert(is_ast_of<R"(\x09*)", star<literal<'\x09'>>>);
     static_assert(is_ast_of<R"(\x0a+)", plus<literal<'\x0a'>>>);
-    static_assert(is_ast_of<R"(\xff{3,5}?)", lazy_repetition<symbol::quantifier_value<3>, symbol::quantifier_value<5>, literal<'\xff'>>>);
-    static_assert(is_ast_of<R"(f*\xfff+)", sequence<star<literal<'f'>>, literal<'\xff'>, plus<literal<'f'>>>>);
     static_assert(is_ast_of<R"(.\xFF.)", sequence<wildcard, literal<'\xFF'>, wildcard>>);
-    static_assert(is_ast_of<R"(\R)", linebreak>);
-    static_assert(is_ast_of<R"(\N)", negated<linebreak>>);
-    static_assert(is_ast_of<R"(\D)", negated<digit>>);
-    static_assert(is_ast_of<R"(\b)", word_boundary>);
-    static_assert(is_ast_of<R"(\B)", negated<word_boundary>>);
-    static_assert(is_ast_of<R"(\A)", beginning_of_input>);
-    static_assert(is_ast_of<R"(\Z)", end_of_input>);
-    static_assert(is_ast_of<R"(\l)", literal<'l'>>);
-    static_assert(is_ast_of<R"(\u)", literal<'u'>>);
+    static_assert(
+        is_ast_of
+        <
+            R"(\xff{3,5}?)",
+            lazy_repetition
+            <
+                symbol::quantifier_value<3>,
+                symbol::quantifier_value<5>,
+                literal<'\xff'>
+            >
+        >
+    );
+    static_assert(
+        is_ast_of
+        <
+            R"(f*\xfff+)",
+            sequence
+            <
+                star<literal<'f'>>,
+                literal<'\xff'>,
+                plus<literal<'f'>>
+            >
+        >
+    );
     static_assert(is_ast_of<R"((c))", unnamed_capture<1, literal<'c'>>>);
     static_assert(is_ast_of<R"((?:c))", literal<'c'>>);
     static_assert(is_ast_of<R"(\1)", backref<1>>);
-    static_assert(is_ast_of<R"(\31)", backref<31>>);
+    static_assert(is_ast_of<R"(\10)", backref<10>>);
+    static_assert(is_ast_of<R"((?:\1)0)", sequence<backref<1>, literal<'0'>>>);
     static_assert(is_ast_of<R"(\1+)", plus<backref<1>>>);
     static_assert(is_ast_of<R"(\42?)", optional<backref<42>>>);
     static_assert(is_ast_of<R"(\1+?)", lazy_plus<backref<1>>>);
@@ -260,15 +304,18 @@ namespace meta::tests
     static_assert(
         is_ast_of
         <
-            R"(((c))(e))",
-            sequence
+            R"((?>((?>(c)))(e)))",
+            atomic
             <
-                unnamed_capture
+                sequence
                 <
-                    1,
-                    unnamed_capture<2, literal<'c'>>
-                >,
-                unnamed_capture<3, literal<'e'>>
+                    unnamed_capture
+                    <
+                        1,
+                        atomic<unnamed_capture<2, literal<'c'>>>
+                    >,
+                    unnamed_capture<3, literal<'e'>>
+                >
             >
         >
     );
@@ -289,14 +336,15 @@ namespace meta::tests
     static_assert(is_ast_of<R"(c??)", lazy_optional<literal<'c'>>>);
     static_assert(is_ast_of<R"(c*?)", lazy_star<literal<'c'>>>);
     static_assert(is_ast_of<R"(c+?)", lazy_plus<literal<'c'>>>);
+    static_assert(is_ast_of<R"(c{0})", fixed_repetition<0, literal<'c'>>>);
     static_assert(
         is_ast_of
         <
-            R"(c{2})",
-            repetition
+            R"(c{2,3}?)",
+            lazy_repetition
             <
                 symbol::quantifier_value<2>,
-                symbol::quantifier_value<2>,
+                symbol::quantifier_value<3>,
                 literal<'c'>
             >
         >
@@ -310,18 +358,6 @@ namespace meta::tests
                 fixed_repetition<2, literal<'c'>>,
                 lazy_fixed_repetition<2, literal<'c'>>,
                 possessive_fixed_repetition<2, literal<'c'>>
-            >
-        >
-    );
-    static_assert(
-        is_ast_of
-        <
-            R"(c{0})",
-            repetition
-            <
-                symbol::quantifier_value<0>,
-                symbol::quantifier_value<0>,
-                literal<'c'>
             >
         >
     );
@@ -360,18 +396,8 @@ namespace meta::tests
             >
         >
     );
-    static_assert(
-        is_ast_of
-        <
-            R"(c{22})",
-            repetition
-            <
-                symbol::quantifier_value<22>,
-                symbol::quantifier_value<22>,
-                literal<'c'>
-            >
-        >
-    );
+    static_assert(is_ast_of<R"(c{22})", fixed_repetition<22, literal<'c'>>>);
+    static_assert(is_ast_of<R"(c{022})", fixed_repetition<22, literal<'c'>>>);
     static_assert(
         is_ast_of
         <
@@ -452,18 +478,6 @@ namespace meta::tests
     static_assert(
         is_ast_of
         <
-            R"(c{012})",
-            repetition
-            <
-                symbol::quantifier_value<12>,
-                symbol::quantifier_value<12>,
-                literal<'c'>
-            >
-        >
-    );
-    static_assert(
-        is_ast_of
-        <
             R"(c{x})",
             sequence
             <
@@ -531,11 +545,11 @@ namespace meta::tests
     static_assert(
         is_ast_of
         <
-            R"((c*?\{012}){3})",
+            R"((c*?\{012}){3,})",
             repetition
             <
                 symbol::quantifier_value<3>,
-                symbol::quantifier_value<3>,
+                symbol::infinity,
                 unnamed_capture
                 <
                     1,
@@ -559,10 +573,9 @@ namespace meta::tests
             sequence
             <
                 literal<'a'>,
-                lazy_repetition
+                lazy_fixed_repetition
                 <
-                    symbol::quantifier_value<15>,
-                    symbol::quantifier_value<15>,
+                    15,
                     unnamed_capture
                     <
                         1,
@@ -619,8 +632,15 @@ namespace meta::tests
     static_assert(
         is_ast_of
         <
-            R"((?:\++)*?)",
-            lazy_star<plus<literal<'+'>>>
+            R"((?:\++\???)*?)",
+            lazy_star
+            <
+                sequence
+                <
+                    plus<literal<'+'>>,
+                    lazy_optional<literal<'?'>>
+                >
+            >
         >
     );
     static_assert(
@@ -771,6 +791,8 @@ namespace meta::tests
     static_assert(is_ast_of<R"([\0])", set<literal<'\0'>>>);
     static_assert(is_ast_of<R"([\1])", set<literal<'1'>>>);
     static_assert(is_ast_of<R"([\k])", set<literal<'k'>>>);
+    static_assert(is_ast_of<R"([(])", set<literal<'('>>>);
+    static_assert(is_ast_of<R"([)])", set<literal<')'>>>);
     static_assert(
         is_ast_of
         <
@@ -1114,7 +1136,7 @@ namespace meta::tests
     static_assert(
         is_ast_of
         <
-            R"(x(?<_capture_name>abc)+)",
+            R"(x(?<_capture_name>(?>abc?))+)",
             sequence
             <
                 literal<'x'>,
@@ -1124,11 +1146,14 @@ namespace meta::tests
                     <
                         1,
                         symbol::name<"_capture_name">,
-                        sequence
+                        atomic
                         <
-                            literal<'a'>,
-                            literal<'b'>,
-                            literal<'c'>
+                            sequence
+                            <
+                                literal<'a'>,
+                                literal<'b'>,
+                                optional<literal<'c'>>
+                            >
                         >
                     >
                 >

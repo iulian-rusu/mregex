@@ -1,7 +1,6 @@
 #ifndef MREGEX_PREDICATES_LOOKAROUND_PREDICATE_HPP
 #define MREGEX_PREDICATES_LOOKAROUND_PREDICATE_HPP
 
-#include <mregex/ast/predicates/negate.hpp>
 #include <mregex/ast/inversion.hpp>
 #include <mregex/ast/traits.hpp>
 #include <mregex/utility/continuations.hpp>
@@ -52,19 +51,13 @@ namespace meta::ast::predicates
         }
     };
 
-    template<assertion_mode Mode, lookaround_direction Direction, typename Inner>
+    template<lookaround_direction Direction, typename Inner>
     struct lookaround_predicate;
 
     template<typename Inner>
-    struct lookaround_predicate<assertion_mode::positive, lookaround_direction::ahead, Inner> : lookahead_predicate<Inner> {};
+    struct lookaround_predicate<lookaround_direction::ahead, Inner> : lookahead_predicate<Inner> {};
 
     template<typename Inner>
-    struct lookaround_predicate<assertion_mode::negative, lookaround_direction::ahead, Inner> : negate<lookahead_predicate<Inner>> {};
-
-    template<typename Inner>
-    struct lookaround_predicate<assertion_mode::positive, lookaround_direction::behind, Inner> : lookbehind_predicate<Inner> {};
-
-    template<typename Inner>
-    struct lookaround_predicate<assertion_mode::negative, lookaround_direction::behind, Inner> : negate<lookbehind_predicate<Inner>> {};
+    struct lookaround_predicate<lookaround_direction::behind, Inner> : lookbehind_predicate<Inner> {};
 }
 #endif //MREGEX_PREDICATES_LOOKAROUND_PREDICATE_HPP
