@@ -3,7 +3,7 @@ Checks:
   bugprone-*,
   clang-analyzer-cplusplus.*,
   clang-analyzer-deadcode.*,
-  clang-analuzer-nullability.*,
+  clang-analyzer-nullability.*,
   -cert-dcl21-cpp,
   google-default-arguments,
   google-runtime-operator,

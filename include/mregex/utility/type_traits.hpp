@@ -6,15 +6,6 @@
 namespace meta
 {
     /**
-     * Metafunction used to detect if a type is present inside a type pack.
-     *
-     * @tparam T        The type being searched
-     * @tparam Elems    The type pack where the type is searched
-     */
-    template<typename T, typename... Elems>
-    inline constexpr bool is_any_of = (std::is_same_v<T, Elems> || ...);
-
-    /**
      * Type trait that checks if T is an rvalue reference to an object that is non-trivially destructible.
      * This usually indicates a temporary object which needs to free memory upon destruction.
      * Although this does not guarantee that T has dynamically allocated memory, it is a good heuristic.

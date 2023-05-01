@@ -1,7 +1,7 @@
 #ifndef MREGEX_REGEX_FLAGS_HPP
 #define MREGEX_REGEX_FLAGS_HPP
 
-#include <mregex/utility/type_traits.hpp>
+#include <type_traits>
 
 namespace meta
 {
@@ -53,7 +53,7 @@ namespace meta
     inline constexpr bool is_flag<regex_flag<ID>> = true;
 
     template<typename Flag, typename... Flags>
-    inline constexpr bool is_flag_enabled = is_any_of<Flag, Flags ...>;
+    inline constexpr bool is_flag_enabled = (std::is_same_v<Flag, Flags> || ...);
 
     template<typename... Flags>
     struct regex_flag_accessor

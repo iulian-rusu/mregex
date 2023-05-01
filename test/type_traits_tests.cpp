@@ -2,17 +2,6 @@
 
 namespace meta::tests
 {
-    static_assert(is_any_of<int, int>);
-    static_assert(is_any_of<int, float, int>);
-    static_assert(is_any_of<int, int, long int, double>);
-    static_assert(is_any_of<int, int, double, long, void, float>);
-    static_assert(is_any_of<int, double, double, int, void, void>);
-    static_assert(is_any_of<int, float, double, long, int, void>);
-    static_assert(is_any_of<int, float, double, long, void> == false);
-    static_assert(is_any_of<int, float, double, long> == false);
-    static_assert(is_any_of<int, float, long int> == false);
-    static_assert(is_any_of<int> == false);
-
     static_assert(is_expiring_memory_owner<std::string> == false);
     static_assert(is_expiring_memory_owner<std::string const> == false);
     static_assert(is_expiring_memory_owner<std::string &> == false);
