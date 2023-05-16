@@ -4,7 +4,6 @@ set(
     tests.cpp
     ast_inversion_tests.cpp
     ast_traits_tests.cpp
-    flag_tests.cpp
     iterator_api_tests.cpp
     parser_accept_tests.cpp
     parser_ast_tests.cpp

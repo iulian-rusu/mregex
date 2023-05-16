@@ -4,14 +4,14 @@ namespace meta::tests
 {
     namespace
     {
-        template<static_string Pattern, typename... Flags>
+        template<static_string Pattern, regex_flag... Flags>
         constexpr auto match_count(std::string_view sv)
         {
             using pattern = regex<Pattern, Flags ...>;
             return std::ranges::distance(pattern::find_all(sv));
         }
 
-        template<static_string Pattern, typename... Flags>
+        template<static_string Pattern, regex_flag... Flags>
         constexpr auto token_count(std::string_view sv)
         {
             using pattern = regex<Pattern, Flags ...>;
@@ -32,8 +32,8 @@ namespace meta::tests
     static_assert(match_count<R"(a+)">("aa") == 1);
     static_assert(match_count<R"(a+)">("a aa aaa") == 3);
     static_assert(match_count<R"(a+)">("bbb ccc ddd") == 0);
-    static_assert(match_count<R"(a+)", flag::ungreedy>("a aa aaa") == 6);
-    static_assert(match_count<R"(a+?)", flag::ungreedy>("a aa aaa") == 3);
+    static_assert(match_count<R"(a+)", regex_flag::ungreedy>("a aa aaa") == 6);
+    static_assert(match_count<R"(a+?)", regex_flag::ungreedy>("a aa aaa") == 3);
     static_assert(match_count<R"(a+(?:$|\s))">("aaaa aaa aa a aa aaa aaaa") == 7);
     static_assert(match_count<R"(abc)">("a") == 0);
     static_assert(match_count<R"(abc)">("abcd abcd") == 2);
@@ -52,8 +52,8 @@ namespace meta::tests
     static_assert(match_count<R"(.)">("") == 0);
     static_assert(match_count<R"(.)">("a") == 1);
     static_assert(match_count<R"(.+)">("123456") == 1);
-    static_assert(match_count<R"(.+)", flag::ungreedy>("123456") == 6);
-    static_assert(match_count<R"(.+?)", flag::ungreedy>("123456") == 1);
+    static_assert(match_count<R"(.+)", regex_flag::ungreedy>("123456") == 6);
+    static_assert(match_count<R"(.+?)", regex_flag::ungreedy>("123456") == 1);
 
     static_assert(token_count<R"()">("") == 1);
     static_assert(token_count<R"()">("a") == 1);

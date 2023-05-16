@@ -40,10 +40,10 @@ namespace meta::xpr
     }
 
     /**
-     * Converts an Abstract Syntax Tree to a type which provides a regex interface.
+     * Converts an Abstract Syntax Tree to a type which provides a regex-like interface.
      *
      * @tparam AST  The Abstract Syntax Tree of the regex
-     * @return      An object with the interface of a regular expression
+     * @return      An object with a regex-like interface
      */
     template<typename AST>
     constexpr auto to_regex(AST) noexcept -> regex_interface<AST> { return {}; }

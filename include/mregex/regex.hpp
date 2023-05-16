@@ -13,7 +13,13 @@ namespace meta
         return true;
     }
 
-    template<static_string Pattern, typename... Flags>
+    /**
+     * Creates a regex type from a given literal string.
+     *
+     * @tparam Pattern  The regex defined as a string
+     * @tparam Flags    Optional flags for matching
+     */
+    template<static_string Pattern, regex_flag... Flags>
     requires (assert_correct_syntax<Pattern>())
     struct regex : regex_interface<ast_of<Pattern>, Flags ...>
     {

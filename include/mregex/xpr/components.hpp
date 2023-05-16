@@ -173,7 +173,6 @@ namespace meta::xpr
         return to_regex(pack_sequence<ast::positive_lookbehind>(Nodes{} ...));
     }
 
-    // Builder that generates the AST from a regular expression
     template<static_string Pattern>
     inline constexpr auto regex = typename meta::regex<Pattern>::base_type{};
 }

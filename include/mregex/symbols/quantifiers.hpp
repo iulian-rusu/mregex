@@ -21,10 +21,10 @@ namespace meta::symbol
     struct quantifier_value {};
 
     /**
-    * Type trait used to check if a type is a symbolic quantifier.
+     * Type trait used to check if a type is a symbolic quantifier.
      *
      * @tparam Symbol   The symbolic type
-    */
+     */
     template<typename Symbol>
     inline constexpr bool is_quantifier = false;
 

@@ -2,6 +2,7 @@
 #define MREGEX_AST_INDEXING_HPP
 
 #include <mregex/ast/astfwd.hpp>
+#include <mregex/ast/traits.hpp>
 #include <mregex/ast/transform.hpp>
 
 namespace meta::ast
@@ -17,12 +18,12 @@ namespace meta::ast
             template<std::size_t ID, typename Name, typename Inner>
             struct index<capture<ID, Name, Inner>>
             {
-                using indexed_inner_type = typename preorder_capture_indexer<Offset + 1>::template type<Inner>;
+                using indexed_inner_type = typename preorder_capture_indexer<Offset + 1>::template index_t<Inner>;
                 using type = capture<ID + Offset - capture_count<Inner>, Name, indexed_inner_type>;
             };
 
             template<typename Node>
-            using type = typename index<Node>::type;
+            using index_t = typename index<Node>::type;
         };
     }
 
@@ -36,12 +37,6 @@ namespace meta::ast
      * @tparam Node     The AST node type being traversed
      */
     template<typename Node>
-    struct index_captures
-    {
-        using type = typename detail::preorder_capture_indexer<0>::template type<Node>;
-    };
-
-    template<typename Node>
-    using index_captures_t = typename index_captures<Node>::type;
+    using index_captures_t = typename detail::preorder_capture_indexer<0>::template index_t<Node>;
 }
 #endif //MREGEX_AST_INDEXING_HPP

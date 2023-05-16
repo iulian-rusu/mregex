@@ -4,7 +4,7 @@ namespace meta::tests
 {
     namespace
     {
-        template<static_string Pattern, typename... Flags>
+        template<static_string Pattern, regex_flag... Flags>
         constexpr bool match_reverse(std::string_view sv)
         {
             using pattern = regex<Pattern, Flags ...>;

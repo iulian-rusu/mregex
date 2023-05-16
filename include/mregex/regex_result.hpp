@@ -10,7 +10,7 @@
 namespace meta
 {
     /**
-     * Class returned by all regex matching/searching functions.
+     * Type returned by all regex matching/searching methods.
      *
      * @tparam CaptureStorage   The storage type used to hold the captures
      * @tparam NameSpec         A type that contains the capture name specification
@@ -77,7 +77,7 @@ namespace meta
         [[nodiscard]] auto as_memory_owner() const
         requires is_view
         {
-            auto owned_captures = transform_groups([](auto const &capture) {
+            auto owned_captures = transform_groups([](auto const &capture) noexcept {
                 return regex_capture{capture};
             });
             return regex_result<NameSpec>{std::move(owned_captures), _matched};

@@ -52,11 +52,11 @@ namespace meta::ast
     inline constexpr std::size_t capture_count<capture<ID, Name, Inner>> = capture_count<Inner> + 1;
 
     /**
-    * Metafunction that builds a specification for the names of all capturing groups in the AST.
-    * The specification lists all capture names according to Preorder AST traversal.
-    *
-    * @tparam Node The AST node
-    */
+     * Metafunction that builds a specification for the names of all capturing groups in the AST.
+     * The specification lists all capture names according to Preorder AST traversal.
+     *
+     * @tparam Node The AST node
+     */
     template<typename Node>
     struct capture_name_spec
     {
@@ -117,7 +117,7 @@ namespace meta::ast
     inline constexpr bool is_zero_length_matcher<alternation<Nodes ...>> = (is_zero_length_matcher<Nodes> || ...);
 
     /**
-     * Type trasit used to identify AST nodes which are assertions.
+     * Type trait used to identify AST nodes which are assertions.
      *
      * @tparam Node The AST node
      */

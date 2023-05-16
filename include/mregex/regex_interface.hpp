@@ -16,11 +16,11 @@ namespace meta
      * @tparam AST      The Abstract Syntax Tree of the regex
      * @tparam Flags    Optional flags for matching
      */
-    template<typename AST, typename... Flags>
+    template<typename AST, regex_flag... Flags>
     struct regex_interface
     {
         using ast_type = AST;
-        using flags = regex_flag_accessor<Flags ...>;
+        using flags = regex_flag_sequence<Flags ...>;
 
         template<std::forward_iterator Iter>
         using context_type = regex_context<regex_interface<ast_type, Flags ...>, Iter>;
@@ -50,13 +50,13 @@ namespace meta
          *
          * @tparam ExtraFlags   The new flags to be added
          */
-        template<typename... ExtraFlags>
-        using with_flags = regex_interface<ast_type, Flags ..., ExtraFlags ...>;
+        template<regex_flag... ExtraFlags>
+        using add_flags = regex_interface<ast_type, Flags ..., ExtraFlags ...>;
 
         /**
          * Metafunction used to clear all flags from the current regex type.
          */
-        using without_flags = regex_interface<ast_type>;
+        using clear_flags = regex_interface<ast_type>;
 
         static constexpr std::size_t capture_count = ast::capture_count<ast_type>;
 

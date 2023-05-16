@@ -140,13 +140,14 @@ More examples can be found in the `example/` directory.
 |      `(?<=expr)`      |  (positive lookbehind) test if `expr` would have matched before the current point  |
 |      `(?<!expr)`      |           (negative lookbehind) test the negation of positive lookbehind           |
 
-### Some Notes on the Syntax
+### Notes Regarding the Syntax
 
 #### Backreferences
 Numeric backreferences support multiple digits, so `\10` will be parsed as a backreference to group number 10.
 If the group is not defined, it will result in a compile-time error. 
-A numeric backreference that is followed by a literal digit can be specified as `(?:\1)0` or `\1[0]`. 
-Another option is to use named captures and named backreferences.
+If you want to define a numeric backreference that is immediately folowed by a digit, you can separate it using a
+non-capturing group: `(?:\1)0`.
+Another option is to use sets: `\1[0]`.
 
 #### Escaped Characters
 Currently, any escaped character that does not have a special meaning is treated literally and does not result
@@ -163,8 +164,8 @@ interpret the curly brace literally. This does not work if the parsing has advan
 looks like a quantifier.
 
 Examples:
- * `a{` will be interpreted as "`a` followed by `{`"
- * `a{+` will be interpreted as "`a` followed by one or more `{`"
+ * `a{` will be interpreted as `a` followed by `{`
+ * `a{+` will be interpreted as `a` followed by one or more `{`
  * `a{1+` will be a syntax error
   
 ## Credits

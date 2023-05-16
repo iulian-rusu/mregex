@@ -7,7 +7,7 @@ namespace meta
 {
     /**
      * Minimalist view that reverses the normal iteration direction on a given bidirectional range.
-     * This class is used as a workaround since std::views::reverse isn't working in libstdc++.
+     * This adapter is used as a workaround since std::views::reverse isn't working in libstdc++.
      *
      * @tparam Range    The bidirectional range type to be reversed
      */

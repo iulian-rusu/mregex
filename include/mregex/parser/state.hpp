@@ -19,11 +19,11 @@ namespace meta
     }
 
     /**
-    * Data type returned by the compile-time parser.
-    *
-    * @tparam AST       The generated Abstract Syntax Tree
-    * @tparam Verdict   Type that holds information about the verdict of the parser
-    */
+     * Data type returned by the compile-time parser.
+     *
+     * @tparam AST       The generated Abstract Syntax Tree
+     * @tparam Verdict   Type that holds information about the verdict of the parser
+     */
     template<typename AST, typename Verdict>
     struct parser_result
     {

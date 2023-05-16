@@ -5,7 +5,6 @@
 
 namespace meta::xpr::operators
 {
-    // Operators for defining the AST
     template<typename T, typename U>
     constexpr auto operator>>(regex_interface<T> lhs, regex_interface<U> rhs) noexcept
     {
@@ -18,22 +17,22 @@ namespace meta::xpr::operators
         return either(lhs, rhs);
     }
 
-    template<typename Node>
-    constexpr auto operator!(regex_interface<Node> node) noexcept
+    template<typename AST>
+    constexpr auto operator!(regex_interface<AST> expression) noexcept
     {
-        return negate(node);
+        return negate(expression);
     }
 
-    template<typename Node>
-    constexpr auto operator*(regex_interface<Node> node) noexcept
+    template<typename AST>
+    constexpr auto operator*(regex_interface<AST> expression) noexcept
     {
-        return zero_or_more(node);
+        return zero_or_more(expression);
     }
 
-    template<typename Node>
-    constexpr auto operator+(regex_interface<Node> node) noexcept
+    template<typename AST>
+    constexpr auto operator+(regex_interface<AST> expression) noexcept
     {
-        return one_or_more(node);
+        return one_or_more(expression);
     }
 }
 #endif //MREGEX_XPR_OPERATORS_HPP

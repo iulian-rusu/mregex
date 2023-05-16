@@ -51,7 +51,7 @@ namespace meta::tests
     static_assert(accepted<R"((\?+?)?)">);
     static_assert(accepted<R"((\|+\))?)">);
     static_assert(accepted<R"(x\*\(x\?(abc\+(?:xyz)\?)\+x\)\*x)">);
-    // Optional, Kleen star and plus
+    // Optional, Kleene star and plus
     static_assert(accepted<R"(c?)">);
     static_assert(accepted<R"(c*)">);
     static_assert(accepted<R"(c+)">);
