@@ -29,7 +29,7 @@ namespace meta
     /**
      * Class that holds a view into the content captured by a regex group.
      *
-     * @tparam Iter The forward iterator type used to acces the input
+     * @tparam Iter The forward iterator type used to access the input
      * @tparam Name The name of the capturing group (optional)
      */
     template<std::forward_iterator Iter, typename Name = symbol::unnamed>

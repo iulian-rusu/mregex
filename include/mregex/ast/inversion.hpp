@@ -14,7 +14,7 @@ namespace meta::ast
     }
 
     /**
-     * Metafuction that inverts (mirrors) the AST at compile-time. This is required to implement
+     * Metafunction that inverts (mirrors) the AST at compile-time. This is required to implement
      * lookbehind assertions which need to match a regular expression backwards.
      *
      * @tparam Node The AST node type being inverted

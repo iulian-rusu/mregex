@@ -122,7 +122,7 @@ namespace meta
 
         /**
          * Returns a lazy searcher that yields all matches inside the given range.
-         * The seaercher will skip over non-match positions to find the next match.
+         * The searcher will skip over non-match positions to find the next match.
          * At most one empty match will be generated.
          * The supplied iterator pair must form a valid range, otherwise the behavior is undefined.
          *

@@ -63,7 +63,7 @@ namespace meta::grammar
     /**
      * Metafunction that defines symbols used to continue parsing quantifier values.
      *
-     * @tparam Symbol   The symbolci quantifier being parsed
+     * @tparam Symbol   The symbolic quantifier being parsed
      * @tparam C        The current character being parsed
      */
     template<typename Symbol, char C, bool = is_digit(C)>

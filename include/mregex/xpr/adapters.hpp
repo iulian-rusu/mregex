@@ -67,8 +67,8 @@ namespace meta::xpr
      * Flattening will remove any redundant wrappers from the resulting type.
      *
      * @tparam Wrapper  The type of the wrapper
-     * @tparam First    The first element in the sequnece
-     * @tparam Second   The second element in the sequnece
+     * @tparam First    The first element in the sequence
+     * @tparam Second   The second element in the sequence
      * @tparam Rest     The rest of the sequence
      * @return          A flattened instance of the wrapper type
      */

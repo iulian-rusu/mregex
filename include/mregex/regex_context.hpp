@@ -11,7 +11,7 @@ namespace meta
      * match-time information like captures.
      *
      * @tparam Regex    The regex type used for matching
-     * @tparam Iter     The forward iterator type used to acces the input
+     * @tparam Iter     The forward iterator type used to access the input
      */
     template<typename Regex, std::forward_iterator Iter>
     struct regex_context

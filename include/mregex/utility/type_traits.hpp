@@ -18,7 +18,7 @@ namespace meta
 
     /**
      * Metafunction that removes references and CV-qualifiers from rvalues only.
-     * Non-refernce types are also treated as rvalues.
+     * Non-reference types are also treated as rvalues.
      * References to lvalues are unchanged.
      *
      * @tparam T    The (possibly CV-qualified) type

@@ -10,7 +10,7 @@ namespace meta
      * At most one empty result will be generated.
      *
      * @tparam Method   The regex method used to generate results
-     * @tparam Iter     The forward iterator type used to acces the input
+     * @tparam Iter     The forward iterator type used to access the input
      */
     template<typename Method, std::forward_iterator Iter>
     struct regex_result_generator

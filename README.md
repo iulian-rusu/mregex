@@ -20,7 +20,7 @@ an iterator compatible with `std::forward_iterator`
 * flags that modify the matching behaviour:
   * `icase` - enables case-insensitive matching
   * `multiline` - enables multi-line mode, in which the anchors `^`/`$` will also match line boundaries
-  * `ungreedy` - swaps the default syntax for lazy and greedy quantifers
+  * `ungreedy` - swaps the default syntax for lazy and greedy quantifiers
   * `dotall` - allows the wildcard `.` to also match `\n` and `\r`
 * a flexible API that allows exact matching, searching, tokenizing or iterating over multiple matches
 * ability to define the regex using a standard string-based API or using an [expression-based API](example/using_expressions.cpp)
@@ -111,7 +111,7 @@ More examples can be found in the `example/` directory.
 |         `\B`          |                    match everything that is not a word boundary                    |
 |         `\d`          |                             match any digit character                              |
 |         `\w`          |                 match any word character (letters, digits and `_`)                 |
-|         `\s`          |                           match any whitespace charater                            |
+|         `\s`          |                           match any whitespace character                           |
 |         `\R`          |                          match `\n` or `\r` (line break)                           |
 |         `\N`          |                       match any character except line breaks                       |
 | `\D`, `\W`, `\S` etc. |                match any character **not** in the respective class                 |
@@ -145,7 +145,7 @@ More examples can be found in the `example/` directory.
 #### Backreferences
 Numeric backreferences support multiple digits, so `\10` will be parsed as a backreference to group number 10.
 If the group is not defined, it will result in a compile-time error. 
-If you want to define a numeric backreference that is immediately folowed by a digit, you can separate it using a
+If you want to define a numeric backreference that is immediately followed by a digit, you can separate it using a
 non-capturing group: `(?:\1)0`.
 Another option is to use sets: `\1[0]`.
 

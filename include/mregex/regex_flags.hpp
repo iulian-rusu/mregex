@@ -13,7 +13,7 @@ namespace meta
         dotall,
         // Makes anchors ($ and ^) also match the beginning/end of lines
         multiline,
-        // Swaps the behavior of lazy and greedy quantifers
+        // Swaps the behavior of lazy and greedy quantifiers
         ungreedy,
         // Enables the compiler to be more aggressive when unrolling repetition loops
         unroll

@@ -20,7 +20,7 @@ namespace meta
 
     /**
      * Result that holds views into the matched content.
-     * The behavior is undefined if the orginal input expires before this object.
+     * The behavior is undefined if the original input expires before this object.
      */
     template<std::forward_iterator Iter, typename NameSpec>
     using regex_result_view = basic_regex_result<regex_capture_view_storage<Iter, NameSpec>, NameSpec>;
