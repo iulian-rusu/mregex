@@ -48,7 +48,7 @@ namespace meta::ast
                 return non_match(current);
 
             // Lookbehinds use reverse iterators. To check for equality, iterator directions must be the same
-            constexpr bool different_iterators = !std::is_same_v<Iter, typename Context::iterator_type>;
+            constexpr bool different_iterators = !std::is_same_v<Iter, typename Context::iterator>;
             for (auto target : reverse_if<different_iterators>(captured))
             {
                 if (!equals<Context::flags::icase>(target, *current))

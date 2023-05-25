@@ -16,13 +16,13 @@ namespace meta
     struct regex_result_generator
     {
         using method = Method;
-        using iterator_type = Iter;
+        using iterator = Iter;
         using regex_type = typename method::regex_type;
         using ast_type = regex_ast_t<regex_type>;
-        using result_view_type = regex_result_view_t<regex_type, iterator_type>;
+        using result_view_type = regex_result_view_t<regex_type, iterator>;
 
-        constexpr regex_result_generator(iterator_type begin, iterator_type end)
-            : _begin{begin}, _end{end}, _current{begin}, _active{true}
+        constexpr regex_result_generator(iterator begin, iterator end)
+            : _begin{begin}, _end{end}, _current{begin}
         {}
 
         [[nodiscard]] constexpr result_view_type operator()() noexcept
@@ -32,7 +32,7 @@ namespace meta
 
         [[nodiscard]] constexpr result_view_type next() noexcept
         {
-            regex_context<regex_type, iterator_type> ctx{};
+            regex_context<regex_type, iterator> ctx{};
             if (!_active)
                 return result_view_type{std::move(ctx.captures), false};
 
@@ -48,10 +48,10 @@ namespace meta
         }
 
     private:
-        iterator_type const _begin;
-        iterator_type const _end;
-        iterator_type _current;
-        bool _active;
+        iterator const _begin;
+        iterator const _end;
+        iterator _current;
+        bool _active{true};
     };
 }
 #endif //MREGEX_REGEX_RESULT_GENERATOR_HPP

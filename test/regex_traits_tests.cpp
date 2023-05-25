@@ -6,18 +6,18 @@ namespace meta::tests
     using uri_regex = regex<R"(([a-zA-Z][a-zA-Z0-9]*)://([^ /]+)(/[^ ]*)?)">;
     using email_regex = regex<R"((?<test>[^ @]+)@([^ @]+))">::add_flags<regex_flag::icase, regex_flag::dotall>;
 
-    using iterator_type = std::string_view::iterator;
+    using iterator = std::string_view::iterator;
 
-    using uri_result_view_t = regex_result_view_t<uri_regex, iterator_type>;
+    using uri_result_view_t = regex_result_view_t<uri_regex, iterator>;
     using uri_result_t = regex_result_t<uri_regex>;
-    using uri_capture_view_t = regex_capture_view_t<uri_regex, 1, iterator_type>;
-    using uri_tokenizer_t = regex_tokenizer_t<uri_regex, iterator_type>;
-    using uri_searcher_t = regex_searcher_t<uri_regex, iterator_type>;
-    using uri_token_range_t = regex_token_range_t<uri_regex, iterator_type>;
-    using uri_match_range_t = regex_match_range_t<uri_regex, iterator_type>;
+    using uri_capture_view_t = regex_capture_view_t<uri_regex, 1, iterator>;
+    using uri_tokenizer_t = regex_tokenizer_t<uri_regex, iterator>;
+    using uri_searcher_t = regex_searcher_t<uri_regex, iterator>;
+    using uri_token_range_t = regex_token_range_t<uri_regex, iterator>;
+    using uri_match_range_t = regex_match_range_t<uri_regex, iterator>;
 
-    using email_result_view_t = regex_result_view_t<email_regex, iterator_type>;
-    using email_capture_view_t = regex_capture_view_t<email_regex, 1, iterator_type>;
+    using email_result_view_t = regex_result_view_t<email_regex, iterator>;
+    using email_capture_view_t = regex_capture_view_t<email_regex, 1, iterator>;
 
     static_assert(regex_flags<email_regex>::dotall);
     static_assert(regex_flags<email_regex>::icase);

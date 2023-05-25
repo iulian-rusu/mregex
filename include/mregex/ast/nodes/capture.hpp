@@ -35,11 +35,11 @@ namespace meta::ast
         static constexpr auto capture_matched_range(Iter begin, Iter end, Context &ctx) noexcept
         {
             using regex_type = typename Context::regex_type;
-            using base_iterator_type = typename Context::iterator_type;
-            using capture_view_type = regex_capture_view_t<regex_type, ID, base_iterator_type>;
+            using base_iterator = typename Context::iterator;
+            using capture_view_type = regex_capture_view_t<regex_type, ID, base_iterator>;
 
             // Iterator types might be different if matching was done inside a lookbehind
-            if constexpr (std::is_same_v<Iter, base_iterator_type>)
+            if constexpr (std::is_same_v<Iter, base_iterator>)
                 std::get<ID>(ctx.captures) = capture_view_type{begin, end};
             else
                 std::get<ID>(ctx.captures) = capture_view_type{end.base(), begin.base()};

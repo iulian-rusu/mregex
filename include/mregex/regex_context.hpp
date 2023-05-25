@@ -17,10 +17,10 @@ namespace meta
     struct regex_context
     {
         using regex_type = Regex;
-        using iterator_type = Iter;
+        using iterator = Iter;
         using ast_type = regex_ast_t<regex_type>;
         using flags = regex_flags<regex_type>;
-        using capture_view_storage_type = regex_capture_view_storage_t<regex_type, iterator_type>;
+        using capture_view_storage_type = regex_capture_view_storage_t<regex_type, iterator>;
 
         capture_view_storage_type captures{};
 

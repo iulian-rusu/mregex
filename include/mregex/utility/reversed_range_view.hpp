@@ -17,30 +17,24 @@ namespace meta
         using value_type = std::ranges::range_value_t<Range>;
         using iterator = std::reverse_iterator<std::ranges::iterator_t<Range>>;
 
-        constexpr explicit reversed_range_view(Range &range) noexcept : _range{range} {}
-
-        constexpr auto begin() noexcept
-        {
-            return std::make_reverse_iterator(std::end(_range));
-        }
-
+        constexpr explicit reversed_range_view(Range &range) noexcept
+                : _begin{std::make_reverse_iterator(std::end(range))},
+                  _end{std::make_reverse_iterator(std::begin(range))}
+        {}
+        
         constexpr auto begin() const noexcept
         {
-            return std::make_reverse_iterator(std::cend(_range));
-        }
-
-        constexpr auto end() noexcept
-        {
-            return std::make_reverse_iterator(std::begin(_range));
+            return _begin;
         }
 
         constexpr auto end() const noexcept
         {
-            return std::make_reverse_iterator(std::cbegin(_range));
+            return _end;
         }
 
     private:
-        Range &_range;
+        iterator _begin;
+        iterator _end;
     };
 }
 #endif //MREGEX_UTILITY_REVERSED_RANGE_VIEW_HPP

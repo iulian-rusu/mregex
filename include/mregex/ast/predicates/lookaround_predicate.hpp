@@ -33,12 +33,12 @@ namespace meta::ast::predicates
         {
             // For non-trivial nodes, the AST is inverted to match the regex backwards
             using ast_type = invert_t<Inner>;
-            using iterator_type = std::reverse_iterator<Iter>;
+            using iterator = std::reverse_iterator<Iter>;
 
             auto rbegin = std::make_reverse_iterator(end); // Reversed end becomes new begin
             auto rend = std::make_reverse_iterator(begin); // Reversed begin becomes new end
             auto rcurrent = std::make_reverse_iterator(current);
-            auto result = ast_type::match(rbegin, rend, rcurrent, ctx, continuations<iterator_type>::success);
+            auto result = ast_type::match(rbegin, rend, rcurrent, ctx, continuations<iterator>::success);
             return result.matched;
         }
 
