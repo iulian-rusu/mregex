@@ -32,7 +32,7 @@ namespace meta::ast
             if (distance_less_than<size>(current, end))
                 return non_match(current);
             if constexpr (std::random_access_iterator<Iter>)
-                return unrolled_trivial_match(current, ctx, cont, std::make_index_sequence<size - 1>{});
+                return unrolled_trivial_match(current, ctx, cont, std::make_index_sequence<size>{});
             else
                 return unrolled_trivial_match(current, ctx, cont);
         }
@@ -41,10 +41,10 @@ namespace meta::ast
         template<std::random_access_iterator Iter, typename Context, match_continuation<Iter> Cont, std::size_t... Indices>
         static constexpr auto unrolled_trivial_match(
                 Iter current, Context &ctx, Cont &&cont,
-                std::index_sequence<Indices ...>
+                std::index_sequence<0, Indices ...>
         ) noexcept -> match_result<Iter>
         {
-            if (First::match_one(current, ctx) && (Rest::match_one(std::next(current, Indices + 1), ctx) && ...))
+            if (First::match_one(*current, ctx) && (Rest::match_one(*std::next(current, Indices), ctx) && ...))
                 return cont(std::next(current, size));
             return non_match(current);
         }
@@ -53,7 +53,7 @@ namespace meta::ast
         static constexpr auto unrolled_trivial_match(Iter current, Context &ctx, Cont &&cont) noexcept
         -> match_result<Iter>
         {
-            if (First::match_one(current, ctx) && (Rest::match_one(++current, ctx) && ...))
+            if (First::match_one(*current, ctx) && (Rest::match_one(*++current, ctx) && ...))
                 return cont(std::next(current));
             return non_match(current);
         }

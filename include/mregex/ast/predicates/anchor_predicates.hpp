@@ -16,7 +16,7 @@ namespace meta::ast::predicates
                 return true;
             if constexpr (Mode == line_mode::multiline && Context::flags::multiline)
             {
-                if (linebreak::match_one(std::prev(current), ctx))
+                if (linebreak::match_one(*std::prev(current), ctx))
                     return true;
             }
             return false;
@@ -33,7 +33,7 @@ namespace meta::ast::predicates
                 return true;
             if constexpr (Mode == line_mode::multiline && Context::flags::multiline)
             {
-                if (linebreak::match_one(current, ctx))
+                if (linebreak::match_one(*current, ctx))
                     return true;
             }
             return false;
@@ -45,8 +45,8 @@ namespace meta::ast::predicates
         template<std::bidirectional_iterator Iter, typename Context>
         static constexpr bool is_match(Iter begin, Iter end, Iter current, Context &ctx) noexcept
         {
-            bool is_word_behind = current != begin && word::match_one(std::prev(current), ctx);
-            bool is_word_ahead = current != end && word::match_one(current, ctx);
+            bool is_word_behind = current != begin && word::match_one(*std::prev(current), ctx);
+            bool is_word_ahead = current != end && word::match_one(*current, ctx);
             return is_word_behind ^ is_word_ahead;
         }
     };

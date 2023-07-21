@@ -9,9 +9,8 @@
 namespace meta::ast
 {
     /**
-     * @note Captures cannot be considered trivially matchable even when the inner node is.
-     * This is because trivially matchable nodes do not have access to continuation functions when matching,
-     * making it impossible for the capture to unmatch when a subsequent AST node fails to match.
+     * @note Since matching captures implies side effects like storing and clearing matched
+     * content, they cannot be considered trivially matchable even when the inner node is.
      */
     template<std::size_t ID, typename Name, typename Inner>
     struct capture

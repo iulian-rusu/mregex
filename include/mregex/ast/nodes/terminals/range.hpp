@@ -14,7 +14,7 @@ namespace meta::ast
         struct range_intersection
         {
             static constexpr std::uint8_t start = std::max(R1::start, R2::start);
-            static constexpr std::uint8_t stop =  std::min(R1::stop, R2::stop);
+            static constexpr std::uint8_t stop = std::min(R1::stop, R2::stop);
             static constexpr bool is_empty = start > stop;
 
             static constexpr bool contains(char input) noexcept
@@ -38,10 +38,9 @@ namespace meta::ast
 
         static_assert(start < stop, "invalid range bounds");
 
-        template<std::forward_iterator Iter, typename Context>
-        static constexpr bool match_one(Iter current, Context &) noexcept
+        template<typename Context>
+        static constexpr bool match_one(char input, Context &) noexcept
         {
-            auto input = *current;
             bool result = is_in_ascii_range<start, stop>(input);
             if constexpr (Context::flags::icase)
                 result = result || is_in_alpha_subrange(flip_lowercase_bit(input));

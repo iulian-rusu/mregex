@@ -21,7 +21,7 @@ namespace meta::ast::predicates
         static constexpr bool is_match(Iter /*begin*/, Iter end, Iter current, Context &ctx) noexcept
         requires is_trivially_matchable<Inner>
         {
-            return current != end && Inner::match_one(current, ctx);
+            return current != end && Inner::match_one(*current, ctx);
         }
     };
 
@@ -47,7 +47,7 @@ namespace meta::ast::predicates
         requires is_trivially_matchable<Inner>
         {
             // For trivially matchable nodes, a single step backwards is enough
-            return current != begin && Inner::match_one(std::prev(current), ctx);
+            return current != begin && Inner::match_one(*std::prev(current), ctx);
         }
     };
 

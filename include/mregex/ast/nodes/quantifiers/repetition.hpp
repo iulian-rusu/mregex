@@ -68,7 +68,7 @@ namespace meta::ast
         {
             for (std::size_t match_count = 0; !symbol::equals<Bound>(match_count); ++match_count)
             {
-                if (current == end || !Inner::match_one(current, ctx))
+                if (current == end || !Inner::match_one(*current, ctx))
                     break;
                 ++current;
             }
@@ -134,7 +134,7 @@ namespace meta::ast
             {
                 if (auto rest_match = cont(current))
                     return rest_match;
-                if (symbol::equals<Bound>(match_count) || current == end || !Inner::match_one(current, ctx))
+                if (symbol::equals<Bound>(match_count) || current == end || !Inner::match_one(*current, ctx))
                     break;
             }
             return non_match(current);

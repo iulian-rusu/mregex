@@ -9,10 +9,9 @@ namespace meta::ast
     template<char C>
     struct literal : trivially_matchable<literal<C>>
     {
-        template<std::forward_iterator Iter, typename Context>
-        static constexpr bool match_one(Iter current, Context &) noexcept
+        template<typename Context>
+        static constexpr bool match_one(char input, Context &) noexcept
         {
-            char input = *current;
             bool result = C == input;
             if constexpr (Context::flags::icase && is_alpha(C))
                 result = result || flip_lowercase_bit(C) == input;

@@ -7,8 +7,7 @@
 namespace meta::ast
 {
     /**
-     * Base type for trivially matchable AST nodes.
-     * Trivially matchable nodes can only match one input character at a time.
+     * Base type that offers a generic matching interface for trivially matchable AST nodes.
      *
      * @tparam Node The trivially matchable AST node derived from this type
      */
@@ -19,7 +18,7 @@ namespace meta::ast
         static constexpr auto match(Iter /*begin*/, Iter end, Iter current, Context &ctx, Cont &&cont) noexcept
         -> match_result<Iter>
         {
-            if (current != end && Node::match_one(current, ctx))
+            if (current != end && Node::match_one(*current, ctx))
                 return cont(std::next(current));
             return non_match(current);
         }

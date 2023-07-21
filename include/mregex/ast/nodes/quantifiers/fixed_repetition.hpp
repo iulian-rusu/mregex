@@ -88,7 +88,7 @@ namespace meta::ast
                 std::index_sequence<Indices ...>
         ) noexcept -> match_result<Iter>
         {
-            if ((Inner::match_one(std::next(current, Indices), ctx) && ...))
+            if ((Inner::match_one(*std::next(current, Indices), ctx) && ...))
                 return cont(std::next(current, N));
             return non_match(current);
         }
@@ -99,7 +99,7 @@ namespace meta::ast
                 std::index_sequence<Indices ...>
         ) noexcept -> match_result<Iter>
         {
-            if (((Indices, Inner::match_one(current++, ctx)) && ...))
+            if (((Indices, Inner::match_one(*current++, ctx)) && ...))
                 return cont(current);
             return non_match(current);
         }
@@ -110,7 +110,7 @@ namespace meta::ast
         {
             for (std::size_t offset = 0; offset != N; ++offset)
             {
-                if (!Inner::match_one(std::next(current, offset), ctx))
+                if (!Inner::match_one(*std::next(current, offset), ctx))
                     return non_match(current);
             }
             return cont(std::next(current, N));
@@ -122,7 +122,7 @@ namespace meta::ast
         {
             for (std::size_t match_count = 0; match_count != N; ++match_count)
             {
-                if (!Inner::match_one(current++, ctx))
+                if (!Inner::match_one(*current++, ctx))
                     return non_match(current);
             }
             return cont(current);

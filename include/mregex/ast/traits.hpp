@@ -10,22 +10,22 @@ namespace meta::ast
 {
     /**
      * Type trait used to detect trivially matchable AST nodes.
-     * An AST node is defined as trivially matchable if it always consumes one character in case of a match.
-     * In essence, such nodes can be matched without backtracking, just like "regular characters".
      *
-     * @note A node is detected as trivially matchable by checking if it contains a static member function
-     * "match_one" that returns a bool. This does not enforce any semantic guarantees on the node and
-     * should be treated as a marker trait.
+     * @note Semantically, a node is considered trivially matchable if it can be matched
+     * just by looking at one input character. Additionally, in case of a successful match,
+     * the given input character will always be consumed.
      *
-     * @note When matching one character, trivially matchable nodes assume the given iterator
-     * is valid (i.e. not out of bounds). Bounds checking must be done by the caller.
+     * @note Syntactically, a node is detected as trivially matchable by checking if it
+     * contains a static member function with a specific signature.
+     * This does not enforce any semantic guarantees on the node and should be treated as
+     * a marker trait.
      *
      * @tparam Node The AST node
      */
     template<typename Node>
-    inline constexpr bool is_trivially_matchable = requires (char *iter, type_sequence<> ctx)
+    inline constexpr bool is_trivially_matchable = requires (char input, type_sequence<> ctx)
     {
-        { Node::match_one(iter, ctx) } -> std::same_as<bool>;
+        { Node::match_one(input, ctx) } -> std::same_as<bool>;
     };
 
     template<typename... Nodes>

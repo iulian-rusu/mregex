@@ -7,12 +7,12 @@ namespace meta::ast
 {
     struct wildcard : trivially_matchable<wildcard>
     {
-        template<std::forward_iterator Iter, typename Context>
-        static constexpr bool match_one(Iter current, Context &ctx) noexcept
+        template<typename Context>
+        static constexpr bool match_one(char input, Context &ctx) noexcept
         {
             if constexpr (Context::flags::dotall)
                 return true;
-            return !linebreak::match_one(current, ctx);
+            return !linebreak::match_one(input, ctx);
         }
     };
 }
