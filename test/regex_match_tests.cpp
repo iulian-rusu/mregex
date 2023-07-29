@@ -222,6 +222,8 @@ namespace meta::tests
     static_assert(regex<R"(.*(?>.{1,2})x)">::match("aax"));
     static_assert(regex<R"(.*(?>.{1,}?)x)">::match("aaaax"));
     static_assert(regex<R"((?>.{1,}?)x)">::match("ax"));
+    static_assert(regex<R"(^(?>(?:ab.?){2,})x)">::match("abcabcabcx"));
+    static_assert(regex<R"(^(?>(?:ab.?){2,})x)">::match("ababcx"));
     static_assert(regex<R"((?>integer|insert|in))">::match("integer"));
     static_assert(regex<R"((?>integer|insert|in))">::match("insert"));
     static_assert(regex<R"((?>integer|insert|in))">::match("in"));
@@ -400,6 +402,7 @@ namespace meta::tests
     static_assert(regex<R"(.*(?>.{1,2})x)">::match("ax") == false);
     static_assert(regex<R"(.*(?>.{1,})x)">::match("aaaax") == false);
     static_assert(regex<R"((?>.{1,}?)x)">::match("aaaax") == false);
+    static_assert(regex<R"(^(?>(?:ab.?){2,})x)">::match("abcabcababcx") == false);
     static_assert(regex<R"((?>in|insert|integer))">::match("integer") == false);
     static_assert(regex<R"((?>in|insert|integer))">::match("insert") == false);
 }
