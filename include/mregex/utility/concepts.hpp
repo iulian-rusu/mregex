@@ -2,9 +2,6 @@
 #define MREGEX_UTILITY_CONCEPTS_HPP
 
 #include <concepts>
-#include <iterator>
-#include <tuple>
-#include <type_traits>
 
 namespace meta
 {
@@ -15,28 +12,6 @@ namespace meta
     concept char_range = std::ranges::forward_range<Range> && requires (Range range)
     {
         { *std::begin(range) } -> std::convertible_to<char32_t>;
-    };
-
-    /**
-     * Concept used to constrain a type that saves the content captured by regex groups.
-     */
-    template<typename Capture>
-    concept captured_content = std::ranges::forward_range<Capture> && requires (Capture capture)
-    {
-        { capture.content() } -> char_range;
-        { capture.length() } -> std::convertible_to<std::size_t>;
-        { capture.is_empty() } -> std::same_as<bool>;
-        static_cast<bool>(capture);
-    };
-
-    /**
-     * Concept used to constrain a type that stores multiple regex captures.
-     */
-    template<typename CaptureStorage>
-    concept capture_storage = requires (CaptureStorage captures)
-    {
-        { std::tuple_size_v<std::remove_reference_t<CaptureStorage>> } -> std::convertible_to<std::size_t>;
-        { std::get<0>(captures) } -> captured_content;
     };
 
     /**

@@ -1,7 +1,7 @@
 #ifndef MREGEX_XPR_FLAGS_HPP
 #define MREGEX_XPR_FLAGS_HPP
 
-#include <mregex/regex_interface.hpp>
+#include <mregex/regex.hpp>
 
 namespace meta::xpr
 {

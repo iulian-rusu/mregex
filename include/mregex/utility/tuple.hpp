@@ -54,6 +54,5 @@ namespace meta
             std::make_index_sequence<std::tuple_size_v<std::remove_reference_t<Tuple>>>{}
         );
     }
-
 }
 #endif //MREGEX_UTILITY_TUPLE_HPP

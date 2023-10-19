@@ -2,7 +2,7 @@
 #define MREGEX_XPR_ADAPTERS_HPP
 
 #include <mregex/ast/astfwd.hpp>
-#include <mregex/regex_interface.hpp>
+#include <mregex/regex.hpp>
 
 namespace meta::xpr
 {
@@ -40,13 +40,13 @@ namespace meta::xpr
     }
 
     /**
-     * Converts an Abstract Syntax Tree to a type which provides a regex-like interface.
+     * Wraps an Abstract Syntax Tree in a type which provides a high-level regex API.
      *
-     * @tparam AST  The Abstract Syntax Tree of the regex
-     * @return      An object with a regex-like interface
+     * @tparam AST  The Abstract Syntax Tree of the regular expression
+     * @return      A wrapper object which provides regex methods
      */
     template<typename AST>
-    constexpr auto to_regex(AST) noexcept -> regex_interface<AST> { return {}; }
+    constexpr auto to_regex(AST) noexcept -> regex_adapter<AST> { return {}; }
 
     /**
      * Packs a sequence of elements into a wrapper that holds a single type.

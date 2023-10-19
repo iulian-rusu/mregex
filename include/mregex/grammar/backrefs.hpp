@@ -43,11 +43,15 @@ namespace meta::grammar
      * @tparam ID   The backreference ID being parsed
      * @tparam C    The current character in the input pattern
      */
-    template<std::size_t ID, char C, bool = is_digit(C)>
-    struct continue_backref_id;
+    template<std::size_t ID, char C>
+    struct continue_backref_id
+    {
+        using type = symbol::make_backref<ID>;
+    };
 
     template<std::size_t ID, char C>
-    struct continue_backref_id<ID, C, true>
+    requires (is_digit(C))
+    struct continue_backref_id<ID, C>
     {
         using type =
                 type_sequence
@@ -55,12 +59,6 @@ namespace meta::grammar
                     advance,
                     symbol::backref_id<10 * ID + C - '0'>
                 >;
-    };
-
-    template<std::size_t ID, char C>
-    struct continue_backref_id<ID, C, false>
-    {
-        using type = symbol::make_backref<ID>;
     };
 
     template<std::size_t ID, char C>

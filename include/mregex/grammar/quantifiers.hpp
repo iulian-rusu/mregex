@@ -37,11 +37,15 @@ namespace meta::grammar
      *
      * @tparam C    The current character being parsed
      */
-    template<char C, bool = is_digit(C)>
-    struct begin_quantifier_value;
+    template<char C>
+    struct begin_quantifier_value
+    {
+        using type = abort_quantifier_parsing_t<'{'>;
+    };
 
     template<char C>
-    struct begin_quantifier_value<C, true>
+    requires (is_digit(C))
+    struct begin_quantifier_value<C>
     {
         using type =
                 type_sequence
@@ -49,12 +53,6 @@ namespace meta::grammar
                     advance,
                     symbol::quantifier_value<C - '0'>
                 >;
-    };
-
-    template<char C>
-    struct begin_quantifier_value<C, false>
-    {
-        using type = abort_quantifier_parsing_t<'{'>;
     };
 
     template<char C>
@@ -66,11 +64,15 @@ namespace meta::grammar
      * @tparam Symbol   The symbolic quantifier being parsed
      * @tparam C        The current character being parsed
      */
-    template<typename Symbol, char C, bool = is_digit(C)>
-    struct continue_quantifier_value;
+    template<typename Symbol, char C>
+    struct continue_quantifier_value
+    {
+        using type = reject;
+    };
 
     template<std::size_t N, char C>
-    struct continue_quantifier_value<symbol::quantifier_value<N>, C, true>
+    requires (is_digit(C))
+    struct continue_quantifier_value<symbol::quantifier_value<N>, C>
     {
         using type =
                 type_sequence
@@ -81,7 +83,8 @@ namespace meta::grammar
     };
 
     template<symbol::quantifier A, std::size_t N, char C>
-    struct continue_quantifier_value<symbol::quantifier_range<A, symbol::quantifier_value<N>>, C, true>
+    requires (is_digit(C))
+    struct continue_quantifier_value<symbol::quantifier_range<A, symbol::quantifier_value<N>>, C>
     {
         using type =
                 type_sequence
@@ -92,7 +95,8 @@ namespace meta::grammar
     };
 
     template<symbol::quantifier A, char C>
-    struct continue_quantifier_value<symbol::quantifier_range<A, symbol::infinity>, C, true>
+    requires (is_digit(C))
+    struct continue_quantifier_value<symbol::quantifier_range<A, symbol::infinity>, C>
     {
         using type =
                 type_sequence
@@ -100,12 +104,6 @@ namespace meta::grammar
                     advance,
                     symbol::quantifier_range<A, symbol::quantifier_value<C - '0'>>
                 >;
-    };
-
-    template<typename Symbol, char C>
-    struct continue_quantifier_value<Symbol, C, false>
-    {
-        using type = reject;
     };
 
     template<typename Symbol, char C>

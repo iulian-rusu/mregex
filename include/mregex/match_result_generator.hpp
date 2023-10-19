@@ -1,6 +1,7 @@
-#ifndef MREGEX_REGEX_RESULT_GENERATOR_HPP
-#define MREGEX_REGEX_RESULT_GENERATOR_HPP
+#ifndef MREGEX_MATCH_RESULT_GENERATOR_HPP
+#define MREGEX_MATCH_RESULT_GENERATOR_HPP
 
+#include <mregex/regex_match_context.hpp>
 #include <mregex/regex_methods.hpp>
 
 namespace meta
@@ -13,33 +14,32 @@ namespace meta
      * @tparam Iter     The forward iterator type used to access the input
      */
     template<typename Method, std::forward_iterator Iter>
-    struct regex_result_generator
+    struct match_result_generator
     {
         using method = Method;
         using iterator = Iter;
         using regex_type = typename method::regex_type;
         using ast_type = regex_ast_t<regex_type>;
-        using result_view_type = regex_result_view_t<regex_type, iterator>;
 
-        constexpr regex_result_generator(iterator begin, iterator end)
+        constexpr match_result_generator(iterator begin, iterator end)
             : _begin{begin}, _end{end}, _current{begin}
         {}
 
-        [[nodiscard]] constexpr result_view_type operator()() noexcept
+        [[nodiscard]] constexpr auto operator()() noexcept
         {
             return next();
         }
 
-        [[nodiscard]] constexpr result_view_type next() noexcept
+        [[nodiscard]] constexpr auto next() noexcept
         {
-            regex_context<regex_type, iterator> ctx{};
+            regex_match_context<regex_type, iterator> ctx{};
             if (!_active)
-                return result_view_type{std::move(ctx.captures), false};
+                return match_result_view<regex_type, iterator>{std::move(ctx.captures), false};
 
             auto result = method::invoke(_begin, _end, _current, ctx);
             _active = result.matched && !std::get<0>(ctx.captures).is_empty();
             _current = result.end;
-            return result_view_type{std::move(ctx.captures), result.matched};
+            return match_result_view<regex_type, iterator>{std::move(ctx.captures), result.matched};
         }
 
         constexpr bool active() const noexcept
@@ -48,10 +48,10 @@ namespace meta
         }
 
     private:
-        iterator const _begin;
-        iterator const _end;
+        iterator _begin;
+        iterator _end;
         iterator _current;
         bool _active{true};
     };
 }
-#endif //MREGEX_REGEX_RESULT_GENERATOR_HPP
+#endif //MREGEX_MATCH_RESULT_GENERATOR_HPP

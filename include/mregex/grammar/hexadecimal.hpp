@@ -9,11 +9,15 @@ namespace meta::grammar
 {
     namespace detail
     {
-        template<typename Sequence, char C, bool = is_hexdigit(C)>
-        struct continue_hex_escape_sequence;
+        template<typename Sequence, char C>
+        struct continue_hex_escape_sequence
+        {
+            using type = reject;
+        };
 
         template<std::uint8_t... Hexdigits, char C>
-        struct continue_hex_escape_sequence<symbol::hex_esc_seq<Hexdigits ...>, C, true>
+        requires (is_hexdigit(C))
+        struct continue_hex_escape_sequence<symbol::hex_esc_seq<Hexdigits ...>, C>
         {
             static constexpr std::uint8_t digit = is_digit(C) ? C - '0' : 10 + set_lowercase_bit(C) - 'a';
 
@@ -23,12 +27,6 @@ namespace meta::grammar
                         advance,
                         symbol::hex_esc_seq<Hexdigits ..., digit>
                     >;
-        };
-
-        template<typename Sequence, char C>
-        struct continue_hex_escape_sequence<Sequence, C, false>
-        {
-            using type = reject;
         };
 
         template<typename Sequence, char C>

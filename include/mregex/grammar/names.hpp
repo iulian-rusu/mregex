@@ -13,11 +13,15 @@ namespace meta::grammar
      * @tparam Name The metacontainer for the name sequence
      * @tparam C    The current character being parsed
      */
-    template<template<char...> typename Name, char C, bool = is_word(C) && !is_digit(C)>
-    struct begin_name;
+    template<template<char...> typename Name, char C>
+    struct begin_name
+    {
+        using type = reject;
+    };
 
     template<template<char...> typename Name, char C>
-    struct begin_name<Name, C, true>
+    requires (is_word(C) && !is_digit(C))
+    struct begin_name<Name, C>
     {
         using type =
                 type_sequence
@@ -25,12 +29,6 @@ namespace meta::grammar
                     advance,
                     Name<C>
                 >;
-    };
-
-    template<template<char...> typename Name, char C>
-    struct begin_name<Name, C, false>
-    {
-        using type = reject;
     };
 
     template<template<char...> typename Name, char C>
@@ -42,11 +40,15 @@ namespace meta::grammar
      * @tparam Name The name sequence being parsed
      * @tparam C    The current character being parsed
      */
-    template<typename Name, char C, bool = is_word(C)>
-    struct continue_name;
+    template<typename Name, char C>
+    struct continue_name
+    {
+        using type = reject;
+    };
 
     template<template<char...> typename Name, char... Chars, char C>
-    struct continue_name<Name<Chars ...>, C, true>
+    requires (is_word(C))
+    struct continue_name<Name<Chars ...>, C>
     {
         using type =
                 type_sequence
@@ -54,12 +56,6 @@ namespace meta::grammar
                     advance,
                     Name<Chars ..., C>
                 >;
-    };
-
-    template<typename Name, char C>
-    struct continue_name<Name, C, false>
-    {
-        using type = reject;
     };
 
     template<typename Name, char C>

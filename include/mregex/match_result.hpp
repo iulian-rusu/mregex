@@ -1,49 +1,55 @@
-#ifndef MREGEX_REGEX_RESULT_HPP
-#define MREGEX_REGEX_RESULT_HPP
+#ifndef MREGEX_MATCH_RESULT_HPP
+#define MREGEX_MATCH_RESULT_HPP
 
 #include <iosfwd>
 #include <optional>
 #include <tuple>
 #include <mregex/utility/tuple.hpp>
-#include <mregex/regex_capture.hpp>
+#include <mregex/regex_capture_storage.hpp>
 
 namespace meta
 {
     /**
-     * Type returned by all regex matching/searching methods.
+     * Result of matching a regex.
+     * Holds information about whether the match was successful and
+     * allows accessing the content matched by capturing groups.
      *
      * @tparam CaptureStorage   The storage type used to hold the captures
-     * @tparam NameSpec         A type that contains the capture name specification
      */
-    template<capture_storage CaptureStorage, typename NameSpec>
-    struct basic_regex_result;
+    template<capture_storage CaptureStorage>
+    struct basic_match_result;
 
     /**
      * Result that holds views into the matched content.
-     * The behavior is undefined if the original input expires before this object.
+     * The original input's lifetime must not expire before this object.
+     *
+     * @tparam Regex    The regex type used for matching
+     * @tparam Iter     The forward iterator type used to view the matched content
      */
-    template<std::forward_iterator Iter, typename NameSpec>
-    using regex_result_view = basic_regex_result<regex_capture_view_storage<Iter, NameSpec>, NameSpec>;
+    template<typename Regex, std::forward_iterator Iter>
+    using match_result_view = basic_match_result<regex_capture_view_storage<Regex, Iter>>;
 
     /**
      * Result that holds ownership of matched content.
+     *
+     * @tparam Regex    The regex type used for matching
      */
-    template<typename NameSpec>
-    using regex_result = basic_regex_result<regex_capture_storage<NameSpec>, NameSpec>;
+    template<typename Regex>
+    using match_result = basic_match_result<regex_capture_storage<Regex>>;
 
-    template<capture_storage CaptureStorage, typename NameSpec>
-    struct basic_regex_result
+    template<capture_storage CaptureStorage>
+    struct basic_match_result
     {
         using capture_storage_type = CaptureStorage;
         using implicit_capture_type = std::tuple_element_t<0, capture_storage_type>;
 
         static constexpr bool is_view = is_capture_view<implicit_capture_type>;
-        static constexpr std::size_t group_count = std::tuple_size_v<capture_storage_type> - 1;
+        static constexpr std::size_t group_count = std::tuple_size_v<capture_storage_type>;
 
-        constexpr basic_regex_result() noexcept = default;
+        constexpr basic_match_result() noexcept = default;
 
         template<capture_storage Captures>
-        constexpr basic_regex_result(Captures &&captures, bool matched)
+        constexpr basic_match_result(Captures &&captures, bool matched)
         noexcept(std::is_nothrow_constructible_v<capture_storage_type, Captures &&>)
             : _captures{std::forward<Captures>(captures)}, _matched{matched}
         {}
@@ -53,7 +59,7 @@ namespace meta
             return _matched;
         }
 
-        constexpr std::size_t length() const noexcept
+        constexpr auto length() const noexcept -> std::size_t
         {
             return std::get<0>(_captures).length();
         }
@@ -80,7 +86,9 @@ namespace meta
             auto owned_captures = transform_groups([](auto const &capture) noexcept {
                 return regex_capture{capture};
             });
-            return regex_result<NameSpec>{std::move(owned_captures), _matched};
+
+            using owned_storage_type = std::remove_reference_t<decltype(owned_captures)>;
+            return basic_match_result<owned_storage_type>{std::move(owned_captures), _matched};
         }
 
         /**
@@ -227,25 +235,25 @@ namespace meta
         template<std::size_t ID>
         constexpr auto &get() & noexcept
         {
-            return get_group_by_index<ID + 1>(_captures);
+            return get_group_by_index<ID>(_captures);
         }
 
         template<std::size_t ID>
         constexpr auto const &get() const & noexcept
         {
-            return get_group_by_index<ID + 1>(_captures);
+            return get_group_by_index<ID>(_captures);
         }
 
         template<std::size_t ID>
         constexpr auto &&get() && noexcept
         {
-            return get_group_by_index<ID + 1>(std::move(_captures));
+            return get_group_by_index<ID>(std::move(_captures));
         }
 
         template<std::size_t ID>
         constexpr auto const &&get() const && noexcept
         {
-            return get_group_by_index<ID + 1>(std::move(_captures));
+            return get_group_by_index<ID>(std::move(_captures));
         }
 
         constexpr bool operator==(bool value) const noexcept
@@ -278,7 +286,7 @@ namespace meta
         template<std::size_t ID, capture_storage Captures>
         static constexpr decltype(auto) get_group_by_index(Captures &&captures) noexcept
         {
-            static_assert(ID <= group_count, "capturing group does not exist");
+            static_assert(ID < group_count, "capturing group does not exist");
             return std::get<ID>(std::forward<Captures>(captures));
         }
 
@@ -308,21 +316,21 @@ namespace meta
     };
 }
 
-template<meta::capture_storage CaptureStorage, typename NameSpec>
-std::ostream &operator<<(std::ostream &os, meta::basic_regex_result<CaptureStorage, NameSpec> const &result)
+template<meta::capture_storage CaptureStorage>
+std::ostream &operator<<(std::ostream &os, meta::basic_match_result<CaptureStorage> const &result)
 {
     return os << meta::get_group<0>(result);
 }
 
-template<meta::capture_storage CaptureStorage, typename NameSpec>
-struct std::tuple_size<meta::basic_regex_result<CaptureStorage, NameSpec>>
+template<meta::capture_storage CaptureStorage>
+struct std::tuple_size<meta::basic_match_result<CaptureStorage>>
 {
-    static constexpr std::size_t value = meta::basic_regex_result<CaptureStorage, NameSpec>::group_count;
+    static constexpr std::size_t value = meta::basic_match_result<CaptureStorage>::group_count;
 };
 
-template<size_t ID, meta::capture_storage CaptureStorage, typename NameSpec>
-struct std::tuple_element<ID, meta::basic_regex_result<CaptureStorage, NameSpec>>
+template<size_t ID, meta::capture_storage CaptureStorage>
+struct std::tuple_element<ID, meta::basic_match_result<CaptureStorage>>
 {
-    using type = std::tuple_element_t<ID + 1, CaptureStorage>;
+    using type = std::tuple_element_t<ID, CaptureStorage>;
 };
-#endif //MREGEX_REGEX_RESULT_HPP
+#endif //MREGEX_MATCH_RESULT_HPP

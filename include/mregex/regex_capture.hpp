@@ -4,12 +4,23 @@
 #include <iterator>
 #include <string>
 #include <string_view>
-#include <mregex/ast/traits.hpp>
 #include <mregex/symbols/names.hpp>
 #include <mregex/utility/concepts.hpp>
 
 namespace meta
 {
+    /**
+     * Concept used to constrain a type that saves the content captured by regex groups.
+     */
+    template<typename Capture>
+    concept captured_content = std::ranges::forward_range<Capture> && requires (Capture capture)
+    {
+        { capture.content() } -> char_range;
+        { capture.length() } -> std::convertible_to<std::size_t>;
+        { capture.is_empty() } -> std::same_as<bool>;
+        static_cast<bool>(capture);
+    };
+
     template<typename Name>
     struct regex_capture_base
     {
@@ -18,7 +29,7 @@ namespace meta
             return !std::is_same_v<Name, symbol::unnamed>;
         }
 
-        static constexpr std::string_view name() noexcept
+        static constexpr auto name() noexcept -> std::string_view
         {
             if constexpr (has_name())
                 return Name::value;
@@ -53,7 +64,7 @@ namespace meta
             return _begin == _end;
         }
 
-        constexpr std::size_t length() const noexcept
+        constexpr auto length() const noexcept -> std::size_t
         {
             return std::distance(_begin, _end);
         }
@@ -124,7 +135,7 @@ namespace meta
             return _capture.empty();
         }
 
-        std::size_t length() const noexcept
+        auto length() const noexcept -> std::size_t
         {
             return _capture.length();
         }
@@ -204,36 +215,6 @@ namespace meta
 
     template<std::forward_iterator Iter, typename Name>
     inline constexpr bool is_capture_view<regex_capture_view<Iter, Name>> = true;
-
-    /**
-     * Defines a std::tuple used to store views into regex captures.
-     */
-    template<std::forward_iterator Iter, typename NameSpec>
-    struct regex_capture_view_allocator;
-
-    template<std::forward_iterator Iter, typename... Names>
-    struct regex_capture_view_allocator<Iter, type_sequence<Names ...>>
-    {
-        using storage_type = std::tuple<regex_capture_view<Iter>, regex_capture_view<Iter, Names> ...>;
-    };
-
-    template<std::forward_iterator Iter, typename NameSpec>
-    using regex_capture_view_storage = typename regex_capture_view_allocator<Iter, NameSpec>::storage_type;
-
-    /**
-     * Defines a std::tuple used to store memory-owning regex captures.
-     */
-    template<typename NameSpec>
-    struct regex_capture_allocator;
-
-    template<typename... Names>
-    struct regex_capture_allocator<type_sequence<Names ...>>
-    {
-        using storage_type = std::tuple<regex_capture<>, regex_capture<Names> ...>;
-    };
-
-    template<typename NameSpec>
-    using regex_capture_storage = typename regex_capture_allocator<NameSpec>::storage_type;
 
     /**
      * Metafunction used to rename a given regex capture type using pattern matching.

@@ -20,9 +20,6 @@ namespace meta
     template<>
     inline constexpr bool is_empty<type_sequence<>> = true;
 
-    /**
-     * Queries the type at the front of the sequence.
-     */
     template<typename Sequence>
     struct front;
 
@@ -38,12 +35,13 @@ namespace meta
         using type = symbol::empty;
     };
 
+    /**
+     * Queries the type at the front of the sequence.
+     * Returns symbol::empty for empty sequences.
+     */
     template<typename Sequence>
     using front_t = typename front<Sequence>::type;
 
-    /**
-     * Pushes a type to the front of the type sequence.
-     */
     template<typename Sequence, typename T>
     struct push;
 
@@ -59,12 +57,13 @@ namespace meta
         using type = type_sequence<Ts ..., Elems ...>;
     };
 
+    /**
+     * Pushes a type to the front of the type sequence.
+     * If the type is another type sequence, its elements are pushed instead.
+     */
     template<typename Sequence, typename T>
     using push_t = typename push<Sequence, T>::type;
 
-    /**
-     * Removes a type from the front of the type sequence.
-     */
     template<typename Sequence>
     struct pop;
 
@@ -80,17 +79,15 @@ namespace meta
         using type = type_sequence<>;
     };
 
+    /**
+     * Removes a type from the front of the type sequence.
+     * Has no effect on empty sequences.
+     */
     template<typename Sequence>
     using pop_t = typename pop<Sequence>::type;
 
-    /**
-     * Concatenates multiple type sequences.
-     */
     template<typename... Sequences>
     struct concat;
-
-    template<typename... Sequences>
-    using concat_t = typename concat<Sequences ...>::type;
 
     template<>
     struct concat<>
@@ -119,20 +116,20 @@ namespace meta
     template<typename... T0, typename... T1, typename... T2, typename... T3, typename... Sequences>
     struct concat<type_sequence<T0 ...>, type_sequence<T1 ...>, type_sequence<T2 ...>, type_sequence<T3 ...>, Sequences ...>
     {
-        using type = concat_t<type_sequence<T0 ..., T1 ..., T2 ..., T3 ...>, Sequences ...>;
+        using type = typename concat<type_sequence<T0 ..., T1 ..., T2 ..., T3 ...>, Sequences ...>::type;
     };
 
     /**
-     * Reverses the order of elements in a template type pack.
+     * Concatenates multiple type sequences.
      */
+    template<typename... Sequences>
+    using concat_t = typename concat<Sequences ...>::type;
+
     template<typename... Elems>
     struct reverse_type_pack
     {
         using type = type_sequence<Elems ...>;
     };
-
-    template<typename... Elems>
-    using reverse_type_pack_t = typename reverse_type_pack<Elems ...>::type;
 
     template<typename T0, typename T1>
     struct reverse_type_pack<T0, T1>
@@ -149,12 +146,15 @@ namespace meta
     template<typename T0, typename T1, typename T2, typename T3, typename... Rest>
     struct reverse_type_pack<T0, T1, T2, T3, Rest ...>
     {
-        using type = concat_t<reverse_type_pack_t<Rest ...>, type_sequence<T3, T2, T1, T0>>;
+        using type = concat_t<typename reverse_type_pack<Rest ...>::type, type_sequence<T3, T2, T1, T0>>;
     };
 
     /**
-     * Reverses the order of elements in a type sequence.
+     * Reverses the order of elements in a template type pack.
      */
+    template<typename... Elems>
+    using reverse_type_pack_t = typename reverse_type_pack<Elems ...>::type;
+
     template<typename Sequence>
     struct reverse;
 
@@ -164,6 +164,9 @@ namespace meta
         using type = reverse_type_pack_t<Elems ...>;
     };
 
+    /**
+     * Reverses the order of elements in a type sequence.
+     */
     template<typename Sequence>
     using reverse_t = typename reverse<Sequence>::type;
 }

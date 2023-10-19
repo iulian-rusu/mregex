@@ -142,6 +142,6 @@ namespace meta
     };
 
     template<bool_testable_generator Gen>
-    input_range_adapter(Gen &&) -> input_range_adapter<std::remove_reference_t<Gen>>;
+    input_range_adapter(Gen &&) -> input_range_adapter<std::remove_cvref_t<Gen>>;
 }
 #endif //MREGEX_UTILITY_INPUT_RANGE_ADAPTER_HPP

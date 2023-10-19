@@ -256,20 +256,18 @@ namespace meta::grammar
      *
      * @tparam C    The current character in the input pattern
      */
-    template<char C, bool = C != '0' && is_digit(C)>
-    struct handle_escape_sequence;
+    template<char C>
+    struct handle_escape_sequence : handle_escaped_char<C> {};
 
     template<char C>
-    struct handle_escape_sequence<C, true> : begin_backref_id<C> {};
+    requires (C != '0' && is_digit(C))
+    struct handle_escape_sequence<C> : begin_backref_id<C> {};
 
     template<>
-    struct handle_escape_sequence<'k', false> : begin_named_backref {};
+    struct handle_escape_sequence<'k'> : begin_named_backref {};
 
     template<>
-    struct handle_escape_sequence<'x', false> : begin_hex_escape_sequence {};
-
-    template<char C>
-    struct handle_escape_sequence<C, false> : handle_escaped_char<C> {};
+    struct handle_escape_sequence<'x'> : begin_hex_escape_sequence {};
 
     template<char C>
     using handle_escape_sequence_t = typename handle_escape_sequence<C>::type;

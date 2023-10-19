@@ -14,19 +14,17 @@ namespace meta
     template<static_string Pattern>
     struct lexer
     {
-        template<std::size_t I, bool = I < Pattern.length()>
-        struct token;
-
         template<std::size_t I>
-        struct token<I, true>
+        struct token
         {
-            using type = symbol::character<Pattern[I]>;
+            using type = symbol::empty;
         };
 
         template<std::size_t I>
-        struct token<I, false>
+        requires (I < Pattern.length())
+        struct token<I>
         {
-            using type = symbol::empty;
+            using type = symbol::character<Pattern[I]>;
         };
 
         template<std::size_t I>

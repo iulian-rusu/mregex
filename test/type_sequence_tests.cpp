@@ -2,24 +2,6 @@
 
 namespace meta::tests
 {
-    namespace
-    {
-        template<typename Sequence, typename First, typename... Rest>
-        struct push_type_pack
-        {
-            using type = typename push_type_pack<push_t<Sequence, First>, Rest ...>::type;
-        };
-
-        template<typename Sequence, typename Elem>
-        struct push_type_pack<Sequence, Elem>
-        {
-            using type = push_t<Sequence, Elem>;
-        };
-
-        template<typename Sequence, typename... Elems>
-        using push_type_pack_t = typename push_type_pack<Sequence, Elems ...>::type;
-    }
-
     static_assert(std::is_same_v<front_t<type_sequence<>>, symbol::empty>);
     static_assert(std::is_same_v<front_t<type_sequence<char, int, double>>, char>);
     static_assert(std::is_same_v<pop_t<type_sequence<>>, type_sequence<>>);
@@ -45,13 +27,6 @@ namespace meta::tests
         <
             push_t<type_sequence<short, long>, type_sequence<signed, unsigned>>,
             type_sequence<signed, unsigned, short, long>
-        >
-    );
-    static_assert(
-        std::is_same_v
-        <
-            push_type_pack_t<type_sequence<void>, char, short, long, float, double, unsigned, signed>,
-            type_sequence<signed, unsigned, double, float, long, short, char, void>
         >
     );
     static_assert(

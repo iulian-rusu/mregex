@@ -18,7 +18,7 @@ int main()
      * Negation of character classes and lookarounds is done with the ! operator.
      */
 
-    // Opting in for operators is done by importing the namespace xpr::operators
+    // Opting in for overloaded operators is done by importing the namespace xpr::operators
     using namespace xpr::operators;
 
     // Constructing a regex equivalent to '(?:ftp|ssh|https?)://(?<domain>:[-.a-z])+.com(?:/\S*)?'
@@ -27,7 +27,6 @@ int main()
     auto path = xpr::chr<'/'> >> *!xpr::whitespace;
     auto url = schema >> xpr::str<"://"> >> xpr::capture<1, "domain">(domain) >> xpr::maybe(path);
 
-    // The resulting object has the same interface as a meta::regex type
     if (auto match = url.match("https://google.com"))
         std::cout << "Matched domain: " << match.group<"domain">() << '\n';
     else

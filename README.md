@@ -41,21 +41,21 @@ The input can be any object that satisfies the `meta::char_range` concept, or a 
 ```cpp
 using date_regex = meta::regex<R"((\d{1,2})/(\d{1,2})/(\d{2,4}))">;
 constexpr std::string_view date = "07/08/2021";
-auto [day, month, year] = date_regex::match(date);
+auto [_, day, month, year] = date_regex::match(date);
 ```
 Each regex type offers the following API:
 ```cpp
 // Perform an exact match over the entire range
 template<std::forward_iterator Iter>
-static constexpr auto match(Iter begin, Iter end) -> result_view_type<Iter>;
+static constexpr auto match(Iter begin, Iter end) -> match_result_view<Iter>;
 
 // Match the prefix of the range
 template<std::forward_iterator Iter>
-static constexpr auto match_prefix(Iter begin, Iter end) -> result_view_type<Iter>;
+static constexpr auto match_prefix(Iter begin, Iter end) -> match_result_view<Iter>;
 
 // Search the first match in the range
 template<std::forward_iterator Iter>
-static constexpr auto search(Iter begin, Iter end) -> result_view_type<Iter>;
+static constexpr auto search(Iter begin, Iter end) -> match_result_view<Iter>;
 
 // Get a generator that lazily computes matches until the first non-match position
 template<std::forward_iterator Iter>

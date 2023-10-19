@@ -52,24 +52,22 @@ namespace meta
          * @tparam Nodes    The stack with the AST nodes
          * @tparam Symbols  The stack with the current parsing symbols
          */
-        template<std::size_t I, typename Nodes, typename Symbols, bool = symbol::is_semantic_action<front_t<Symbols>>>
-        struct parse;
+        template<std::size_t I, typename Nodes, typename Symbols>
+        struct parse
+        {
+            using next_symbols = grammar::rule_t<front_t<Symbols>, token_t<I>>;
+            using type = transition_t<I, next_symbols, Nodes, pop_t<Symbols>>;
+        };
 
         template<std::size_t I, typename Nodes, typename Symbols>
         using parse_t = typename parse<I, Nodes, Symbols>::type;
 
         template<std::size_t I, typename Nodes, typename Symbols>
-        struct parse<I, Nodes, Symbols, true>
+        requires symbol::is_semantic_action<front_t<Symbols>>
+        struct parse<I, Nodes, Symbols>
         {
             using next_nodes = ast::build_t<front_t<Symbols>, token_t<I - 1>, Nodes>;
             using type = parse_t<I, next_nodes, pop_t<Symbols>>;
-        };
-
-        template<std::size_t I, typename Nodes, typename Symbols>
-        struct parse<I, Nodes, Symbols, false>
-        {
-            using next_symbols = grammar::rule_t<front_t<Symbols>, token_t<I>>;
-            using type = transition_t<I, next_symbols, Nodes, pop_t<Symbols>>;
         };
 
         // Base case - push the symbols on the stack
@@ -127,5 +125,18 @@ namespace meta
 
     template<static_string Pattern>
     using parser_verdict = typename parser<Pattern>::verdict;
+
+    /**
+     * Causes a compilation failure if the pattern contains a syntax error.
+     *
+     * @tparam Pattern  The regex pattern to be parsed
+     * @return          Always true, to allow usage in a requires clause
+     */
+    template<static_string Pattern>
+    constexpr bool fail_on_syntax_error() noexcept
+    {
+        static_assert(std::is_same_v<parser_verdict<Pattern>, parsing::success>, "syntax error in regular expression");
+        return true;
+    }
 }
 #endif //MREGEX_PARSER_HPP

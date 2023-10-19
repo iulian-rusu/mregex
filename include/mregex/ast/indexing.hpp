@@ -34,7 +34,7 @@ namespace meta::ast
      * behavior of the parsing algorithm and needs to be fixed by this metafunction
      * to comply with indexing standards.
      *
-     * @tparam Node     The AST node type being traversed
+     * @tparam Node     The AST node indexed in Postorder
      */
     template<typename Node>
     using index_captures_t = typename detail::preorder_capture_indexer<0>::template index_t<Node>;
