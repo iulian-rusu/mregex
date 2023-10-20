@@ -9,7 +9,7 @@ jobs:
           - compiler: "gcc"
             CXX: "g++-11"
           - compiler: "clang"
-            CXX: "clang++-12"
+            CXX: "clang++-13"
     runs-on: ubuntu-latest
     env:
       CXX: ${{ matrix.CXX }}
@@ -21,10 +21,10 @@ jobs:
       - name: Install Clang
         if: ${{ matrix.compiler == 'clang' }}
         run: |
-          printf "deb https://apt.llvm.org/focal/ llvm-toolchain-focal-12 main" | sudo tee /etc/apt/sources.list.d/llvm-toolchain-focal-12.list
+          printf "deb https://apt.llvm.org/focal/ llvm-toolchain-focal-13 main" | sudo tee /etc/apt/sources.list.d/llvm-toolchain-focal-13.list
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
           sudo apt update
-          sudo apt install llvm-12
+          sudo apt install llvm-13
           $CXX --version
 
       - name: Install GCC
