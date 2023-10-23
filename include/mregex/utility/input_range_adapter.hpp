@@ -16,8 +16,8 @@ namespace meta
     template<bool_testable_generator Generator>
     struct input_range_adapter : private Generator
     {
-        using result_type = remove_rvalue_cvref_t<std::invoke_result_t<Generator>>;
-        using value_type = std::remove_reference_t<result_type>;
+         // All top-level qualifiers are removed to avoid storing references and const members inside the struct.
+        using value_type = std::remove_cvref_t<std::invoke_result_t<Generator>>;
 
         static constexpr bool is_nothrow_invocable = std::is_nothrow_invocable_v<Generator>;
 
@@ -124,12 +124,12 @@ namespace meta
 
         constexpr auto &&current_result() && noexcept
         {
-            return _current_result;
+            return std::move(_current_result);
         }
 
         constexpr auto const &&current_result() const && noexcept
         {
-            return _current_result;
+            return  std::move(_current_result);
         }
 
         constexpr void compute_next() noexcept(is_nothrow_invocable)
@@ -138,7 +138,7 @@ namespace meta
         }
 
     private:
-        result_type _current_result;
+        value_type _current_result;
     };
 
     template<bool_testable_generator Gen>

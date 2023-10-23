@@ -15,27 +15,5 @@ namespace meta
     template<typename T>
     inline constexpr bool is_expiring_memory_owner = std::is_rvalue_reference_v<T> &&
                                                      !std::is_trivially_destructible_v<std::remove_reference_t<T>>;
-
-    /**
-     * Metafunction that removes references and CV-qualifiers from rvalues only.
-     * Non-reference types are also treated as rvalues.
-     * References to lvalues are unchanged.
-     *
-     * @tparam T    The (possibly CV-qualified) type
-     */
-    template<typename T>
-    struct remove_rvalue_cvref
-    {
-        using type = std::remove_cvref_t<T>;
-    };
-
-    template<typename T>
-    struct remove_rvalue_cvref<T &>
-    {
-        using type = T &;
-    };
-
-    template<typename T>
-    using remove_rvalue_cvref_t = typename remove_rvalue_cvref<T>::type;
 }
 #endif //MREGEX_UTILITY_TYPE_TRAITS_HPP
