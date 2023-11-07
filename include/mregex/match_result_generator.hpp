@@ -7,7 +7,7 @@
 namespace meta
 {
     /**
-     * A functor that generates regex results by iterating a forward range.
+     * A functor that generates match results by iterating a forward range.
      * At most one empty result will be generated.
      *
      * @tparam Method   The regex method used to generate results

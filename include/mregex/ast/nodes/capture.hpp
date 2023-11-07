@@ -3,8 +3,8 @@
 
 #include <mregex/ast/astfwd.hpp>
 #include <mregex/ast/match_result.hpp>
-#include <mregex/utility/continuations.hpp>
 #include <mregex/symbols/names.hpp>
+#include <mregex/utility/continuations.hpp>
 
 namespace meta::ast
 {

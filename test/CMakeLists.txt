@@ -2,6 +2,7 @@
 set(
     test_sources
     tests.cpp
+    ast_indexing_tests.cpp
     ast_inversion_tests.cpp
     ast_traits_tests.cpp
     iterator_api_tests.cpp
