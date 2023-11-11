@@ -7,7 +7,7 @@ namespace meta::tests
 
     using empty_regex = regex<"">;
     using uri_regex = regex<R"(([a-zA-Z][a-zA-Z0-9]*)://([^ /]+)(/[^ ]*)?)">;
-    using email_regex = regex<R"((?<test>[^ @]+)@([^ @]+))">::add_flags<regex_flag::icase, regex_flag::dotall>;
+    using email_regex = regex<R"((?<test>[^ @]+)@([^ @]+))">;
 
     using iterator = std::string_view::iterator;
 
@@ -16,9 +16,12 @@ namespace meta::tests
     using uri_token_range_t = regex_token_range_t<uri_regex, iterator>;
     using uri_match_range_t = regex_match_range_t<uri_regex, iterator>;
 
-    static_assert(regex_flags<email_regex>::dotall);
-    static_assert(regex_flags<email_regex>::icase);
-    static_assert(regex_flags<email_regex>::multiline == false);
+    using empty_regex_with_flags = empty_regex::add_flags<regex_flag::icase, regex_flag::dotall>;
+    static_assert(std::is_same_v<regex<"", regex_flag::icase, regex_flag::dotall>, empty_regex_with_flags>);
+    static_assert(regex_flags<empty_regex_with_flags>::dotall);
+    static_assert(regex_flags<empty_regex_with_flags>::icase);
+    static_assert(regex_flags<empty_regex_with_flags>::multiline == false);
+    static_assert(regex_flags<empty_regex_with_flags>::ungreedy == false);
 
     static_assert(std::is_same_v<regex_ast_t<empty_regex>, ast::empty>);
     static_assert(std::is_same_v<regex_ast_t<uri_regex>, uri_regex::ast_type>);

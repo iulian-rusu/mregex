@@ -9,7 +9,7 @@ namespace meta
          * In ASCII encoding, each lowercase letter is offset by 32 from its uppercase equivalent.
          * Setting the fifth bit of an alphabetical character will make it lowercase.
          */
-        inline constexpr char lowercase_bit_mask = 0x20;
+        inline constexpr std::uint8_t lowercase_bit_mask = 0x20;
     }
 
     /**

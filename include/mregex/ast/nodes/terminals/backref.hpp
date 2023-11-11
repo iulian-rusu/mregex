@@ -59,10 +59,10 @@ namespace meta::ast
         }
 
     private:
-        template<bool Reverse, std::ranges::bidirectional_range Range>
+        template<bool Condition, std::ranges::bidirectional_range Range>
         static constexpr auto reverse_if(Range &range) noexcept
         {
-            if constexpr (Reverse)
+            if constexpr (Condition)
                 return reversed_range_view{range};
             else
                 return range;
@@ -71,7 +71,7 @@ namespace meta::ast
         template<bool IgnoreCase>
         static constexpr bool equals(char a, char b) noexcept
         {
-            return a == b || (IgnoreCase && a == to_lower(b));
+            return a == b || (IgnoreCase && invert_case(a) == b);
         }
     };
 
