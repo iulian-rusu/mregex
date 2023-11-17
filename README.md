@@ -100,45 +100,45 @@ More examples can be found in the `example/` directory.
 
 ## Syntax Reference
 
-|      **Syntax**       |                                     **Effect**                                     |
-|:---------------------:|:----------------------------------------------------------------------------------:|
-|          `.`          |     match any character except `\n` and `\r`, unless the `dotall` flag is set      |
-|          `^`          | match the beginning of the input (or of the line when the `multiline` flag is set) |
-|          `$`          |    match the end of the input (or of the line when the `multiline` flag is set)    |
-|         `\A`          |                     match strictly the beginning of the input                      |
-|         `\Z`          |       match strictly the end of the input (does not allow trailing newlines)       |
-|         `\b`          |     (word boundary) match the position between a word and a non-word character     |
-|         `\B`          |                    match everything that is not a word boundary                    |
-|         `\d`          |                             match any digit character                              |
-|         `\w`          |                 match any word character (letters, digits and `_`)                 |
-|         `\s`          |                           match any whitespace character                           |
-|         `\R`          |                          match `\n` or `\r` (line break)                           |
-|         `\N`          |                       match any character except line breaks                       |
-| `\D`, `\W`, `\S` etc. |                match any character **not** in the respective class                 |
-|  `\x1f`, `\xA9` etc.  |                 match a character specified by its ASCII hex code                  |
-|        `[abc]`        |                           match any character in the set                           |
-|        `[a-z]`        |                    match any character in the ASCII code range                     |
-|       `[^abc]`        |                       match any character **not** in the set                       |
-|        `[\b]`         |                         match a `\b` (backspace) character                         |
-|  <code>&#124;</code>  |                         match the left or right expression                         |
-|          `*`          |                             match any number of times                              |
-|          `+`          |                                match at least once                                 |
-|          `?`          |                              match one or zero times                               |
-|         `{N}`         |                              match exactly `N` times                               |
-|        `{N,}`         |                              match at least `N` times                              |
-|        `{N,M}`        |                          match between `N` and `M` times                           |
-| `??`, `*?`, `{N,M}?`  |               (lazy quantifiers) match as few characters as possible               |
-| `?+`, `*+`, `{N,M}+`  |                (possessive quantifiers) match without backtracking                 |
-|      `(?>expr)`       |                  (atomic group) match `expr` without backtracking                  |
-|       `(expr)`        |                       capture the result of matching `expr`                        |
-|         `\N`          |                  backreference to the capturing group number `N`                   |
-|    `(?<name>expr)`    |                   capture by name the result of matching `expr`                    |
-|      `\k<name>`       |                      backreference to a named capturing group                      |
-|      `(?:expr)`       |                             make a non-capturing group                             |
-|      `(?=expr)`       |       (positive lookahead) test if `expr` will match from the current point        |
-|      `(?!expr)`       |            (negative lookahead) test the negation of positive lookahead            |
-|      `(?<=expr)`      |  (positive lookbehind) test if `expr` would have matched before the current point  |
-|      `(?<!expr)`      |           (negative lookbehind) test the negation of positive lookbehind           |
+|       **Syntax**       |                                     **Effect**                                     |
+|:----------------------:|:----------------------------------------------------------------------------------:|
+|          `.`           |     match any character except `\n` and `\r`, unless the `dotall` flag is set      |
+|          `^`           | match the beginning of the input (or of the line when the `multiline` flag is set) |
+|          `$`           |    match the end of the input (or of the line when the `multiline` flag is set)    |
+|          `\A`          |                     match strictly the beginning of the input                      |
+|          `\Z`          |       match strictly the end of the input (does not allow trailing newlines)       |
+|          `\b`          |     (word boundary) match the position between a word and a non-word character     |
+|          `\B`          |                    match everything that is not a word boundary                    |
+|          `\d`          |                             match any digit character                              |
+|          `\w`          |                 match any word character (letters, digits and `_`)                 |
+|          `\s`          |                           match any whitespace character                           |
+|          `\R`          |                          match `\n` or `\r` (line break)                           |
+|          `\N`          |                       match any character except line breaks                       |
+| `\D`, `\W`, `\S` etc.  |                match any character **not** in the respective class                 |
+|  `\x1f`, `\xA9` etc.   |                 match a character specified by its ASCII hex code                  |
+|        `[abc]`         |                           match any character in the set                           |
+|        `[a-z]`         |                    match any character in the ASCII code range                     |
+|        `[^abc]`        |                       match any character **not** in the set                       |
+|         `[\b]`         |                         match a `\b` (backspace) character                         |
+|  <code>&#124;</code>   |                         match the left or right expression                         |
+|          `*`           |                             match any number of times                              |
+|          `+`           |                                match at least once                                 |
+|          `?`           |                              match one or zero times                               |
+|         `{3}`          |                              match exactly `3` times                               |
+|         `{3,}`         |                              match at least `3` times                              |
+|        `{3,5}`         |                          match between `3` and `5` times                           |
+|  `??`, `*?`, `{3,5}?`  |               (lazy quantifiers) match as few characters as possible               |
+|  `?+`, `*+`, `{3,5}+`  |                (possessive quantifiers) match without backtracking                 |
+|       `(?>expr)`       |                  (atomic group) match `expr` without backtracking                  |
+|        `(expr)`        |                       capture the result of matching `expr`                        |
+| `\1`, `\5`, `\10` etc. |                  backreference to the respective capturing group                   |
+|    `(?<name>expr)`     |                   capture by name the result of matching `expr`                    |
+|       `\k<name>`       |                      backreference to a named capturing group                      |
+|       `(?:expr)`       |                             make a non-capturing group                             |
+|       `(?=expr)`       |       (positive lookahead) test if `expr` will match from the current point        |
+|       `(?!expr)`       |            (negative lookahead) test the negation of positive lookahead            |
+|      `(?<=expr)`       |  (positive lookbehind) test if `expr` would have matched before the current point  |
+|      `(?<!expr)`       |           (negative lookbehind) test the negation of positive lookbehind           |
 
 ### Notes Regarding the Syntax
 
