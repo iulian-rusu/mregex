@@ -76,9 +76,9 @@ namespace meta
 
         /**
          * Performs a deep copy of all regex captures and returns
-         * a new regex result container that owns the memory.
+         * a new match result container that owns the memory.
          *
-         * @return  A new regex result object that holds ownership of captures
+         * @return  A new match result object that holds ownership of captures
          */
         [[nodiscard]] auto as_memory_owner() const
         requires is_view
@@ -92,10 +92,10 @@ namespace meta
         }
 
         /**
-         * Converts the regex result object to an instance of std::optional.
+         * Converts the match result object to an instance of std::optional.
          * The returned optional will be empty if the regex did not match.
          *
-         * @return A new instance of std::optional that contains the regex result object
+         * @return A new instance of std::optional that contains the match result object
          */
         [[nodiscard]] constexpr auto as_optional() & noexcept(is_view)
         {
@@ -103,7 +103,7 @@ namespace meta
         }
 
         /**
-         * Creates a new tuple by applying a function on each group of this regex result.
+         * Creates a new tuple by applying a function on each group of this match result.
          *
          * @param func  The function invoked to transform each capturing group
          * @return      A new std::tuple that contains the transformed groups
@@ -115,7 +115,7 @@ namespace meta
         }
 
         /**
-         * Invokes a function for each group of this regex result.
+         * Invokes a function for each group of this match result.
          *
          * @param func  The function invoked on each capturing group
          */
@@ -302,7 +302,7 @@ namespace meta
     };
 
     /**
-     * Functors used to project a regex result to one of its capturing groups.
+     * Functors used to project a match result to one of its capturing groups.
      */
 
     template<std::size_t ID>

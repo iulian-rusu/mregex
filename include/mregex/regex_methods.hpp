@@ -20,7 +20,7 @@ namespace meta
         static constexpr auto invoke(Iter begin, Iter end, Iter current, Context &ctx) noexcept -> ast::match_result<Iter>
         {
             auto result = ast_type::match(begin, end, current, ctx, continuations<Iter>::equals(end));
-            std::get<0>(ctx.captures) = regex_capture_view<Iter>{current, end};
+            std::get<0>(ctx.captures) = regex_capture_view<Iter>{current, result.end};
             return result;
         }
     };

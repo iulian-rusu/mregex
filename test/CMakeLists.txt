@@ -6,6 +6,7 @@ set(
     ast_inversion_tests.cpp
     ast_traits_tests.cpp
     iterator_api_tests.cpp
+    match_result_tests.cpp
     parser_accept_tests.cpp
     parser_ast_tests.cpp
     parser_error_tests.cpp
