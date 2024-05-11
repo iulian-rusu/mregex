@@ -23,13 +23,13 @@ namespace meta::ast
             }
         };
 
-        template<typename Name>
+        template<static_string Name>
         struct name_lookup_method
         {
             template<capture_storage CaptureStorage>
             static constexpr decltype(auto) get_capture(CaptureStorage &captures) noexcept
             {
-                using capture_type = rename_capture_t<std::tuple_element_t<0, CaptureStorage>, Name>;
+                using capture_type = rename_capture_t<std::tuple_element_t<0, CaptureStorage>, symbol::name<Name>>;
                 return std::get<capture_type>(captures);
             }
         };
@@ -78,7 +78,7 @@ namespace meta::ast
     template<std::size_t ID>
     struct backref : backref_base<detail::id_lookup_method<ID>> {};
 
-    template<typename Name>
+    template<static_string Name>
     struct named_backref : backref_base<detail::name_lookup_method<Name>> {};
 }
 #endif //MREGEX_NODES_BACKREF_HPP

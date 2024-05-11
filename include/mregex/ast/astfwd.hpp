@@ -1,6 +1,7 @@
 #ifndef MREGEX_AST_ASTFWD_HPP
 #define MREGEX_AST_ASTFWD_HPP
 
+#include <mregex/symbols/names.hpp>
 #include <mregex/symbols/quantifiers.hpp>
 #include <mregex/utility/enums.hpp>
 
@@ -14,6 +15,12 @@ namespace meta::ast
 
     template<std::size_t ID, typename Name, typename Inner>
     struct capture;
+
+    template<std::size_t ID, static_string Name, typename Inner>
+    using named_capture = capture<ID, symbol::name<Name>, Inner>;
+
+    template<std::size_t ID, typename Inner>
+    using unnamed_capture = capture<ID, symbol::unnamed, Inner>;
 
     // Repetition
     template<match_mode Mode, symbol::finite_quantifier A, symbol::quantifier B, typename Inner>
@@ -116,7 +123,7 @@ namespace meta::ast
     template<std::size_t ID>
     struct backref;
 
-    template<typename Name>
+    template<static_string Name>
     struct named_backref;
 
     // Lookarounds

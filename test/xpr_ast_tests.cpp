@@ -276,12 +276,7 @@ namespace meta::tests
             sequence
             <
                 positive_lookahead<lazy_plus<word>>,
-                capture
-                <
-                    1,
-                    symbol::name<"test">,
-                    wildcard
-                >,
+                named_capture<1, "test", wildcard>,
                 unnamed_capture<2, word>,
                 negative_lookbehind
                 <

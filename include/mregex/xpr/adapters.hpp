@@ -57,10 +57,10 @@ namespace meta::xpr
      * @return          An instance of the wrapper type
      */
     template<template<typename> typename Wrapper, typename... Nodes>
-    constexpr auto pack_sequence(Nodes...) -> Wrapper<ast::sequence<Nodes ...>> { return {}; }
+    constexpr auto pack_sequence(Nodes...) noexcept -> Wrapper<ast::sequence<Nodes ...>> { return {}; }
 
     template<template<typename> typename Wrapper, typename Node>
-    constexpr auto pack_sequence(Node) -> Wrapper<Node> { return {}; }
+    constexpr auto pack_sequence(Node) noexcept -> Wrapper<Node> { return {}; }
 
     /**
      * Wraps a sequence of elements into a wrapper type and flattens the result.

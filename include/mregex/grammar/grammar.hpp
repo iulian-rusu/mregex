@@ -1298,7 +1298,7 @@ namespace meta::grammar
                 type_sequence
                 <
                     advance,
-                    symbol::make_named_backref<symbol::make_name<Chars ...>>
+                    symbol::make_named_backref<make_static_string<Chars ...>>
                 >;
     };
 

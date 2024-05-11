@@ -23,12 +23,6 @@ namespace meta
                 std::copy(str, str + N, std::begin(data));
         }
 
-        constexpr static_string(static_string const &other) noexcept
-        {
-            if constexpr (N > 0)
-                std::copy(std::cbegin(other.data), std::cend(other.data), std::begin(data));
-        }
-
         constexpr auto length() const noexcept -> std::size_t
         {
             return N;
@@ -75,8 +69,13 @@ namespace meta
     template<std::size_t N>
     static_string(char const (&)[N]) -> static_string<N - 1>;
 
-    template<std::size_t N>
-    static_string(static_string<N> const &) -> static_string<N>;
+    /**
+     * Constructs a static string from a pack of characters.
+     *
+     * @note The sizeof...(Chars) is technically redundant, but GCC 11.1 cannot deduce the size.
+     */
+    template<char... Chars>
+    inline constexpr static_string make_static_string = static_string<sizeof...(Chars)>{{Chars ...}};
 }
 
 template<std::size_t N>

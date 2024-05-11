@@ -155,7 +155,7 @@ namespace meta::xpr
     inline constexpr auto group = regex_adapter<ast::backref<ID>>{};
 
     template<static_string Name>
-    inline constexpr auto group_named = regex_adapter<ast::named_backref<symbol::name<Name>>>{};
+    inline constexpr auto group_named = regex_adapter<ast::named_backref<Name>>{};
 
     template<typename Node>
     constexpr auto negate(regex_adapter<Node>) noexcept -> regex_adapter<ast::negated<Node>> { return {}; }

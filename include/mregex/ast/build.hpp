@@ -166,7 +166,7 @@ namespace meta::ast
         using type = type_sequence<backref<ID>, Nodes ...>;
     };
 
-    template<typename Name, typename Token, typename... Nodes>
+    template<static_string Name, typename Token, typename... Nodes>
     struct build<symbol::make_named_backref<Name>, Token, type_sequence<Nodes ...>>
     {
         using type = type_sequence<named_backref<Name>, Nodes ...>;

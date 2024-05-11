@@ -3,6 +3,7 @@
 
 #include <mregex/symbols/quantifiers.hpp>
 #include <mregex/utility/enums.hpp>
+#include <mregex/utility/static_string.hpp>
 
 namespace meta::symbol
 {
@@ -58,7 +59,7 @@ namespace meta::symbol
     template<std::size_t ID>
     struct make_backref : semantic_action {};
 
-    template<typename Name>
+    template<static_string Name>
     struct make_named_backref : semantic_action {};
 
     template<lookaround_direction Direction>

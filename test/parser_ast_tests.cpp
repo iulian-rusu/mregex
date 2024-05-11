@@ -1069,10 +1069,10 @@ namespace meta::tests
                         <
                             optional
                             <
-                                capture
+                                named_capture
                                 <
                                     2,
-                                    symbol::name<"_t3st1ng">,
+                                    "_t3st1ng",
                                     sequence
                                     <
                                         literal<'t'>,
@@ -1097,22 +1097,17 @@ namespace meta::tests
         is_ast_of
         <
             R"((?<group_name>))",
-            capture
-            <
-                1,
-                symbol::name<"group_name">,
-                empty
-            >
+            named_capture<1, "group_name", empty>
         >
     );
     static_assert(
         is_ast_of
         <
             R"((?<test>x+))",
-            capture
+            named_capture
             <
                 1,
-                symbol::name<"test">,
+                "test",
                 plus<literal<'x'>>
             >
         >
@@ -1123,13 +1118,13 @@ namespace meta::tests
             R"((?<group_name>x+?)\k<group_name>)",
             sequence
             <
-                capture
+                named_capture
                 <
                     1,
-                    symbol::name<"group_name">,
+                    "group_name",
                     lazy_plus<literal<'x'>>
                 >,
-                named_backref<symbol::name<"group_name">>
+                named_backref<"group_name">
             >
         >
     );
@@ -1142,10 +1137,10 @@ namespace meta::tests
                 literal<'x'>,
                 plus
                 <
-                    capture
+                    named_capture
                     <
                         1,
-                        symbol::name<"_capture_name">,
+                        "_capture_name",
                         atomic
                         <
                             sequence
@@ -1168,10 +1163,10 @@ namespace meta::tests
             <
                 optional
                 <
-                    capture
+                    named_capture
                     <
                         1,
-                        symbol::name<"grp_1">,
+                        "grp_1",
                         sequence
                         <
                             literal<'a'>,
@@ -1181,16 +1176,16 @@ namespace meta::tests
                     >
                 >,
                 literal<'\t'>, // Same as \x09
-                named_backref<symbol::name<"grp_1">>,
+                named_backref<"grp_1">,
                 literal<'\n'>, // Same as \x0A
                 repetition
                 <
                     symbol::quantifier_value<2>,
                     symbol::infinity,
-                    capture
+                    named_capture
                     <
                         2,
-                        symbol::name<"grp_2">,
+                        "grp_2",
                         sequence
                         <
                             literal<'x'>,

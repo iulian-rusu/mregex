@@ -43,8 +43,5 @@ namespace meta::ast
                 std::get<ID>(ctx.captures) = capture_view_type{end.base(), begin.base()};
         }
     };
-
-    template<std::size_t ID, typename Inner>
-    using unnamed_capture = capture<ID, symbol::unnamed, Inner>;
 }
 #endif //MREGEX_NODES_CAPTURE_HPP
