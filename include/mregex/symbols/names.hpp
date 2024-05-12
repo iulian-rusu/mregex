@@ -21,6 +21,6 @@ namespace meta::symbol
      * Metafunction that converts a pack of characters to a symbolic name type.
      */
     template<char... Chars>
-    using make_name = name<make_static_string<Chars ...>>;
+    using make_name = name<make_static_string<Chars ...>()>;
 }
 #endif //MREGEX_SYMBOLS_NAMES_HPP

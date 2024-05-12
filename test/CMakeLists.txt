@@ -14,6 +14,7 @@ set(
     regex_match_tests.cpp
     regex_search_tests.cpp
     regex_traits_tests.cpp
+    static_string_tests.cpp
     symbol_tests.cpp
     type_traits_tests.cpp
     type_sequence_tests.cpp

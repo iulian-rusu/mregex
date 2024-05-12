@@ -10,16 +10,23 @@ namespace meta
     /**
      * Helper data structure that implements a constexpr string as a literal type.
      *
-     * @tparam N    The length of the string (excluding '\0')
+     * @note The string is not null-terminated.
+     *
+     * @tparam N    The length of the string
      */
     template<std::size_t N>
     struct static_string
     {
         std::array<char, N> data{};
 
+        /**
+         * Constructs a static string from a null-terminated array of characters.
+         *
+         * @note The null terminator is not copied into the string.
+         */
         constexpr static_string(char const (&str)[N + 1]) noexcept
         {
-            if constexpr (N > 0)
+            if constexpr (N != 0)
                 std::copy(str, str + N, std::begin(data));
         }
 
@@ -49,15 +56,8 @@ namespace meta
         }
 
         constexpr explicit operator std::string_view() const noexcept
-        requires (N > 0)
         {
             return std::string_view(std::cbegin(data), N);
-        }
-
-        constexpr explicit operator std::string_view() const noexcept
-        requires (N == 0)
-        {
-            return "";
         }
 
         constexpr char operator[](std::size_t i) const noexcept
@@ -72,10 +72,13 @@ namespace meta
     /**
      * Constructs a static string from a pack of characters.
      *
-     * @note The sizeof...(Chars) is technically redundant, but GCC 11.1 cannot deduce the size.
+     * @note No null-termination is assumed, all characters become part of the string.
      */
     template<char... Chars>
-    inline constexpr static_string make_static_string = static_string<sizeof...(Chars)>{{Chars ...}};
+    constexpr auto make_static_string() noexcept -> static_string<sizeof...(Chars)>
+    {
+       return {{Chars ...}};
+    }
 }
 
 template<std::size_t N>
