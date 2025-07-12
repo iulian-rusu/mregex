@@ -15,10 +15,7 @@ namespace meta::ast::predicates
             if (current == begin)
                 return true;
             if constexpr (Mode == line_mode::multiline && Context::flags::multiline)
-            {
-                if (linebreak::match_one(*std::prev(current), ctx))
-                    return true;
-            }
+                return linebreak::match_one(*std::prev(current), ctx);
             return false;
         }
     };
@@ -32,10 +29,7 @@ namespace meta::ast::predicates
             if (current == end)
                 return true;
             if constexpr (Mode == line_mode::multiline && Context::flags::multiline)
-            {
-                if (linebreak::match_one(*current, ctx))
-                    return true;
-            }
+                return linebreak::match_one(*current, ctx);
             return false;
         }
     };
