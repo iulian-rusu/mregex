@@ -11,18 +11,24 @@ jobs:
           - compiler: gcc11
             os: ubuntu-22.04
             CXX: g++-11
+            toolchain: gcc
 
           - compiler: gcc13
             os: ubuntu-22.04
             CXX: g++-13
+            toolchain: gcc
 
           - compiler: clang14
             os: ubuntu-22.04
             CXX: clang++-14
+            toolchain: clang
+            llvm_version: 14
 
           - compiler: clang16
             os: ubuntu-22.04
             CXX: clang++-16
+            toolchain: clang
+            llvm_version: 16
 
     runs-on: ${{ matrix.os }}
     env:
@@ -36,22 +42,16 @@ jobs:
         run: sudo mkdir -p /etc/apt/keyrings
 
       - name: Install Clang
-        if: ${{ startsWith(matrix.compiler, 'clang') }}
+        if: ${{ matrix.toolchain == 'clang' }}
         run: |
           curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/llvm.gpg > /dev/null
-          if [[ "${{ matrix.compiler }}" == "clang14" ]]; then
-            echo "deb [signed-by=/etc/apt/keyrings/llvm.gpg] https://apt.llvm.org/jammy/ llvm-toolchain-jammy-14 main" | sudo tee /etc/apt/sources.list.d/llvm.list
-            sudo apt update
-            sudo apt install -y clang-14
-          elif [[ "${{ matrix.compiler }}" == "clang16" ]]; then
-            echo "deb [signed-by=/etc/apt/keyrings/llvm.gpg] https://apt.llvm.org/jammy/ llvm-toolchain-jammy-16 main" | sudo tee /etc/apt/sources.list.d/llvm.list
-            sudo apt update
-            sudo apt install -y clang-16
-          fi
+          echo "deb [signed-by=/etc/apt/keyrings/llvm.gpg] https://apt.llvm.org/jammy/ llvm-toolchain-jammy-${{ matrix.llvm_version }} main" | sudo tee /etc/apt/sources.list.d/llvm.list
+          sudo apt update
+          sudo apt install -y clang-${{ matrix.llvm_version }}
           $CXX --version
 
       - name: Install GCC
-        if: ${{ startsWith(matrix.compiler, 'gcc') }}
+        if: ${{ matrix.toolchain == 'gcc' }}
         run: |
           sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
           sudo apt update
