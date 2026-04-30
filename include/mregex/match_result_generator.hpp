@@ -1,6 +1,7 @@
 #ifndef MREGEX_MATCH_RESULT_GENERATOR_HPP
 #define MREGEX_MATCH_RESULT_GENERATOR_HPP
 
+#include <mregex/match_result.hpp>
 #include <mregex/regex_match_context.hpp>
 #include <mregex/regex_methods.hpp>
 

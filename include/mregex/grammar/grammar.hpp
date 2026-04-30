@@ -7,7 +7,6 @@
 #include <mregex/symbols/actions.hpp>
 #include <mregex/symbols/core.hpp>
 #include <mregex/symbols/names.hpp>
-#include <mregex/utility/type_traits.hpp>
 
 namespace meta::grammar
 {

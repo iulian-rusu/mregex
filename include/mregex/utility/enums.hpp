@@ -1,13 +1,15 @@
 #ifndef MREGEX_UTILITY_ENUMS_HPP
 #define MREGEX_UTILITY_ENUMS_HPP
 
+#include <cstdint>
+
 namespace meta
 {
     /**
      * Enumerator which lists the possible match modes
      * for various regex quantifiers.
      */
-    enum struct match_mode
+    enum struct match_mode : std::uint8_t
     {
         greedy,
         lazy,
@@ -18,7 +20,7 @@ namespace meta
      * Enumerator which lists line sensitivity modes
      * for matching regex patterns.
      */
-    enum struct line_mode
+    enum struct line_mode : std::uint8_t
     {
         singleline,
         multiline
@@ -28,7 +30,7 @@ namespace meta
      * Enumerator which lists the possible directions in which
      * lookaround assertions can match.
      */
-    enum struct lookaround_direction
+    enum struct lookaround_direction : std::uint8_t
     {
         ahead,
         behind

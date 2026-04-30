@@ -1,5 +1,5 @@
-#include <mregex.hpp>
 #include <string>
+#include <mregex.hpp>
 
 namespace meta::tests
 {

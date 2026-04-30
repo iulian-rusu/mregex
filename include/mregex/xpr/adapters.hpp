@@ -1,7 +1,6 @@
 #ifndef MREGEX_XPR_ADAPTERS_HPP
 #define MREGEX_XPR_ADAPTERS_HPP
 
-#include <mregex/ast/astfwd.hpp>
 #include <mregex/regex.hpp>
 
 namespace meta::xpr

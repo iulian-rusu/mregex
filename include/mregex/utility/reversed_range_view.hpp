@@ -21,7 +21,7 @@ namespace meta
                 : _begin{std::make_reverse_iterator(std::end(range))},
                   _end{std::make_reverse_iterator(std::begin(range))}
         {}
-        
+
         constexpr auto begin() const noexcept
         {
             return _begin;

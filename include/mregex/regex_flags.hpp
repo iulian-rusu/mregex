@@ -1,11 +1,11 @@
 #ifndef MREGEX_REGEX_FLAGS_HPP
 #define MREGEX_REGEX_FLAGS_HPP
 
-#include <type_traits>
+#include <cstdint>
 
 namespace meta
 {
-    enum struct regex_flag
+    enum struct regex_flag : std::uint8_t
     {
         // Makes matching case-insensitive
         icase,

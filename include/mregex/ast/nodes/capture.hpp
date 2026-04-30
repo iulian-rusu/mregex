@@ -5,6 +5,7 @@
 #include <mregex/ast/match_result.hpp>
 #include <mregex/symbols/names.hpp>
 #include <mregex/utility/continuations.hpp>
+#include <mregex/regex_capture.hpp>
 
 namespace meta::ast
 {

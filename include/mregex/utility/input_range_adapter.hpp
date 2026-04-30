@@ -2,7 +2,6 @@
 #define MREGEX_UTILITY_INPUT_RANGE_ADAPTER_HPP
 
 #include <mregex/utility/concepts.hpp>
-#include <mregex/utility/type_traits.hpp>
 
 namespace meta
 {

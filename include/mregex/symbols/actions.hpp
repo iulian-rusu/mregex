@@ -9,7 +9,7 @@ namespace meta::symbol
 {
     /**
      * Symbols which indicate a semantic action for the parser.
-     * Typically they are used to update the state of the AST during parsing.
+     * Typically, they are used to update the state of the AST during parsing.
      */
 
     // Base type for symbols which require a semantic action

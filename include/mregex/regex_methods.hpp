@@ -4,6 +4,7 @@
 #include <mregex/ast/ast.hpp>
 #include <mregex/utility/continuations.hpp>
 #include <mregex/regex_capture.hpp>
+#include <mregex/regex_traits.hpp>
 
 namespace meta
 {
