@@ -20,7 +20,6 @@ namespace meta::tests
     static_assert(std::is_same_v<regex<"", regex_flag::icase, regex_flag::dotall>, empty_regex_with_flags>);
     static_assert(regex_flags<empty_regex_with_flags>::dotall);
     static_assert(regex_flags<empty_regex_with_flags>::icase);
-    static_assert(regex_flags<empty_regex_with_flags>::multiline == false);
     static_assert(regex_flags<empty_regex_with_flags>::ungreedy == false);
 
     static_assert(std::is_same_v<regex_ast_t<empty_regex>, ast::empty>);

@@ -30,15 +30,14 @@ namespace meta::tests
     static_assert(regex<R"(^a)">::match("a"));
     static_assert(regex<R"(a$)">::match("a"));
     static_assert(regex<R"(^abcd$)">::match("abcd"));
-    static_assert(regex<R"(abcdef)">::match("abcdef"));
-    static_assert(regex<R"(^\nabcd$\n.+$)", regex_flag::multiline>::match("\nabcd\nabc"));
-    static_assert(regex<R"(^abcd$\n.+$\n)", regex_flag::multiline>::match("abcd\nabc\n"));
-    static_assert(regex<R"(^\nabcd$\n.+$\n)", regex_flag::multiline>::match("\nabcd\nabc\n"));
-    static_assert(regex<R"(^abcd$)", regex_flag::multiline>::match("abcd"));
-    static_assert(regex<R"(^abcd$\n)", regex_flag::multiline>::match("abcd\n"));
-    static_assert(regex<R"(^\nabcd$)", regex_flag::multiline>::match("\nabcd"));
-    static_assert(regex<R"(\n^abcd$\n)", regex_flag::multiline>::match("\nabcd\n"));
-    static_assert(regex<R"(\A\nabcd\n\Z)", regex_flag::multiline>::match("\nabcd\n"));
+    static_assert(regex<R"(^\nabcd$\n.+$)">::match("\nabcd\nabc"));
+    static_assert(regex<R"(^abcd$\n.+$\n)">::match("abcd\nabc\n"));
+    static_assert(regex<R"(^\nabcd$\n.+$\n)">::match("\nabcd\nabc\n"));
+    static_assert(regex<R"(^abcd$\n)">::match("abcd\n"));
+    static_assert(regex<R"(^\nabcd$)">::match("\nabcd"));
+    static_assert(regex<R"(\n^abcd$\n)">::match("\nabcd\n"));
+    static_assert(regex<R"(\A\nabcd\n\Z)">::match("\nabcd\n"));
+    static_assert(regex<R"(\A$\n^abcd$\n^\Z)">::match("\nabcd\n"));
     // Sets
     static_assert(regex<R"(abc[]?def)">::match("abcdef"));
     static_assert(regex<R"([a])">::match("a"));
@@ -232,7 +231,7 @@ namespace meta::tests
     static_assert(regex<R"((?>in|insert|integer))">::match("in"));
 
     /**
-     * Non matching tests.
+     * Non-matching tests.
      */
 
     // Basic pattenrs
@@ -259,11 +258,11 @@ namespace meta::tests
     static_assert(regex<R"(^a)">::match(" a") == false);
     static_assert(regex<R"(a$)">::match("a ") == false);
     static_assert(regex<R"(^abcd$)">::match(" abcd") == false);
-    static_assert(regex<R"(^abcd$)", regex_flag::multiline>::match("\nabcd\n\n") == false);
-    static_assert(regex<R"(^abcd$.+$)", regex_flag::multiline>::match("\n\nabcd\n") == false);
-    static_assert(regex<R"(^\nabcd$\n)", regex_flag::multiline>::match("\nabcd\ne") == false);
-    static_assert(regex<R"(^abcd$\n)", regex_flag::multiline>::match("a\nbcd\n") == false);
-    static_assert(regex<R"(abcd\Z\nabcd)", regex_flag::multiline>::match("abcd\nabcd") == false);
+    static_assert(regex<R"(^abcd$)">::match("\nabcd\n\n") == false);
+    static_assert(regex<R"(^abcd$.+$)">::match("\n\nabcd\n") == false);
+    static_assert(regex<R"(^\nabcd$\n)">::match("\nabcd\ne") == false);
+    static_assert(regex<R"(^abcd$\n)">::match("a\nbcd\n") == false);
+    static_assert(regex<R"(abcd\Z\nabcd)">::match("abcd\nabcd") == false);
     // Sets
     static_assert(regex<R"([])">::match("a") == false);
     static_assert(regex<R"([])">::match("") == false);

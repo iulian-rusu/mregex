@@ -2,6 +2,7 @@
 #define MREGEX_UTILITY_CONCEPTS_HPP
 
 #include <concepts>
+#include <ranges>
 
 namespace meta
 {

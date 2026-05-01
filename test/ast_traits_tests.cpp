@@ -73,10 +73,10 @@ namespace meta::tests
     static_assert(is_zero_length_matcher<empty>);
     static_assert(is_zero_length_matcher<backref<1>>);
     static_assert(is_zero_length_matcher<named_backref<"abc">>);
-    static_assert(is_zero_length_matcher<beginning_of_line>);
     static_assert(is_zero_length_matcher<beginning_of_input>);
-    static_assert(is_zero_length_matcher<end_of_line>);
     static_assert(is_zero_length_matcher<end_of_input>);
+    static_assert(is_zero_length_matcher<beginning_of_line>);
+    static_assert(is_zero_length_matcher<end_of_line>);
     static_assert(is_zero_length_matcher<word_boundary>);
     static_assert(is_zero_length_matcher<negated<word_boundary>>);
     static_assert(is_zero_length_matcher<positive_lookahead<wildcard>>);
@@ -104,10 +104,10 @@ namespace meta::tests
     static_assert(is_zero_length_matcher<atomic<plus<digit>>> == false);
 
     // Nodes which should be detected as assertions
-    static_assert(is_assertion<beginning_of_line>);
     static_assert(is_assertion<beginning_of_input>);
-    static_assert(is_assertion<end_of_line>);
     static_assert(is_assertion<end_of_input>);
+    static_assert(is_assertion<beginning_of_line>);
+    static_assert(is_assertion<end_of_line>);
     static_assert(is_assertion<word_boundary>);
     static_assert(is_assertion<negated<word_boundary>>);
     static_assert(is_assertion<negated<word_boundary>>);

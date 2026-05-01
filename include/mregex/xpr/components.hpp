@@ -129,10 +129,10 @@ namespace meta::xpr
     // Terminals
     inline constexpr auto empty = regex_adapter<ast::empty>{};
     inline constexpr auto nothing = regex_adapter<ast::nothing>{};
-    inline constexpr auto begin_line = regex_adapter<ast::beginning_of_line>{};
-    inline constexpr auto end_line = regex_adapter<ast::end_of_line>{};
     inline constexpr auto begin_input = regex_adapter<ast::beginning_of_input>{};
     inline constexpr auto end_input = regex_adapter<ast::end_of_input>{};
+    inline constexpr auto begin_line = regex_adapter<ast::beginning_of_line>{};
+    inline constexpr auto end_line = regex_adapter<ast::end_of_line>{};
     inline constexpr auto word_boundary = regex_adapter<ast::word_boundary>{};
     inline constexpr auto whitespace = regex_adapter<ast::whitespace>{};
     inline constexpr auto wildcard = regex_adapter<ast::wildcard>{};

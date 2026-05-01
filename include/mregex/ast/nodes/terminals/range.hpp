@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <mregex/ast/nodes/terminals/literal.hpp>
 #include <mregex/ast/nodes/trivially_matchable.hpp>
+#include <mregex/ast/astfwd.hpp>
 #include <mregex/utility/char_traits.hpp>
 
 namespace meta::ast

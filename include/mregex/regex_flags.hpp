@@ -11,8 +11,6 @@ namespace meta
         icase,
         // Makes wildcards (.) match line break characters
         dotall,
-        // Makes anchors ($ and ^) also match the beginning/end of lines
-        multiline,
         // Swaps the behavior of lazy and greedy quantifiers
         ungreedy,
         // Enables the compiler to be more aggressive when unrolling repetition loops
@@ -30,7 +28,6 @@ namespace meta
 
         static constexpr bool icase = test<regex_flag::icase>;
         static constexpr bool dotall = test<regex_flag::dotall>;
-        static constexpr bool multiline = test<regex_flag::multiline>;
         static constexpr bool ungreedy = test<regex_flag::ungreedy>;
         static constexpr bool unroll = test<regex_flag::unroll>;
     };

@@ -3,7 +3,7 @@
 
 #include <mregex/ast/nodes/assertion.hpp>
 #include <mregex/ast/nodes/trivially_matchable.hpp>
-#include <mregex/ast/predicates/negate.hpp>
+#include <mregex/ast/predicates/operators.hpp>
 #include <mregex/ast/traits.hpp>
 
 namespace meta::ast

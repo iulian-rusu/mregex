@@ -6,8 +6,7 @@
 namespace meta
 {
     /**
-     * Enumerator which lists the possible match modes
-     * for various regex quantifiers.
+     * Match modes for various regex quantifiers.
      */
     enum struct match_mode : std::uint8_t
     {
@@ -17,18 +16,7 @@ namespace meta
     };
 
     /**
-     * Enumerator which lists line sensitivity modes
-     * for matching regex patterns.
-     */
-    enum struct line_mode : std::uint8_t
-    {
-        singleline,
-        multiline
-    };
-
-    /**
-     * Enumerator which lists the possible directions in which
-     * lookaround assertions can match.
+     * Directions in which lookaround assertions can match.
      */
     enum struct lookaround_direction : std::uint8_t
     {

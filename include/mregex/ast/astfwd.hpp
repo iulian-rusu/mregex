@@ -98,10 +98,13 @@ namespace meta::ast
 
     // Terminals
     struct empty;
-    struct beginning_of_line;
+
     struct beginning_of_input;
-    struct end_of_line;
     struct end_of_input;
+
+    struct beginning_of_line;
+    struct end_of_line;
+
     struct word_boundary;
     struct wildcard;
 

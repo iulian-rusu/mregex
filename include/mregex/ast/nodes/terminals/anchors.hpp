@@ -7,10 +7,12 @@
 
 namespace meta::ast
 {
-    struct beginning_of_line : assertion<predicates::beginning_predicate<line_mode::multiline>> {};
-    struct beginning_of_input : assertion<predicates::beginning_predicate<line_mode::singleline>> {};
-    struct end_of_line : assertion<predicates::end_predicate<line_mode::multiline>> {};
-    struct end_of_input : assertion<predicates::end_predicate<line_mode::singleline>> {};
+    struct beginning_of_input : assertion<predicates::beginning_of_input_predicate> {};
+    struct end_of_input : assertion<predicates::end_of_input_predicate> {};
+
+    struct beginning_of_line : assertion<predicates::beginning_of_line_predicate> {};
+    struct end_of_line : assertion<predicates::end_of_line_predicate> {};
+
     struct word_boundary : assertion<predicates::word_boundary_predicate> {};
 }
 #endif //MREGEX_NODES_ANCHORS_HPP

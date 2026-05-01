@@ -77,18 +77,6 @@ namespace meta::ast
     };
 
     template<typename Token, typename Nodes>
-    struct build<symbol::make_beginning_of_line, Token, Nodes>
-    {
-        using type = push_t<Nodes, beginning_of_line>;
-    };
-
-    template<typename Token, typename Nodes>
-    struct build<symbol::make_end_of_line, Token, Nodes>
-    {
-        using type = push_t<Nodes, end_of_line>;
-    };
-
-    template<typename Token, typename Nodes>
     struct build<symbol::make_beginning_of_input, Token, Nodes>
     {
         using type = push_t<Nodes, beginning_of_input>;
@@ -98,6 +86,18 @@ namespace meta::ast
     struct build<symbol::make_end_of_input, Token, Nodes>
     {
         using type = push_t<Nodes, end_of_input>;
+    };
+
+    template<typename Token, typename Nodes>
+    struct build<symbol::make_beginning_of_line, Token, Nodes>
+    {
+        using type = push_t<Nodes, beginning_of_line>;
+    };
+
+    template<typename Token, typename Nodes>
+    struct build<symbol::make_end_of_line, Token, Nodes>
+    {
+        using type = push_t<Nodes, end_of_line>;
     };
 
     template<lookaround_direction Direction, typename Token, typename First, typename... Rest>

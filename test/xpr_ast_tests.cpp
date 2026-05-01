@@ -8,7 +8,7 @@ namespace meta::tests
     namespace
     {
         template<typename Regex, typename Expected>
-        inline constexpr bool is_ast_of = std::is_same_v<meta::regex_ast_t<Regex>, Expected>;
+        inline constexpr bool is_ast_of = std::is_same_v<regex_ast_t<Regex>, Expected>;
     }
 
     static_assert(is_ast_of<decltype(xpr::nothing), nothing>);
