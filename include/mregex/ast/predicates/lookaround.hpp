@@ -1,5 +1,5 @@
-#ifndef MREGEX_PREDICATES_LOOKAROUND_PREDICATE_HPP
-#define MREGEX_PREDICATES_LOOKAROUND_PREDICATE_HPP
+#ifndef MREGEX_PREDICATES_LOOKAROUND_HPP
+#define MREGEX_PREDICATES_LOOKAROUND_HPP
 
 #include <mregex/ast/inversion.hpp>
 #include <mregex/ast/traits.hpp>
@@ -7,8 +7,11 @@
 
 namespace meta::ast::predicates
 {
+    template<lookaround_direction Direction, typename Inner>
+    struct lookaround_predicate;
+
     template<typename Inner>
-    struct lookahead_predicate
+    struct lookaround_predicate<lookaround_direction::ahead, Inner>
     {
         template<std::forward_iterator Iter, typename Context>
         static constexpr bool is_match(Iter begin, Iter end, Iter current, Context &ctx) noexcept
@@ -26,7 +29,7 @@ namespace meta::ast::predicates
     };
 
     template<typename Inner>
-    struct lookbehind_predicate
+    struct lookaround_predicate<lookaround_direction::behind, Inner>
     {
         template<std::bidirectional_iterator Iter, typename Context>
         static constexpr bool is_match(Iter begin, Iter end, Iter current, Context &ctx) noexcept
@@ -51,13 +54,10 @@ namespace meta::ast::predicates
         }
     };
 
-    template<lookaround_direction Direction, typename Inner>
-    struct lookaround_predicate;
+    template<typename Inner>
+    using lookahead_predicate = lookaround_predicate<lookaround_direction::ahead, Inner>;
 
     template<typename Inner>
-    struct lookaround_predicate<lookaround_direction::ahead, Inner> : lookahead_predicate<Inner> {};
-
-    template<typename Inner>
-    struct lookaround_predicate<lookaround_direction::behind, Inner> : lookbehind_predicate<Inner> {};
+    using lookbehind_predicate = lookaround_predicate<lookaround_direction::behind, Inner>;
 }
-#endif //MREGEX_PREDICATES_LOOKAROUND_PREDICATE_HPP
+#endif //MREGEX_PREDICATES_LOOKAROUND_HPP

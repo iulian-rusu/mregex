@@ -2,7 +2,7 @@
 #define MREGEX_NODES_LOOKAROUND_HPP
 
 #include <mregex/ast/nodes/assertion.hpp>
-#include <mregex/ast/predicates/lookaround_predicate.hpp>
+#include <mregex/ast/predicates/lookaround.hpp>
 #include <mregex/ast/astfwd.hpp>
 
 namespace meta::ast

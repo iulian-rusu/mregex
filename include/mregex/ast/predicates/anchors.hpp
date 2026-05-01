@@ -1,8 +1,8 @@
-#ifndef MREGEX_PREDICATES_ANCHOR_PREDICATES_HPP
-#define MREGEX_PREDICATES_ANCHOR_PREDICATES_HPP
+#ifndef MREGEX_PREDICATES_ANCHORS_HPP
+#define MREGEX_PREDICATES_ANCHORS_HPP
 
 #include <mregex/ast/nodes/terminals/range.hpp>
-#include <mregex/ast/predicates/lookaround_predicate.hpp>
+#include <mregex/ast/predicates/lookaround.hpp>
 #include <mregex/ast/predicates/operators.hpp>
 #include <mregex/ast/nodes/set.hpp>
 
@@ -31,4 +31,4 @@ namespace meta::ast::predicates
 
     using word_boundary_predicate = exclusive_or<lookbehind_predicate<word>, lookahead_predicate<word>>;
 }
-#endif //MREGEX_PREDICATES_ANCHOR_PREDICATES_HPP
+#endif //MREGEX_PREDICATES_ANCHORS_HPP

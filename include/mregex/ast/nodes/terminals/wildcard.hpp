@@ -2,7 +2,7 @@
 #define MREGEX_NODES_WILDCARD_HPP
 
 #include <mregex/ast/astfwd.hpp>
-#include <mregex/ast/nodes/trivially_matchable.hpp>
+#include <mregex/ast/nodes/set.hpp>
 
 namespace meta::ast
 {

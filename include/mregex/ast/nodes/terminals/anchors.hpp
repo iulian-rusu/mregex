@@ -2,7 +2,7 @@
 #define MREGEX_NODES_ANCHORS_HPP
 
 #include <mregex/ast/nodes/assertion.hpp>
-#include <mregex/ast/predicates/anchor_predicates.hpp>
+#include <mregex/ast/predicates/anchors.hpp>
 #include <mregex/ast/astfwd.hpp>
 
 namespace meta::ast
