@@ -6,29 +6,23 @@ jobs:
   build:
     strategy:
       matrix:
-        compiler: [gcc11, gcc13, clang14, clang16]
+        compiler: [gcc-11, gcc-13, llvm-14, llvm-16]
         include:
-          - compiler: gcc11
+          - compiler: gcc-11
             os: ubuntu-22.04
             CXX: g++-11
-            toolchain: gcc
 
-          - compiler: gcc13
+          - compiler: gcc-13
             os: ubuntu-22.04
             CXX: g++-13
-            toolchain: gcc
 
-          - compiler: clang14
+          - compiler: llvm-14
             os: ubuntu-22.04
             CXX: clang++-14
-            toolchain: clang
-            llvm_version: 14
 
-          - compiler: clang16
+          - compiler: llvm-16
             os: ubuntu-22.04
             CXX: clang++-16
-            toolchain: clang
-            llvm_version: 16
 
     runs-on: ${{ matrix.os }}
     env:
@@ -38,30 +32,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Set up keyring directory
-        run: sudo mkdir -p /etc/apt/keyrings
-
-      - name: Install Clang
-        if: ${{ matrix.toolchain == 'clang' }}
-        run: |
-          curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/llvm.gpg > /dev/null
-          echo "deb [signed-by=/etc/apt/keyrings/llvm.gpg] https://apt.llvm.org/jammy/ llvm-toolchain-jammy-${{ matrix.llvm_version }} main" | sudo tee /etc/apt/sources.list.d/llvm.list
-          sudo apt update
-          sudo apt install -y clang-${{ matrix.llvm_version }}
-          $CXX --version
-
-      - name: Install GCC
-        if: ${{ matrix.toolchain == 'gcc' }}
-        run: |
-          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-          sudo apt update
-          sudo apt install -y $CXX
-          $CXX --version
-
-      - name: Install CMake
-        run: |
-          sudo apt install -y cmake
-          cmake --version
+      - name: Set-up toolchain
+        uses: aminya/setup-cpp@v1.8.0
+        with:
+          compiler: ${{ matrix.compiler }}
+          vcvarsall: false
+          cmake: true
+          ninja: false
+          vcpkg: false
 
       - name: CMake generate Makefiles
         run: cmake -S . -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
