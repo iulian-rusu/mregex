@@ -5,7 +5,7 @@
 #include <mregex/ast/match_result.hpp>
 #include <mregex/symbols/names.hpp>
 #include <mregex/utility/continuations.hpp>
-#include <mregex/regex_capture.hpp>
+#include <mregex/regex_capture_storage.hpp>
 
 namespace meta::ast
 {
@@ -26,7 +26,7 @@ namespace meta::ast
             };
             if (auto inner_match = Inner::match(begin, end, current, ctx, continuation))
                 return inner_match;
-            std::get<ID>(ctx.captures).clear();
+            get_group<ID>(ctx.captures).clear();
             return non_match(current);
         }
 
@@ -39,9 +39,9 @@ namespace meta::ast
 
             // Iterator types might be different if matching was done inside a lookbehind
             if constexpr (std::is_same_v<Iter, base_iterator>)
-                std::get<ID>(ctx.captures) = capture_view_type{begin, end};
+                get_group<ID>(ctx.captures) = capture_view_type{begin, end};
             else
-                std::get<ID>(ctx.captures) = capture_view_type{end.base(), begin.base()};
+                get_group<ID>(ctx.captures) = capture_view_type{end.base(), begin.base()};
         }
     };
 }

@@ -7,7 +7,7 @@
 #include <mregex/utility/continuations.hpp>
 #include <mregex/utility/distance.hpp>
 #include <mregex/utility/reversed_range_view.hpp>
-#include <mregex/regex_capture.hpp>
+#include <mregex/regex_capture_storage.hpp>
 
 namespace meta::ast
 {
@@ -19,7 +19,7 @@ namespace meta::ast
             template<capture_storage CaptureStorage>
             static constexpr decltype(auto) get_capture(CaptureStorage &captures) noexcept
             {
-                return std::get<ID>(captures);
+                return get_group<ID>(captures);
             }
         };
 
@@ -29,8 +29,7 @@ namespace meta::ast
             template<capture_storage CaptureStorage>
             static constexpr decltype(auto) get_capture(CaptureStorage &captures) noexcept
             {
-                using capture_type = rename_capture_t<std::tuple_element_t<0, CaptureStorage>, symbol::name<Name>>;
-                return std::get<capture_type>(captures);
+                return get_group<Name>(captures);
             }
         };
     }

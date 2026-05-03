@@ -38,7 +38,7 @@ namespace meta
                 return match_result_view<regex_type, iterator>{std::move(ctx.captures), false};
 
             auto result = method::invoke(_begin, _end, _current, ctx);
-            _active = result.matched && !std::get<0>(ctx.captures).is_empty();
+            _active = result.matched && !get_group<0>(ctx.captures).is_empty();
             _current = result.end;
             return match_result_view<regex_type, iterator>{std::move(ctx.captures), result.matched};
         }

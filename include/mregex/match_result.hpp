@@ -136,7 +136,7 @@ namespace meta
         template<std::size_t ID>
         constexpr auto &group() & noexcept
         {
-            return get_group_by_index<ID>(_captures);
+            return get_group<ID>(_captures);
         }
 
         /**
@@ -150,7 +150,7 @@ namespace meta
         template<static_string Name>
         constexpr auto &group() & noexcept
         {
-            return get_group_by_name<Name>(_captures);
+            return get_group<Name>(_captures);
         }
 
         /**
@@ -195,37 +195,37 @@ namespace meta
         template<std::size_t ID>
         constexpr auto const &group() const & noexcept
         {
-            return get_group_by_index<ID>(_captures);
+            return get_group<ID>(_captures);
         }
 
         template<std::size_t ID>
         constexpr auto &&group() && noexcept
         {
-            return get_group_by_index<ID>(std::move(_captures));
+            return get_group<ID>(std::move(_captures));
         }
 
         template<std::size_t ID>
         constexpr auto const &&group() const && noexcept
         {
-            return get_group_by_index<ID>(std::move(_captures));
+            return get_group<ID>(std::move(_captures));
         }
 
         template<static_string Name>
         constexpr auto const &group() const & noexcept
         {
-            return get_group_by_name<Name>(_captures);
+            return get_group<Name>(_captures);
         }
 
         template<static_string Name>
         constexpr auto &&group() && noexcept
         {
-            return get_group_by_name<Name>(std::move(_captures));
+            return get_group<Name>(std::move(_captures));
         }
 
         template<static_string Name>
         constexpr auto const &&group() const && noexcept
         {
-            return get_group_by_name<Name>(std::move(_captures));
+            return get_group<Name>(std::move(_captures));
         }
 
         /**
@@ -235,25 +235,25 @@ namespace meta
         template<std::size_t ID>
         constexpr auto &get() & noexcept
         {
-            return get_group_by_index<ID>(_captures);
+            return get_group<ID>(_captures);
         }
 
         template<std::size_t ID>
         constexpr auto const &get() const & noexcept
         {
-            return get_group_by_index<ID>(_captures);
+            return get_group<ID>(_captures);
         }
 
         template<std::size_t ID>
         constexpr auto &&get() && noexcept
         {
-            return get_group_by_index<ID>(std::move(_captures));
+            return get_group<ID>(std::move(_captures));
         }
 
         template<std::size_t ID>
         constexpr auto const &&get() const && noexcept
         {
-            return get_group_by_index<ID>(std::move(_captures));
+            return get_group<ID>(std::move(_captures));
         }
 
         constexpr bool operator==(bool value) const noexcept
@@ -283,43 +283,15 @@ namespace meta
             return std::optional{std::forward<Self>(self)};
         }
 
-        template<std::size_t ID, capture_storage Captures>
-        static constexpr decltype(auto) get_group_by_index(Captures &&captures) noexcept
-        {
-            static_assert(ID < group_count, "capturing group does not exist");
-            return std::get<ID>(std::forward<Captures>(captures));
-        }
-
-        template<static_string Name, capture_storage Captures>
-        static constexpr decltype(auto) get_group_by_name(Captures &&captures) noexcept
-        {
-            using capture_type = rename_capture_t<implicit_capture_type, symbol::name<Name>>;
-            return std::get<capture_type>(std::forward<Captures>(captures));
-        }
-
         capture_storage_type _captures;
         bool _matched{};
-    };
-
-    /**
-     * Functors used to project a match result to one of its capturing groups.
-     */
-
-    template<std::size_t ID>
-    inline constexpr auto get_group = []<typename Result>(Result &&res) noexcept -> decltype(auto) {
-        return std::forward<Result>(res).template group<ID>();
-    };
-
-    template<static_string Name>
-    inline constexpr auto get_group_named = []<typename Result>(Result &&res) noexcept -> decltype(auto) {
-        return std::forward<Result>(res).template group<Name>();
     };
 }
 
 template<meta::capture_storage CaptureStorage>
 std::ostream &operator<<(std::ostream &os, meta::basic_match_result<CaptureStorage> const &result)
 {
-    return os << meta::get_group<0>(result);
+    return os << result.template group<0>();
 }
 
 template<meta::capture_storage CaptureStorage>

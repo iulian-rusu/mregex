@@ -7,10 +7,10 @@ namespace meta::tests
     namespace
     {
         template<typename AST>
-        inline constexpr bool is_same_after_indexing = std::is_same_v<ast::index_captures_t<AST>, AST>;
+        inline constexpr bool is_same_after_indexing = std::is_same_v<index_captures_t<AST>, AST>;
 
         template<typename AST, typename Expected>
-        inline constexpr bool is_indexing_of = std::is_same_v<ast::index_captures_t<AST>, Expected>;
+        inline constexpr bool is_indexing_of = std::is_same_v<index_captures_t<AST>, Expected>;
 
         template<std::size_t ID, typename... Nodes>
         struct make_capture
