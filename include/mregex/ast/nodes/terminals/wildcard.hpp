@@ -13,7 +13,8 @@ namespace meta::ast
         {
             if constexpr (Context::flags::dotall)
                 return true;
-            return !linebreak::match_one(input, ctx);
+            else
+                return !linebreak::match_one(input, ctx);
         }
     };
 }

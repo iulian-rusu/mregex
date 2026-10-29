@@ -31,21 +31,21 @@ namespace meta::tests
 
     static_assert(std::is_same_v<uri_tokenizer_t, decltype(uri_regex::tokenizer(""))>);
     static_assert(std::is_same_v<uri_tokenizer_t, decltype(email_regex::tokenizer(""))> == false);
-    static_assert(std::is_same_v<uri_tokenizer_t, decltype(uri_regex::tokenizer(std::string{}))> == false);
+    static_assert(std::is_same_v<uri_tokenizer_t, decltype(uri_regex::tokenizer(std::declval<std::string const &>()))> == false);
     static_assert(std::is_same_v<uri_tokenizer_t, decltype(uri_regex::searcher(""))> == false);
 
     static_assert(std::is_same_v<uri_searcher_t, decltype(uri_regex::searcher(""))>);
     static_assert(std::is_same_v<uri_searcher_t, decltype(email_regex::searcher(""))> == false);
-    static_assert(std::is_same_v<uri_searcher_t, decltype(uri_regex::searcher(std::string{}))> == false);
+    static_assert(std::is_same_v<uri_searcher_t, decltype(uri_regex::searcher(std::declval<std::string const &>()))> == false);
     static_assert(std::is_same_v<uri_searcher_t, decltype(uri_regex::tokenizer(""))> == false);
 
     static_assert(std::is_same_v<uri_token_range_t, decltype(uri_regex::tokenize(""))>);
     static_assert(std::is_same_v<uri_token_range_t, decltype(email_regex::tokenize(""))> == false);
-    static_assert(std::is_same_v<uri_token_range_t, decltype(uri_regex::tokenize(std::string{}))> == false);
+    static_assert(std::is_same_v<uri_token_range_t, decltype(uri_regex::tokenize(std::declval<std::string const &>()))> == false);
     static_assert(std::is_same_v<uri_token_range_t, decltype(uri_regex::find_all(""))> == false);
 
     static_assert(std::is_same_v<uri_match_range_t, decltype(uri_regex::find_all(""))>);
     static_assert(std::is_same_v<uri_match_range_t, decltype(email_regex::find_all(""))> == false);
-    static_assert(std::is_same_v<uri_match_range_t, decltype(uri_regex::find_all(std::string{}))> == false);
+    static_assert(std::is_same_v<uri_match_range_t, decltype(uri_regex::find_all(std::declval<std::string const &>()))> == false);
     static_assert(std::is_same_v<uri_match_range_t, decltype(uri_regex::tokenize(""))> == false);
 }

@@ -109,8 +109,7 @@ namespace meta
 
         /**
          * Returns a lazy tokenizer that yields all continuous matches inside the given range.
-         * Continuous means that the tokenizer will stop at the first non-match position.
-         * At most one empty token will be generated.
+         * The tokenizer will stop at the first non-match position or after the first empty token.
          * The supplied iterator pair must form a valid range, otherwise the behavior is undefined.
          *
          * @param begin An iterator pointing to the start of the sequence
@@ -124,7 +123,7 @@ namespace meta
         }
 
         /**
-         * Returns a lazy searcher that yields all matches inside the given range.
+         * Returns a lazy searcher that yields matches inside the given range.
          * The searcher will skip over non-match positions to find the next match.
          * At most one empty match will be generated.
          * The supplied iterator pair must form a valid range, otherwise the behavior is undefined.
@@ -140,13 +139,13 @@ namespace meta
         }
 
         /**
-         * Returns a lazy view of all non-empty tokens inside the given range.
+         * Returns a lazy view of tokens inside the given range, stopping after the first empty token.
          * Tokens are continuous matches of the pattern, ending at the first non-match position.
          * The supplied iterator pair must form a valid range, otherwise the behavior is undefined.
          *
          * @param begin An iterator pointing to the start of the sequence
          * @param end   An iterator pointing to the end of the sequence
-         * @return      An input range which contains all non-empty matches
+         * @return      An input range of tokens
          */
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto tokenize(Iter begin, Iter end) noexcept
@@ -155,12 +154,12 @@ namespace meta
         }
 
         /**
-         * Returns a lazy view of all non-empty matches inside the given range.
+         * Returns a lazy view of matches inside the given range, stopping after the first empty match.
          * The supplied iterator pair must form a valid range, otherwise the behavior is undefined.
          *
          * @param begin An iterator pointing to the start of the sequence
          * @param end   An iterator pointing to the end of the sequence
-         * @return      An input range which contains all non-empty matches
+         * @return      An input range of matches
          */
         template<std::forward_iterator Iter>
         [[nodiscard]] static constexpr auto find_all(Iter begin, Iter end) noexcept
@@ -237,6 +236,10 @@ namespace meta
             return tokenizer(std::cbegin(input), std::cend(input));
         }
 
+        template<char_range Range>
+        [[nodiscard]] static constexpr auto tokenizer(Range &&input)
+        requires is_expiring_memory_owner<Range &&> = delete;
+
         [[nodiscard]] static constexpr auto searcher(std::string_view input) noexcept
         {
             return searcher(std::cbegin(input), std::cend(input));
@@ -247,6 +250,10 @@ namespace meta
         {
             return searcher(std::cbegin(input), std::cend(input));
         }
+
+        template<char_range Range>
+        [[nodiscard]] static constexpr auto searcher(Range &&input)
+        requires is_expiring_memory_owner<Range &&> = delete;
 
         [[nodiscard]] static constexpr auto tokenize(std::string_view input) noexcept
         {
@@ -259,6 +266,10 @@ namespace meta
             return tokenize(std::cbegin(input), std::cend(input));
         }
 
+        template<char_range Range>
+        [[nodiscard]] static constexpr auto tokenize(Range &&input)
+        requires is_expiring_memory_owner<Range &&> = delete;
+
         [[nodiscard]] static constexpr auto find_all(std::string_view input) noexcept
         {
             return find_all(std::cbegin(input), std::cend(input));
@@ -269,6 +280,10 @@ namespace meta
         {
             return find_all(std::cbegin(input), std::cend(input));
         }
+
+        template<char_range Range>
+        [[nodiscard]] static constexpr auto find_all(Range &&input)
+        requires is_expiring_memory_owner<Range &&> = delete;
 
     private:
         template<typename Method, std::forward_iterator Iter>

@@ -1,6 +1,8 @@
 #ifndef MREGEX_UTILITY_CHAR_TRAITS_HPP
 #define MREGEX_UTILITY_CHAR_TRAITS_HPP
 
+#include <cstdint>
+
 namespace meta
 {
     namespace detail

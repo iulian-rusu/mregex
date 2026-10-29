@@ -1,7 +1,9 @@
 #ifndef MREGEX_REGEX_CAPTURE_HPP
 #define MREGEX_REGEX_CAPTURE_HPP
 
+#include <algorithm>
 #include <iterator>
+#include <ostream>
 #include <string>
 #include <string_view>
 #include <mregex/symbols/names.hpp>
@@ -101,7 +103,7 @@ namespace meta
 
         constexpr explicit operator bool() const noexcept
         {
-            return is_empty();
+            return !is_empty();
         }
 
         constexpr explicit(false) operator std::string_view() const noexcept
